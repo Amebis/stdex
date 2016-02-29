@@ -22,6 +22,8 @@
 #include "common.h"
 
 #include <ios>
+#include <istream>
+#include <ostream>
 
 
 namespace stdex {
@@ -35,8 +37,8 @@ namespace stdex {
         /// - true when successful
         /// - false otherwise
         ///
-        template <class T_SIZE, unsigned int ALIGN, class T_STREAM>
-        inline bool ignore(T_STREAM& stream)
+        template <class T_SIZE, unsigned int ALIGN>
+        inline bool ignore(std::istream& stream)
         {
             T_SIZE size;
 
@@ -64,8 +66,8 @@ namespace stdex {
         /// - true when found
         /// - false otherwise
         ///
-        template <class T_ID, class T_SIZE, unsigned int ALIGN, class T_STREAM>
-        inline bool find(T_STREAM& stream, T_ID id, std::streamoff end = (std::streamoff)-1)
+        template <class T_ID, class T_SIZE, unsigned int ALIGN>
+        inline bool find(std::istream& stream, T_ID id, std::streamoff end = (std::streamoff)-1)
         {
             T_ID _id;
 
@@ -77,7 +79,7 @@ namespace stdex {
                     // The record was found.
                     return true;
                 } else
-                    ignore<T_SIZE, ALIGN, T_STREAM>(stream);
+                    ignore<T_SIZE, ALIGN>(stream);
             }
 
             return false;
@@ -92,18 +94,19 @@ namespace stdex {
         ///
         /// \returns  Position of the record header start in \p stream. Save for later \c close call.
         ///
-        template <class T_ID, class T_SIZE, class T_STREAM>
-        inline std::streamoff open(T_STREAM& stream, T_ID id)
+        template <class T_ID, class T_SIZE>
+        inline std::streamoff open(std::ostream& stream, T_ID id)
         {
             std::streamoff start = stream.tellp();
 
             // Write ID.
             if (stream.fail()) return (std::streamoff)-1;
-            stream.write(&id, sizeof(id));
+            stream.write((const char*)&id, sizeof(id));
 
             // Write 0 as a placeholder for data size.
             if (stream.fail()) return (std::streamoff)-1;
-            stream.write(&(T_SIZE)0, sizeof(T_SIZE));
+            T_SIZE size = 0;
+            stream.write((const char*)&size, sizeof(size));
 
             return start;
         }
@@ -117,8 +120,8 @@ namespace stdex {
         ///
         /// \returns  Position of the record end in \p stream
         ///
-        template <class T_ID, class T_SIZE, unsigned int ALIGN, class T_STREAM>
-        inline std::streamoff close(T_STREAM& stream, std::streamoff start)
+        template <class T_ID, class T_SIZE, unsigned int ALIGN>
+        inline std::streamoff close(std::ostream& stream, std::streamoff start)
         {
             std::streamoff end = stream.tellp();
             T_SIZE
@@ -127,7 +130,7 @@ namespace stdex {
 
             if (remainder) {
                 // Append padding.
-                static const unsigned char padding[ALIGN] = {};
+                static const char padding[ALIGN] = {};
                 stream.write(padding, remainder);
                 end += remainder;
             }
@@ -135,7 +138,7 @@ namespace stdex {
             // Update the data size.
             if (stream.fail()) return (std::streamoff)-1;
             stream.seekp(start + sizeof(T_ID));
-            stream.write(&size, sizeof(size));
+            stream.write((const char*)&size, sizeof(size));
             stream.seekp(end);
 
             return end;
@@ -176,10 +179,9 @@ namespace stdex {
             ///
             /// \returns  Position of the record header start in \p stream. Save for later \c close call.
             ///
-            template <class T_STREAM>
-            static inline std::streamoff open(T_STREAM& stream)
+            static inline std::streamoff open(std::ostream& stream)
             {
-                return open<T_ID, T_SIZE, T_STREAM>(stream, id);
+                return open<T_ID, T_SIZE>(stream, id);
             }
 
 
@@ -191,10 +193,9 @@ namespace stdex {
             ///
             /// \returns  Position of the record end in \p stream
             ///
-            template <class T_STREAM>
-            static inline std::streamoff close(T_STREAM& stream, std::streamoff start)
+            static inline std::streamoff close(std::ostream& stream, std::streamoff start)
             {
-                return close<T_ID, T_SIZE, ALIGN, T_STREAM>(stream, start);
+                return close<T_ID, T_SIZE, ALIGN>(stream, start);
             }
 
 
@@ -208,10 +209,9 @@ namespace stdex {
             /// - true when found
             /// - false otherwise
             ///
-            template <class T_STREAM>
-            static inline bool find(T_STREAM& stream, std::streamoff end = (std::streamoff)-1)
+            static inline bool find(std::istream& stream, std::streamoff end = (std::streamoff)-1)
             {
-                return find<T_ID, T_SIZE, ALIGN, T_STREAM>(stream, id, end);
+                return find<T_ID, T_SIZE, ALIGN>(stream, id, end);
             }
 
             static const T_ID id;   ///< Record id
@@ -221,8 +221,16 @@ namespace stdex {
 };
 
 
-template <class T, class T_ID, class T_SIZE, unsigned int ALIGN, class T_STREAM>
-inline T_STREAM& operator <<(T_STREAM& stream, const stdex::idrec::record<T, T_ID, T_SIZE, ALIGN> r)
+///
+/// Writes record to a stream
+///
+/// \param[in] stream  Output stream
+/// \param[in] r       Record
+///
+/// \returns The stream \p stream
+///
+template <class T, class T_ID, class T_SIZE, unsigned int ALIGN>
+inline std::ostream& operator <<(std::ostream& stream, const stdex::idrec::record<T, T_ID, T_SIZE, ALIGN> r)
 {
     // Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already. The id field is static anyway.
 
@@ -239,8 +247,16 @@ inline T_STREAM& operator <<(T_STREAM& stream, const stdex::idrec::record<T, T_I
 }
 
 
-template <class T, class T_ID, class T_SIZE, unsigned int ALIGN, class T_STREAM>
-inline T_STREAM& operator >>(T_STREAM& stream, stdex::idrec::record<T, T_ID, T_SIZE, ALIGN> r)
+///
+/// Reads record from a stream
+///
+/// \param[in]  stream  Input stream
+/// \param[out] r       Record
+///
+/// \returns The stream \p stream
+///
+template <class T, class T_ID, class T_SIZE, unsigned int ALIGN>
+inline std::istream& operator >>(std::istream& stream, stdex::idrec::record<T, T_ID, T_SIZE, ALIGN> r)
 {
     // Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already. The id field is static anyway.
 
