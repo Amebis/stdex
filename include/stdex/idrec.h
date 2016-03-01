@@ -40,16 +40,15 @@ namespace stdex {
         template <class T_SIZE, unsigned int ALIGN>
         inline bool ignore(std::istream& stream)
         {
-            T_SIZE size;
-
             // Read record size.
-            stream.read(&size, sizeof(size));
-            if (stream.fail()) return false;
+            T_SIZE size;
+            stream.read((char*)&size, sizeof(size));
+            if (!stream.good()) return false;
 
             // Skip the record data.
             size += (T_SIZE)(ALIGN - size) % ALIGN;
             stream.ignore(size);
-            if (stream.fail()) return false;
+            if (!stream.good()) return false;
 
             return true;
         }
@@ -72,8 +71,8 @@ namespace stdex {
             T_ID _id;
 
             while (end == (std::streamoff)-1 || stream.tellg() < end) {
-                stream.read(&_id, sizeof(_id));
-                if (stream.fail()) return false;
+                stream.read((char*)&_id, sizeof(_id));
+                if (!stream.good()) return false;
 
                 if (_id == id) {
                     // The record was found.
@@ -237,13 +236,9 @@ inline std::ostream& operator <<(std::ostream& stream, const stdex::idrec::recor
 {
     // Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already. The id field is static anyway.
 
-    if (stream.fail()) return stream;
     std::streamoff start = r.open(stream);
-
     if (stream.fail()) return stream;
     stream << r.data;
-
-    if (stream.fail()) return stream;
     r.close(stream, start);
 
     return stream;
@@ -265,15 +260,12 @@ inline std::istream& operator >>(std::istream& stream, stdex::idrec::record<T, T
 
     // Read data size.
     T_SIZE size;
-    stream.read(size, sizeof(size));
-    if (stream.fail()) return stream;
+    stream.read((char*)&size, sizeof(size));
+    if (!stream.good()) return stream;
 
     // Read data.
     std::streamoff start = stream.tellg();
-    {
-        ROmejenaDatoteka _stream(&stream, start, size);
-        _stream >> r.data;
-    }
+    stream >> r.data; // TODO: operator >> should not read past the record data! Make a size limited stream and read from it instead.
 
     size += (T_SIZE)(ALIGN - size) % ALIGN;
     stream.seekg(start + size);
