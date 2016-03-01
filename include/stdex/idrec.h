@@ -38,7 +38,7 @@ namespace stdex {
         /// - false otherwise
         ///
         template <class T_SIZE, unsigned int ALIGN>
-        inline bool ignore(std::istream& stream)
+        inline bool ignore(_In_ std::istream& stream)
         {
             // Read record size.
             T_SIZE size;
@@ -66,7 +66,7 @@ namespace stdex {
         /// - false otherwise
         ///
         template <class T_ID, class T_SIZE, unsigned int ALIGN>
-        inline bool find(std::istream& stream, T_ID id, std::streamoff end = (std::streamoff)-1)
+        inline bool find(_In_ std::istream& stream, _In_ T_ID id, _In_opt_ std::streamoff end = (std::streamoff)-1)
         {
             T_ID _id;
 
@@ -94,7 +94,7 @@ namespace stdex {
         /// \returns  Position of the record header start in \p stream. Save for later \c close call.
         ///
         template <class T_ID, class T_SIZE>
-        inline std::streamoff open(std::ostream& stream, T_ID id)
+        inline std::streamoff open(_In_ std::ostream& stream, _In_ T_ID id)
         {
             std::streamoff start = stream.tellp();
 
@@ -120,7 +120,7 @@ namespace stdex {
         /// \returns  Position of the record end in \p stream
         ///
         template <class T_ID, class T_SIZE, unsigned int ALIGN>
-        inline std::streamoff close(std::ostream& stream, std::streamoff start)
+        inline std::streamoff close(_In_ std::ostream& stream, _In_ std::streamoff start)
         {
             std::streamoff end = stream.tellp();
             T_SIZE
@@ -156,8 +156,8 @@ namespace stdex {
             ///
             /// \param[in] d  Reference to record data
             ///
-            inline record(      T &d) : data(    d) {}
-            inline record(const T &d) : data((T&)d) {}
+            inline record(_In_       T &d) : data(    d) {}
+            inline record(_In_ const T &d) : data((T&)d) {}
 
 
             ///
@@ -167,7 +167,7 @@ namespace stdex {
             ///
             /// \returns A const reference to this struct
             ///
-            inline const record<T, T_ID, T_SIZE, ALIGN>& operator =(const record<T, T_ID, T_SIZE, ALIGN> &r)
+            inline const record<T, T_ID, T_SIZE, ALIGN>& operator =(_In_ const record<T, T_ID, T_SIZE, ALIGN> &r)
             {
                 data = r.data;
                 return *this;
@@ -181,7 +181,7 @@ namespace stdex {
             ///
             /// \returns  Position of the record header start in \p stream. Save for later \c close call.
             ///
-            static inline std::streamoff open(std::ostream& stream)
+            static inline std::streamoff open(_In_ std::ostream& stream)
             {
                 return stdex::idrec::open<T_ID, T_SIZE>(stream, id);
             }
@@ -195,7 +195,7 @@ namespace stdex {
             ///
             /// \returns  Position of the record end in \p stream
             ///
-            static inline std::streamoff close(std::ostream& stream, std::streamoff start)
+            static inline std::streamoff close(_In_ std::ostream& stream, _In_ std::streamoff start)
             {
                 return stdex::idrec::close<T_ID, T_SIZE, ALIGN>(stream, start);
             }
@@ -211,10 +211,11 @@ namespace stdex {
             /// - true when found
             /// - false otherwise
             ///
-            static inline bool find(std::istream& stream, std::streamoff end = (std::streamoff)-1)
+            static inline bool find(_In_ std::istream& stream, _In_opt_ std::streamoff end = (std::streamoff)-1)
             {
                 return stdex::idrec::find<T_ID, T_SIZE, ALIGN>(stream, id, end);
             }
+
 
             static const T_ID id;   ///< Record id
             T &data;                ///< Record data reference
@@ -232,7 +233,7 @@ namespace stdex {
 /// \returns The stream \p stream
 ///
 template <class T, class T_ID, class T_SIZE, unsigned int ALIGN>
-inline std::ostream& operator <<(std::ostream& stream, const stdex::idrec::record<T, T_ID, T_SIZE, ALIGN> r)
+inline std::ostream& operator <<(_In_ std::ostream& stream, _In_ const stdex::idrec::record<T, T_ID, T_SIZE, ALIGN> r)
 {
     // Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already. The id field is static anyway.
 
@@ -254,7 +255,7 @@ inline std::ostream& operator <<(std::ostream& stream, const stdex::idrec::recor
 /// \returns The stream \p stream
 ///
 template <class T, class T_ID, class T_SIZE, unsigned int ALIGN>
-inline std::istream& operator >>(std::istream& stream, stdex::idrec::record<T, T_ID, T_SIZE, ALIGN> r)
+inline std::istream& operator >>(_In_ std::istream& stream, _Out_ stdex::idrec::record<T, T_ID, T_SIZE, ALIGN> r)
 {
     // Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already. The id field is static anyway.
 
