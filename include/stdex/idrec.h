@@ -146,16 +146,19 @@ namespace stdex {
 
 
         ///
-        /// Helper struct for read/write of records to/from memory
+        /// Helper class for read/write of records to/from memory
         ///
         template <class T, class T_ID, class T_SIZE, unsigned int ALIGN>
-        struct STDEX_API record
+        class record
         {
+        public:
             ///
-            /// Constructs the struct
+            /// Constructs the class
             ///
-            inline record(      T &_data) : data(    _data) {}
-            inline record(const T &_data) : data((T&)_data) {}
+            /// \param[in] d  Reference to record data
+            ///
+            inline record(      T &d) : data(    d) {}
+            inline record(const T &d) : data((T&)d) {}
 
 
             ///
@@ -181,7 +184,7 @@ namespace stdex {
             ///
             static inline std::streamoff open(std::ostream& stream)
             {
-                return open<T_ID, T_SIZE>(stream, id);
+                return stdex::idrec::open<T_ID, T_SIZE>(stream, id);
             }
 
 
@@ -195,7 +198,7 @@ namespace stdex {
             ///
             static inline std::streamoff close(std::ostream& stream, std::streamoff start)
             {
-                return close<T_ID, T_SIZE, ALIGN>(stream, start);
+                return stdex::idrec::close<T_ID, T_SIZE, ALIGN>(stream, start);
             }
 
 
@@ -211,7 +214,7 @@ namespace stdex {
             ///
             static inline bool find(std::istream& stream, std::streamoff end = (std::streamoff)-1)
             {
-                return find<T_ID, T_SIZE, ALIGN>(stream, id, end);
+                return stdex::idrec::find<T_ID, T_SIZE, ALIGN>(stream, id, end);
             }
 
             static const T_ID id;   ///< Record id
