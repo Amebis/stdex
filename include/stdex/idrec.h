@@ -29,6 +29,28 @@
 namespace stdex {
     namespace idrec {
         ///
+        /// Reads record ID
+        ///
+        /// \param[in]  stream  Input stream
+        /// \param[out] id      Record ID
+        /// \param[in]  end     Position limit. Default is -1 (no limit).
+        ///
+        /// \returns
+        /// - true when succeeded
+        /// - false otherwise
+        ///
+        template <class T_ID>
+        inline bool read_id(_In_ std::istream& stream, _Out_ T_ID &id, _In_opt_ std::streamoff end = (std::streamoff)-1)
+        {
+            if (end == (std::streamoff)-1 || stream.tellg() < end) {
+                stream.read((char*)&id, sizeof(id));
+                return stream.good();
+            } else
+                return false;
+        }
+
+
+        ///
         /// Skips current record data
         ///
         /// \param[in] stream  Input stream
