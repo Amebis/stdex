@@ -36,8 +36,8 @@ namespace stdex {
         /// \param[in]  end     Position limit. Default is -1 (no limit).
         ///
         /// \returns
-        /// - true when succeeded
-        /// - false otherwise
+        /// - \c true when succeeded
+        /// - \c false otherwise
         ///
         template <class T_ID>
         inline bool read_id(_In_ std::istream& stream, _Out_ T_ID &id, _In_opt_ std::streamoff end = (std::streamoff)-1)
@@ -56,8 +56,8 @@ namespace stdex {
         /// \param[in] stream  Input stream
         ///
         /// \returns
-        /// - true when successful
-        /// - false otherwise
+        /// - \c true when successful
+        /// - \c false otherwise
         ///
         template <class T_SIZE, unsigned int ALIGN>
         inline bool ignore(_In_ std::istream& stream)
@@ -84,8 +84,8 @@ namespace stdex {
         /// \param[in] end     Position limit. Default is -1 (no limit).
         ///
         /// \returns
-        /// - true when found
-        /// - false otherwise
+        /// - \c true when found
+        /// - \c false otherwise
         ///
         template <class T_ID, class T_SIZE, unsigned int ALIGN>
         inline bool find(_In_ std::istream& stream, _In_ T_ID id, _In_opt_ std::streamoff end = (std::streamoff)-1)
@@ -178,7 +178,14 @@ namespace stdex {
             ///
             /// \param[in] d  Reference to record data
             ///
-            inline record(_In_       T &d) : data(    d) {}
+            inline record(_In_ T &d) : data(d) {}
+
+
+            ///
+            /// Constructs the class
+            ///
+            /// \param[in] d  Reference to record data
+            ///
             inline record(_In_ const T &d) : data((T&)d) {}
 
 
@@ -230,8 +237,8 @@ namespace stdex {
             /// \param[in] end     Position limit. Default is -1 (no limit).
             ///
             /// \returns
-            /// - true when found
-            /// - false otherwise
+            /// - \c true when found
+            /// - \c false otherwise
             ///
             static inline bool find(_In_ std::istream& stream, _In_opt_ std::streamoff end = (std::streamoff)-1)
             {
