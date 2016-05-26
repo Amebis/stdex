@@ -55,3 +55,34 @@
 //
 #define STDEX_VERSION_STR      "1.0"
 #define STDEX_BUILD_YEAR_STR   "2016"
+
+
+namespace stdex
+{
+    ///
+    /// Deleter for unique_ptr using CloseHandle
+    ///
+    template <class _Ty> struct CloseHandle_delete
+    {
+        typedef CloseHandle_delete<_Ty> _Myt;
+
+        ///
+        /// Default construct
+        ///
+        CloseHandle_delete() {}
+
+        ///
+        /// Construct from another CloseHandle_delete
+        ///
+        template <class _Ty2> CloseHandle_delete(const CloseHandle_delete<_Ty2>&) {}
+
+        ///
+        /// Delete a pointer
+        ///
+        void operator()(_Ty *_Ptr) const
+        {
+            if (_Ptr)
+                CloseHandle(_Ptr);
+        }
+    };
+}
