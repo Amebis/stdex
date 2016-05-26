@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include <assert.h>
+#include <Windows.h>
 #include <vector>
 
 
@@ -79,10 +81,110 @@ namespace stdex
         ///
         /// Delete a pointer
         ///
-        void operator()(_Ty *_Ptr) const
+        void operator()(_Ty *ptr) const
         {
-            if (_Ptr)
-                CloseHandle(_Ptr);
+            if (ptr)
+                CloseHandle(ptr);
         }
+    };
+
+
+    ///
+    /// HeapAlloc allocator
+    ///
+    template <class _Ty>
+    class heap_allocator
+    {
+    public:
+        typedef typename _Ty value_type;
+
+        typedef _Ty *pointer;
+        typedef _Ty& reference;
+        typedef const _Ty *const_pointer;
+        typedef const _Ty& const_reference;
+
+        typedef SIZE_T size_type;
+        typedef ptrdiff_t difference_type;
+
+
+        template <class _Other>
+        struct rebind
+        {
+            typedef heap_allocator<_Other> other;
+        };
+
+    public:
+        ///
+        /// Constructs allocator
+        ///
+        /// \param[in] heap  Handle to existing heap
+        ///
+        inline heap_allocator(_In_ HANDLE heap) : m_heap(heap) {}
+
+        ///
+        /// Constructs allocator from another type
+        ///
+        /// \param[in] other  Another allocator of the heap_allocator kind
+        ///
+        template <class _Other>
+        inline heap_allocator(_In_ const heap_allocator<_Other> &other) : m_heap(other.m_heap) {}
+
+        ///
+        /// Allocates a new memory block
+        ///
+        /// \param[in] count  Number of elements
+        ///
+        /// \returns Pointer to new memory block
+        ///
+        inline pointer allocate(_In_ size_type count)
+        {
+            assert(m_heap);
+            return (pointer)HeapAlloc(m_heap, 0, count * sizeof(_Ty));
+        }
+
+        ///
+        /// Frees memory block
+        ///
+        /// \param[in] ptr   Pointer to memory block
+        /// \param[in] size  Size of memory block (in bytes)
+        ///
+        inline void deallocate(_In_ pointer ptr, _In_ size_type size)
+        {
+            UNREFERENCED_PARAMETER(size);
+            assert(m_heap);
+            HeapFree(m_heap, 0, ptr);
+        }
+
+        ///
+        /// Calls moving constructor for the element
+        ///
+        /// \param[in] ptr  Pointer to memory block
+        /// \param[in] val  Source element
+        ///
+        inline void construct(_Inout_ pointer ptr, _Inout_ _Ty&& val)
+        {
+            ::new ((void*)ptr) _Ty(std::forward<_Ty>(val));
+        }
+
+        ///
+        /// Calls destructor for the element
+        ///
+        /// \param[in] ptr  Pointer to memory block
+        ///
+        inline void destroy(_Inout_ pointer ptr)
+        {
+            ptr->_Ty::~_Ty();
+        }
+
+        ///
+        /// Returns maximum memory block size
+        ///
+        inline size_type max_size() const
+        {
+            return (SIZE_T)-1;
+        }
+
+    public:
+        HANDLE m_heap;
     };
 }
