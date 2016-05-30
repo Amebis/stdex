@@ -156,6 +156,17 @@ namespace stdex
         }
 
         ///
+        /// Calls copying constructor for the element
+        ///
+        /// \param[in] ptr  Pointer to memory block
+        /// \param[in] val  Source element
+        ///
+        inline void construct(_Inout_ pointer ptr, _In_ const _Ty& val)
+        {
+            ::new ((void*)ptr) _Ty(val);
+        }
+
+        ///
         /// Calls moving constructor for the element
         ///
         /// \param[in] ptr  Pointer to memory block
