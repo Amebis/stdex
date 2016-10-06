@@ -62,34 +62,6 @@
 namespace stdex
 {
     ///
-    /// Deleter for unique_ptr using CloseHandle
-    ///
-    template <class _Ty> struct CloseHandle_delete
-    {
-        typedef CloseHandle_delete<_Ty> _Myt;
-
-        ///
-        /// Default construct
-        ///
-        CloseHandle_delete() {}
-
-        ///
-        /// Construct from another CloseHandle_delete
-        ///
-        template <class _Ty2> CloseHandle_delete(const CloseHandle_delete<_Ty2>&) {}
-
-        ///
-        /// Delete a pointer
-        ///
-        void operator()(_Ty *ptr) const
-        {
-            if (ptr)
-                CloseHandle(ptr);
-        }
-    };
-
-
-    ///
     /// HeapAlloc allocator
     ///
     template <class _Ty>
