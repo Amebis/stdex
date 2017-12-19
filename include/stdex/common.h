@@ -39,7 +39,7 @@
 // Product version as a single DWORD
 // Note: Used for version comparison within C/C++ code.
 //
-#define STDEX_VERSION          0x01000000
+#define STDEX_VERSION          0x01000100
 
 //
 // Product version by components
@@ -49,11 +49,11 @@
 //
 #define STDEX_VERSION_MAJ      1
 #define STDEX_VERSION_MIN      0
-#define STDEX_VERSION_REV      0
+#define STDEX_VERSION_REV      1
 #define STDEX_VERSION_BUILD    0
 
 //
 // Human readable product version and build year for UI
 //
-#define STDEX_VERSION_STR      "1.0"
+#define STDEX_VERSION_STR      "1.0.1"
 #define STDEX_BUILD_YEAR_STR   "2016"
