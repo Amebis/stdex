@@ -56,4 +56,4 @@
 // Human readable product version and build year for UI
 //
 #define STDEX_VERSION_STR      "1.0.1"
-#define STDEX_BUILD_YEAR_STR   "2016"
+#define STDEX_BUILD_YEAR_STR   "2017"
