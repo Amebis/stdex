@@ -1,11 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ImportGroup Label="PropertySheets" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="..\..\..\include\$(Platform).props" />
+    <Import Project="..\..\..\include\$(Configuration).props" />
+  </ImportGroup>
   <PropertyGroup Label="UserMacros">
     <stdexVersion>10</stdexVersion>
   </PropertyGroup>
   <PropertyGroup>
     <OutDir>..\..\..\output\$(Platform).$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>stdex$(stdexVersion)ud_vc$(PlatformToolsetVersion)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>stdex$(stdexVersion)ud_vc$(PlatformToolsetVersion)_$(Platform)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>stdex$(stdexVersion)u_vc$(PlatformToolsetVersion)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>stdex$(stdexVersion)u_vc$(PlatformToolsetVersion)_$(Platform)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -16,5 +31,18 @@
     <BuildMacro Include="stdexVersion">
       <Value>$(stdexVersion)</Value>
     </BuildMacro>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\stdex\common.h" />
+    <ClInclude Include="..\include\stdex\idrec.h" />
+    <ClInclude Include="..\src\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\res\stdex.rc" />
   </ItemGroup>
 </Project>
