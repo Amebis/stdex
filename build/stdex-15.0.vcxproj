@@ -21,6 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{518777CC-0A59-4415-A12A-82751ED75343}</ProjectGuid>
     <RootNamespace>stdex</RootNamespace>
+    <ProjectName>stdex</ProjectName>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
