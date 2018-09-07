@@ -4,34 +4,11 @@
     <Import Project="..\..\..\include\$(Platform).props" />
     <Import Project="..\..\..\include\$(Configuration).props" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros">
-    <stdexVersion>10</stdexVersion>
-  </PropertyGroup>
+  <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <OutDir>..\..\..\output\$(Platform).$(Configuration)\</OutDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <TargetName>stdex$(stdexVersion)ud_vc$(PlatformToolsetVersion)</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetName>stdex$(stdexVersion)ud_vc$(PlatformToolsetVersion)_$(Platform)</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <TargetName>stdex$(stdexVersion)u_vc$(PlatformToolsetVersion)</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TargetName>stdex$(stdexVersion)u_vc$(PlatformToolsetVersion)_$(Platform)</TargetName>
-  </PropertyGroup>
-  <ItemDefinitionGroup>
-    <ClCompile>
-      <PreprocessorDefinitions>STDEX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemGroup>
-    <BuildMacro Include="stdexVersion">
-      <Value>$(stdexVersion)</Value>
-    </BuildMacro>
-  </ItemGroup>
+  <ItemDefinitionGroup />
   <ItemGroup>
     <ClCompile Include="..\src\stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

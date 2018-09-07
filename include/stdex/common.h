@@ -25,13 +25,8 @@
 
 
 ///
-/// Public function calling convention
+/// Classes without virtual table
 ///
-#ifdef STDEX
-#define STDEX_API      __declspec(dllexport)
-#else
-#define STDEX_API      __declspec(dllimport)
-#endif
 #define STDEX_NOVTABLE __declspec(novtable)
 
 
