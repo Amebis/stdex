@@ -19,7 +19,4 @@
     <ClInclude Include="..\include\stdex\idrec.h" />
     <ClInclude Include="..\src\stdafx.h" />
   </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="..\res\stdex.rc" />
-  </ItemGroup>
 </Project>
