@@ -1,5 +1,5 @@
 /*
-    Copyright 2016-2017 Amebis
+    Copyright 2016-2018 Amebis
 
     This file is part of stdex.
 
@@ -51,4 +51,4 @@
 // Human readable product version and build year for UI
 //
 #define STDEX_VERSION_STR      "1.0.1"
-#define STDEX_BUILD_YEAR_STR   "2017"
+#define STDEX_BUILD_YEAR_STR   "2018"
