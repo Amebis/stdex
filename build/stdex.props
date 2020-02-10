@@ -10,13 +10,13 @@
   </PropertyGroup>
   <ItemDefinitionGroup />
   <ItemGroup>
-    <ClCompile Include="..\src\stdafx.cpp">
+    <ClCompile Include="..\src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\stdex\common.h" />
     <ClInclude Include="..\include\stdex\idrec.h" />
-    <ClInclude Include="..\src\stdafx.h" />
+    <ClInclude Include="..\src\pch.h" />
   </ItemGroup>
 </Project>
