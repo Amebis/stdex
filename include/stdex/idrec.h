@@ -40,7 +40,7 @@ namespace stdex {
         /// - \c false otherwise
         ///
         template <class T_ID>
-        inline bool read_id(_In_ std::istream& stream, _Out_ T_ID &id, _In_opt_ std::streamoff end = (std::streamoff)-1)
+        inline _Success_(return) bool read_id(_In_ std::istream& stream, _Out_ T_ID &id, _In_opt_ std::streamoff end = (std::streamoff)-1)
         {
             if (end == (std::streamoff)-1 || stream.tellg() < end) {
                 stream.read((char*)&id, sizeof(id));
@@ -284,7 +284,7 @@ inline std::ostream& operator <<(_In_ std::ostream& stream, _In_ const stdex::id
 /// \returns The stream \p stream
 ///
 template <class T, class T_ID, class T_SIZE, unsigned int ALIGN>
-inline std::istream& operator >>(_In_ std::istream& stream, _Out_ stdex::idrec::record<T, T_ID, T_SIZE, ALIGN> r)
+inline std::istream& operator >>(_In_ std::istream& stream, _In_ stdex::idrec::record<T, T_ID, T_SIZE, ALIGN> r)
 {
     // Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already. The id field is static anyway.
 
