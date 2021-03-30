@@ -23,9 +23,6 @@
     <ClInclude Include="..\src\pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\stdex\common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\stdex\idrec.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -19,8 +19,6 @@
 
 #pragma once
 
-#include "common.h"
-
 #include <ios>
 #include <istream>
 #include <ostream>

@@ -20,7 +20,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\stdex\common.h" />
     <ClInclude Include="..\include\stdex\idrec.h" />
     <ClInclude Include="..\src\pch.h" />
   </ItemGroup>
