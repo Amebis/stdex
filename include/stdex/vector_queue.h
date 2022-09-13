@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "sal.h"
+
 namespace stdex
 {
     ///
@@ -399,6 +401,7 @@ namespace stdex
 
         ///
         /// Returns absolute subscript or position number of the given element in the queue.
+        ///
         size_type abs(_In_ size_type pos) const
         {
             return (m_head + pos) % m_size_max;

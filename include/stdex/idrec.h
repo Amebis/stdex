@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "sal.h"
 #include <ios>
 #include <istream>
 #include <ostream>
@@ -153,7 +154,7 @@ namespace stdex {
         ///
         /// Helper class for read/write of records to/from memory
         ///
-        template <class T, class T_ID, class T_SIZE, unsigned int ALIGN>
+        template <class T, class T_ID, const T_ID ID, class T_SIZE, unsigned int ALIGN>
         class record
         {
         public:
@@ -174,13 +175,22 @@ namespace stdex {
 
 
             ///
+            /// Returns record id
+            ///
+            static const T_ID id()
+            {
+                return ID;
+            }
+
+
+            ///
             /// Assignment operator
             ///
             /// \param[in] r  Source record
             ///
             /// \returns A const reference to this struct
             ///
-            const record<T, T_ID, T_SIZE, ALIGN>& operator =(_In_ const record<T, T_ID, T_SIZE, ALIGN> &r)
+            const record<T, T_ID, ID, T_SIZE, ALIGN>& operator =(_In_ const record<T, T_ID, ID, T_SIZE, ALIGN> &r)
             {
                 data = r.data;
                 return *this;
@@ -196,7 +206,7 @@ namespace stdex {
             ///
             static std::streamoff open(_In_ std::ostream& stream)
             {
-                return stdex::idrec::open<T_ID, T_SIZE>(stream, id);
+                return stdex::idrec::open<T_ID, T_SIZE>(stream, ID);
             }
 
 
@@ -226,11 +236,10 @@ namespace stdex {
             ///
             static bool find(_In_ std::istream& stream, _In_opt_ std::streamoff end = (std::streamoff)-1)
             {
-                return stdex::idrec::find<T_ID, T_SIZE, ALIGN>(stream, id, end);
+                return stdex::idrec::find<T_ID, T_SIZE, ALIGN>(stream, ID, end);
             }
 
 
-            static const T_ID id;   ///< Record id
             T &data;                ///< Record data reference
         };
     };
@@ -245,10 +254,10 @@ namespace stdex {
 ///
 /// \returns The stream \p stream
 ///
-template <class T, class T_ID, class T_SIZE, unsigned int ALIGN>
-std::ostream& operator <<(_In_ std::ostream& stream, _In_ const stdex::idrec::record<T, T_ID, T_SIZE, ALIGN> r)
+template <class T, class T_ID, T_ID ID, class T_SIZE, unsigned int ALIGN>
+std::ostream& operator <<(_In_ std::ostream& stream, _In_ const stdex::idrec::record<T, T_ID, ID, T_SIZE, ALIGN> r)
 {
-    // Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already. The id field is static anyway.
+    // Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already.
 
     std::streamoff start = r.open(stream);
     if (stream.fail()) return stream;
@@ -267,10 +276,10 @@ std::ostream& operator <<(_In_ std::ostream& stream, _In_ const stdex::idrec::re
 ///
 /// \returns The stream \p stream
 ///
-template <class T, class T_ID, class T_SIZE, unsigned int ALIGN>
-std::istream& operator >>(_In_ std::istream& stream, _In_ stdex::idrec::record<T, T_ID, T_SIZE, ALIGN> r)
+template <class T, class T_ID, T_ID ID, class T_SIZE, unsigned int ALIGN>
+std::istream& operator >>(_In_ std::istream& stream, _In_ stdex::idrec::record<T, T_ID, ID, T_SIZE, ALIGN> r)
 {
-    // Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already. The id field is static anyway.
+    // Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already.
 
     // Read data size.
     T_SIZE size;

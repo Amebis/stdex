@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "sal.h"
 #include <string>
 #include <vector>
 
@@ -77,11 +78,11 @@ namespace stdex
         ///
         /// Returns maximum encoded size
         ///
-        /// \param size  Number of bytes to encode
+        /// \param[in] size  Number of bytes to encode
         ///
         /// \returns Maximum number of bytes for the encoded data of `size` length
         ///
-        size_t enc_size(size_t size) const noexcept
+        size_t enc_size(_In_ size_t size) const noexcept
         {
             return ((num + size + 2)/3)*4;
         }
@@ -219,11 +220,11 @@ namespace stdex
         ///
         /// Returns maximum decoded size
         ///
-        /// \param size  Number of bytes to decode
+        /// \param[in] size  Number of bytes to decode
         ///
         /// \returns Maximum number of bytes for the decoded data of `size` length
         ///
-        size_t dec_size(size_t size) const noexcept
+        size_t dec_size(_In_ size_t size) const noexcept
         {
             return ((num + size + 3)/4)*3;
         }
