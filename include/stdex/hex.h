@@ -6,6 +6,7 @@
 #pragma once
 
 #include "sal.h"
+#include <cstdint>
 #include <string>
 #include <vector>
 
@@ -43,8 +44,8 @@ namespace stdex
 
             // Convert data character by character.
             for (size_t i = 0; i < size; i++) {
-                unsigned char
-                    x   = reinterpret_cast<const unsigned char*>(data)[i],
+                uint8_t
+                    x   = reinterpret_cast<const uint8_t*>(data)[i],
                     x_h = ((x & 0xf0) >> 4),
                     x_l = ((x & 0x0f)     );
 
@@ -118,13 +119,13 @@ namespace stdex
 
                 int x = data[i];
                 if ('0' <= x && x <= '9') {
-                    buf = ((buf & 0xf) << 4) | (unsigned char)(x - '0');
+                    buf = ((buf & 0xf) << 4) | (uint8_t)(x - '0');
                     num++;
                 } else if ('A' <= x && x <= 'F') {
-                    buf = ((buf & 0xf) << 4) | (unsigned char)(x - ('A' - 10));
+                    buf = ((buf & 0xf) << 4) | (uint8_t)(x - ('A' - 10));
                     num++;
                 } else if ('a' <= x && x <= 'f') {
-                    buf = ((buf & 0xf) << 4) | (unsigned char)(x - ('a' - 10));
+                    buf = ((buf & 0xf) << 4) | (uint8_t)(x - ('a' - 10));
                     num++;
                 }
             }
@@ -154,7 +155,7 @@ namespace stdex
 
 
     protected:
-        unsigned char buf;  ///< Internal buffer
-        size_t num;         ///< Number of nibbles used in `buf`
+        uint8_t buf;    ///< Internal buffer
+        size_t num;     ///< Number of nibbles used in `buf`
     };
 }

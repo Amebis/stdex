@@ -6,6 +6,7 @@
 #pragma once
 
 #include "sal.h"
+#include <cstdint>
 #include <string>
 #include <vector>
 
@@ -55,7 +56,7 @@ namespace stdex
                 if (i >= size)
                     break;
 
-                buf[num++] = reinterpret_cast<const unsigned char*>(data)[i];
+                buf[num++] = reinterpret_cast<const uint8_t*>(data)[i];
             }
 
             // If this is the last block, flush the buffer.
@@ -134,8 +135,8 @@ namespace stdex
 
 
     protected:
-        unsigned char buf[3];           ///< Internal buffer
-        size_t num;                     ///< Number of bytes used in `buf`
+        uint8_t buf[3]; ///< Internal buffer
+        size_t num;     ///< Number of bytes used in `buf`
     };
 
 
@@ -251,13 +252,13 @@ namespace stdex
 
 
     protected:
-        unsigned char buf[4];                   ///< Internal buffer
-        size_t num;                             ///< Number of bytes used in `buf`
+        uint8_t buf[4]; ///< Internal buffer
+        size_t num;     ///< Number of bytes used in `buf`
     };
 
 
     /// \cond internal
-    static const unsigned char base64_dec_lookup[256] = {
+    static const uint8_t base64_dec_lookup[256] = {
     /*           0    1    2    3    4    5    6    7    8    9    A    B    C    D    E    F  */
     /* 0 */    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     /* 1 */    255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
