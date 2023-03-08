@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['open_0',['open',['../classstdex_1_1idrec_1_1record.html#a379d9eeac3c52375982ba75df33604ca',1,'stdex::idrec::record']]],
-  ['operator_3d_1',['operator=',['../classstdex_1_1idrec_1_1record.html#a3d4bff1bf080fb8cb3960b5b5018392c',1,'stdex::idrec::record::operator=()'],['../classstdex_1_1vector__queue.html#a00e42f0b6c31aa16e47a1093e90fd1aa',1,'stdex::vector_queue::operator=(const vector_queue&lt; value_type &gt; &amp;other)'],['../classstdex_1_1vector__queue.html#a840d69192e880fcce588c6368a7d1bab',1,'stdex::vector_queue::operator=(vector_queue&lt; value_type &gt; &amp;&amp;other)']]],
-  ['operator_5b_5d_2',['operator[]',['../classstdex_1_1vector__queue.html#a21497b5396ef80a2d641f8ee767a3b17',1,'stdex::vector_queue::operator[](size_type pos)'],['../classstdex_1_1vector__queue.html#ace07c52caf736c3285909d64b22a2c4c',1,'stdex::vector_queue::operator[](size_type pos) const']]]
+  ['id_0',['id',['../classstdex_1_1idrec_1_1record.html#a24e54541a476b01e332290c57a495926',1,'stdex::idrec::record']]],
+  ['interval_1',['interval',['../structstdex_1_1interval.html#a9f6c66e8a3fd15c693011216bb45d6b9',1,'stdex::interval::interval() noexcept'],['../structstdex_1_1interval.html#a100a68cd81867cbf1b275cd5ab5d2160',1,'stdex::interval::interval(T x) noexcept'],['../structstdex_1_1interval.html#a41ac8e9fdb33a2dfaae6113006b792d8',1,'stdex::interval::interval(T _start, T _end) noexcept']]]
 ];

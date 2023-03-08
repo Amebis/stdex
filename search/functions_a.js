@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['record_0',['record',['../classstdex_1_1idrec_1_1record.html#a611da3801d9e7215324c9a5992a27f39',1,'stdex::idrec::record::record(T &amp;d)'],['../classstdex_1_1idrec_1_1record.html#ab84a09093bd1a2cbf720329b84c6d73b',1,'stdex::idrec::record::record(const T &amp;d)']]]
+  ['number_0',['number',['../classstdex_1_1errno__error.html#a6b3c265199470fe39b89f5c9941cc86f',1,'stdex::errno_error']]]
 ];

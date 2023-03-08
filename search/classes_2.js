@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['record_0',['record',['../classstdex_1_1idrec_1_1record.html',1,'stdex::idrec']]]
+  ['global_5fprogress_0',['global_progress',['../classstdex_1_1global__progress.html',1,'stdex']]]
 ];

@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['hex_5fdec_0',['hex_dec',['../classstdex_1_1hex__dec.html',1,'stdex']]],
-  ['hex_5fenc_1',['hex_enc',['../classstdex_1_1hex__enc.html',1,'stdex']]]
+  ['errno_5ferror_0',['errno_error',['../classstdex_1_1errno__error.html',1,'stdex']]]
 ];

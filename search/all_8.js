@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['m_5fcount_0',['m_count',['../classstdex_1_1vector__queue.html#a6070ca156773c17c6b75bacc5251c04c',1,'stdex::vector_queue']]],
-  ['m_5fdata_1',['m_data',['../classstdex_1_1vector__queue.html#a289d86508a91fbe61e0425e318d735cf',1,'stdex::vector_queue']]],
-  ['m_5fhead_2',['m_head',['../classstdex_1_1vector__queue.html#abd8208a4a9e92ec5c38d3718f383e41e',1,'stdex::vector_queue']]],
-  ['m_5fsize_5fmax_3',['m_size_max',['../classstdex_1_1vector__queue.html#a7192dc2991d690b04a2fb24dd6fdc325',1,'stdex::vector_queue']]]
+  ['id_0',['id',['../classstdex_1_1idrec_1_1record.html#a24e54541a476b01e332290c57a495926',1,'stdex::idrec::record']]],
+  ['interval_1',['interval',['../structstdex_1_1interval.html#a9f6c66e8a3fd15c693011216bb45d6b9',1,'stdex::interval::interval() noexcept'],['../structstdex_1_1interval.html#a100a68cd81867cbf1b275cd5ab5d2160',1,'stdex::interval::interval(T x) noexcept'],['../structstdex_1_1interval.html#a41ac8e9fdb33a2dfaae6113006b792d8',1,'stdex::interval::interval(T _start, T _end) noexcept'],['../structstdex_1_1interval.html',1,'stdex::interval&lt; T &gt;']]]
 ];

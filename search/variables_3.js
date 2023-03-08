@@ -1,4 +1,8 @@
 var searchData=
 [
-  ['num_0',['num',['../classstdex_1_1base64__enc.html#a58e4759143972065f71ed68f6dbc90d8',1,'stdex::base64_enc::num()'],['../classstdex_1_1base64__dec.html#a08acef30d97e7f8213e0c834b93ee849',1,'stdex::base64_dec::num()'],['../classstdex_1_1hex__dec.html#a99111436d6b30595cd1fee112e3200ae',1,'stdex::hex_dec::num()']]]
+  ['m_5fcount_0',['m_count',['../classstdex_1_1vector__queue.html#a6070ca156773c17c6b75bacc5251c04c',1,'stdex::vector_queue']]],
+  ['m_5fdata_1',['m_data',['../classstdex_1_1vector__queue.html#a289d86508a91fbe61e0425e318d735cf',1,'stdex::vector_queue']]],
+  ['m_5fhead_2',['m_head',['../classstdex_1_1vector__queue.html#abd8208a4a9e92ec5c38d3718f383e41e',1,'stdex::vector_queue']]],
+  ['m_5fnum_3',['m_num',['../classstdex_1_1errno__error.html#a3712510d0659db4ad2ef4082a5980575',1,'stdex::errno_error']]],
+  ['m_5fsize_5fmax_4',['m_size_max',['../classstdex_1_1vector__queue.html#a7192dc2991d690b04a2fb24dd6fdc325',1,'stdex::vector_queue']]]
 ];
