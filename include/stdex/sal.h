@@ -33,6 +33,9 @@
 #ifndef _In_z_count_
 #define _In_z_count_(p)
 #endif
+#ifndef _In_reads_or_z_
+#define _In_reads_or_z_(p)
+#endif
 
 #ifndef _Inout_
 #define _Inout_
@@ -47,6 +50,9 @@
 #endif
 #ifndef _Out_opt_
 #define _Out_opt_
+#endif
+#ifndef _Out_writes_z_
+#define _Out_writes_z_(p)
 #endif
 
 #ifndef _Success_
