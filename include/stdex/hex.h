@@ -6,6 +6,7 @@
 #pragma once
 
 #include "sal.h"
+#include <assert.h>
 #include <cstdint>
 #include <string>
 #include <vector>
