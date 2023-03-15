@@ -5,11 +5,11 @@
 
 #pragma once
 
-#include "interval.h"
-#include "memory.h"
-#include "sal.h"
-#include "sgml.h"
-#include "string.h"
+#include "interval.hpp"
+#include "memory.hpp"
+#include "sal.hpp"
+#include "sgml.hpp"
+#include "string.hpp"
 #include <assert.h>
 #include <stdarg.h>
 #include <stdint.h>

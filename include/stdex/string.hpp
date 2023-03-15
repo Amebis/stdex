@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "sal.h"
+#include "sal.hpp"
 #include <assert.h>
 #include <ctype.h>
 #include <stdint.h>

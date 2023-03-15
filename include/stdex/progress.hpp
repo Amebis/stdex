@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include "sal.h"
-#include "interval.h"
+#include "sal.hpp"
+#include "interval.hpp"
 #include <chrono>
 
 namespace stdex

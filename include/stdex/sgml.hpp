@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include "mapping.h"
-#include "sal.h"
-#include "sgml_unicode.h"
-#include "string.h"
+#include "mapping.hpp"
+#include "sal.hpp"
+#include "sgml_unicode.hpp"
+#include "string.hpp"
 #include <assert.h>
 
 namespace stdex

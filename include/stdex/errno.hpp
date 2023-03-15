@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "sal.h"
+#include "sal.hpp"
 #include <stdexcept>
 #include <cstring>
 
