@@ -15,7 +15,7 @@
 #include <stdex/idrec.h>
 #include <stdex/interval.h>
 #include <stdex/mapping.h>
-//#include <stdex/parser.h>
+#include <stdex/parser.h>
 #include <stdex/progress.h>
 #include <stdex/sal.h>
 #include <stdex/sgml.h>
