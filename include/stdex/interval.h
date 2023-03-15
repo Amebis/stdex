@@ -46,6 +46,13 @@ namespace stdex
         inline T size() const { return start <= end ? end - start : 0; }
 
         ///
+        /// Is interval empty?
+        ///
+        /// \returns true if interval is empty or false otherwise
+        ///
+        inline bool empty() const { return start >= end; }
+
+        ///
         /// Is interval valid?
         ///
         /// \returns true if interval is valid or false otherwise
