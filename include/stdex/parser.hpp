@@ -148,7 +148,7 @@ namespace stdex
 			interval<size_t> interval; ///< Test for interval
 
 		protected:
-			const std::locale& m_locale;
+			std::locale m_locale;
 		};
 
 		using parser = basic_parser<char>;
