@@ -35,21 +35,21 @@ namespace stdex
 	namespace parser
 	{
 		///
-		/// Flags used in basic_tester::match() methods
+		/// Flags used in basic_parser::match() methods
 		///
 		constexpr int match_default = 0;
 		constexpr int match_case_insensitive = 0x1;
 		constexpr int match_multiline = 0x2;
 
 		///
-		/// Base template for all testers
+		/// Base template for all parsers
 		///
 		template <class T>
-		class basic_tester
+		class basic_parser
 		{
 		public:
-			basic_tester(_In_ const std::locale& locale = std::locale()) : m_locale(locale) {}
-			virtual ~basic_tester() {}
+			basic_parser(_In_ const std::locale& locale = std::locale()) : m_locale(locale) {}
+			virtual ~basic_parser() {}
 
 			bool search(
 				_In_reads_or_z_(end) const T* text,
@@ -151,20 +151,20 @@ namespace stdex
 			const std::locale& m_locale;
 		};
 
-		using tester = basic_tester<char>;
-		using wtester = basic_tester<wchar_t>;
+		using parser = basic_parser<char>;
+		using wparser = basic_parser<wchar_t>;
 #ifdef _UNICODE
-		using ttester = wtester;
+		using tparser = wparser;
 #else
-		using ttester = tester;
+		using tparser = parser;
 #endif
-		using sgml_tester = basic_tester<char>;
+		using sgml_parser = basic_parser<char>;
 
 		///
 		/// "No-op" match
 		///
 		template <class T>
-		class basic_noop : public basic_tester<T>
+		class basic_noop : public basic_parser<T>
 		{
 		public:
 			virtual bool match(
@@ -196,7 +196,7 @@ namespace stdex
 		/// Test for any code unit
 		///
 		template <class T>
-		class basic_any_cu : public basic_tester<T>
+		class basic_any_cu : public basic_parser<T>
 		{
 		public:
 			virtual bool match(
@@ -262,11 +262,11 @@ namespace stdex
 		/// Test for specific code unit
 		///
 		template <class T>
-		class basic_cu : public basic_tester<T>
+		class basic_cu : public basic_parser<T>
 		{
 		public:
 			basic_cu(T chr, bool invert = false, _In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				m_chr(chr),
 				m_invert(invert)
 			{}
@@ -311,11 +311,11 @@ namespace stdex
 		///
 		/// Test for specific SGML code point
 		///
-		class sgml_cp : public sgml_tester
+		class sgml_cp : public sgml_parser
 		{
 		public:
 			sgml_cp(const char* chr, size_t count = (size_t)-1, bool invert = false, _In_ const std::locale& locale = std::locale()) :
-				sgml_tester(locale),
+				sgml_parser(locale),
 				m_invert(invert)
 			{
 				assert(chr || !count);
@@ -355,11 +355,11 @@ namespace stdex
 		/// Test for any space code unit
 		///
 		template <class T>
-		class basic_space_cu : public basic_tester<T>
+		class basic_space_cu : public basic_parser<T>
 		{
 		public:
 			basic_space_cu(bool invert = false, _In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				m_invert(invert)
 			{}
 
@@ -434,11 +434,11 @@ namespace stdex
 		/// Test for any punctuation code unit
 		///
 		template <class T>
-		class basic_punct_cu : public basic_tester<T>
+		class basic_punct_cu : public basic_parser<T>
 		{
 		public:
 			basic_punct_cu(bool invert = false, _In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				m_invert(invert)
 			{}
 
@@ -504,11 +504,11 @@ namespace stdex
 		/// Test for any space or punctuation code unit
 		///
 		template <class T>
-		class basic_space_or_punct_cu : public basic_tester<T>
+		class basic_space_or_punct_cu : public basic_parser<T>
 		{
 		public:
 			basic_space_or_punct_cu(bool invert = false, _In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				m_invert(invert)
 			{}
 
@@ -578,7 +578,7 @@ namespace stdex
 		/// Test for beginning of line
 		///
 		template <class T>
-		class basic_bol : public basic_tester<T>
+		class basic_bol : public basic_parser<T>
 		{
 		public:
 			basic_bol(bool invert = false) : m_invert(invert) {}
@@ -616,7 +616,7 @@ namespace stdex
 		/// Test for end of line
 		///
 		template <class T>
-		class basic_eol : public basic_tester<T>
+		class basic_eol : public basic_parser<T>
 		{
 		public:
 			basic_eol(bool invert = false) : m_invert(invert) {}
@@ -651,11 +651,11 @@ namespace stdex
 		using sgml_eol = basic_eol<char>;
 
 		template <class T>
-		class basic_set : public basic_tester<T>
+		class basic_set : public basic_parser<T>
 		{
 		public:
 			basic_set(bool invert = false, _In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				hit_offset((size_t)-1),
 				m_invert(invert)
 			{}
@@ -669,7 +669,7 @@ namespace stdex
 			virtual void invalidate()
 			{
 				hit_offset = (size_t)-1;
-				basic_tester<T>::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 		public:
@@ -778,14 +778,14 @@ namespace stdex
 		/// Test for given string
 		///
 		template <class T>
-		class basic_string : public basic_tester<T>
+		class basic_string : public basic_parser<T>
 		{
 		public:
 			basic_string(
 				_In_reads_or_z_(count) const T* str,
 				_In_ size_t count = (size_t)-1,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				m_str(str, str + stdex::strnlen(str, count))
 			{}
 
@@ -825,11 +825,11 @@ namespace stdex
 		///
 		/// Test for SGML given string
 		///
-		class sgml_string : public sgml_tester
+		class sgml_string : public sgml_parser
 		{
 		public:
 			sgml_string(const char* str, size_t count = (size_t)-1, _In_ const std::locale& locale = std::locale()) :
-				sgml_tester(locale),
+				sgml_parser(locale),
 				m_str(sgml2str(str, count))
 			{}
 
@@ -873,10 +873,10 @@ namespace stdex
 		/// Test for repeating
 		///
 		template <class T>
-		class basic_iterations : public basic_tester<T>
+		class basic_iterations : public basic_parser<T>
 		{
 		public:
-			basic_iterations(const std::shared_ptr<basic_tester<T>>& el, size_t min_iterations = 0, size_t max_iterations = (size_t)-1, bool greedy = true) :
+			basic_iterations(const std::shared_ptr<basic_parser<T>>& el, size_t min_iterations = 0, size_t max_iterations = (size_t)-1, bool greedy = true) :
 				m_el(el),
 				m_min_iterations(min_iterations),
 				m_max_iterations(max_iterations),
@@ -910,7 +910,7 @@ namespace stdex
 			}
 
 		protected:
-			std::shared_ptr<basic_tester<T>> m_el; ///< repeating element
+			std::shared_ptr<basic_parser<T>> m_el; ///< repeating element
 			size_t m_min_iterations; ///< minimum number of iterations
 			size_t m_max_iterations; ///< maximum number of iterations
 			bool m_greedy; ///< try to match as long sequence as possible
@@ -926,20 +926,20 @@ namespace stdex
 		using sgml_iterations = basic_iterations<char>;
 
 		///
-		/// Base template for collection-holding testers
+		/// Base template for collection-holding parsers
 		///
 		template <class T>
-		class tester_collection : public basic_tester<T>
+		class parser_collection : public basic_parser<T>
 		{
 		protected:
-			tester_collection(_In_ const std::locale& locale) : basic_tester<T>(locale) {}
+			parser_collection(_In_ const std::locale& locale) : basic_parser<T>(locale) {}
 
 		public:
-			tester_collection(
-				_In_count_(count) const std::shared_ptr<basic_tester<T>>* el,
+			parser_collection(
+				_In_count_(count) const std::shared_ptr<basic_parser<T>>* el,
 				_In_ size_t count,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale)
+				basic_parser<T>(locale)
 			{
 				assert(el || !count);
 				m_collection.reserve(count);
@@ -947,10 +947,10 @@ namespace stdex
 					m_collection.push_back(el[i]);
 			}
 
-			tester_collection(
-				_Inout_ std::vector<std::shared_ptr<basic_tester<T>>>&& collection,
+			parser_collection(
+				_Inout_ std::vector<std::shared_ptr<basic_parser<T>>>&& collection,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				m_collection(std::move(collection))
 			{}
 
@@ -958,31 +958,31 @@ namespace stdex
 			{
 				for (auto& el: m_collection)
 					el->invalidate();
-				basic_tester<T>::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 		protected:
-			std::vector<std::shared_ptr<basic_tester<T>>> m_collection;
+			std::vector<std::shared_ptr<basic_parser<T>>> m_collection;
 		};
 
 		///
 		/// Test for sequence
 		///
 		template <class T>
-		class basic_sequence : public tester_collection<T>
+		class basic_sequence : public parser_collection<T>
 		{
 		public:
 			basic_sequence(
-				_In_count_(count) const std::shared_ptr<basic_tester<T>>* el = nullptr,
+				_In_count_(count) const std::shared_ptr<basic_parser<T>>* el = nullptr,
 				_In_ size_t count = 0,
 				_In_ const std::locale& locale = std::locale()) :
-				tester_collection<T>(el, count, locale)
+				parser_collection<T>(el, count, locale)
 			{}
 
 			basic_sequence(
-				_Inout_ std::vector<std::shared_ptr<basic_tester<T>>>&& collection,
+				_Inout_ std::vector<std::shared_ptr<basic_parser<T>>>&& collection,
 				_In_ const std::locale& locale = std::locale()) :
-				tester_collection<T>(std::move(collection), locale)
+				parser_collection<T>(std::move(collection), locale)
 			{}
 
 			virtual bool match(
@@ -1020,27 +1020,27 @@ namespace stdex
 		/// Test for any
 		///
 		template <class T>
-		class basic_branch : public tester_collection<T>
+		class basic_branch : public parser_collection<T>
 		{
 		protected:
 			basic_branch(_In_ const std::locale& locale) :
-				tester_collection<T>(locale),
+				parser_collection<T>(locale),
 				hit_offset((size_t)-1)
 			{}
 
 		public:
 			basic_branch(
-				_In_count_(count) const std::shared_ptr<basic_tester<T>>* el = nullptr,
+				_In_count_(count) const std::shared_ptr<basic_parser<T>>* el = nullptr,
 				_In_ size_t count = 0,
 				_In_ const std::locale& locale = std::locale()) :
-				tester_collection<T>(el, count, locale),
+				parser_collection<T>(el, count, locale),
 				hit_offset((size_t)-1)
 			{}
 
 			basic_branch(
-				_Inout_ std::vector<std::shared_ptr<basic_tester<T>>>&& collection,
+				_Inout_ std::vector<std::shared_ptr<basic_parser<T>>>&& collection,
 				_In_ const std::locale& locale = std::locale()) :
-				tester_collection<T>(std::move(collection), locale),
+				parser_collection<T>(std::move(collection), locale),
 				hit_offset((size_t)-1)
 			{}
 
@@ -1068,7 +1068,7 @@ namespace stdex
 			virtual void invalidate()
 			{
 				hit_offset = (size_t)-1;
-				tester_collection<T>::invalidate();
+				parser_collection<T>::invalidate();
 			}
 
 		public:
@@ -1087,7 +1087,7 @@ namespace stdex
 		///
 		/// Test for any string
 		///
-		template <class T, class T_tester = basic_string<T>>
+		template <class T, class T_parser = basic_string<T>>
 		class basic_string_branch : public basic_branch<T>
 		{
 		public:
@@ -1133,7 +1133,7 @@ namespace stdex
 						offset = 0;
 						offset < count && str_z[offset];
 						offset += stdex::strnlen(str_z + offset, count - offset) + 1)
-						m_collection.push_back(std::move(std::make_shared<T_tester>(str_z + offset, count - offset, m_locale)));
+						m_collection.push_back(std::move(std::make_shared<T_parser>(str_z + offset, count - offset, m_locale)));
 				}
 			}
 
@@ -1141,9 +1141,9 @@ namespace stdex
 			{
 				const T* p;
 				for (
-					m_collection.push_back(std::move(std::make_shared<T_tester>(str, (size_t)-1, m_locale)));
+					m_collection.push_back(std::move(std::make_shared<T_parser>(str, (size_t)-1, m_locale)));
 					(p = va_arg(params, const T*)) != nullptr;
-					m_collection.push_back(std::move(std::make_shared<T_tester>(p, (size_t)-1, m_locale))));
+					m_collection.push_back(std::move(std::make_shared<T_parser>(p, (size_t)-1, m_locale))));
 			}
 		};
 
@@ -1160,20 +1160,20 @@ namespace stdex
 		/// Test for permutation
 		///
 		template <class T>
-		class basic_permutation : public tester_collection<T>
+		class basic_permutation : public parser_collection<T>
 		{
 		public:
 			basic_permutation(
-				_In_count_(count) const std::shared_ptr<basic_tester<T>>* el = nullptr,
+				_In_count_(count) const std::shared_ptr<basic_parser<T>>* el = nullptr,
 				_In_ size_t count = 0,
 				_In_ const std::locale& locale = std::locale()) :
-				tester_collection<T>(el, count, locale)
+				parser_collection<T>(el, count, locale)
 			{}
 
 			basic_permutation(
-				_Inout_ std::vector<std::shared_ptr<basic_tester<T>>>&& collection,
+				_Inout_ std::vector<std::shared_ptr<basic_parser<T>>>&& collection,
 				_In_ const std::locale& locale = std::locale()) :
-				tester_collection<T>(std::move(collection), locale)
+				parser_collection<T>(std::move(collection), locale)
 			{}
 
 			virtual bool match(
@@ -1236,18 +1236,18 @@ namespace stdex
 		/// Base class for integer testing
 		///
 		template <class T>
-		class basic_integer : public basic_tester<T>
+		class basic_integer : public basic_parser<T>
 		{
 		public:
 			basic_integer(_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				value(0)
 			{}
 
 			virtual void invalidate()
 			{
 				value = 0;
-				basic_tester<T>::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 		public:
@@ -1262,16 +1262,16 @@ namespace stdex
 		{
 		public:
 			basic_integer10(
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_0,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_1,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_2,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_3,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_4,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_5,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_6,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_7,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_8,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_9,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_0,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_1,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_2,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_3,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_4,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_5,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_6,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_7,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_8,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_9,
 				_In_ const std::locale& locale = std::locale()) :
 				basic_integer<T>(locale),
 				m_digit_0(digit_0),
@@ -1317,7 +1317,7 @@ namespace stdex
 			}
 
 		protected:
-			std::shared_ptr<basic_tester<T>>
+			std::shared_ptr<basic_parser<T>>
 				m_digit_0,
 				m_digit_1,
 				m_digit_2,
@@ -1428,22 +1428,22 @@ namespace stdex
 		{
 		public:
 			basic_integer16(
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_0,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_1,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_2,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_3,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_4,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_5,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_6,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_7,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_8,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_9,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_10,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_11,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_12,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_13,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_14,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_15,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_0,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_1,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_2,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_3,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_4,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_5,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_6,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_7,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_8,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_9,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_10,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_11,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_12,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_13,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_14,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_15,
 				_In_ const std::locale& locale = std::locale()) :
 				basic_integer<T>(locale),
 				m_digit_0(digit_0),
@@ -1501,7 +1501,7 @@ namespace stdex
 			}
 
 		protected:
-			std::shared_ptr<basic_tester<T>>
+			std::shared_ptr<basic_parser<T>>
 				m_digit_0,
 				m_digit_1,
 				m_digit_2,
@@ -1537,15 +1537,15 @@ namespace stdex
 		{
 		public:
 			basic_roman_numeral(
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_1,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_5,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_10,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_50,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_100,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_500,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_1000,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_5000,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_10000,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_1,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_5,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_10,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_50,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_100,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_500,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_1000,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_5000,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_10000,
 				_In_ const std::locale& locale = std::locale()) :
 				basic_integer<T>(locale),
 				m_digit_1(digit_1),
@@ -1624,7 +1624,7 @@ namespace stdex
 			}
 
 		protected:
-			std::shared_ptr<basic_tester<T>>
+			std::shared_ptr<basic_parser<T>>
 				m_digit_1,
 				m_digit_5,
 				m_digit_10,
@@ -1649,15 +1649,15 @@ namespace stdex
 		/// Test for fraction
 		///
 		template <class T>
-		class basic_fraction : public basic_tester<T>
+		class basic_fraction : public basic_parser<T>
 		{
 		public:
 			basic_fraction(
-				_In_ const std::shared_ptr<basic_tester<T>>& _numerator,
-				_In_ const std::shared_ptr<basic_tester<T>>& _fraction_line,
-				_In_ const std::shared_ptr<basic_tester<T>>& _denominator,
+				_In_ const std::shared_ptr<basic_parser<T>>& _numerator,
+				_In_ const std::shared_ptr<basic_parser<T>>& _fraction_line,
+				_In_ const std::shared_ptr<basic_parser<T>>& _denominator,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				numerator(_numerator),
 				fraction_line(_fraction_line),
 				denominator(_denominator)
@@ -1690,13 +1690,13 @@ namespace stdex
 				numerator->invalidate();
 				fraction_line->invalidate();
 				denominator->invalidate();
-				basic_tester<T>::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 		public:
-			std::shared_ptr<basic_tester<T>> numerator;
-			std::shared_ptr<basic_tester<T>> fraction_line;
-			std::shared_ptr<basic_tester<T>> denominator;
+			std::shared_ptr<basic_parser<T>> numerator;
+			std::shared_ptr<basic_parser<T>> fraction_line;
+			std::shared_ptr<basic_parser<T>> denominator;
 		};
 
 		using fraction = basic_fraction<char>;
@@ -1712,16 +1712,16 @@ namespace stdex
 		/// Test for match score
 		///
 		template <class T>
-		class basic_score : public basic_tester<T>
+		class basic_score : public basic_parser<T>
 		{
 		public:
 			basic_score(
-				_In_ const std::shared_ptr<basic_tester<T>>& _home,
-				_In_ const std::shared_ptr<basic_tester<T>>& _separator,
-				_In_ const std::shared_ptr<basic_tester<T>>& _guest,
-				_In_ const std::shared_ptr<basic_tester<T>>& space,
+				_In_ const std::shared_ptr<basic_parser<T>>& _home,
+				_In_ const std::shared_ptr<basic_parser<T>>& _separator,
+				_In_ const std::shared_ptr<basic_parser<T>>& _guest,
+				_In_ const std::shared_ptr<basic_parser<T>>& space,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				home(_home),
 				separator(_separator),
 				guest(_guest),
@@ -1773,16 +1773,16 @@ namespace stdex
 				home->invalidate();
 				separator->invalidate();
 				guest->invalidate();
-				basic_tester<T>::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 		public:
-			std::shared_ptr<basic_tester<T>> home;
-			std::shared_ptr<basic_tester<T>> separator;
-			std::shared_ptr<basic_tester<T>> guest;
+			std::shared_ptr<basic_parser<T>> home;
+			std::shared_ptr<basic_parser<T>> separator;
+			std::shared_ptr<basic_parser<T>> guest;
 
 		protected:
-			std::shared_ptr<basic_tester<T>> m_space;
+			std::shared_ptr<basic_parser<T>> m_space;
 		};
 
 		using score = basic_score<char>;
@@ -1798,16 +1798,16 @@ namespace stdex
 		/// Test for signed numeral
 		///
 		template <class T>
-		class basic_signed_numeral : public basic_tester<T>
+		class basic_signed_numeral : public basic_parser<T>
 		{
 		public:
 			basic_signed_numeral(
-				_In_ const std::shared_ptr<basic_tester<T>>& _positive_sign,
-				_In_ const std::shared_ptr<basic_tester<T>>& _negative_sign,
-				_In_ const std::shared_ptr<basic_tester<T>>& _special_sign,
-				_In_ const std::shared_ptr<basic_tester<T>>& _number,
+				_In_ const std::shared_ptr<basic_parser<T>>& _positive_sign,
+				_In_ const std::shared_ptr<basic_parser<T>>& _negative_sign,
+				_In_ const std::shared_ptr<basic_parser<T>>& _special_sign,
+				_In_ const std::shared_ptr<basic_parser<T>>& _number,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				positive_sign(_positive_sign),
 				negative_sign(_negative_sign),
 				special_sign(_special_sign),
@@ -1861,14 +1861,14 @@ namespace stdex
 				if (negative_sign) negative_sign->invalidate();
 				if (special_sign) special_sign->invalidate();
 				number->invalidate();
-				basic_tester<T>::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 		public:
-			std::shared_ptr<basic_tester<T>> positive_sign; ///< Positive sign
-			std::shared_ptr<basic_tester<T>> negative_sign; ///< Negative sign
-			std::shared_ptr<basic_tester<T>> special_sign; ///< Special sign (e.g. plus-minus '±')
-			std::shared_ptr<basic_tester<T>> number; ///< Number
+			std::shared_ptr<basic_parser<T>> positive_sign; ///< Positive sign
+			std::shared_ptr<basic_parser<T>> negative_sign; ///< Negative sign
+			std::shared_ptr<basic_parser<T>> special_sign; ///< Special sign (e.g. plus-minus '±')
+			std::shared_ptr<basic_parser<T>> number; ///< Number
 		};
 
 		using signed_numeral = basic_signed_numeral<char>;
@@ -1884,18 +1884,18 @@ namespace stdex
 		/// Test for mixed numeral
 		///
 		template <class T>
-		class basic_mixed_numeral : public basic_tester<T>
+		class basic_mixed_numeral : public basic_parser<T>
 		{
 		public:
 			basic_mixed_numeral(
-				_In_ const std::shared_ptr<basic_tester<T>>& _positive_sign,
-				_In_ const std::shared_ptr<basic_tester<T>>& _negative_sign,
-				_In_ const std::shared_ptr<basic_tester<T>>& _special_sign,
-				_In_ const std::shared_ptr<basic_tester<T>>& _integer,
-				_In_ const std::shared_ptr<basic_tester<T>>& space,
-				_In_ const std::shared_ptr<basic_tester<T>>& _fraction,
+				_In_ const std::shared_ptr<basic_parser<T>>& _positive_sign,
+				_In_ const std::shared_ptr<basic_parser<T>>& _negative_sign,
+				_In_ const std::shared_ptr<basic_parser<T>>& _special_sign,
+				_In_ const std::shared_ptr<basic_parser<T>>& _integer,
+				_In_ const std::shared_ptr<basic_parser<T>>& space,
+				_In_ const std::shared_ptr<basic_parser<T>>& _fraction,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				positive_sign(_positive_sign),
 				negative_sign(_negative_sign),
 				special_sign(_special_sign),
@@ -1983,18 +1983,18 @@ namespace stdex
 				if (special_sign) special_sign->invalidate();
 				integer->invalidate();
 				fraction->invalidate();
-				basic_tester<T>::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 		public:
-			std::shared_ptr<basic_tester<T>> positive_sign; ///< Positive sign
-			std::shared_ptr<basic_tester<T>> negative_sign; ///< Negative sign
-			std::shared_ptr<basic_tester<T>> special_sign; ///< Special sign (e.g. plus-minus '±')
-			std::shared_ptr<basic_tester<T>> integer; ///< Integer part
-			std::shared_ptr<basic_tester<T>> fraction; ///< fraction
+			std::shared_ptr<basic_parser<T>> positive_sign; ///< Positive sign
+			std::shared_ptr<basic_parser<T>> negative_sign; ///< Negative sign
+			std::shared_ptr<basic_parser<T>> special_sign; ///< Special sign (e.g. plus-minus '±')
+			std::shared_ptr<basic_parser<T>> integer; ///< Integer part
+			std::shared_ptr<basic_parser<T>> fraction; ///< fraction
 
 		protected:
-			std::shared_ptr<basic_tester<T>> m_space;
+			std::shared_ptr<basic_parser<T>> m_space;
 		};
 
 		using mixed_numeral = basic_mixed_numeral<char>;
@@ -2010,22 +2010,22 @@ namespace stdex
 		/// Test for scientific numeral
 		///
 		template <class T>
-		class basic_scientific_numeral : public basic_tester<T>
+		class basic_scientific_numeral : public basic_parser<T>
 		{
 		public:
 			basic_scientific_numeral(
-				_In_ const std::shared_ptr<basic_tester<T>>& _positive_sign,
-				_In_ const std::shared_ptr<basic_tester<T>>& _negative_sign,
-				_In_ const std::shared_ptr<basic_tester<T>>& _special_sign,
+				_In_ const std::shared_ptr<basic_parser<T>>& _positive_sign,
+				_In_ const std::shared_ptr<basic_parser<T>>& _negative_sign,
+				_In_ const std::shared_ptr<basic_parser<T>>& _special_sign,
 				_In_ const std::shared_ptr<basic_integer<T>>& _integer,
-				_In_ const std::shared_ptr<basic_tester<T>>& _decimal_separator,
+				_In_ const std::shared_ptr<basic_parser<T>>& _decimal_separator,
 				_In_ const std::shared_ptr<basic_integer<T>>& _decimal,
-				_In_ const std::shared_ptr<basic_tester<T>>& _exponent_symbol,
-				_In_ const std::shared_ptr<basic_tester<T>>& _positive_exp_sign,
-				_In_ const std::shared_ptr<basic_tester<T>>& _negative_exp_sign,
+				_In_ const std::shared_ptr<basic_parser<T>>& _exponent_symbol,
+				_In_ const std::shared_ptr<basic_parser<T>>& _positive_exp_sign,
+				_In_ const std::shared_ptr<basic_parser<T>>& _negative_exp_sign,
 				_In_ const std::shared_ptr<basic_integer<T>>& _exponent,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				positive_sign(_positive_sign),
 				negative_sign(_negative_sign),
 				special_sign(_special_sign),
@@ -2149,19 +2149,19 @@ namespace stdex
 				if (negative_exp_sign) negative_exp_sign->invalidate();
 				if (exponent) exponent->invalidate();
 				value = std::numeric_limits<double>::quiet_NaN();
-				basic_tester<T>::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 		public:
-			std::shared_ptr<basic_tester<T>> positive_sign; ///< Positive sign
-			std::shared_ptr<basic_tester<T>> negative_sign; ///< Negative sign
-			std::shared_ptr<basic_tester<T>> special_sign; ///< Special sign (e.g. plus-minus '±')
+			std::shared_ptr<basic_parser<T>> positive_sign; ///< Positive sign
+			std::shared_ptr<basic_parser<T>> negative_sign; ///< Negative sign
+			std::shared_ptr<basic_parser<T>> special_sign; ///< Special sign (e.g. plus-minus '±')
 			std::shared_ptr<basic_integer<T>> integer; ///< Integer part
-			std::shared_ptr<basic_tester<T>> decimal_separator; ///< Decimal separator
+			std::shared_ptr<basic_parser<T>> decimal_separator; ///< Decimal separator
 			std::shared_ptr<basic_integer<T>> decimal; ///< Decimal part
-			std::shared_ptr<basic_tester<T>> exponent_symbol; ///< Exponent symbol (e.g. 'e')
-			std::shared_ptr<basic_tester<T>> positive_exp_sign; ///< Positive exponent sign (e.g. '+')
-			std::shared_ptr<basic_tester<T>> negative_exp_sign; ///< Negative exponent sign (e.g. '-')
+			std::shared_ptr<basic_parser<T>> exponent_symbol; ///< Exponent symbol (e.g. 'e')
+			std::shared_ptr<basic_parser<T>> positive_exp_sign; ///< Positive exponent sign (e.g. '+')
+			std::shared_ptr<basic_parser<T>> negative_exp_sign; ///< Negative exponent sign (e.g. '-')
 			std::shared_ptr<basic_integer<T>> exponent; ///< Exponent part
 			double value; ///< Calculated value of the numeral
 		};
@@ -2179,19 +2179,19 @@ namespace stdex
 		/// Test for monetary numeral
 		///
 		template <class T>
-		class basic_monetary_numeral : public basic_tester<T>
+		class basic_monetary_numeral : public basic_parser<T>
 		{
 		public:
 			basic_monetary_numeral(
-				_In_ const std::shared_ptr<basic_tester<T>>& _positive_sign,
-				_In_ const std::shared_ptr<basic_tester<T>>& _negative_sign,
-				_In_ const std::shared_ptr<basic_tester<T>>& _special_sign,
-				_In_ const std::shared_ptr<basic_tester<T>>& _currency,
-				_In_ const std::shared_ptr<basic_tester<T>>& _integer,
-				_In_ const std::shared_ptr<basic_tester<T>>& _decimal_separator,
-				_In_ const std::shared_ptr<basic_tester<T>>& _decimal,
+				_In_ const std::shared_ptr<basic_parser<T>>& _positive_sign,
+				_In_ const std::shared_ptr<basic_parser<T>>& _negative_sign,
+				_In_ const std::shared_ptr<basic_parser<T>>& _special_sign,
+				_In_ const std::shared_ptr<basic_parser<T>>& _currency,
+				_In_ const std::shared_ptr<basic_parser<T>>& _integer,
+				_In_ const std::shared_ptr<basic_parser<T>>& _decimal_separator,
+				_In_ const std::shared_ptr<basic_parser<T>>& _decimal,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				positive_sign(_positive_sign),
 				negative_sign(_negative_sign),
 				special_sign(_special_sign),
@@ -2282,17 +2282,17 @@ namespace stdex
 				integer->invalidate();
 				decimal_separator->invalidate();
 				decimal->invalidate();
-				basic_tester<T>::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 		public:
-			std::shared_ptr<basic_tester<T>> positive_sign; ///< Positive sign
-			std::shared_ptr<basic_tester<T>> negative_sign; ///< Negative sign
-			std::shared_ptr<basic_tester<T>> special_sign; ///< Special sign (e.g. plus-minus '±')
-			std::shared_ptr<basic_tester<T>> currency; ///< Currency part
-			std::shared_ptr<basic_tester<T>> integer; ///< Integer part
-			std::shared_ptr<basic_tester<T>> decimal_separator; ///< Decimal separator
-			std::shared_ptr<basic_tester<T>> decimal; ///< Decimal part
+			std::shared_ptr<basic_parser<T>> positive_sign; ///< Positive sign
+			std::shared_ptr<basic_parser<T>> negative_sign; ///< Negative sign
+			std::shared_ptr<basic_parser<T>> special_sign; ///< Special sign (e.g. plus-minus '±')
+			std::shared_ptr<basic_parser<T>> currency; ///< Currency part
+			std::shared_ptr<basic_parser<T>> integer; ///< Integer part
+			std::shared_ptr<basic_parser<T>> decimal_separator; ///< Decimal separator
+			std::shared_ptr<basic_parser<T>> decimal; ///< Decimal part
 		};
 
 		using monetary_numeral = basic_monetary_numeral<char>;
@@ -2308,23 +2308,23 @@ namespace stdex
 		/// Test for IPv4 address
 		///
 		template <class T>
-		class basic_ipv4_address : public basic_tester<T>
+		class basic_ipv4_address : public basic_parser<T>
 		{
 		public:
 			basic_ipv4_address(
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_0,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_1,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_2,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_3,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_4,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_5,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_6,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_7,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_8,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_9,
-				_In_ const std::shared_ptr<basic_tester<T>>& separator,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_0,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_1,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_2,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_3,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_4,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_5,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_6,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_7,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_8,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_9,
+				_In_ const std::shared_ptr<basic_parser<T>>& separator,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				m_digit_0(digit_0),
 				m_digit_1(digit_1),
 				m_digit_2(digit_2),
@@ -2420,7 +2420,7 @@ namespace stdex
 				components[3].start = 1;
 				components[3].end = 0;
 				value = 0;
-				basic_tester<T>::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 		public:
@@ -2428,7 +2428,7 @@ namespace stdex
 			struct in_addr value; ///< IPv4 address value
 
 		protected:
-			std::shared_ptr<basic_tester<T>>
+			std::shared_ptr<basic_parser<T>>
 				m_digit_0,
 				m_digit_1,
 				m_digit_2,
@@ -2439,7 +2439,7 @@ namespace stdex
 				m_digit_7,
 				m_digit_8,
 				m_digit_9;
-			std::shared_ptr<basic_tester<T>> m_separator;
+			std::shared_ptr<basic_parser<T>> m_separator;
 		};
 
 		using ipv4_address = basic_ipv4_address<char>;
@@ -2455,10 +2455,10 @@ namespace stdex
 		/// Test for valid IPv6 address scope ID character
 		///
 		template <class T>
-		class basic_ipv6_scope_id_char : public basic_tester<T>
+		class basic_ipv6_scope_id_char : public basic_parser<T>
 		{
 		public:
-			basic_ipv6_scope_id_char(_In_ const std::locale& locale = std::locale()) : basic_tester<T>(locale)
+			basic_ipv6_scope_id_char(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale)
 			{}
 
 			virtual bool match(
@@ -2494,10 +2494,10 @@ namespace stdex
 		///
 		/// Test for valid IPv6 address scope ID SGML character
 		///
-		class sgml_ipv6_scope_id_char : public sgml_tester
+		class sgml_ipv6_scope_id_char : public sgml_parser
 		{
 		public:
-			sgml_ipv6_scope_id_char(_In_ const std::locale& locale = std::locale()) : sgml_tester(locale)
+			sgml_ipv6_scope_id_char(_In_ const std::locale& locale = std::locale()) : sgml_parser(locale)
 			{}
 
 			virtual bool match(
@@ -2529,31 +2529,31 @@ namespace stdex
 		/// Test for IPv6 address
 		///
 		template <class T>
-		class basic_ipv6_address : public basic_tester<T>
+		class basic_ipv6_address : public basic_parser<T>
 		{
 		public:
 			basic_ipv6_address(
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_0,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_1,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_2,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_3,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_4,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_5,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_6,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_7,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_8,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_9,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_10,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_11,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_12,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_13,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_14,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit_15,
-				_In_ const std::shared_ptr<basic_tester<T>>& separator,
-				_In_ const std::shared_ptr<basic_tester<T>>& scope_id_separator = nullptr,
-				_In_ const std::shared_ptr<basic_tester<T>>& _scope_id = nullptr,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_0,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_1,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_2,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_3,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_4,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_5,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_6,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_7,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_8,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_9,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_10,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_11,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_12,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_13,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_14,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit_15,
+				_In_ const std::shared_ptr<basic_parser<T>>& separator,
+				_In_ const std::shared_ptr<basic_parser<T>>& scope_id_separator = nullptr,
+				_In_ const std::shared_ptr<basic_parser<T>>& _scope_id = nullptr,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				m_digit_0(digit_0),
 				m_digit_1(digit_1),
 				m_digit_2(digit_2),
@@ -2728,16 +2728,16 @@ namespace stdex
 				components[7].end = 0;
 				memset(value, 0, sizeof(value));
 				if (scope_id) scope_id->invalidate();
-				basic_tester<T>::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 		public:
 			stdex::interval<size_t> components[8]; ///< Individual component intervals
 			struct in6_addr value; ///< IPv6 address value
-			std::shared_ptr<basic_tester<T>> scope_id; ///< Scope ID (e.g. NIC index with link-local addresses)
+			std::shared_ptr<basic_parser<T>> scope_id; ///< Scope ID (e.g. NIC index with link-local addresses)
 
 		protected:
-			std::shared_ptr<basic_tester<T>>
+			std::shared_ptr<basic_parser<T>>
 				m_digit_0,
 				m_digit_1,
 				m_digit_2,
@@ -2754,7 +2754,7 @@ namespace stdex
 				m_digit_13,
 				m_digit_14,
 				m_digit_15;
-			std::shared_ptr<basic_tester<T>> m_separator, m_scope_id_separator;
+			std::shared_ptr<basic_parser<T>> m_separator, m_scope_id_separator;
 		};
 
 		using ipv6_address = basic_ipv6_address<char>;
@@ -2770,13 +2770,13 @@ namespace stdex
 		/// Test for valid DNS domain character
 		///
 		template <class T>
-		class basic_dns_domain_char : public basic_tester<T>
+		class basic_dns_domain_char : public basic_parser<T>
 		{
 		public:
 			basic_dns_domain_char(
 				_In_ bool allow_idn,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				m_allow_idn(allow_idn),
 				allow_on_edge(true)
 			{}
@@ -2870,15 +2870,15 @@ namespace stdex
 		/// Test for DNS domain/hostname
 		///
 		template <class T>
-		class basic_dns_name : public basic_tester<T>
+		class basic_dns_name : public basic_parser<T>
 		{
 		public:
 			basic_dns_name(
 				_In_ bool allow_absolute,
 				_In_ const std::shared_ptr<basic_dns_domain_char<T>>& domain_char,
-				_In_ const std::shared_ptr<basic_tester<T>>& separator,
+				_In_ const std::shared_ptr<basic_parser<T>>& separator,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				m_allow_absolute(allow_absolute),
 				m_domain_char(domain_char),
 				m_separator(separator)
@@ -2937,7 +2937,7 @@ namespace stdex
 		protected:
 			bool m_allow_absolute; ///< May DNS names end with a dot (absolute name)?
 			std::shared_ptr<basic_dns_domain_char<T>> m_domain_char;
-			std::shared_ptr<basic_tester<T>> m_separator;
+			std::shared_ptr<basic_parser<T>> m_separator;
 		};
 
 		using dns_name = basic_dns_name<char>;
@@ -2953,10 +2953,10 @@ namespace stdex
 		/// Test for valid URL username character
 		///
 		template <class T>
-		class basic_url_username_char : public basic_tester<T>
+		class basic_url_username_char : public basic_parser<T>
 		{
 		public:
-			basic_url_username_char(_In_ const std::locale& locale = std::locale()) : basic_tester<T>(locale) {}
+			basic_url_username_char(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale) {}
 
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
@@ -3052,10 +3052,10 @@ namespace stdex
 		/// Test for valid URL password character
 		///
 		template <class T>
-		class basic_url_password_char : public basic_tester<T>
+		class basic_url_password_char : public basic_parser<T>
 		{
 		public:
-			basic_url_password_char(_In_ const std::locale& locale = std::locale()) : basic_tester<T>(locale) {}
+			basic_url_password_char(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale) {}
 
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
@@ -3152,10 +3152,10 @@ namespace stdex
 		/// Test for valid URL path character
 		///
 		template <class T>
-		class basic_url_path_char : public basic_tester<T>
+		class basic_url_path_char : public basic_parser<T>
 		{
 		public:
-			basic_url_path_char(_In_ const std::locale& locale = std::locale()) : basic_tester<T>(locale) {}
+			basic_url_path_char(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale) {}
 
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
@@ -3260,15 +3260,15 @@ namespace stdex
 		/// Test for URL path
 		///
 		template <class T>
-		class basic_url_path : public basic_tester<T>
+		class basic_url_path : public basic_parser<T>
 		{
 		public:
 			basic_url_path(
-				_In_ const std::shared_ptr<basic_tester<T>>& path_char,
-				_In_ const std::shared_ptr<basic_tester<T>>& query_start,
-				_In_ const std::shared_ptr<basic_tester<T>>& bookmark_start,
+				_In_ const std::shared_ptr<basic_parser<T>>& path_char,
+				_In_ const std::shared_ptr<basic_parser<T>>& query_start,
+				_In_ const std::shared_ptr<basic_parser<T>>& bookmark_start,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				m_path_char(path_char),
 				m_query_start(query_start),
 				m_bookmark_start(bookmark_start)
@@ -3374,7 +3374,7 @@ namespace stdex
 				query.end = 0;
 				bookmark.start = 1;
 				bookmark.end = 0;
-				basic_tester<T>::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 		public:
@@ -3383,9 +3383,9 @@ namespace stdex
 			stdex::interval<size_t> bookmark;
 
 		protected:
-			std::shared_ptr<basic_tester<T>> m_path_char;
-			std::shared_ptr<basic_tester<T>> m_query_start;
-			std::shared_ptr<basic_tester<T>> m_bookmark_start;
+			std::shared_ptr<basic_parser<T>> m_path_char;
+			std::shared_ptr<basic_parser<T>> m_query_start;
+			std::shared_ptr<basic_parser<T>> m_bookmark_start;
 		};
 
 		using url_path = basic_url_path<char>;
@@ -3401,28 +3401,28 @@ namespace stdex
 		/// Test for URL
 		///
 		template <class T>
-		class basic_url : public basic_tester<T>
+		class basic_url : public basic_parser<T>
 		{
 		public:
 			basic_url(
-				_In_ const std::shared_ptr<basic_tester<T>>& _http_scheme,
-				_In_ const std::shared_ptr<basic_tester<T>>& _ftp_scheme,
-				_In_ const std::shared_ptr<basic_tester<T>>& _mailto_scheme,
-				_In_ const std::shared_ptr<basic_tester<T>>& _file_scheme,
-				_In_ const std::shared_ptr<basic_tester<T>>& colon,
-				_In_ const std::shared_ptr<basic_tester<T>>& slash,
-				_In_ const std::shared_ptr<basic_tester<T>>& _username,
-				_In_ const std::shared_ptr<basic_tester<T>>& _password,
-				_In_ const std::shared_ptr<basic_tester<T>>& at,
-				_In_ const std::shared_ptr<basic_tester<T>>& ip_lbracket,
-				_In_ const std::shared_ptr<basic_tester<T>>& ip_rbracket,
-				_In_ const std::shared_ptr<basic_tester<T>>& _ipv4_host,
-				_In_ const std::shared_ptr<basic_tester<T>>& _ipv6_host,
-				_In_ const std::shared_ptr<basic_tester<T>>& _dns_host,
-				_In_ const std::shared_ptr<basic_tester<T>>& _port,
-				_In_ const std::shared_ptr<basic_tester<T>>& _path,
+				_In_ const std::shared_ptr<basic_parser<T>>& _http_scheme,
+				_In_ const std::shared_ptr<basic_parser<T>>& _ftp_scheme,
+				_In_ const std::shared_ptr<basic_parser<T>>& _mailto_scheme,
+				_In_ const std::shared_ptr<basic_parser<T>>& _file_scheme,
+				_In_ const std::shared_ptr<basic_parser<T>>& colon,
+				_In_ const std::shared_ptr<basic_parser<T>>& slash,
+				_In_ const std::shared_ptr<basic_parser<T>>& _username,
+				_In_ const std::shared_ptr<basic_parser<T>>& _password,
+				_In_ const std::shared_ptr<basic_parser<T>>& at,
+				_In_ const std::shared_ptr<basic_parser<T>>& ip_lbracket,
+				_In_ const std::shared_ptr<basic_parser<T>>& ip_rbracket,
+				_In_ const std::shared_ptr<basic_parser<T>>& _ipv4_host,
+				_In_ const std::shared_ptr<basic_parser<T>>& _ipv6_host,
+				_In_ const std::shared_ptr<basic_parser<T>>& _dns_host,
+				_In_ const std::shared_ptr<basic_parser<T>>& _port,
+				_In_ const std::shared_ptr<basic_parser<T>>& _path,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				http_scheme(_http_scheme),
 				ftp_scheme(_ftp_scheme),
 				mailto_scheme(_mailto_scheme),
@@ -3721,28 +3721,28 @@ namespace stdex
 				dns_host->invalidate();
 				port->invalidate();
 				path->invalidate();
-				basic_tester<T>::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 		public:
-			std::shared_ptr<basic_tester<T>> http_scheme;
-			std::shared_ptr<basic_tester<T>> ftp_scheme;
-			std::shared_ptr<basic_tester<T>> mailto_scheme;
-			std::shared_ptr<basic_tester<T>> file_scheme;
-			std::shared_ptr<basic_tester<T>> username;
-			std::shared_ptr<basic_tester<T>> password;
-			std::shared_ptr<basic_tester<T>> ipv4_host;
-			std::shared_ptr<basic_tester<T>> ipv6_host;
-			std::shared_ptr<basic_tester<T>> dns_host;
-			std::shared_ptr<basic_tester<T>> port;
-			std::shared_ptr<basic_tester<T>> path;
+			std::shared_ptr<basic_parser<T>> http_scheme;
+			std::shared_ptr<basic_parser<T>> ftp_scheme;
+			std::shared_ptr<basic_parser<T>> mailto_scheme;
+			std::shared_ptr<basic_parser<T>> file_scheme;
+			std::shared_ptr<basic_parser<T>> username;
+			std::shared_ptr<basic_parser<T>> password;
+			std::shared_ptr<basic_parser<T>> ipv4_host;
+			std::shared_ptr<basic_parser<T>> ipv6_host;
+			std::shared_ptr<basic_parser<T>> dns_host;
+			std::shared_ptr<basic_parser<T>> port;
+			std::shared_ptr<basic_parser<T>> path;
 
 		protected:
-			std::shared_ptr<basic_tester<T>> m_colon;
-			std::shared_ptr<basic_tester<T>> m_slash;
-			std::shared_ptr<basic_tester<T>> m_at;
-			std::shared_ptr<basic_tester<T>> m_ip_lbracket;
-			std::shared_ptr<basic_tester<T>> m_ip_rbracket;
+			std::shared_ptr<basic_parser<T>> m_colon;
+			std::shared_ptr<basic_parser<T>> m_slash;
+			std::shared_ptr<basic_parser<T>> m_at;
+			std::shared_ptr<basic_parser<T>> m_ip_lbracket;
+			std::shared_ptr<basic_parser<T>> m_ip_rbracket;
 		};
 
 		using url = basic_url<char>;
@@ -3758,19 +3758,19 @@ namespace stdex
 		/// Test for e-mail address
 		///
 		template <class T>
-		class basic_email_address : public basic_tester<T>
+		class basic_email_address : public basic_parser<T>
 		{
 		public:
 			basic_email_address(
-				_In_ const std::shared_ptr<basic_tester<T>>& _username,
-				_In_ const std::shared_ptr<basic_tester<T>>& at,
-				_In_ const std::shared_ptr<basic_tester<T>>& ip_lbracket,
-				_In_ const std::shared_ptr<basic_tester<T>>& ip_rbracket,
-				_In_ const std::shared_ptr<basic_tester<T>>& _ipv4_host,
-				_In_ const std::shared_ptr<basic_tester<T>>& _ipv6_host,
-				_In_ const std::shared_ptr<basic_tester<T>>& _dns_host,
+				_In_ const std::shared_ptr<basic_parser<T>>& _username,
+				_In_ const std::shared_ptr<basic_parser<T>>& at,
+				_In_ const std::shared_ptr<basic_parser<T>>& ip_lbracket,
+				_In_ const std::shared_ptr<basic_parser<T>>& ip_rbracket,
+				_In_ const std::shared_ptr<basic_parser<T>>& _ipv4_host,
+				_In_ const std::shared_ptr<basic_parser<T>>& _ipv6_host,
+				_In_ const std::shared_ptr<basic_parser<T>>& _dns_host,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				username(_username),
 				m_at(at),
 				m_ip_lbracket(ip_lbracket),
@@ -3838,19 +3838,19 @@ namespace stdex
 				ipv4_host->invalidate();
 				ipv6_host->invalidate();
 				dns_host->invalidate();
-				basic_tester<T>::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 		public:
-			std::shared_ptr<basic_tester<T>> username;
-			std::shared_ptr<basic_tester<T>> ipv4_host;
-			std::shared_ptr<basic_tester<T>> ipv6_host;
-			std::shared_ptr<basic_tester<T>> dns_host;
+			std::shared_ptr<basic_parser<T>> username;
+			std::shared_ptr<basic_parser<T>> ipv4_host;
+			std::shared_ptr<basic_parser<T>> ipv6_host;
+			std::shared_ptr<basic_parser<T>> dns_host;
 
 		protected:
-			std::shared_ptr<basic_tester<T>> m_at;
-			std::shared_ptr<basic_tester<T>> m_ip_lbracket;
-			std::shared_ptr<basic_tester<T>> m_ip_rbracket;
+			std::shared_ptr<basic_parser<T>> m_at;
+			std::shared_ptr<basic_parser<T>> m_ip_lbracket;
+			std::shared_ptr<basic_parser<T>> m_ip_rbracket;
 		};
 
 		using email_address = basic_email_address<char>;
@@ -3866,17 +3866,17 @@ namespace stdex
 		/// Test for emoticon
 		///
 		template <class T>
-		class basic_emoticon : public basic_tester<T>
+		class basic_emoticon : public basic_parser<T>
 		{
 		public:
 			basic_emoticon(
-				_In_ const std::shared_ptr<basic_tester<T>>& _emoticon,
-				_In_ const std::shared_ptr<basic_tester<T>>& _apex,
-				_In_ const std::shared_ptr<basic_tester<T>>& _eyes,
-				_In_ const std::shared_ptr<basic_tester<T>>& _nose,
+				_In_ const std::shared_ptr<basic_parser<T>>& _emoticon,
+				_In_ const std::shared_ptr<basic_parser<T>>& _apex,
+				_In_ const std::shared_ptr<basic_parser<T>>& _eyes,
+				_In_ const std::shared_ptr<basic_parser<T>>& _nose,
 				_In_ const std::shared_ptr<basic_set<T>>& _mouth,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				emoticon(_emoticon),
 				apex(_apex),
 				eyes(_eyes),
@@ -3951,14 +3951,14 @@ namespace stdex
 				eyes->invalidate();
 				if (nose) nose->invalidate();
 				mouth->invalidate();
-				basic_tester<T>::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 		public:
-			std::shared_ptr<basic_tester<T>> emoticon; ///< emoticon as a whole (e.g. 😀, 🤔, 😶)
-			std::shared_ptr<basic_tester<T>> apex; ///< apex/eyebrows/halo (e.g. O, 0)
-			std::shared_ptr<basic_tester<T>> eyes; ///< eyes (e.g. :, ;, >, |, B)
-			std::shared_ptr<basic_tester<T>> nose; ///< nose (e.g. -, o)
+			std::shared_ptr<basic_parser<T>> emoticon; ///< emoticon as a whole (e.g. 😀, 🤔, 😶)
+			std::shared_ptr<basic_parser<T>> apex; ///< apex/eyebrows/halo (e.g. O, 0)
+			std::shared_ptr<basic_parser<T>> eyes; ///< eyes (e.g. :, ;, >, |, B)
+			std::shared_ptr<basic_parser<T>> nose; ///< nose (e.g. -, o)
 			std::shared_ptr<basic_set<T>> mouth; ///< mouth (e.g. ), ), (, (, |, P, D, p, d)
 		};
 
@@ -3975,7 +3975,7 @@ namespace stdex
 		/// Test for date
 		///
 		template <class T>
-		class basic_date : public basic_tester<T>
+		class basic_date : public basic_parser<T>
 		{
 		public:
 			enum class format {
@@ -3994,9 +3994,9 @@ namespace stdex
 				_In_ const std::shared_ptr<basic_integer<T>>& _month,
 				_In_ const std::shared_ptr<basic_integer<T>>& _year,
 				_In_ const std::shared_ptr<basic_set<T>>& separator,
-				_In_ const std::shared_ptr<basic_tester<T>>& space,
+				_In_ const std::shared_ptr<basic_parser<T>>& space,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				format(0),
 				m_format_mask(format_mask),
 				day(_day),
@@ -4191,7 +4191,7 @@ namespace stdex
 				if (month) month->invalidate();
 				if (year) year->invalidate();
 				format = 0;
-				basic_tester<T>::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 		protected:
@@ -4236,7 +4236,7 @@ namespace stdex
 		protected:
 			int m_format_mask;
 			std::shared_ptr<basic_set<T>> m_separator;
-			std::shared_ptr<basic_tester<T>> m_space;
+			std::shared_ptr<basic_parser<T>> m_space;
 		};
 
 		using date = basic_date<char>;
@@ -4252,7 +4252,7 @@ namespace stdex
 		/// Test for time
 		///
 		template <class T>
-		class basic_time : public basic_tester<T>
+		class basic_time : public basic_parser<T>
 		{
 		public:
 			basic_time(
@@ -4261,9 +4261,9 @@ namespace stdex
 				_In_ const std::shared_ptr<basic_integer10<T>>& _second,
 				_In_ const std::shared_ptr<basic_integer10<T>>& _millisecond,
 				_In_ const std::shared_ptr<basic_set<T>>& separator,
-				_In_ const std::shared_ptr<basic_tester<T>>& millisecond_separator,
+				_In_ const std::shared_ptr<basic_parser<T>>& millisecond_separator,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				hour(_hour),
 				minute(_minute),
 				second(_second),
@@ -4328,7 +4328,7 @@ namespace stdex
 				minute->invalidate();
 				if (second) second->invalidate();
 				if (millisecond) millisecond->invalidate();
-				basic_tester<T>::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 		public:
@@ -4339,7 +4339,7 @@ namespace stdex
 
 		protected:
 			std::shared_ptr<basic_set<T>> m_separator;
-			std::shared_ptr<basic_tester<T>> m_millisecond_separator;
+			std::shared_ptr<basic_parser<T>> m_millisecond_separator;
 		};
 
 		using time = basic_time<char>;
@@ -4355,19 +4355,19 @@ namespace stdex
 		/// Test for angle in d°mm'ss.dddd form
 		///
 		template <class T>
-		class basic_angle : public basic_tester<T>
+		class basic_angle : public basic_parser<T>
 		{
 		public:
 			basic_angle(
 				_In_ const std::shared_ptr<basic_integer10<T>>& _degree,
-				_In_ const std::shared_ptr<basic_tester<T>>& _degree_separator,
+				_In_ const std::shared_ptr<basic_parser<T>>& _degree_separator,
 				_In_ const std::shared_ptr<basic_integer10<T>>& _minute,
-				_In_ const std::shared_ptr<basic_tester<T>>& _minute_separator,
+				_In_ const std::shared_ptr<basic_parser<T>>& _minute_separator,
 				_In_ const std::shared_ptr<basic_integer10<T>>& _second,
-				_In_ const std::shared_ptr<basic_tester<T>>& _second_separator,
-				_In_ const std::shared_ptr<basic_tester<T>>& _decimal,
+				_In_ const std::shared_ptr<basic_parser<T>>& _second_separator,
+				_In_ const std::shared_ptr<basic_parser<T>>& _decimal,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				degree(_degree),
 				degree_separator(_degree_separator),
 				minute(_minute),
@@ -4452,17 +4452,17 @@ namespace stdex
 				if (second) second->invalidate();
 				if (second_separator) second_separator->invalidate();
 				if (decimal) decimal->invalidate();
-				basic_tester<T>::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 		public:
 			std::shared_ptr<basic_integer10<T>> degree;
-			std::shared_ptr<basic_tester<T>> degree_separator;
+			std::shared_ptr<basic_parser<T>> degree_separator;
 			std::shared_ptr<basic_integer10<T>> minute;
-			std::shared_ptr<basic_tester<T>> minute_separator;
+			std::shared_ptr<basic_parser<T>> minute_separator;
 			std::shared_ptr<basic_integer10<T>> second;
-			std::shared_ptr<basic_tester<T>> second_separator;
-			std::shared_ptr<basic_tester<T>> decimal;
+			std::shared_ptr<basic_parser<T>> second_separator;
+			std::shared_ptr<basic_parser<T>> decimal;
 		};
 
 		using angle = basic_angle<char>;
@@ -4478,18 +4478,18 @@ namespace stdex
 		/// Test for phone number
 		///
 		template <class T>
-		class basic_phone_number : public basic_tester<T>
+		class basic_phone_number : public basic_parser<T>
 		{
 		public:
 			basic_phone_number(
-				_In_ const std::shared_ptr<basic_tester<T>>& digit,
-				_In_ const std::shared_ptr<basic_tester<T>>& plus_sign,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit,
+				_In_ const std::shared_ptr<basic_parser<T>>& plus_sign,
 				_In_ const std::shared_ptr<basic_set<T>>& lparenthesis,
 				_In_ const std::shared_ptr<basic_set<T>>& rparenthesis,
-				_In_ const std::shared_ptr<basic_tester<T>>& separator,
-				_In_ const std::shared_ptr<basic_tester<T>>& space,
+				_In_ const std::shared_ptr<basic_parser<T>>& separator,
+				_In_ const std::shared_ptr<basic_parser<T>>& space,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				m_digit(digit),
 				m_plus_sign(plus_sign),
 				m_lparenthesis(lparenthesis),
@@ -4601,19 +4601,19 @@ namespace stdex
 			virtual void invalidate()
 			{
 				value.clear();
-				basic_tester<T>::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 		public:
 			std::basic_string<T> value; ///< Normalized phone number
 
 		protected:
-			std::shared_ptr<basic_tester<T>> m_digit;
-			std::shared_ptr<basic_tester<T>> m_plus_sign;
+			std::shared_ptr<basic_parser<T>> m_digit;
+			std::shared_ptr<basic_parser<T>> m_plus_sign;
 			std::shared_ptr<basic_set<T>> m_lparenthesis;
 			std::shared_ptr<basic_set<T>> m_rparenthesis;
-			std::shared_ptr<basic_tester<T>> m_separator;
-			std::shared_ptr<basic_tester<T>> m_space;
+			std::shared_ptr<basic_parser<T>> m_separator;
+			std::shared_ptr<basic_parser<T>> m_space;
 		};
 
 		using phone_number = basic_phone_number<char>;
@@ -4629,15 +4629,15 @@ namespace stdex
 		/// Test for chemical formula
 		///
 		template <class T>
-		class basic_chemical_formula : public basic_tester<T>
+		class basic_chemical_formula : public basic_parser<T>
 		{
 		public:
 			basic_chemical_formula(
-				_In_ const std::shared_ptr<basic_tester<T>>& element,
-				_In_ const std::shared_ptr<basic_tester<T>>& digit,
-				_In_ const std::shared_ptr<basic_tester<T>>& sign,
+				_In_ const std::shared_ptr<basic_parser<T>>& element,
+				_In_ const std::shared_ptr<basic_parser<T>>& digit,
+				_In_ const std::shared_ptr<basic_parser<T>>& sign,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				m_element(element),
 				m_digit(digit),
 				m_sign(sign),
@@ -4685,7 +4685,7 @@ namespace stdex
 			{
 				has_digits = false;
 				has_charge = false;
-				basic_tester<T>::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 		public:
@@ -4693,9 +4693,9 @@ namespace stdex
 			bool has_charge;
 
 		protected:
-			std::shared_ptr<basic_tester<T>> m_element;
-			std::shared_ptr<basic_tester<T>> m_digit;
-			std::shared_ptr<basic_tester<T>> m_sign;
+			std::shared_ptr<basic_parser<T>> m_element;
+			std::shared_ptr<basic_parser<T>> m_digit;
+			std::shared_ptr<basic_parser<T>> m_sign;
 		};
 
 		using chemical_formula = basic_chemical_formula<char>;
@@ -4710,7 +4710,7 @@ namespace stdex
 		///
 		/// Test for HTTP line break (RFC2616: CRLF | LF)
 		///
-		class http_line_break : public tester
+		class http_line_break : public parser
 		{
 		public:
 			virtual bool match(
@@ -4746,7 +4746,7 @@ namespace stdex
 		///
 		/// Test for HTTP space (RFC2616: LWS)
 		///
-		class http_space : public tester
+		class http_space : public parser
 		{
 		public:
 			virtual bool match(
@@ -4783,7 +4783,7 @@ namespace stdex
 		///
 		/// Test for HTTP text character (RFC2616: TEXT)
 		///
-		class http_text_char : public tester
+		class http_text_char : public parser
 		{
 		public:
 			virtual bool match(
@@ -4817,7 +4817,7 @@ namespace stdex
 		///
 		/// Test for HTTP token (RFC2616: token - tolerates non-ASCII)
 		///
-		class http_token : public tester
+		class http_token : public parser
 		{
 		public:
 			virtual bool match(
@@ -4871,7 +4871,7 @@ namespace stdex
 		///
 		/// Test for HTTP quoted string (RFC2616: quoted-string)
 		///
-		class http_quoted_string : public tester
+		class http_quoted_string : public parser
 		{
 		public:
 			virtual bool match(
@@ -4924,7 +4924,7 @@ namespace stdex
 			{
 				content.start = 1;
 				content.end = 0;
-				tester::invalidate();
+				parser::invalidate();
 			}
 
 		public:
@@ -4937,7 +4937,7 @@ namespace stdex
 		///
 		/// Test for HTTP value (RFC2616: value)
 		///
-		class http_value : public tester
+		class http_value : public parser
 		{
 		public:
 			virtual bool match(
@@ -4970,7 +4970,7 @@ namespace stdex
 			{
 				string.invalidate();
 				token.invalidate();
-				tester::invalidate();
+				parser::invalidate();
 			}
 
 		public:
@@ -4981,7 +4981,7 @@ namespace stdex
 		///
 		/// Test for HTTP parameter (RFC2616: parameter)
 		///
-		class http_parameter : public tester
+		class http_parameter : public parser
 		{
 		public:
 			virtual bool match(
@@ -5022,7 +5022,7 @@ namespace stdex
 			{
 				name.invalidate();
 				value.invalidate();
-				tester::invalidate();
+				parser::invalidate();
 			}
 
 		public:
@@ -5036,7 +5036,7 @@ namespace stdex
 		///
 		/// Test for HTTP any type
 		///
-		class http_any_type : public tester
+		class http_any_type : public parser
 		{
 		public:
 			virtual bool match(
@@ -5068,7 +5068,7 @@ namespace stdex
 		///
 		/// Test for HTTP media range (RFC2616: media-range)
 		///
-		class http_media_range : public tester
+		class http_media_range : public parser
 		{
 		public:
 			virtual bool match(
@@ -5109,7 +5109,7 @@ namespace stdex
 			{
 				type.invalidate();
 				subtype.invalidate();
-				tester::invalidate();
+				parser::invalidate();
 			}
 
 		public:
@@ -5181,7 +5181,7 @@ namespace stdex
 		///
 		/// Test for HTTP URL server
 		///
-		class http_url_server : public tester
+		class http_url_server : public parser
 		{
 		public:
 			virtual bool match(
@@ -5218,11 +5218,11 @@ namespace stdex
 		///
 		/// Test for HTTP URL port
 		///
-		class http_url_port : public tester
+		class http_url_port : public parser
 		{
 		public:
 			http_url_port(_In_ const std::locale& locale = std::locale()) :
-				tester(locale),
+				parser(locale),
 				value(0)
 			{}
 
@@ -5264,7 +5264,7 @@ namespace stdex
 			virtual void invalidate()
 			{
 				value = 0;
-				tester::invalidate();
+				parser::invalidate();
 			}
 
 		public:
@@ -5274,7 +5274,7 @@ namespace stdex
 		///
 		/// Test for HTTP URL path segment
 		///
-		class http_url_path_segment : public tester
+		class http_url_path_segment : public parser
 		{
 		public:
 			virtual bool match(
@@ -5307,7 +5307,7 @@ namespace stdex
 		///
 		/// Test for HTTP URL path segment
 		///
-		class http_url_path : public tester
+		class http_url_path : public parser
 		{
 		public:
 			virtual bool match(
@@ -5353,7 +5353,7 @@ namespace stdex
 			virtual void invalidate()
 			{
 				segments.clear();
-				tester::invalidate();
+				parser::invalidate();
 			}
 
 		public:
@@ -5363,7 +5363,7 @@ namespace stdex
 		///
 		/// Test for HTTP URL parameter
 		///
-		class http_url_parameter : public tester
+		class http_url_parameter : public parser
 		{
 		public:
 			virtual bool match(
@@ -5433,7 +5433,7 @@ namespace stdex
 				name.end = 0;
 				value.start = 1;
 				value.end = 0;
-				tester::invalidate();
+				parser::invalidate();
 			}
 
 		public:
@@ -5444,7 +5444,7 @@ namespace stdex
 		///
 		/// Test for HTTP URL
 		///
-		class http_url : public tester
+		class http_url : public parser
 		{
 		public:
 			virtual bool match(
@@ -5528,7 +5528,7 @@ namespace stdex
 				port.invalidate();
 				path.invalidate();
 				params.clear();
-				tester::invalidate();
+				parser::invalidate();
 			}
 
 		public:
@@ -5541,7 +5541,7 @@ namespace stdex
 		///
 		/// Test for HTTP language (RFC1766)
 		///
-		class http_language : public tester
+		class http_language : public parser
 		{
 		public:
 			virtual bool match(
@@ -5594,7 +5594,7 @@ namespace stdex
 			virtual void invalidate()
 			{
 				components.clear();
-				tester::invalidate();
+				parser::invalidate();
 			}
 
 		public:
@@ -5604,11 +5604,11 @@ namespace stdex
 		///
 		/// Test for HTTP weight factor
 		///
-		class http_weight : public tester
+		class http_weight : public parser
 		{
 		public:
 			http_weight(_In_ const std::locale& locale = std::locale()) :
-				tester(locale),
+				parser(locale),
 				value(1.0f)
 			{}
 
@@ -5663,7 +5663,7 @@ namespace stdex
 			virtual void invalidate()
 			{
 				value = 1.0f;
-				tester::invalidate();
+				parser::invalidate();
 			}
 
 		public:
@@ -5673,7 +5673,7 @@ namespace stdex
 		///
 		/// Test for HTTP asterisk
 		///
-		class http_asterisk : public tester
+		class http_asterisk : public parser
 		{
 		public:
 			virtual bool match(
@@ -5696,7 +5696,7 @@ namespace stdex
 		/// Test for HTTP weighted value
 		///
 		template <class T, class T_asterisk = http_asterisk>
-		class http_weighted_value : public tester
+		class http_weighted_value : public parser
 		{
 		public:
 			virtual bool match(
@@ -5751,7 +5751,7 @@ namespace stdex
 				asterisk.invalidate();
 				value.invalidate();
 				factor.invalidate();
-				tester::invalidate();
+				parser::invalidate();
 			}
 
 		public:
@@ -5763,7 +5763,7 @@ namespace stdex
 		///
 		/// Test for HTTP cookie parameter (RFC2109)
 		///
-		class http_cookie_parameter : public tester
+		class http_cookie_parameter : public parser
 		{
 		public:
 			virtual bool match(
@@ -5808,7 +5808,7 @@ namespace stdex
 			{
 				name.invalidate();
 				value.invalidate();
-				tester::invalidate();
+				parser::invalidate();
 			}
 
 		public:
@@ -5822,7 +5822,7 @@ namespace stdex
 		///
 		/// Test for HTTP cookie (RFC2109)
 		///
-		class http_cookie : public tester
+		class http_cookie : public parser
 		{
 		public:
 			virtual bool match(
@@ -5889,7 +5889,7 @@ namespace stdex
 				name.invalidate();
 				value.invalidate();
 				params.clear();
-				tester::invalidate();
+				parser::invalidate();
 			}
 
 		public:
@@ -5904,7 +5904,7 @@ namespace stdex
 		///
 		/// Test for HTTP agent
 		///
-		class http_agent : public tester
+		class http_agent : public parser
 		{
 		public:
 			virtual bool match(
@@ -5969,7 +5969,7 @@ namespace stdex
 				type.end = 0;
 				version.start = 1;
 				version.end = 0;
-				tester::invalidate();
+				parser::invalidate();
 			}
 
 		public:
@@ -5980,11 +5980,11 @@ namespace stdex
 		///
 		/// Test for HTTP protocol
 		///
-		class http_protocol : public tester
+		class http_protocol : public parser
 		{
 		public:
 			http_protocol(_In_ const std::locale& locale = std::locale()) :
-				tester(locale),
+				parser(locale),
 				version(0x009)
 			{}
 
@@ -6076,7 +6076,7 @@ namespace stdex
 				version_min.start = 1;
 				version_min.end = 0;
 				version = 0x009;
-				tester::invalidate();
+				parser::invalidate();
 			}
 
 		public:
@@ -6089,7 +6089,7 @@ namespace stdex
 		///
 		/// Test for HTTP request
 		///
-		class http_request : public tester
+		class http_request : public parser
 		{
 		public:
 			virtual bool match(
@@ -6206,7 +6206,7 @@ namespace stdex
 				verb.end = 0;
 				url.invalidate();
 				protocol.invalidate();
-				tester::invalidate();
+				parser::invalidate();
 			}
 
 		public:
@@ -6221,7 +6221,7 @@ namespace stdex
 		///
 		/// Test for HTTP header
 		///
-		class http_header : public tester
+		class http_header : public parser
 		{
 		public:
 			virtual bool match(
@@ -6316,7 +6316,7 @@ namespace stdex
 				name.end = 0;
 				value.start = 1;
 				value.end = 0;
-				tester::invalidate();
+				parser::invalidate();
 			}
 
 		public:
@@ -6375,23 +6375,23 @@ namespace stdex
 		/// Test for JSON string
 		///
 		template <class T>
-		class basic_json_string : public basic_tester<T>
+		class basic_json_string : public basic_parser<T>
 		{
 		public:
 			basic_json_string(
-				_In_ const std::shared_ptr<basic_tester<T>>& quote,
-				_In_ const std::shared_ptr<basic_tester<T>>& chr,
-				_In_ const std::shared_ptr<basic_tester<T>>& escape,
-				_In_ const std::shared_ptr<basic_tester<T>>& sol,
-				_In_ const std::shared_ptr<basic_tester<T>>& bs,
-				_In_ const std::shared_ptr<basic_tester<T>>& ff,
-				_In_ const std::shared_ptr<basic_tester<T>>& lf,
-				_In_ const std::shared_ptr<basic_tester<T>>& cr,
-				_In_ const std::shared_ptr<basic_tester<T>>& htab,
-				_In_ const std::shared_ptr<basic_tester<T>>& uni,
+				_In_ const std::shared_ptr<basic_parser<T>>& quote,
+				_In_ const std::shared_ptr<basic_parser<T>>& chr,
+				_In_ const std::shared_ptr<basic_parser<T>>& escape,
+				_In_ const std::shared_ptr<basic_parser<T>>& sol,
+				_In_ const std::shared_ptr<basic_parser<T>>& bs,
+				_In_ const std::shared_ptr<basic_parser<T>>& ff,
+				_In_ const std::shared_ptr<basic_parser<T>>& lf,
+				_In_ const std::shared_ptr<basic_parser<T>>& cr,
+				_In_ const std::shared_ptr<basic_parser<T>>& htab,
+				_In_ const std::shared_ptr<basic_parser<T>>& uni,
 				_In_ const std::shared_ptr<basic_integer16<T>>& hex,
 				_In_ const std::locale& locale = std::locale()) :
-				basic_tester<T>(locale),
+				basic_parser<T>(locale),
 				m_quote(quote),
 				m_chr(chr),
 				m_escape(escape),
@@ -6496,23 +6496,23 @@ namespace stdex
 			virtual void invalidate()
 			{
 				value.clear();
-				basic_tester<T>::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 		public:
 			std::basic_string<T> value;
 
 		protected:
-			std::shared_ptr<basic_tester<T>> m_quote;
-			std::shared_ptr<basic_tester<T>> m_chr;
-			std::shared_ptr<basic_tester<T>> m_escape;
-			std::shared_ptr<basic_tester<T>> m_sol;
-			std::shared_ptr<basic_tester<T>> m_bs;
-			std::shared_ptr<basic_tester<T>> m_ff;
-			std::shared_ptr<basic_tester<T>> m_lf;
-			std::shared_ptr<basic_tester<T>> m_cr;
-			std::shared_ptr<basic_tester<T>> m_htab;
-			std::shared_ptr<basic_tester<T>> m_uni;
+			std::shared_ptr<basic_parser<T>> m_quote;
+			std::shared_ptr<basic_parser<T>> m_chr;
+			std::shared_ptr<basic_parser<T>> m_escape;
+			std::shared_ptr<basic_parser<T>> m_sol;
+			std::shared_ptr<basic_parser<T>> m_bs;
+			std::shared_ptr<basic_parser<T>> m_ff;
+			std::shared_ptr<basic_parser<T>> m_lf;
+			std::shared_ptr<basic_parser<T>> m_cr;
+			std::shared_ptr<basic_parser<T>> m_htab;
+			std::shared_ptr<basic_parser<T>> m_uni;
 			std::shared_ptr<basic_integer16<T>> m_hex;
 		};
 
