@@ -145,7 +145,7 @@ namespace stdex
 			/// \endcond
 
 		public:
-			interval<size_t> interval; ///< Test for interval
+			interval<size_t> interval; ///< Region of the last match
 
 		protected:
 			std::locale m_locale;
@@ -6332,8 +6332,8 @@ namespace stdex
 			}
 
 		public:
-			stdex::interval<size_t> name; // interval imena glave
-			stdex::interval<size_t> value; // interval vrednosti glave
+			stdex::interval<size_t> name;
+			stdex::interval<size_t> value;
 
 		protected:
 			http_line_break m_line_break;
