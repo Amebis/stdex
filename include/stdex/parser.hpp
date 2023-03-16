@@ -199,6 +199,8 @@ namespace stdex
 		class basic_any_cu : public basic_parser<T>
 		{
 		public:
+			basic_any_cu(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale) {}
+
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
@@ -229,6 +231,8 @@ namespace stdex
 		class sgml_any_cp : public basic_any_cu<char>
 		{
 		public:
+			sgml_any_cp(_In_ const std::locale& locale = std::locale()) : basic_any_cu<char>(locale) {}
+
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
@@ -478,6 +482,10 @@ namespace stdex
 		class sgml_punct_cp : public basic_punct_cu<char>
 		{
 		public:
+			sgml_punct_cp(bool invert = false, _In_ const std::locale& locale = std::locale()) :
+				basic_punct_cu<char>(invert, locale)
+			{}
+
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
@@ -550,6 +558,10 @@ namespace stdex
 		class sgml_space_or_punct_cp : public basic_space_or_punct_cu<char>
 		{
 		public:
+			sgml_space_or_punct_cp(bool invert = false, _In_ const std::locale& locale = std::locale()) :
+				basic_space_or_punct_cu<char>(invert, locale)
+			{}
+
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
@@ -2458,8 +2470,7 @@ namespace stdex
 		class basic_ipv6_scope_id_char : public basic_parser<T>
 		{
 		public:
-			basic_ipv6_scope_id_char(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale)
-			{}
+			basic_ipv6_scope_id_char(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale) {}
 
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
@@ -2497,8 +2508,7 @@ namespace stdex
 		class sgml_ipv6_scope_id_char : public sgml_parser
 		{
 		public:
-			sgml_ipv6_scope_id_char(_In_ const std::locale& locale = std::locale()) : sgml_parser(locale)
-			{}
+			sgml_ipv6_scope_id_char(_In_ const std::locale& locale = std::locale()) : sgml_parser(locale) {}
 
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
@@ -5447,6 +5457,8 @@ namespace stdex
 		class http_url : public parser
 		{
 		public:
+			http_url(_In_ const std::locale& locale = std::locale()) : parser(locale) {}
+
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
