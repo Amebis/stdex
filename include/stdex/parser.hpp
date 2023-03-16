@@ -5457,7 +5457,10 @@ namespace stdex
 		class http_url : public parser
 		{
 		public:
-			http_url(_In_ const std::locale& locale = std::locale()) : parser(locale) {}
+			http_url(_In_ const std::locale& locale = std::locale()) :
+				parser(locale),
+				port(locale)
+			{}
 
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
@@ -5711,6 +5714,11 @@ namespace stdex
 		class http_weighted_value : public parser
 		{
 		public:
+			http_weighted_value(_In_ const std::locale& locale = std::locale()) :
+				parser(locale),
+				factor(locale)
+			{}
+
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
@@ -6104,6 +6112,12 @@ namespace stdex
 		class http_request : public parser
 		{
 		public:
+			http_request(_In_ const std::locale& locale = std::locale()) :
+				parser(locale),
+				url(locale),
+				protocol(locale)
+			{}
+
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
@@ -6340,14 +6354,14 @@ namespace stdex
 		};
 
 		///
-		/// Collection of HTTP headers
+		/// Collection of HTTP values
 		///
 		template <class T>
-		class http_header_collection : public T
+		class http_value_collection : public T
 		{
 		public:
 			void insert(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
@@ -6378,10 +6392,10 @@ namespace stdex
 		};
 
 		///
-		/// Collection of weighted HTTP headers
+		/// Collection of weighted HTTP values
 		///
-		template <class T, class _Pr = http_factor_more<T>, class _Alloc = std::allocator<T>>
-		using http_weighted_header_collection = http_header_collection<std::multiset<T, _Pr, _Alloc>>;
+		template <class T, class _Alloc = std::allocator<T>>
+		using http_weighted_collection = http_value_collection<std::multiset<T, http_factor_more<T>, _Alloc>>;
 
 		///
 		/// Test for JSON string

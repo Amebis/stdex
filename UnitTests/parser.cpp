@@ -221,5 +221,97 @@ namespace UnitTests
 				Assert::AreEqual((size_t)31, p.interval.end);
 			}
 		}
+
+		TEST_METHOD(http_test)
+		{
+			static const std::locale locale("en_US.UTF-8");
+			static const char request[] =
+				"GET / HTTP/2\r\n"
+				"Host: stackoverflow.com\r\n"
+				"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/110.0\r\n"
+				"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8\r\n"
+				"Accept-Language: sl,en-US;q=0.8,en;q=0.6,de-DE;q=0.4,de;q=0.2\r\n"
+				"Accept-Encoding: gzip, deflate, br\r\n"
+				"DNT: 1\r\n"
+				"Connection: keep-alive\r\n"
+				"Cookie: prov=00000000-0000-0000-0000-000000000000; acct=t=00000000000000000%2f%2f0000%2b0000%2b000&s=00000000000000000000000000000000; OptanonConsent=isGpcEnabled=0&datestamp=Fri+Feb+03+2023+11%3A11%3A08+GMT%2B0100+(Srednjeevropski+standardni+%C4%8Das)&version=6.37.0&isIABGlobal=false&hosts=&consentId=00000000-0000-0000-0000-000000000000&interactionCount=1&landingPath=NotLandingPage&groups=00000%3A0%2C00000%3A0%2C00000%3A0%2C00000%3A0; OptanonAlertBoxClosed=2023-02-03T10:11:08.683Z\r\n"
+				"Upgrade-Insecure-Requests: 1\r\n"
+				"Sec-Fetch-Dest: document\r\n"
+				"Sec-Fetch-Mode: navigate\r\n"
+				"Sec-Fetch-Site: none\r\n"
+				"Sec-Fetch-User: ?1\r\n"
+				"Pragma: no-cache\r\n"
+				"Cache-Control: no-cache\r\n"
+				"\r\n";
+
+			{
+				http_request p(locale);
+				Assert::IsTrue(p.match(request));
+				Assert::AreEqual((size_t)0, p.interval.start);
+				Assert::AreEqual((size_t)14, p.interval.end);
+				Assert::AreEqual((size_t)0, p.verb.start);
+				Assert::AreEqual((size_t)3, p.verb.end);
+				Assert::AreEqual((size_t)4, p.url.interval.start);
+				Assert::AreEqual((size_t)5, p.url.interval.end);
+				Assert::AreEqual((size_t)6, p.protocol.interval.start);
+				Assert::AreEqual((size_t)12, p.protocol.interval.end);
+				Assert::AreEqual((uint16_t)0x200, p.protocol.version);
+			}
+
+			{
+				std::list<http_header> hdrs;
+				size_t offset = 14;
+				for (;;) {
+					http_header h;
+					if (h.match(request, offset)) {
+						offset = h.interval.end;
+						hdrs.push_back(std::move(h));
+					}
+					else
+						break;
+				}
+				Assert::AreEqual((size_t)15, hdrs.size());
+				http_weighted_collection<http_weighted_value<http_language>> langs;
+				for (const auto& h : hdrs)
+					if (strnicmp(request + h.name.start, h.name.size(), "Accept-Language", (size_t)-1, locale) == 0)
+						langs.insert(request, h.value.start, h.value.end);
+				Assert::IsTrue(!langs.empty());
+				{
+					const vector<std::string> control = {
+						"sl", "en-US", "en", "de-DE", "de"
+					};
+					auto c = control.cbegin();
+					auto l = langs.cbegin();
+					for (; c != control.cend() && l != langs.cend(); ++c, ++l)
+						Assert::IsTrue(strnicmp(request + l->value.interval.start, l->value.interval.size(), c->c_str(), c->size(), locale) == 0);
+					Assert::IsTrue(c == control.cend());
+					Assert::IsTrue(l == langs.cend());
+				}
+			}
+
+			//static const char response[] =
+			//	"HTTP/2 200 OK\r\n"
+			//	"cache-control: private\r\n"
+			//	"content-type: text/html; charset=utf-8\r\n"
+			//	"content-encoding: gzip\r\n"
+			//	"strict-transport-security: max-age=15552000\r\n"
+			//	"x-frame-options: SAMEORIGIN\r\n"
+			//	"set-cookie: acct=t=00000000000000000%2f%2f0000%2b0000%2b000&s=00000000000000000000000000000000; expires=Sat, 16 Sep 2023 10:23:00 GMT; domain=.stackoverflow.com; path=/; secure; samesite=none; httponly\r\n"
+			//	"set-cookie: prov_tgt=; expires=Tue, 14 Mar 2023 10:23:00 GMT; domain=.stackoverflow.com; path=/; secure; samesite=none; httponly\r\n"
+			//	"x-request-guid: a6536a49-b473-4c6f-b313-c1e7c0d8f600\r\n"
+			//	"feature-policy: microphone 'none'; speaker 'none'\r\n"
+			//	"content-security-policy: upgrade-insecure-requests; frame-ancestors 'self' https://stackexchange.com\r\n"
+			//	"accept-ranges: bytes\r\n"
+			//	"date: Thu, 16 Mar 2023 10:23:00 GMT\r\n"
+			//	"via: 1.1 varnish\r\n"
+			//	"x-served-by: cache-vie6354-VIE\r\n"
+			//	"x-cache: MISS\r\n"
+			//	"x-cache-hits: 0\r\n"
+			//	"x-timer: S1678962181.533907,VS0,VE144\r\n"
+			//	"vary: Accept-Encoding,Fastly-SSL\r\n"
+			//	"x-dns-prefetch-control: off\r\n"
+			//	"X-Firefox-Spdy: h2\r\n"
+			//	"\r\n";
+		}
 	};
 }
