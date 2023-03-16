@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['user_5fcancelled_0',['user_cancelled',['../classstdex_1_1user__cancelled.html',1,'stdex']]]
+  ['vector_5fqueue_0',['vector_queue',['../classstdex_1_1vector__queue.html',1,'stdex']]]
 ];

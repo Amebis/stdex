@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['tester_5fcollection_0',['tester_collection',['../classstdex_1_1parser_1_1tester__collection.html',1,'stdex::parser']]]
+  ['user_5fcancelled_0',['user_cancelled',['../classstdex_1_1user__cancelled.html',1,'stdex']]]
 ];
