@@ -956,8 +956,8 @@ namespace stdex
 
 			virtual void invalidate()
 			{
-				for (auto i = m_collection.begin(); i != m_collection.end(); ++i)
-					(*i)->invalidate();
+				for (auto& el: m_collection)
+					el->invalidate();
 				basic_tester<T>::invalidate();
 			}
 
@@ -1183,8 +1183,8 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				for (auto i = m_collection.begin(); i != m_collection.end(); ++i)
-					(*i)->invalidate();
+				for (auto& el: m_collection)
+					el->invalidate();
 				if (match_recursively(text, start, end, flags)) {
 					interval.start = start;
 					return true;
@@ -1201,17 +1201,17 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				bool all_matched = true;
-				for (auto i = m_collection.begin(); i != m_collection.cend(); ++i) {
-					if (!(*i)->interval) {
+				for (auto& el: m_collection) {
+					if (!el->interval) {
 						// Element was not matched in permutatuion yet.
 						all_matched = false;
-						if ((*i)->match(text, start, end, flags)) {
+						if (el->match(text, start, end, flags)) {
 							// Element matched for the first time.
-							if (match_recursively(text, (*i)->interval.end, end, flags)) {
+							if (match_recursively(text, el->interval.end, end, flags)) {
 								// Rest of the elements matched too.
 								return true;
 							}
-							(*i)->invalidate();
+							el->invalidate();
 						}
 					}
 				}
