@@ -79,18 +79,20 @@ namespace stdex
 	// constexpr int sgml_kolos      = sgml_amp | sgml_quot | sgml_dollar | sgml_percnt | sgml_lt_gt | sgml_bsol/* | sgml_commat | sgml_num*/ | sgml_lpar_rpar | sgml_lcub_rcub | sgml_lsqb_rsqb;
 
 	///
-	/// Convert SGML string to Unicode string (UTF-16 on Windows)
+	/// Convert SGML string to Unicode (UTF-16 on Windows) and append to string
 	///
-	/// \param[in]  src        SGML string
-	/// \param[in]  count_src  SGML string character count limit
-	/// \param[in]  skip       Bitwise flag of stdex::sgml_* constants that list SGML entities to skip converting
-	/// \param[in]  offset     Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
-	/// \param[out] map        The vector to append index mapping between source and destination string to.
+	/// \param[inout]  dst        String to append Unicode to
+	/// \param[in]     src        SGML string
+	/// \param[in]     count_src  SGML string character count limit
+	/// \param[in]     skip       Bitwise flag of stdex::sgml_* constants that list SGML entities to skip converting
+	/// \param[in]     offset     Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
+	/// \param[out]    map        The vector to append index mapping between source and destination string to.
 	///
 	/// \return Unicode string
 	///
 	template <class T>
-	inline std::wstring sgml2str(
+	inline void sgml2str(
+		_Inout_ std::wstring &dst,
 		_In_reads_or_z_(count_src) const T* src, _In_ size_t count_src,
 		_In_ int skip = 0,
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
@@ -113,8 +115,7 @@ namespace stdex
 			skip_lsqb_rsqb = (skip & sgml_lsqb_rsqb) == 0;
 
 		count_src = strnlen(src, count_src);
-		std::wstring dst;
-		dst.reserve(count_src);
+		dst.reserve(dst.size() + count_src);
 		for (size_t i = 0; i < count_src;) {
 			if (src[i] == '&') {
 				auto end = sgmlend(src + i + 1, count_src - i - 1);
@@ -169,6 +170,28 @@ namespace stdex
 			}
 			dst.append(1, src[i++]);
 		}
+	}
+
+	///
+	/// Convert SGML string to Unicode string (UTF-16 on Windows)
+	///
+	/// \param[in]  src        SGML string
+	/// \param[in]  count_src  SGML string character count limit
+	/// \param[in]  skip       Bitwise flag of stdex::sgml_* constants that list SGML entities to skip converting
+	/// \param[in]  offset     Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
+	/// \param[out] map        The vector to append index mapping between source and destination string to.
+	///
+	/// \return Unicode string
+	///
+	template <class T>
+	inline std::wstring sgml2str(
+		_In_reads_or_z_(count_src) const T* src, _In_ size_t count_src,
+		_In_ int skip = 0,
+		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
+		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
+	{
+		std::wstring dst;
+		sgml2str(dst, src, count_src, skip, offset, map);
 		return dst;
 	}
 
@@ -202,15 +225,15 @@ namespace stdex
 	/// \endcond
 
 	///
-	/// Convert Unicode string (UTF-16 on Windows) to SGML string
+	/// Convert Unicode string (UTF-16 on Windows) to SGML and append to string
 	///
-	/// \param[in]  src        Unicode string
-	/// \param[in]  count_src  Unicode string character count limit
-	/// \param[in]  what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
+	/// \param[inout]  dst        String to append SGML to
+	/// \param[in]     src        Unicode string
+	/// \param[in]     count_src  Unicode string character count limit
+	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
 	///
-	/// \return SGML string
-	///
-	inline std::string str2sgml(
+	inline void str2sgml(
+		_Inout_ std::string &dst,
 		_In_reads_or_z_(count_src) const wchar_t* src,
 		_In_ size_t count_src,
 		_In_ size_t what = 0)
@@ -232,8 +255,7 @@ namespace stdex
 			do_lsqb_rsqb = (what & sgml_lsqb_rsqb) == 0;
 
 		count_src = wcsnlen(src, count_src);
-		std::string dst;
-		dst.reserve(count_src);
+		dst.reserve(dst.size() + count_src);
 		for (size_t i = 0; i < count_src;) {
 			size_t n = glyphlen(src + i, count_src - i);
 			if (n == 1 &&
@@ -303,6 +325,24 @@ namespace stdex
 				}
 			}
 		}
+	}
+
+	///
+	/// Convert Unicode string (UTF-16 on Windows) to SGML string
+	///
+	/// \param[in]  src        Unicode string
+	/// \param[in]  count_src  Unicode string character count limit
+	/// \param[in]  what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
+	///
+	/// \return SGML string
+	///
+	inline std::string str2sgml(
+		_In_reads_or_z_(count_src) const wchar_t* src,
+		_In_ size_t count_src,
+		_In_ size_t what = 0)
+	{
+		std::string dst;
+		str2sgml(dst, src, count_src, what);
 		return dst;
 	}
 }
