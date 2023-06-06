@@ -36,6 +36,9 @@
 #ifndef _In_reads_or_z_
 #define _In_reads_or_z_(p)
 #endif
+#ifndef _In_reads_or_z_opt_
+#define _In_reads_or_z_opt_(p)
+#endif
 
 #ifndef _Inout_
 #define _Inout_

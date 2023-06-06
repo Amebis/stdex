@@ -111,7 +111,7 @@ namespace stdex
 	/// \param[in] count  Code unit limit
 	///
 	template <class T>
-	inline size_t islbreak(_In_reads_or_z_(count) const T* chr, _In_ size_t count)
+	inline size_t islbreak(_In_reads_or_z_opt_(count) const T* chr, _In_ size_t count)
 	{
 		if (count >= 2 && (chr[0] == '\r' && chr[1] == '\n' || chr[0] == '\n' && chr[1] == '\r'))
 			return 2;
@@ -126,7 +126,7 @@ namespace stdex
 	/// \param[in] glyph  Start of a glyph
 	/// \param[in] count  Code unit limit
 	///
-	inline size_t glyphlen(_In_reads_or_z_(count) const wchar_t* glyph, size_t count)
+	inline size_t glyphlen(_In_reads_or_z_opt_(count) const wchar_t* glyph, size_t count)
 	{
 		if (count) {
 #ifdef _WIN32
@@ -184,7 +184,7 @@ namespace stdex
 	///
 	template <class T>
 	inline const T* strnchr(
-		_In_reads_or_z_(count) const T* str,
+		_In_reads_or_z_opt_(count) const T* str,
 		_In_ T chr,
 		_In_ size_t count)
 	{
@@ -205,7 +205,7 @@ namespace stdex
 	///
 	template <class T>
 	inline const T* strnichr(
-		_In_reads_or_z_(count) const T* str,
+		_In_reads_or_z_opt_(count) const T* str,
 		_In_ T chr,
 		_In_ size_t count,
 		_In_ const std::locale& locale)
@@ -230,8 +230,8 @@ namespace stdex
 	///
 	template <class T1, class T2>
 	inline int strncmp(
-		_In_reads_or_z_(count1) const T1* str1, _In_ size_t count1,
-		_In_reads_or_z_(count2) const T2* str2, _In_ size_t count2)
+		_In_reads_or_z_opt_(count1) const T1* str1, _In_ size_t count1,
+		_In_reads_or_z_opt_(count2) const T2* str2, _In_ size_t count2)
 	{
 		assert(str1 || !count1);
 		assert(str2 || !count2);
@@ -257,8 +257,8 @@ namespace stdex
 	///
 	template <class T1, class T2>
 	inline int strnicmp(
-		_In_reads_or_z_(count1) const T1* str1, _In_ size_t count1,
-		_In_reads_or_z_(count2) const T2* str2, _In_ size_t count2,
+		_In_reads_or_z_opt_(count1) const T1* str1, _In_ size_t count1,
+		_In_reads_or_z_opt_(count2) const T2* str2, _In_ size_t count2,
 		_In_ const std::locale& locale)
 	{
 		assert(str1 || !count1);
@@ -286,7 +286,7 @@ namespace stdex
 	///
 	template <class T1, class T2>
 	const T1* strnstr(
-		_In_reads_or_z_(count) const T1* str,
+		_In_reads_or_z_opt_(count) const T1* str,
 		_In_z_ const T2* sample,
 		_In_ size_t count)
 	{
@@ -315,7 +315,7 @@ namespace stdex
 	///
 	template <class T1, class T2>
 	inline const T1* strnistr(
-		_In_reads_or_z_(count) const T1* str,
+		_In_reads_or_z_opt_(count) const T1* str,
 		_In_z_ const T2* sample,
 		_In_ size_t count,
 		_In_ const std::locale& locale)
@@ -366,7 +366,7 @@ namespace stdex
 	/// \cond internal
 	template <class T, class T_bin>
 	inline T_bin strtoint(
-		_In_reads_or_z_(count) const T* str, _In_ size_t count,
+		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
 		_Out_opt_ size_t* end,
 		_In_ int radix,
 		_Out_ uint8_t& flags)
@@ -469,7 +469,7 @@ namespace stdex
 	///
 	template <class T, class T_bin>
 	T_bin strtoint(
-		_In_reads_or_z_(count) const T* str, _In_ size_t count,
+		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
 		_Out_opt_ size_t* end,
 		_In_ int radix)
 	{
@@ -534,7 +534,7 @@ namespace stdex
 	///
 	template <class T, class T_bin>
 	inline T_bin strtouint(
-		_In_reads_or_z_(count) const T* str,
+		_In_reads_or_z_opt_(count) const T* str,
 		_In_ size_t count,
 		_Out_opt_ size_t* end,
 		_In_ int radix)
@@ -567,7 +567,7 @@ namespace stdex
 	///
 	template <class T>
 	inline int32_t strto32(
-		_In_reads_or_z_(count) const T* str, _In_ size_t count,
+		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
 		_Out_opt_ size_t* end,
 		_In_ int radix)
 	{
@@ -586,7 +586,7 @@ namespace stdex
 	///
 	template <class T>
 	inline int64_t strto64(
-		_In_reads_or_z_(count) const T* str, _In_ size_t count,
+		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
 		_Out_opt_ size_t* end,
 		_In_ int radix)
 	{
@@ -606,7 +606,7 @@ namespace stdex
 	///
 	template <class T>
 	inline intptr_t strtoi(
-		_In_reads_or_z_(count) const T* str, _In_ size_t count,
+		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
 		_Out_opt_ size_t* end,
 		_In_ int radix)
 	{
@@ -629,7 +629,7 @@ namespace stdex
 	///
 	template <class T>
 	inline uint32_t strtou32(
-		_In_reads_or_z_(count) const T* str, _In_ size_t count,
+		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
 		_Out_opt_ size_t* end,
 		_In_ int radix)
 	{
@@ -648,7 +648,7 @@ namespace stdex
 	///
 	template <class T>
 	inline uint64_t strtou64(
-		_In_reads_or_z_(count) const T* str, _In_ size_t count,
+		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
 		_Out_opt_ size_t* end,
 		_In_ int radix)
 	{
@@ -668,7 +668,7 @@ namespace stdex
 	///
 	template <class T>
 	inline size_t strtoui(
-		_In_reads_or_z_(count) const T* str, _In_ size_t count,
+		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
 		_Out_opt_ size_t* end,
 		_In_ int radix)
 	{

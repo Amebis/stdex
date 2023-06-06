@@ -43,7 +43,7 @@ namespace stdex
 
 	template <class T>
 	inline const T* sgmlend(
-		_In_reads_or_z_(count) const T* str,
+		_In_reads_or_z_opt_(count) const T* str,
 		_In_ size_t count)
 	{
 		assert(str || !count);
@@ -93,7 +93,7 @@ namespace stdex
 	template <class T>
 	inline void sgml2str(
 		_Inout_ std::wstring &dst,
-		_In_reads_or_z_(count_src) const T* src, _In_ size_t count_src,
+		_In_reads_or_z_opt_(count_src) const T* src, _In_ size_t count_src,
 		_In_ int skip = 0,
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
 		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
@@ -185,7 +185,7 @@ namespace stdex
 	///
 	template <class T>
 	inline std::wstring sgml2str(
-		_In_reads_or_z_(count_src) const T* src, _In_ size_t count_src,
+		_In_reads_or_z_opt_(count_src) const T* src, _In_ size_t count_src,
 		_In_ int skip = 0,
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
 		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
@@ -234,7 +234,7 @@ namespace stdex
 	///
 	inline void str2sgml(
 		_Inout_ std::string &dst,
-		_In_reads_or_z_(count_src) const wchar_t* src,
+		_In_reads_or_z_opt_(count_src) const wchar_t* src,
 		_In_ size_t count_src,
 		_In_ size_t what = 0)
 	{
@@ -337,7 +337,7 @@ namespace stdex
 	/// \return SGML string
 	///
 	inline std::string str2sgml(
-		_In_reads_or_z_(count_src) const wchar_t* src,
+		_In_reads_or_z_opt_(count_src) const wchar_t* src,
 		_In_ size_t count_src,
 		_In_ size_t what = 0)
 	{
