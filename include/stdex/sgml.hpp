@@ -57,23 +57,23 @@ namespace stdex
 	}
 	/// \endcond
 
-	constexpr int sgml_full       = 0x80000000;
-	constexpr int sgml_quot       = 0x00000001;
-	constexpr int sgml_apos       = 0x00000002;
-	constexpr int sgml_quot_apos  = sgml_quot | sgml_apos;
-	constexpr int sgml_amp        = 0x00000004;
-	constexpr int sgml_lt_gt      = 0x00000008;
-	constexpr int sgml_bsol       = 0x00000010;
-	constexpr int sgml_dollar     = 0x00000020;
-	constexpr int sgml_percnt     = 0x00000040;
-	constexpr int sgml_commat     = 0x00000080;
-	constexpr int sgml_num        = 0x00000100;
-	constexpr int sgml_lpar_rpar  = 0x00000200;
-	constexpr int sgml_lcub_rcub  = 0x00000400;
-	constexpr int sgml_lsqb_rsqb  = 0x00000800;
-	constexpr int sgml_sgml       = sgml_amp | sgml_lt_gt;
-	constexpr int sgml_ml_attrib  = sgml_amp | sgml_quot_apos;
-	constexpr int sgml_c          = sgml_amp | sgml_bsol | sgml_quot_apos;
+	constexpr int sgml_full = 0x80000000;
+	constexpr int sgml_quot = 0x00000001;
+	constexpr int sgml_apos = 0x00000002;
+	constexpr int sgml_quot_apos = sgml_quot | sgml_apos;
+	constexpr int sgml_amp = 0x00000004;
+	constexpr int sgml_lt_gt = 0x00000008;
+	constexpr int sgml_bsol = 0x00000010;
+	constexpr int sgml_dollar = 0x00000020;
+	constexpr int sgml_percnt = 0x00000040;
+	constexpr int sgml_commat = 0x00000080;
+	constexpr int sgml_num = 0x00000100;
+	constexpr int sgml_lpar_rpar = 0x00000200;
+	constexpr int sgml_lcub_rcub = 0x00000400;
+	constexpr int sgml_lsqb_rsqb = 0x00000800;
+	constexpr int sgml_sgml = sgml_amp | sgml_lt_gt;
+	constexpr int sgml_ml_attrib = sgml_amp | sgml_quot_apos;
+	constexpr int sgml_c = sgml_amp | sgml_bsol | sgml_quot_apos;
 	// constexpr int sgml_ajt_lemma  = sgml_amp | sgml_quot | sgml_dollar | sgml_percnt;
 	// constexpr int sgml_ajt_form   = sgml_ajt_lemma;
 	// constexpr int sgml_kolos      = sgml_amp | sgml_quot | sgml_dollar | sgml_percnt | sgml_lt_gt | sgml_bsol/* | sgml_commat | sgml_num*/ | sgml_lpar_rpar | sgml_lcub_rcub | sgml_lsqb_rsqb;
@@ -92,7 +92,7 @@ namespace stdex
 	///
 	template <class T>
 	inline void sgml2str(
-		_Inout_ std::wstring &dst,
+		_Inout_ std::wstring& dst,
 		_In_reads_or_z_opt_(count_src) const T* src, _In_ size_t count_src,
 		_In_ int skip = 0,
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
@@ -133,7 +133,8 @@ namespace stdex
 						if (unicode < 0x10000) {
 							chr[0] = (wchar_t)unicode;
 							chr[1] = 0;
-						} else {
+						}
+						else {
 							ucs4_to_surrogate_pair(chr, unicode);
 							chr[2] = 0;
 						}
@@ -233,7 +234,7 @@ namespace stdex
 	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
 	///
 	inline void str2sgml(
-		_Inout_ std::string &dst,
+		_Inout_ std::string& dst,
 		_In_reads_or_z_opt_(count_src) const wchar_t* src,
 		_In_ size_t count_src,
 		_In_ size_t what = 0)
@@ -312,7 +313,8 @@ namespace stdex
 							if (i + 1 < end && is_surrogate_pair(src + i)) {
 								unicode = surrogate_pair_to_ucs4(src + i);
 								i += 2;
-							} else
+							}
+							else
 #endif
 							{
 								unicode = src[i++];
