@@ -337,6 +337,50 @@ namespace stdex
 	}
 
 	///
+	/// Copy zero-terminated string
+	///
+	/// \param[in] dst    Destination string
+	/// \param[in] src    Source string
+	/// \param[in] count  String code unit count limit
+	///
+	template <class T1, class T2>
+	inline void strncpy(
+		_Out_writes_(count) _Post_maybez_ T1* dst,
+		_In_reads_or_z_opt_(count) const T2* src, _In_ size_t count)
+	{
+		assert(dst && src || !count);
+		for (size_t i = 0; i < count && (dst[i] = src[i]) != 0; ++i);
+	}
+
+	///
+	/// Copy zero-terminated string
+	///
+	/// \param[in] dst        Destination string
+	/// \param[in] count_dst  Destination string code unit count limit
+	/// \param[in] src        Source string
+	/// \param[in] count_src  Source string code unit count limit
+	///
+	template <class T1, class T2>
+	inline void strncpy(
+		_Out_writes_(count_dst) _Post_maybez_ T1* dst, _In_ size_t count_dst,
+		_In_reads_or_z_opt_(count_src) const T2* src, _In_ size_t count_src)
+	{
+		assert(dst || !count_dst);
+		assert(src || !count_src);
+		for (size_t i = 0; ; ++i)
+		{
+			if (i > count_dst)
+				break;
+			if (i > count_src) {
+				dst[i] = 0;
+				break;
+			}
+			if ((dst[i] = src[i]) == 0)
+				break;
+		}
+	}
+
+	///
 	/// Convert CRLF to LF
 	/// Source and destination strings may point to the same buffer for inline conversion.
 	///
