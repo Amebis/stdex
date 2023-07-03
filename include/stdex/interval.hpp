@@ -6,6 +6,7 @@
 #pragma once
 
 #include "sal.hpp"
+#include <vector>
 
 namespace stdex
 {
@@ -59,4 +60,7 @@ namespace stdex
 		///
 		inline operator bool() const { return start <= end; }
 	};
+
+	template <class T, class _Alloc = std::allocator<interval<T>>>
+	using interval_vector = std::vector<interval<T>, _Alloc>;
 }
