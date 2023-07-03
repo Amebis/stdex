@@ -165,7 +165,7 @@ namespace stdex
 	/// \return Number of characters excluding zero terminator in the string.
 	///
 	template <class T>
-	inline size_t strnlen(_In_z_ const T* str, _In_ size_t count)
+	inline size_t strnlen(_In_reads_or_z_opt_(count) const T* str, _In_ size_t count)
 	{
 		assert(str);
 		size_t i;
