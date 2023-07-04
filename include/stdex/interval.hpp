@@ -59,6 +59,24 @@ namespace stdex
 		/// \returns true if interval is valid or false otherwise
 		///
 		inline operator bool() const { return start <= end; }
+
+		///
+		/// Are intervals identical?
+		///
+		/// \param[in] other  Other interval to compare against
+		///
+		/// \returns true if intervals are identical or false otherwise
+		///
+		inline bool operator==(const interval& other) const { return start == other.start && end == other.end; }
+
+		///
+		/// Are intervals different?
+		///
+		/// \param[in] other  Other interval to compare against
+		///
+		/// \returns true if intervals are different or false otherwise
+		///
+		inline bool operator!=(const interval& other) const { return !operator==(other); }
 	};
 
 	template <class T, class _Alloc = std::allocator<interval<T>>>
