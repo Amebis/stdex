@@ -173,49 +173,98 @@ namespace stdex
 		return i;
 	}
 
+	constexpr auto npos{ static_cast<size_t>(-1) };
+
 	///
 	/// Find a code unit in a string.
 	///
 	/// \param[in] str    String
-	/// \param[in] chr    Code unit to search for
 	/// \param[in] count  Code unit count limit
+	/// \param[in] chr    Code unit to search for
 	///
-	/// \return Pointer to the first occurence of chr code unit or nullptr if not found.
+	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T>
-	inline const T* strnchr(
+	inline size_t strnchr(
 		_In_reads_or_z_opt_(count) const T* str,
-		_In_ T chr,
-		_In_ size_t count)
+		_In_ size_t count,
+		_In_ T chr)
 	{
 		assert(str || !count);
 		for (size_t i = 0; i < count && str[i]; ++i)
-			if (str[i] == chr) return str + i;
-		return nullptr;
+			if (str[i] == chr) return i;
+		return npos;
+	}
+
+	///
+	/// Find a code unit in a string.
+	///
+	/// \param[in] str    String
+	/// \param[in] count  Code unit count limit
+	/// \param[in] chr    Code unit to search for
+	///
+	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
+	///
+	template <class T>
+	inline size_t strrnchr(
+		_In_reads_or_z_opt_(count) const T* str,
+		_In_ size_t count,
+		_In_ T chr)
+	{
+		assert(str || !count);
+		size_t z = npos;
+		for (size_t i = 0; i < count && str[i]; ++i)
+			if (str[i] == chr) z = i;
+		return z;
 	}
 
 	///
 	/// Find a code unit in a string case-insensitive
 	///
 	/// \param[in] str    String
-	/// \param[in] chr    Code unit to search for
 	/// \param[in] count  Code unit count limit
+	/// \param[in] chr    Code unit to search for
 	///
-	/// \return Pointer to the first occurence of chr code unit or nullptr if not found.
+	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T>
-	inline const T* strnichr(
+	inline size_t strnichr(
 		_In_reads_or_z_opt_(count) const T* str,
-		_In_ T chr,
 		_In_ size_t count,
+		_In_ T chr,
 		_In_ const std::locale& locale)
 	{
 		assert(str || !count);
 		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
 		chr = ctype.tolower(chr);
 		for (size_t i = 0; i < count && str[i]; ++i)
-			if (ctype.tolower(str[i]) == chr) return str + i;
-		return nullptr;
+			if (ctype.tolower(str[i]) == chr) return i;
+		return npos;
+	}
+
+	///
+	/// Find a code unit in a string case-insensitive
+	///
+	/// \param[in] str    String
+	/// \param[in] count  Code unit count limit
+	/// \param[in] chr    Code unit to search for
+	///
+	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
+	///
+	template <class T>
+	inline size_t strrnichr(
+		_In_reads_or_z_opt_(count) const T* str,
+		_In_ size_t count,
+		_In_ T chr,
+		_In_ const std::locale& locale)
+	{
+		assert(str || !count);
+		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
+		chr = ctype.tolower(chr);
+		size_t z = npos;
+		for (size_t i = 0; i < count && str[i]; ++i)
+			if (ctype.tolower(str[i]) == chr) z = i;
+		return z;
 	}
 
 	///
@@ -279,25 +328,25 @@ namespace stdex
 	/// Binary search for a substring
 	///
 	/// \param[in] str     String to search in
-	/// \param[in] sample  Substring to search for
 	/// \param[in] count   String code unit count limit
+	/// \param[in] sample  Substring to search for
 	///
-	/// \return Pointer inside str where sample string is found; nullptr if not found
+	/// \return Offset inside str where sample string is found; stdex::npos if not found
 	///
 	template <class T1, class T2>
-	const T1* strnstr(
+	inline size_t strnstr(
 		_In_reads_or_z_opt_(count) const T1* str,
-		_In_z_ const T2* sample,
-		_In_ size_t count)
+		_In_ size_t count,
+		_In_z_ const T2* sample)
 	{
 		assert(str || !count);
 		assert(sample);
 		for (size_t offset = 0;; ++offset) {
 			for (size_t i = offset, j = 0;; ++i, ++j) {
 				if (!sample[j])
-					return str + offset;
+					return offset;
 				if (i >= count || !str[i])
-					return nullptr;
+					return npos;
 				if (str[i] != sample[j])
 					break;
 			}
@@ -308,16 +357,16 @@ namespace stdex
 	/// Binary search for a substring case-insensitive
 	///
 	/// \param[in] str     String to search in
-	/// \param[in] sample  Substring to search for
 	/// \param[in] count   String code unit count limit
+	/// \param[in] sample  Substring to search for
 	///
-	/// \return Pointer inside str where sample string is found; nullptr if not found
+	/// \return Offset inside str where sample string is found; stdex::npos if not found
 	///
 	template <class T1, class T2>
-	inline const T1* strnistr(
+	inline size_t strnistr(
 		_In_reads_or_z_opt_(count) const T1* str,
-		_In_z_ const T2* sample,
 		_In_ size_t count,
+		_In_z_ const T2* sample,
 		_In_ const std::locale& locale)
 	{
 		assert(str || !count);
@@ -327,9 +376,9 @@ namespace stdex
 		for (size_t offset = 0;; ++offset) {
 			for (size_t i = offset, j = 0;; ++i, ++j) {
 				if (!sample[j])
-					return str + offset;
+					return offset;
 				if (i >= count || !str[i])
-					return nullptr;
+					return npos;
 				if (ctype1.tolower(str[i]) != ctype2.tolower(sample[j]))
 					break;
 			}
