@@ -275,7 +275,7 @@ namespace stdex
 	/// \param[in] str2    String 2
 	/// \param[in] count2  String 2 code unit count limit
 	///
-	/// \return -1 if str1<str2; +1 if str1>str2; 0 if str1==str2
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T1, class T2>
 	inline int strncmp(
@@ -295,6 +295,28 @@ namespace stdex
 	}
 
 	///
+	/// Lexigraphically compare two strings
+	///
+	/// \param[in] str1    String 1
+	/// \param[in] count1  String 1 code unit count limit
+	/// \param[in] str2    String 2
+	/// \param[in] count2  String 2 code unit count limit
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T>
+	inline int strncoll(
+		_In_reads_or_z_opt_(count1) const T* str1, _In_ size_t count1,
+		_In_reads_or_z_opt_(count2) const T* str2, _In_ size_t count2,
+		_In_ const std::locale& locale)
+	{
+		assert(str1 || !count1);
+		assert(str2 || !count2);
+		auto& collate = std::use_facet<std::collate<T>>(locale);
+		return collate.compare(str1, str1 + count1, str2, str2 + count2);
+	}
+
+	///
 	/// Binary compare two strings case-insensitive
 	///
 	/// \param[in] str1    String 1
@@ -302,7 +324,7 @@ namespace stdex
 	/// \param[in] str2    String 2
 	/// \param[in] count2  String 2 code unit count limit
 	///
-	/// \return -1 if str1<str2; +1 if str1>str2; 0 if str1==str2
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T1, class T2>
 	inline int strnicmp(
