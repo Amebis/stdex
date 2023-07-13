@@ -145,7 +145,7 @@ namespace stdex
 	///
 	/// \param[in] str  String
 	///
-	/// \return Number of characters excluding zero terminator in the string.
+	/// \return Number of code units excluding zero terminator in the string.
 	///
 	template <class T>
 	inline size_t strlen(_In_z_ const T* str)
@@ -162,7 +162,7 @@ namespace stdex
 	/// \param[in] str    String
 	/// \param[in] count  Code unit limit
 	///
-	/// \return Number of characters excluding zero terminator in the string.
+	/// \return Number of code units excluding zero terminator in the string.
 	///
 	template <class T>
 	inline size_t strnlen(_In_reads_or_z_opt_(count) const T* str, _In_ size_t count)
@@ -414,13 +414,20 @@ namespace stdex
 	/// \param[in] src    Source string
 	/// \param[in] count  String code unit count limit
 	///
+	/// \return Number of code units excluding zero terminator in the dst string after the operation.
+	///
 	template <class T1, class T2>
-	inline void strncpy(
+	inline size_t strncpy(
 		_Out_writes_(count) _Post_maybez_ T1* dst,
 		_In_reads_or_z_opt_(count) const T2* src, _In_ size_t count)
 	{
 		assert(dst && src || !count);
-		for (size_t i = 0; i < count && (dst[i] = src[i]) != 0; ++i);
+		for (size_t i = 0; ; ++i) {
+			if (i >= count)
+				return i;
+			if ((dst[i] = src[i]) == 0)
+				return i;
+		}
 	}
 
 	///
@@ -431,8 +438,10 @@ namespace stdex
 	/// \param[in] src        Source string
 	/// \param[in] count_src  Source string code unit count limit
 	///
+	/// \return Number of code units excluding zero terminator in the dst string after the operation.
+	///
 	template <class T1, class T2>
-	inline void strncpy(
+	inline size_t strncpy(
 		_Out_writes_(count_dst) _Post_maybez_ T1* dst, _In_ size_t count_dst,
 		_In_reads_or_z_opt_(count_src) const T2* src, _In_ size_t count_src)
 	{
@@ -441,13 +450,13 @@ namespace stdex
 		for (size_t i = 0; ; ++i)
 		{
 			if (i > count_dst)
-				break;
+				return i;
 			if (i > count_src) {
 				dst[i] = 0;
-				break;
+				return i;
 			}
 			if ((dst[i] = src[i]) == 0)
-				break;
+				return i;
 		}
 	}
 
@@ -458,7 +467,7 @@ namespace stdex
 	/// \param[in] dst  Destination string - must be same or longer than src
 	/// \param[in] src  Source string
 	///
-	/// \return Number of characters excluding zero terminator in the dst string after the operation.
+	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
 	template <class T>
 	inline size_t crlf2nl(_Out_writes_z_(strlen(src)) T* dst, _In_z_ const T* src)
