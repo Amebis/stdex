@@ -10,6 +10,6 @@ var searchData=
   ['m_5fmin_5fiterations_7',['m_min_iterations',['../classstdex_1_1parser_1_1basic__iterations.html#aab86447331f306ff85c49764a5d0d646',1,'stdex::parser::basic_iterations']]],
   ['m_5fnum_8',['m_num',['../classstdex_1_1errno__error.html#a3712510d0659db4ad2ef4082a5980575',1,'stdex::errno_error']]],
   ['m_5fsize_5fmax_9',['m_size_max',['../classstdex_1_1vector__queue.html#a7192dc2991d690b04a2fb24dd6fdc325',1,'stdex::vector_queue']]],
-  ['mapping_10',['mapping',['../structstdex_1_1mapping.html',1,'stdex']]],
+  ['mapping_10',['mapping',['../structstdex_1_1mapping.html#a9634b5ef182398e24b61c2ca78cc8e46',1,'stdex::mapping::mapping()'],['../structstdex_1_1mapping.html#a48069d4eb38c276e856d650075f6c3bd',1,'stdex::mapping::mapping(T x)'],['../structstdex_1_1mapping.html#ae72436dbc2b54e2062822cd7772de830',1,'stdex::mapping::mapping(T _from, T _to)'],['../structstdex_1_1mapping.html',1,'stdex::mapping&lt; T &gt;']]],
   ['mouth_11',['mouth',['../classstdex_1_1parser_1_1basic__emoticon.html#a43d0de6a54546e509807c7c888bb8dc8',1,'stdex::parser::basic_emoticon']]]
 ];
