@@ -261,4 +261,30 @@ namespace stdex
 		progress* m_host;
 		interval<T> m_kaz, m_glob, m_odsek;
 	};
+
+	///
+	/// Progress indicator switcher
+	///
+	/// Use to inject global_progress indicator inplace of another progress indicator.
+	///
+
+	template <class T>
+	class progress_switcher : public global_progress<T>
+	{
+	public:
+		progress_switcher(progress<T>*& host) :
+			global_progress<T>(host),
+			m_host_ref(host)
+		{
+			m_host_ref = this;
+		}
+
+		~progress_switcher()
+		{
+			m_host_ref = detach();
+		}
+
+	protected:
+		progress<T>*& m_host_ref;
+	};
 }
