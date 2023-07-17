@@ -181,10 +181,10 @@ namespace stdex
 		///
 		inline void set_global_range(_In_ T start, _In_ T end)
 		{
-			m_glob.start = start;
-			m_glob.end = end;
+			m_global.start = start;
+			m_global.end = end;
 			if (m_host)
-				m_host->set_range(m_glob.start, m_glob.end);
+				m_host->set_range(m_global.start, m_global.end);
 		}
 
 		///
@@ -195,8 +195,8 @@ namespace stdex
 		///
 		inline void set_section_range(_In_ T start, _In_ T end)
 		{
-			m_odsek.start = start;
-			m_odsek.end = end;
+			m_section.start = start;
+			m_section.end = end;
 		}
 
 		///
@@ -218,8 +218,8 @@ namespace stdex
 		///
 		virtual void set_range(_In_ T start, _In_ T end)
 		{
-			m_kaz.start = start;
-			m_kaz.end = end;
+			m_local.start = start;
+			m_local.end = end;
 		}
 
 		///
@@ -230,10 +230,10 @@ namespace stdex
 		virtual void set(_In_ T value)
 		{
 			if (m_host) {
-				T dolzina = m_kaz.size();
-				if (dolzina != 0) {
+				T size = m_local.size();
+				if (size != 0) {
 					// TODO: Implement with muldiv.
-					m_host->set(((value - m_kaz.start) * m_odsek.size() / dolzina) + m_odsek.start);
+					m_host->set(((value - m_local.start) * m_section.size() / size) + m_section.start);
 				}
 			}
 		}
@@ -259,7 +259,7 @@ namespace stdex
 
 	protected:
 		progress* m_host;
-		interval<T> m_kaz, m_glob, m_odsek;
+		interval<T> m_local, m_global, m_section;
 	};
 
 	///
