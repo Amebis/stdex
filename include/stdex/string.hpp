@@ -113,6 +113,7 @@ namespace stdex
 	template <class T>
 	inline size_t islbreak(_In_reads_or_z_opt_(count) const T* chr, _In_ size_t count)
 	{
+		_Analysis_assume_(chr || !count);
 		if (count >= 2 && (chr[0] == '\r' && chr[1] == '\n' || chr[0] == '\n' && chr[1] == '\r'))
 			return 2;
 		if (count > 1 && (chr[0] == '\n' || chr[0] == '\r'))
@@ -128,6 +129,7 @@ namespace stdex
 	///
 	inline size_t glyphlen(_In_reads_or_z_opt_(count) const wchar_t* glyph, size_t count)
 	{
+		_Analysis_assume_(glyph || !count);
 		if (count) {
 #ifdef _WIN32
 			size_t i = count < 2 || !is_surrogate_pair(glyph) ? 1 : 2;
