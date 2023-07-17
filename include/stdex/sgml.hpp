@@ -174,6 +174,28 @@ namespace stdex
 	}
 
 	///
+	/// Convert SGML string to Unicode (UTF-16 on Windows) and append to string
+	///
+	/// \param[inout]  dst        String to append Unicode to
+	/// \param[in]     src        SGML string
+	/// \param[in]     skip       Bitwise flag of stdex::sgml_* constants that list SGML entities to skip converting
+	/// \param[in]     offset     Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
+	/// \param[out]    map        The vector to append index mapping between source and destination string to.
+	///
+	/// \return Unicode string
+	///
+	template <class T>
+	inline void sgml2str(
+		_Inout_ std::wstring& dst,
+		_In_ const std::basic_string<T>& src,
+		_In_ int skip = 0,
+		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
+		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
+	{
+		sgml2str(dst, src.data(), src.size(), skip, offset, map);
+	}
+
+	///
 	/// Convert SGML string to Unicode string (UTF-16 on Windows)
 	///
 	/// \param[in]  src        SGML string
@@ -194,6 +216,26 @@ namespace stdex
 		std::wstring dst;
 		sgml2str(dst, src, count_src, skip, offset, map);
 		return dst;
+	}
+
+	///
+	/// Convert SGML string to Unicode string (UTF-16 on Windows)
+	///
+	/// \param[in]  src        SGML string
+	/// \param[in]  skip       Bitwise flag of stdex::sgml_* constants that list SGML entities to skip converting
+	/// \param[in]  offset     Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
+	/// \param[out] map        The vector to append index mapping between source and destination string to.
+	///
+	/// \return Unicode string
+	///
+	template <class T>
+	inline std::wstring sgml2str(
+		_In_ const std::basic_string<T>& src,
+		_In_ int skip = 0,
+		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
+		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
+	{
+		return sgml2str(src.c_str(), src.size(), skip, offset, map);
 	}
 
 	/// \cond internal
@@ -330,6 +372,21 @@ namespace stdex
 	}
 
 	///
+	/// Convert Unicode string (UTF-16 on Windows) to SGML and append to string
+	///
+	/// \param[inout]  dst        String to append SGML to
+	/// \param[in]     src        Unicode string
+	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
+	///
+	inline void str2sgml(
+		_Inout_ std::string& dst,
+		_In_ const std::wstring& src,
+		_In_ size_t what = 0)
+	{
+		str2sgml(dst, src.c_str(), src.size(), what);
+	}
+
+	///
 	/// Convert Unicode string (UTF-16 on Windows) to SGML string
 	///
 	/// \param[in]  src        Unicode string
@@ -346,5 +403,20 @@ namespace stdex
 		std::string dst;
 		str2sgml(dst, src, count_src, what);
 		return dst;
+	}
+
+	///
+	/// Convert Unicode string (UTF-16 on Windows) to SGML string
+	///
+	/// \param[in]  src        Unicode string
+	/// \param[in]  what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
+	///
+	/// \return SGML string
+	///
+	inline std::string str2sgml(
+		_In_ const std::wstring& src,
+		_In_ size_t what = 0)
+	{
+		return str2sgml(src.c_str(), src.size(), what);
 	}
 }
