@@ -754,7 +754,7 @@ namespace stdex
 				basic_set<char>(invert, locale)
 			{
 				if (set)
-					m_set = sgml2str(set, count);
+					m_set = sgml2wstr(set, count);
 			}
 
 			virtual bool match(
@@ -842,7 +842,7 @@ namespace stdex
 		public:
 			sgml_string(const char* str, size_t count = (size_t)-1, _In_ const std::locale& locale = std::locale()) :
 				sgml_parser(locale),
-				m_str(sgml2str(str, count))
+				m_str(sgml2wstr(str, count))
 			{}
 
 			virtual bool match(

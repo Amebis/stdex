@@ -91,7 +91,7 @@ namespace stdex
 	/// \return Unicode string
 	///
 	template <class T>
-	inline void sgml2str(
+	inline void sgml2wstr(
 		_Inout_ std::wstring& dst,
 		_In_reads_or_z_opt_(count_src) const T* src, _In_ size_t count_src,
 		_In_ int skip = 0,
@@ -185,14 +185,14 @@ namespace stdex
 	/// \return Unicode string
 	///
 	template <class T>
-	inline void sgml2str(
+	inline void sgml2wstr(
 		_Inout_ std::wstring& dst,
 		_In_ const std::basic_string<T>& src,
 		_In_ int skip = 0,
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
 		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
 	{
-		sgml2str(dst, src.data(), src.size(), skip, offset, map);
+		sgml2wstr(dst, src.data(), src.size(), skip, offset, map);
 	}
 
 	///
@@ -207,14 +207,14 @@ namespace stdex
 	/// \return Unicode string
 	///
 	template <class T>
-	inline std::wstring sgml2str(
+	inline std::wstring sgml2wstr(
 		_In_reads_or_z_opt_(count_src) const T* src, _In_ size_t count_src,
 		_In_ int skip = 0,
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
 		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
 	{
 		std::wstring dst;
-		sgml2str(dst, src, count_src, skip, offset, map);
+		sgml2wstr(dst, src, count_src, skip, offset, map);
 		return dst;
 	}
 
@@ -229,13 +229,13 @@ namespace stdex
 	/// \return Unicode string
 	///
 	template <class T>
-	inline std::wstring sgml2str(
+	inline std::wstring sgml2wstr(
 		_In_ const std::basic_string<T>& src,
 		_In_ int skip = 0,
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
 		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
 	{
-		return sgml2str(src.c_str(), src.size(), skip, offset, map);
+		return sgml2wstr(src.c_str(), src.size(), skip, offset, map);
 	}
 
 	/// \cond internal
@@ -275,7 +275,7 @@ namespace stdex
 	/// \param[in]     count_src  Unicode string character count limit
 	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
 	///
-	inline void str2sgml(
+	inline void wstr2sgml(
 		_Inout_ std::string& dst,
 		_In_reads_or_z_opt_(count_src) const wchar_t* src,
 		_In_ size_t count_src,
@@ -378,12 +378,12 @@ namespace stdex
 	/// \param[in]     src        Unicode string
 	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
 	///
-	inline void str2sgml(
+	inline void wstr2sgml(
 		_Inout_ std::string& dst,
 		_In_ const std::wstring& src,
 		_In_ size_t what = 0)
 	{
-		str2sgml(dst, src.c_str(), src.size(), what);
+		wstr2sgml(dst, src.c_str(), src.size(), what);
 	}
 
 	///
@@ -395,13 +395,13 @@ namespace stdex
 	///
 	/// \return SGML string
 	///
-	inline std::string str2sgml(
+	inline std::string wstr2sgml(
 		_In_reads_or_z_opt_(count_src) const wchar_t* src,
 		_In_ size_t count_src,
 		_In_ size_t what = 0)
 	{
 		std::string dst;
-		str2sgml(dst, src, count_src, what);
+		wstr2sgml(dst, src, count_src, what);
 		return dst;
 	}
 
@@ -413,10 +413,10 @@ namespace stdex
 	///
 	/// \return SGML string
 	///
-	inline std::string str2sgml(
+	inline std::string wstr2sgml(
 		_In_ const std::wstring& src,
 		_In_ size_t what = 0)
 	{
-		return str2sgml(src.c_str(), src.size(), what);
+		return wstr2sgml(src.c_str(), src.size(), what);
 	}
 }
