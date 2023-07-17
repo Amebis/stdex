@@ -640,59 +640,58 @@ $(function() {
 <div class="line"><a id="l00823" name="l00823"></a><span class="lineno">  823</span>        <span class="keywordflow">return</span> _vsnwprintf(str, capacity, format, arg);</div>
 <div class="line"><a id="l00824" name="l00824"></a><span class="lineno">  824</span>    }</div>
 <div class="line"><a id="l00826" name="l00826"></a><span class="lineno">  826</span> </div>
-<div class="line"><a id="l00827" name="l00827"></a><span class="lineno">  827</span> </div>
-<div class="line"><a id="l00835" name="l00835"></a><span class="lineno">  835</span>    <span class="keyword">template</span>&lt;<span class="keyword">class</span> _Elem, <span class="keyword">class</span> _Traits, <span class="keyword">class</span> _Ax&gt;</div>
-<div class="line"><a id="l00836" name="l00836"></a><span class="lineno">  836</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> vappendf(_Inout_ std::basic_string&lt;_Elem, _Traits, _Ax&gt; &amp;str, _In_z_ _Printf_format_string_ <span class="keyword">const</span> _Elem *format, _In_ va_list arg)</div>
-<div class="line"><a id="l00837" name="l00837"></a><span class="lineno">  837</span>    {</div>
-<div class="line"><a id="l00838" name="l00838"></a><span class="lineno">  838</span>        _Elem buf[1024/<span class="keyword">sizeof</span>(_Elem)];</div>
-<div class="line"><a id="l00839" name="l00839"></a><span class="lineno">  839</span> </div>
-<div class="line"><a id="l00840" name="l00840"></a><span class="lineno">  840</span>        <span class="comment">// Try with stack buffer first.</span></div>
-<div class="line"><a id="l00841" name="l00841"></a><span class="lineno">  841</span>        <span class="keywordtype">int</span> count = vsnprintf(buf, _countof(buf) - 1, format, arg);</div>
-<div class="line"><a id="l00842" name="l00842"></a><span class="lineno">  842</span>        <span class="keywordflow">if</span> (count &gt;= 0) {</div>
-<div class="line"><a id="l00843" name="l00843"></a><span class="lineno">  843</span>            <span class="comment">// Copy from stack.</span></div>
-<div class="line"><a id="l00844" name="l00844"></a><span class="lineno">  844</span>            str.append(buf, count);</div>
-<div class="line"><a id="l00845" name="l00845"></a><span class="lineno">  845</span>        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00846" name="l00846"></a><span class="lineno">  846</span>            <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> capacity = 2*1024/<span class="keyword">sizeof</span>(_Elem);; capacity *= 2) {</div>
-<div class="line"><a id="l00847" name="l00847"></a><span class="lineno">  847</span>                <span class="comment">// Allocate on heap and retry.</span></div>
-<div class="line"><a id="l00848" name="l00848"></a><span class="lineno">  848</span>                <span class="keyword">auto</span> buf_dyn = std::make_unique&lt;_Elem[]&gt;(capacity);</div>
-<div class="line"><a id="l00849" name="l00849"></a><span class="lineno">  849</span>                count = vsnprintf(buf_dyn.get(), capacity - 1, format, arg);</div>
-<div class="line"><a id="l00850" name="l00850"></a><span class="lineno">  850</span>                <span class="keywordflow">if</span> (count &gt;= 0) {</div>
-<div class="line"><a id="l00851" name="l00851"></a><span class="lineno">  851</span>                    str.append(buf_dyn.get(), count);</div>
-<div class="line"><a id="l00852" name="l00852"></a><span class="lineno">  852</span>                    <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00853" name="l00853"></a><span class="lineno">  853</span>                }</div>
-<div class="line"><a id="l00854" name="l00854"></a><span class="lineno">  854</span>            }</div>
-<div class="line"><a id="l00855" name="l00855"></a><span class="lineno">  855</span>        }</div>
-<div class="line"><a id="l00856" name="l00856"></a><span class="lineno">  856</span>    }</div>
-<div class="line"><a id="l00857" name="l00857"></a><span class="lineno">  857</span> </div>
-<div class="line"><a id="l00864" name="l00864"></a><span class="lineno">  864</span>    <span class="keyword">template</span>&lt;<span class="keyword">class</span> _Elem, <span class="keyword">class</span> _Traits, <span class="keyword">class</span> _Ax&gt;</div>
-<div class="line"><a id="l00865" name="l00865"></a><span class="lineno">  865</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> appendf(_Inout_ std::basic_string&lt;_Elem, _Traits, _Ax&gt; &amp;str, _In_z_ _Printf_format_string_ <span class="keyword">const</span> _Elem *format, ...)</div>
-<div class="line"><a id="l00866" name="l00866"></a><span class="lineno">  866</span>    {</div>
-<div class="line"><a id="l00867" name="l00867"></a><span class="lineno">  867</span>        va_list arg;</div>
-<div class="line"><a id="l00868" name="l00868"></a><span class="lineno">  868</span>        va_start(arg, format);</div>
-<div class="line"><a id="l00869" name="l00869"></a><span class="lineno">  869</span>        vappendf(str, format, arg);</div>
-<div class="line"><a id="l00870" name="l00870"></a><span class="lineno">  870</span>        va_end(arg);</div>
-<div class="line"><a id="l00871" name="l00871"></a><span class="lineno">  871</span>    }</div>
-<div class="line"><a id="l00872" name="l00872"></a><span class="lineno">  872</span> </div>
-<div class="line"><a id="l00880" name="l00880"></a><span class="lineno">  880</span>    <span class="keyword">template</span>&lt;<span class="keyword">class</span> _Elem, <span class="keyword">class</span> _Traits, <span class="keyword">class</span> _Ax&gt;</div>
-<div class="line"><a id="l00881" name="l00881"></a><span class="lineno">  881</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> vsprintf(_Inout_ std::basic_string&lt;_Elem, _Traits, _Ax&gt; &amp;str, _In_z_ _Printf_format_string_ <span class="keyword">const</span> _Elem *format, _In_ va_list arg)</div>
-<div class="line"><a id="l00882" name="l00882"></a><span class="lineno">  882</span>    {</div>
-<div class="line"><a id="l00883" name="l00883"></a><span class="lineno">  883</span>        str.clear();</div>
-<div class="line"><a id="l00884" name="l00884"></a><span class="lineno">  884</span>        appendf(str, format, arg);</div>
-<div class="line"><a id="l00885" name="l00885"></a><span class="lineno">  885</span>    }</div>
-<div class="line"><a id="l00886" name="l00886"></a><span class="lineno">  886</span> </div>
-<div class="line"><a id="l00893" name="l00893"></a><span class="lineno">  893</span>    <span class="keyword">template</span>&lt;<span class="keyword">class</span> _Elem, <span class="keyword">class</span> _Traits, <span class="keyword">class</span> _Ax&gt;</div>
-<div class="line"><a id="l00894" name="l00894"></a><span class="lineno">  894</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> sprintf(_Inout_ std::basic_string&lt;_Elem, _Traits, _Ax&gt; &amp;str, _In_z_ _Printf_format_string_ <span class="keyword">const</span> _Elem *format, ...)</div>
-<div class="line"><a id="l00895" name="l00895"></a><span class="lineno">  895</span>    {</div>
-<div class="line"><a id="l00896" name="l00896"></a><span class="lineno">  896</span>        va_list arg;</div>
-<div class="line"><a id="l00897" name="l00897"></a><span class="lineno">  897</span>        va_start(arg, format);</div>
-<div class="line"><a id="l00898" name="l00898"></a><span class="lineno">  898</span>        vsprintf(str, format, arg);</div>
-<div class="line"><a id="l00899" name="l00899"></a><span class="lineno">  899</span>        va_end(arg);</div>
-<div class="line"><a id="l00900" name="l00900"></a><span class="lineno">  900</span>    }</div>
-<div class="line"><a id="l00901" name="l00901"></a><span class="lineno">  901</span>}</div>
+<div class="line"><a id="l00834" name="l00834"></a><span class="lineno">  834</span>    <span class="keyword">template</span>&lt;<span class="keyword">class</span> _Elem, <span class="keyword">class</span> _Traits, <span class="keyword">class</span> _Ax&gt;</div>
+<div class="line"><a id="l00835" name="l00835"></a><span class="lineno">  835</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> vappendf(_Inout_ std::basic_string&lt;_Elem, _Traits, _Ax&gt; &amp;str, _In_z_ _Printf_format_string_ <span class="keyword">const</span> _Elem *format, _In_ va_list arg)</div>
+<div class="line"><a id="l00836" name="l00836"></a><span class="lineno">  836</span>    {</div>
+<div class="line"><a id="l00837" name="l00837"></a><span class="lineno">  837</span>        _Elem buf[1024/<span class="keyword">sizeof</span>(_Elem)];</div>
+<div class="line"><a id="l00838" name="l00838"></a><span class="lineno">  838</span> </div>
+<div class="line"><a id="l00839" name="l00839"></a><span class="lineno">  839</span>        <span class="comment">// Try with stack buffer first.</span></div>
+<div class="line"><a id="l00840" name="l00840"></a><span class="lineno">  840</span>        <span class="keywordtype">int</span> count = vsnprintf(buf, _countof(buf) - 1, format, arg);</div>
+<div class="line"><a id="l00841" name="l00841"></a><span class="lineno">  841</span>        <span class="keywordflow">if</span> (count &gt;= 0) {</div>
+<div class="line"><a id="l00842" name="l00842"></a><span class="lineno">  842</span>            <span class="comment">// Copy from stack.</span></div>
+<div class="line"><a id="l00843" name="l00843"></a><span class="lineno">  843</span>            str.append(buf, count);</div>
+<div class="line"><a id="l00844" name="l00844"></a><span class="lineno">  844</span>        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00845" name="l00845"></a><span class="lineno">  845</span>            <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> capacity = 2*1024/<span class="keyword">sizeof</span>(_Elem);; capacity *= 2) {</div>
+<div class="line"><a id="l00846" name="l00846"></a><span class="lineno">  846</span>                <span class="comment">// Allocate on heap and retry.</span></div>
+<div class="line"><a id="l00847" name="l00847"></a><span class="lineno">  847</span>                <span class="keyword">auto</span> buf_dyn = std::make_unique&lt;_Elem[]&gt;(capacity);</div>
+<div class="line"><a id="l00848" name="l00848"></a><span class="lineno">  848</span>                count = vsnprintf(buf_dyn.get(), capacity - 1, format, arg);</div>
+<div class="line"><a id="l00849" name="l00849"></a><span class="lineno">  849</span>                <span class="keywordflow">if</span> (count &gt;= 0) {</div>
+<div class="line"><a id="l00850" name="l00850"></a><span class="lineno">  850</span>                    str.append(buf_dyn.get(), count);</div>
+<div class="line"><a id="l00851" name="l00851"></a><span class="lineno">  851</span>                    <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00852" name="l00852"></a><span class="lineno">  852</span>                }</div>
+<div class="line"><a id="l00853" name="l00853"></a><span class="lineno">  853</span>            }</div>
+<div class="line"><a id="l00854" name="l00854"></a><span class="lineno">  854</span>        }</div>
+<div class="line"><a id="l00855" name="l00855"></a><span class="lineno">  855</span>    }</div>
+<div class="line"><a id="l00856" name="l00856"></a><span class="lineno">  856</span> </div>
+<div class="line"><a id="l00863" name="l00863"></a><span class="lineno">  863</span>    <span class="keyword">template</span>&lt;<span class="keyword">class</span> _Elem, <span class="keyword">class</span> _Traits, <span class="keyword">class</span> _Ax&gt;</div>
+<div class="line"><a id="l00864" name="l00864"></a><span class="lineno">  864</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> appendf(_Inout_ std::basic_string&lt;_Elem, _Traits, _Ax&gt; &amp;str, _In_z_ _Printf_format_string_ <span class="keyword">const</span> _Elem *format, ...)</div>
+<div class="line"><a id="l00865" name="l00865"></a><span class="lineno">  865</span>    {</div>
+<div class="line"><a id="l00866" name="l00866"></a><span class="lineno">  866</span>        va_list arg;</div>
+<div class="line"><a id="l00867" name="l00867"></a><span class="lineno">  867</span>        va_start(arg, format);</div>
+<div class="line"><a id="l00868" name="l00868"></a><span class="lineno">  868</span>        vappendf(str, format, arg);</div>
+<div class="line"><a id="l00869" name="l00869"></a><span class="lineno">  869</span>        va_end(arg);</div>
+<div class="line"><a id="l00870" name="l00870"></a><span class="lineno">  870</span>    }</div>
+<div class="line"><a id="l00871" name="l00871"></a><span class="lineno">  871</span> </div>
+<div class="line"><a id="l00879" name="l00879"></a><span class="lineno">  879</span>    <span class="keyword">template</span>&lt;<span class="keyword">class</span> _Elem, <span class="keyword">class</span> _Traits, <span class="keyword">class</span> _Ax&gt;</div>
+<div class="line"><a id="l00880" name="l00880"></a><span class="lineno">  880</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> vsprintf(_Inout_ std::basic_string&lt;_Elem, _Traits, _Ax&gt; &amp;str, _In_z_ _Printf_format_string_ <span class="keyword">const</span> _Elem *format, _In_ va_list arg)</div>
+<div class="line"><a id="l00881" name="l00881"></a><span class="lineno">  881</span>    {</div>
+<div class="line"><a id="l00882" name="l00882"></a><span class="lineno">  882</span>        str.clear();</div>
+<div class="line"><a id="l00883" name="l00883"></a><span class="lineno">  883</span>        appendf(str, format, arg);</div>
+<div class="line"><a id="l00884" name="l00884"></a><span class="lineno">  884</span>    }</div>
+<div class="line"><a id="l00885" name="l00885"></a><span class="lineno">  885</span> </div>
+<div class="line"><a id="l00892" name="l00892"></a><span class="lineno">  892</span>    <span class="keyword">template</span>&lt;<span class="keyword">class</span> _Elem, <span class="keyword">class</span> _Traits, <span class="keyword">class</span> _Ax&gt;</div>
+<div class="line"><a id="l00893" name="l00893"></a><span class="lineno">  893</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> sprintf(_Inout_ std::basic_string&lt;_Elem, _Traits, _Ax&gt; &amp;str, _In_z_ _Printf_format_string_ <span class="keyword">const</span> _Elem *format, ...)</div>
+<div class="line"><a id="l00894" name="l00894"></a><span class="lineno">  894</span>    {</div>
+<div class="line"><a id="l00895" name="l00895"></a><span class="lineno">  895</span>        va_list arg;</div>
+<div class="line"><a id="l00896" name="l00896"></a><span class="lineno">  896</span>        va_start(arg, format);</div>
+<div class="line"><a id="l00897" name="l00897"></a><span class="lineno">  897</span>        vsprintf(str, format, arg);</div>
+<div class="line"><a id="l00898" name="l00898"></a><span class="lineno">  898</span>        va_end(arg);</div>
+<div class="line"><a id="l00899" name="l00899"></a><span class="lineno">  899</span>    }</div>
+<div class="line"><a id="l00900" name="l00900"></a><span class="lineno">  900</span>}</div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jul 17 2023 12:56:53 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
+Generated on Mon Jul 17 2023 13:11:40 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
 </small></address>
 </body>
 </html>
