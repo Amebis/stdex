@@ -125,11 +125,11 @@ namespace UnitTests
 				wcu chr_t(L't'), chr_h(L'h'), chr_i(L'i'), chr_s(L's');
 				wspace_cu space;
 				wsequence p({
-					make_shared_no_delete<basic_parser<wchar_t>>(&chr_t),
-					make_shared_no_delete<basic_parser<wchar_t>>(&chr_h),
-					make_shared_no_delete<basic_parser<wchar_t>>(&chr_i),
-					make_shared_no_delete<basic_parser<wchar_t>>(&chr_s),
-					make_shared_no_delete<basic_parser<wchar_t>>(&space) });
+					make_shared_no_delete(&chr_t),
+					make_shared_no_delete(&chr_h),
+					make_shared_no_delete(&chr_i),
+					make_shared_no_delete(&chr_s),
+					make_shared_no_delete(&space) });
 				Assert::IsFalse(p.match(text));
 				Assert::IsTrue(p.match(text, 0, _countof(text), match_case_insensitive));
 				Assert::AreEqual((size_t)0, p.interval.start);
@@ -140,10 +140,10 @@ namespace UnitTests
 				stdex::parser::wstring apple(L"apple"), orange(L"orange"), _this(L"this");
 				wspace_cu space;
 				wbranch p({
-					make_shared_no_delete<basic_parser<wchar_t>>(&apple),
-					make_shared_no_delete<basic_parser<wchar_t>>(&orange),
-					make_shared_no_delete<basic_parser<wchar_t>>(&_this),
-					make_shared_no_delete<basic_parser<wchar_t>>(&space) });
+					make_shared_no_delete(&apple),
+					make_shared_no_delete(&orange),
+					make_shared_no_delete(&_this),
+					make_shared_no_delete(&space) });
 				Assert::IsFalse(p.match(text));
 				Assert::IsTrue(p.match(text, 0, _countof(text), match_case_insensitive));
 				Assert::AreEqual((size_t)2, p.hit_offset);
@@ -163,10 +163,10 @@ namespace UnitTests
 			{
 				wcu chr_s(L's'), chr_h(L'h'), chr_i(L'i'), chr_t(L't');
 				wpermutation p({
-					make_shared_no_delete<basic_parser<wchar_t>>(&chr_s),
-					make_shared_no_delete<basic_parser<wchar_t>>(&chr_h),
-					make_shared_no_delete<basic_parser<wchar_t>>(&chr_i),
-					make_shared_no_delete<basic_parser<wchar_t>>(&chr_t) });
+					make_shared_no_delete(&chr_s),
+					make_shared_no_delete(&chr_h),
+					make_shared_no_delete(&chr_i),
+					make_shared_no_delete(&chr_t) });
 				Assert::IsFalse(p.match(text));
 				Assert::IsTrue(p.match(text, 0, _countof(text), match_case_insensitive));
 				Assert::AreEqual((size_t)0, p.interval.start);

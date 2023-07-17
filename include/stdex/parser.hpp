@@ -30,6 +30,20 @@
 #pragma warning(disable: 4100)
 #endif
 
+#define ENUM_FLAG_OPERATOR(T,X) \
+inline T operator X (const T lhs, const T rhs) { return static_cast<T>(static_cast<std::underlying_type_t<T>>(lhs) X static_cast<std::underlying_type_t<T>>(rhs)); } \
+inline T operator X (const T lhs, const std::underlying_type_t<T> rhs) { return static_cast<T>(static_cast<std::underlying_type_t<T>>(lhs) X rhs); } \
+inline T operator X (const std::underlying_type_t<T> lhs, const T rhs) { return static_cast<T>(lhs X static_cast<std::underlying_type_t<T>>(rhs)); } \
+inline T& operator X= (T& lhs, const T rhs) { return lhs = lhs X rhs; } \
+inline T& operator X= (T& lhs, const std::underlying_type_t<T> rhs) { return lhs = lhs X rhs; }
+#define ENUM_FLAGS(T, type) \
+enum class T : type; \
+inline T operator ~ (T t) { return (T) (~static_cast<std::underlying_type_t <T>>(t)); } \
+ENUM_FLAG_OPERATOR(T,|) \
+ENUM_FLAG_OPERATOR(T,^) \
+ENUM_FLAG_OPERATOR(T,&) \
+enum class T : type
+
 namespace stdex
 {
 	namespace parser
@@ -2416,7 +2430,7 @@ namespace stdex
 				components[2].end = 0;
 				components[3].start = 1;
 				components[3].end = 0;
-				value = 0;
+				value.s_addr = 0;
 				interval.start = (interval.end = start) + 1;
 				return false;
 			}
@@ -2431,7 +2445,7 @@ namespace stdex
 				components[2].end = 0;
 				components[3].start = 1;
 				components[3].end = 0;
-				value = 0;
+				value.s_addr = 0;
 				basic_parser<T>::invalidate();
 			}
 
@@ -2584,7 +2598,7 @@ namespace stdex
 				m_scope_id_separator(scope_id_separator),
 				scope_id(_scope_id)
 			{
-				memset(value, 0, sizeof(value));
+				memset(&value, 0, sizeof(value));
 			}
 
 			virtual bool match(
@@ -2595,7 +2609,7 @@ namespace stdex
 			{
 				assert(text || start >= end);
 				interval.end = start;
-				memset(value, 0, sizeof(value));
+				memset(&value, 0, sizeof(value));
 
 				size_t i, compaction_i = (size_t)-1, compaction_start = start;
 				for (i = 0; i < 8; i++) {
@@ -2712,7 +2726,7 @@ namespace stdex
 				components[6].end = 0;
 				components[7].start = 1;
 				components[7].end = 0;
-				memset(value, 0, sizeof(value));
+				memset(&value, 0, sizeof(value));
 				if (scope_id) scope_id->invalidate();
 				interval.start = (interval.end = start) + 1;
 				return false;
@@ -2736,7 +2750,7 @@ namespace stdex
 				components[6].end = 0;
 				components[7].start = 1;
 				components[7].end = 0;
-				memset(value, 0, sizeof(value));
+				memset(&value, 0, sizeof(value));
 				if (scope_id) scope_id->invalidate();
 				basic_parser<T>::invalidate();
 			}
@@ -3982,22 +3996,26 @@ namespace stdex
 		using sgml_emoticon = basic_emoticon<char>;
 
 		///
+		/// Date format type
+		///
+		ENUM_FLAGS(date_format_t, int) {
+			none = 0,
+			dmy = 0x1,
+			mdy = 0x2,
+			ymd = 0x4,
+			ym = 0x8,
+			my = 0x10,
+			dm = 0x20,
+			md = 0x40,
+		};
+
+		///
 		/// Test for date
 		///
 		template <class T>
 		class basic_date : public basic_parser<T>
 		{
 		public:
-			enum class format {
-				dmy = 0x1,
-				mdy = 0x2,
-				ymd = 0x4,
-				ym = 0x8,
-				my = 0x10,
-				dm = 0x20,
-				md = 0x40,
-			};
-
 			basic_date(
 				_In_ int format_mask,
 				_In_ const std::shared_ptr<basic_integer<T>>& _day,
@@ -4007,7 +4025,7 @@ namespace stdex
 				_In_ const std::shared_ptr<basic_parser<T>>& space,
 				_In_ const std::locale& locale = std::locale()) :
 				basic_parser<T>(locale),
-				format(0),
+				format(date_format_t::none),
 				m_format_mask(format_mask),
 				day(_day),
 				month(_month),
@@ -4025,7 +4043,7 @@ namespace stdex
 				assert(text || start >= end);
 
 				const int space_match_flags = flags & ~match_multiline; // Spaces in dates must never be broken in new line.
-				if ((m_format_mask & format::dmy) != 0) {
+				if ((m_format_mask & date_format_t::dmy) == date_format_t::dmy) {
 					if (day->match(text, start, end, flags)) {
 						for (interval.end = day->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
 						if (m_separator->match(text, interval.end, end, flags)) {
@@ -4042,7 +4060,7 @@ namespace stdex
 									{
 										interval.start = start;
 										interval.end = year->interval.end;
-										format = format::dmy;
+										format = date_format_t::dmy;
 										return true;
 									}
 								}
@@ -4051,7 +4069,7 @@ namespace stdex
 					}
 				}
 
-				if ((m_format_mask & format::mdy) != 0) {
+				if ((m_format_mask & date_format_t::mdy) == date_format_t::mdy) {
 					if (month->match(text, start, end, flags)) {
 						for (interval.end = month->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
 						if (m_separator->match(text, interval.end, end, flags)) {
@@ -4068,7 +4086,7 @@ namespace stdex
 									{
 										interval.start = start;
 										interval.end = year->interval.end;
-										format = format::mdy;
+										format = date_format_t::mdy;
 										return true;
 									}
 								}
@@ -4077,7 +4095,7 @@ namespace stdex
 					}
 				}
 
-				if ((m_format_mask & format::ymd) != 0) {
+				if ((m_format_mask & date_format_t::ymd) == date_format_t::ymd) {
 					if (year->match(text, start, end, flags)) {
 						for (interval.end = year->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
 						if (m_separator->match(text, interval.end, end, flags)) {
@@ -4094,7 +4112,7 @@ namespace stdex
 									{
 										interval.start = start;
 										interval.end = day->interval.end;
-										format = format::ymd;
+										format = date_format_t::ymd;
 										return true;
 									}
 								}
@@ -4103,7 +4121,7 @@ namespace stdex
 					}
 				}
 
-				if ((m_format_mask & format::ym) != 0) {
+				if ((m_format_mask & date_format_t::ym) == date_format_t::ym) {
 					if (year->match(text, start, end, flags)) {
 						for (interval.end = year->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
 						if (m_separator->match(text, interval.end, end, flags)) {
@@ -4114,14 +4132,14 @@ namespace stdex
 								if (day) day->invalidate();
 								interval.start = start;
 								interval.end = month->interval.end;
-								format = format::ym;
+								format = date_format_t::ym;
 								return true;
 							}
 						}
 					}
 				}
 
-				if ((m_format_mask & format::my) != 0) {
+				if ((m_format_mask & date_format_t::my) == date_format_t::my) {
 					if (month->match(text, start, end, flags)) {
 						for (interval.end = month->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
 						if (m_separator->match(text, interval.end, end, flags)) {
@@ -4132,14 +4150,14 @@ namespace stdex
 								if (day) day->invalidate();
 								interval.start = start;
 								interval.end = year->interval.end;
-								format = format::my;
+								format = date_format_t::my;
 								return true;
 							}
 						}
 					}
 				}
 
-				if ((m_format_mask & format::dm) != 0) {
+				if ((m_format_mask & date_format_t::dm) == date_format_t::dm) {
 					if (day->match(text, start, end, flags)) {
 						for (interval.end = day->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
 						if (m_separator->match(text, interval.end, end, flags)) {
@@ -4156,14 +4174,14 @@ namespace stdex
 									interval.end = m_separator->interval.end;
 								else
 									interval.end = month->interval.end;
-								format = format::dm;
+								format = date_format_t::dm;
 								return true;
 							}
 						}
 					}
 				}
 
-				if ((m_format_mask & format::md) != 0) {
+				if ((m_format_mask & date_format_t::md) == date_format_t::md) {
 					if (month->match(text, start, end, flags)) {
 						for (interval.end = month->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
 						if (m_separator->match(text, interval.end, end, flags)) {
@@ -4180,7 +4198,7 @@ namespace stdex
 									interval.end = m_separator->interval.end;
 								else
 									interval.end = day->interval.end;
-								format = format::md;
+								format = date_format_t::md;
 								return true;
 							}
 						}
@@ -4190,7 +4208,7 @@ namespace stdex
 				if (day) day->invalidate();
 				if (month) month->invalidate();
 				if (year) year->invalidate();
-				format = 0;
+				format = date_format_t::none;
 				interval.start = (interval.end = start) + 1;
 				return false;
 			}
@@ -4200,7 +4218,7 @@ namespace stdex
 				if (day) day->invalidate();
 				if (month) month->invalidate();
 				if (year) year->invalidate();
-				format = 0;
+				format = date_format_t::none;
 				basic_parser<T>::invalidate();
 			}
 
@@ -4238,7 +4256,7 @@ namespace stdex
 			}
 
 		public:
-			format format;
+			date_format_t format;
 			std::shared_ptr<basic_integer<T>> day;
 			std::shared_ptr<basic_integer<T>> month;
 			std::shared_ptr<basic_integer<T>> year;
@@ -4553,7 +4571,7 @@ namespace stdex
 						m_lparenthesis->match(text, interval.end, end, flags))
 					{
 						// Left parenthesis
-						value.Prilepi(text + m_lparenthesis->interval.start, m_lparenthesis->interval.size());
+						value.append(text + m_lparenthesis->interval.start, m_lparenthesis->interval.size());
 						interval.end = m_lparenthesis->interval.end;
 						in_parentheses = true;
 						after_digit = false;
@@ -6551,6 +6569,9 @@ namespace stdex
 #endif
 	}
 }
+
+#undef ENUM_FLAG_OPERATOR
+#undef ENUM_FLAGS
 
 #ifdef _MSC_VER
 #pragma warning(pop)
