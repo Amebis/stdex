@@ -183,16 +183,16 @@ $(function() {
 <div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span> </div>
 <div class="line"><a id="l00182" name="l00182"></a><span class="lineno"><a class="line" href="classstdex_1_1global__progress.html#ac68b491c62861fae1b16abb3477cb9c1">  182</a></span>        <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classstdex_1_1global__progress.html#ac68b491c62861fae1b16abb3477cb9c1">set_global_range</a>(_In_ T start, _In_ T end)</div>
 <div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>        {</div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>            m_glob.start = start;</div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>            m_glob.end = end;</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>            m_global.start = start;</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>            m_global.end = end;</div>
 <div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>            <span class="keywordflow">if</span> (m_host)</div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>                m_host-&gt;<a class="code hl_function" href="classstdex_1_1progress.html#afbb1513bdb20340ebb21bd988f4e424a">set_range</a>(m_glob.start, m_glob.end);</div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>                m_host-&gt;<a class="code hl_function" href="classstdex_1_1progress.html#afbb1513bdb20340ebb21bd988f4e424a">set_range</a>(m_global.start, m_global.end);</div>
 <div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>        }</div>
 <div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span> </div>
 <div class="line"><a id="l00196" name="l00196"></a><span class="lineno"><a class="line" href="classstdex_1_1global__progress.html#a242009bce7ac595975bbfd703ec58c3b">  196</a></span>        <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classstdex_1_1global__progress.html#a242009bce7ac595975bbfd703ec58c3b">set_section_range</a>(_In_ T start, _In_ T end)</div>
 <div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>        {</div>
-<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>            m_odsek.start = start;</div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>            m_odsek.end = end;</div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>            m_section.start = start;</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>            m_section.end = end;</div>
 <div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>        }</div>
 <div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span> </div>
 <div class="line"><a id="l00207" name="l00207"></a><span class="lineno"><a class="line" href="classstdex_1_1global__progress.html#a89b7116003ab3b6344d90f130c14933e">  207</a></span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classstdex_1_1global__progress.html#a89b7116003ab3b6344d90f130c14933e">set_text</a>(_In_ <span class="keyword">const</span> <span class="keywordtype">char</span>* msg)</div>
@@ -203,17 +203,17 @@ $(function() {
 <div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span> </div>
 <div class="line"><a id="l00219" name="l00219"></a><span class="lineno"><a class="line" href="classstdex_1_1global__progress.html#afb204b820637c19b494976af4a284704">  219</a></span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classstdex_1_1global__progress.html#afb204b820637c19b494976af4a284704">set_range</a>(_In_ T start, _In_ T end)</div>
 <div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>        {</div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>            m_kaz.start = start;</div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>            m_kaz.end = end;</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>            m_local.start = start;</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>            m_local.end = end;</div>
 <div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>        }</div>
 <div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span> </div>
 <div class="line"><a id="l00230" name="l00230"></a><span class="lineno"><a class="line" href="classstdex_1_1global__progress.html#a76e66104444c77b89b687b4ad4945e8e">  230</a></span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classstdex_1_1global__progress.html#a76e66104444c77b89b687b4ad4945e8e">set</a>(_In_ T value)</div>
 <div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>        {</div>
 <div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>            <span class="keywordflow">if</span> (m_host) {</div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>                T dolzina = m_kaz.size();</div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>                <span class="keywordflow">if</span> (dolzina != 0) {</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>                T size = m_local.size();</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>                <span class="keywordflow">if</span> (size != 0) {</div>
 <div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>                    <span class="comment">// TODO: Implement with muldiv.</span></div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>                    m_host-&gt;<a class="code hl_function" href="classstdex_1_1progress.html#acf3a29daf22709bf7e94e864c8be95a1">set</a>(((value - m_kaz.start) * m_odsek.size() / dolzina) + m_odsek.start);</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>                    m_host-&gt;<a class="code hl_function" href="classstdex_1_1progress.html#acf3a29daf22709bf7e94e864c8be95a1">set</a>(((value - m_local.start) * m_section.size() / size) + m_section.start);</div>
 <div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>                }</div>
 <div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>            }</div>
 <div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>        }</div>
@@ -231,9 +231,30 @@ $(function() {
 <div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span> </div>
 <div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>    <span class="keyword">protected</span>:</div>
 <div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>        <a class="code hl_class" href="classstdex_1_1progress.html">progress</a>* m_host;</div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>        <a class="code hl_struct" href="structstdex_1_1interval.html">interval&lt;T&gt;</a> m_kaz, m_glob, m_odsek;</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>        <a class="code hl_struct" href="structstdex_1_1interval.html">interval&lt;T&gt;</a> m_local, m_global, m_section;</div>
 <div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>    };</div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>}</div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span> </div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span> </div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno"><a class="line" href="classstdex_1_1progress__switcher.html">  272</a></span>    <span class="keyword">class </span><a class="code hl_class" href="classstdex_1_1progress__switcher.html">progress_switcher</a> : <span class="keyword">public</span> <a class="code hl_class" href="classstdex_1_1global__progress.html">global_progress</a>&lt;T&gt;</div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>    {</div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>    <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>        <a class="code hl_class" href="classstdex_1_1progress__switcher.html">progress_switcher</a>(<a class="code hl_class" href="classstdex_1_1progress.html">progress&lt;T&gt;</a>*&amp; host) :</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>            <a class="code hl_class" href="classstdex_1_1global__progress.html">global_progress&lt;T&gt;</a>(host),</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>            m_host_ref(host)</div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>        {</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>            m_host_ref = <span class="keyword">this</span>;</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>        }</div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span> </div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>        <a class="code hl_class" href="classstdex_1_1progress__switcher.html">~progress_switcher</a>()</div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>        {</div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>            m_host_ref = <a class="code hl_function" href="classstdex_1_1global__progress.html#aa2c5391aa2f1f30e72a700768bc52f84">detach</a>();</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>        }</div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span> </div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>    <span class="keyword">protected</span>:</div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>        <a class="code hl_class" href="classstdex_1_1progress.html">progress&lt;T&gt;</a>*&amp; m_host_ref;</div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>    };</div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>}</div>
 <div class="ttc" id="aclassstdex_1_1global__progress_html"><div class="ttname"><a href="classstdex_1_1global__progress.html">stdex::global_progress</a></div><div class="ttdoc">Global progress indicator base class.</div><div class="ttdef"><b>Definition</b> progress.hpp:144</div></div>
 <div class="ttc" id="aclassstdex_1_1global__progress_html_a0ffa6fafa04588c0df06d077ae51d037"><div class="ttname"><a href="classstdex_1_1global__progress.html#a0ffa6fafa04588c0df06d077ae51d037">stdex::global_progress::global_progress</a></div><div class="ttdeci">global_progress(progress&lt; T &gt; *host=NULL)</div><div class="ttdoc">Constructs a progress indicator.</div><div class="ttdef"><b>Definition</b> progress.hpp:151</div></div>
 <div class="ttc" id="aclassstdex_1_1global__progress_html_a242009bce7ac595975bbfd703ec58c3b"><div class="ttname"><a href="classstdex_1_1global__progress.html#a242009bce7ac595975bbfd703ec58c3b">stdex::global_progress::set_section_range</a></div><div class="ttdeci">void set_section_range(T start, T end)</div><div class="ttdoc">Set section extend of the progress indicator.</div><div class="ttdef"><b>Definition</b> progress.hpp:196</div></div>
@@ -250,6 +271,7 @@ $(function() {
 <div class="ttc" id="aclassstdex_1_1lazy__progress_html_a90d8aaa2e2135537f7bb103bf795956a"><div class="ttname"><a href="classstdex_1_1lazy__progress.html#a90d8aaa2e2135537f7bb103bf795956a">stdex::lazy_progress::lazy_progress</a></div><div class="ttdeci">lazy_progress(const std::chrono::nanoseconds &amp;timeout=std::chrono::nanoseconds(500000))</div><div class="ttdoc">Constructs a lazy progress indicator.</div><div class="ttdef"><b>Definition</b> progress.hpp:85</div></div>
 <div class="ttc" id="aclassstdex_1_1lazy__progress_html_ad0242cb4f3ece8aacfaab8804e7c646e"><div class="ttname"><a href="classstdex_1_1lazy__progress.html#ad0242cb4f3ece8aacfaab8804e7c646e">stdex::lazy_progress::do_set</a></div><div class="ttdeci">virtual void do_set()</div><div class="ttdoc">Called when progress reporting is due. Should override this method to implement actual progress refre...</div><div class="ttdef"><b>Definition</b> progress.hpp:129</div></div>
 <div class="ttc" id="aclassstdex_1_1lazy__progress_html_ada3a0d4f0086823558115a8064ffffb6"><div class="ttname"><a href="classstdex_1_1lazy__progress.html#ada3a0d4f0086823558115a8064ffffb6">stdex::lazy_progress::set_range</a></div><div class="ttdeci">virtual void set_range(T start, T end)</div><div class="ttdoc">Set progress range extent.</div><div class="ttdef"><b>Definition</b> progress.hpp:98</div></div>
+<div class="ttc" id="aclassstdex_1_1progress__switcher_html"><div class="ttname"><a href="classstdex_1_1progress__switcher.html">stdex::progress_switcher</a></div><div class="ttdoc">Progress indicator switcher.</div><div class="ttdef"><b>Definition</b> progress.hpp:273</div></div>
 <div class="ttc" id="aclassstdex_1_1progress_html"><div class="ttname"><a href="classstdex_1_1progress.html">stdex::progress</a></div><div class="ttdoc">Progress indicator base class.</div><div class="ttdef"><b>Definition</b> progress.hpp:19</div></div>
 <div class="ttc" id="aclassstdex_1_1progress_html_a03380c822297092b3bb9867deee26202"><div class="ttname"><a href="classstdex_1_1progress.html#a03380c822297092b3bb9867deee26202">stdex::progress::cancel</a></div><div class="ttdeci">virtual bool cancel()</div><div class="ttdoc">Query whether user requested abort.</div><div class="ttdef"><b>Definition</b> progress.hpp:65</div></div>
 <div class="ttc" id="aclassstdex_1_1progress_html_a2cab8b5ac137d16fced31ee205264b01"><div class="ttname"><a href="classstdex_1_1progress.html#a2cab8b5ac137d16fced31ee205264b01">stdex::progress::set_text</a></div><div class="ttdeci">virtual void set_text(const char *msg)</div><div class="ttdoc">Set progress indicator text.</div><div class="ttdef"><b>Definition</b> progress.hpp:26</div></div>
@@ -260,7 +282,7 @@ $(function() {
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jul 14 2023 12:52:33 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
+Generated on Mon Jul 17 2023 08:40:09 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
 </small></address>
 </body>
 </html>

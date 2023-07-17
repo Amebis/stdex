@@ -92,7 +92,8 @@ Inheritance diagram for stdex::global_progress&lt; T &gt;:</div>
  <div class="center">
   <img src="classstdex_1_1global__progress.png" usemap="#stdex::global_5Fprogress_3C_20T_20_3E_map" alt=""/>
   <map id="stdex::global_5Fprogress_3C_20T_20_3E_map" name="stdex::global_5Fprogress_3C_20T_20_3E_map">
-<area href="classstdex_1_1progress.html" title="Progress indicator base class." alt="stdex::progress&lt; T &gt;" shape="rect" coords="0,0,169,24"/>
+<area href="classstdex_1_1progress.html" title="Progress indicator base class." alt="stdex::progress&lt; T &gt;" shape="rect" coords="0,0,182,24"/>
+<area href="classstdex_1_1progress__switcher.html" title="Progress indicator switcher." alt="stdex::progress_switcher&lt; T &gt;" shape="rect" coords="0,112,182,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -149,15 +150,15 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a68dc18c54ce4cdb975f5e59bed05b5e9"><td class="memItemLeft" align="right" valign="top"><a id="a68dc18c54ce4cdb975f5e59bed05b5e9" name="a68dc18c54ce4cdb975f5e59bed05b5e9"></a>
 <a class="el" href="classstdex_1_1progress.html">progress</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>m_host</b></td></tr>
 <tr class="separator:a68dc18c54ce4cdb975f5e59bed05b5e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad145e017a6335c6c39e1079d39e9b31f"><td class="memItemLeft" align="right" valign="top"><a id="ad145e017a6335c6c39e1079d39e9b31f" name="ad145e017a6335c6c39e1079d39e9b31f"></a>
-<a class="el" href="structstdex_1_1interval.html">interval</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>m_kaz</b></td></tr>
-<tr class="separator:ad145e017a6335c6c39e1079d39e9b31f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a636846ed2494bdc9dffbbf6cc3f2c70c"><td class="memItemLeft" align="right" valign="top"><a id="a636846ed2494bdc9dffbbf6cc3f2c70c" name="a636846ed2494bdc9dffbbf6cc3f2c70c"></a>
-<a class="el" href="structstdex_1_1interval.html">interval</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>m_glob</b></td></tr>
-<tr class="separator:a636846ed2494bdc9dffbbf6cc3f2c70c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ef199aa04da14e134e17aa498254b00"><td class="memItemLeft" align="right" valign="top"><a id="a6ef199aa04da14e134e17aa498254b00" name="a6ef199aa04da14e134e17aa498254b00"></a>
-<a class="el" href="structstdex_1_1interval.html">interval</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>m_odsek</b></td></tr>
-<tr class="separator:a6ef199aa04da14e134e17aa498254b00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33fba14f43065383c39e44301912d990"><td class="memItemLeft" align="right" valign="top"><a id="a33fba14f43065383c39e44301912d990" name="a33fba14f43065383c39e44301912d990"></a>
+<a class="el" href="structstdex_1_1interval.html">interval</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>m_local</b></td></tr>
+<tr class="separator:a33fba14f43065383c39e44301912d990"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f5cb88fa6e7f1922c3497675bc4df4d"><td class="memItemLeft" align="right" valign="top"><a id="a5f5cb88fa6e7f1922c3497675bc4df4d" name="a5f5cb88fa6e7f1922c3497675bc4df4d"></a>
+<a class="el" href="structstdex_1_1interval.html">interval</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>m_global</b></td></tr>
+<tr class="separator:a5f5cb88fa6e7f1922c3497675bc4df4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc4f7acdf6ddfd0e15d5c5fde686b2ef"><td class="memItemLeft" align="right" valign="top"><a id="afc4f7acdf6ddfd0e15d5c5fde686b2ef" name="afc4f7acdf6ddfd0e15d5c5fde686b2ef"></a>
+<a class="el" href="structstdex_1_1interval.html">interval</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>m_section</b></td></tr>
+<tr class="separator:afc4f7acdf6ddfd0e15d5c5fde686b2ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;class T&gt;<br />
@@ -561,7 +562,7 @@ template&lt;class T &gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jul 14 2023 12:52:33 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
+Generated on Mon Jul 17 2023 08:40:09 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
 </small></address>
 </body>
 </html>
