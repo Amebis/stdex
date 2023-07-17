@@ -718,11 +718,11 @@ namespace stdex
 				assert(text || start >= end);
 				if (start < end && text[start]) {
 					const T* set = m_set.c_str();
-					const T* r = (flags & match_case_insensitive) ?
-						stdex::strnichr(set, text[start], m_set.size(), m_locale) :
-						stdex::strnchr(set, text[start], m_set.size());
-					if (r && !m_invert || !r && m_invert) {
-						hit_offset = r ? r - set : (size_t)-1;
+					size_t r = (flags & match_case_insensitive) ?
+						stdex::strnichr(set, m_set.size(), text[start], m_locale) :
+						stdex::strnchr(set, m_set.size(), text[start]);
+					if (r != stdex::npos && !m_invert || r == stdex::npos && m_invert) {
+						hit_offset = r;
 						interval.end = (interval.start = start) + 1;
 						return true;
 					}
@@ -768,11 +768,11 @@ namespace stdex
 					wchar_t buf[3];
 					const wchar_t* chr = next_sgml_cp(text, start, end, interval.end, buf);
 					const wchar_t* set = m_set.c_str();
-					const wchar_t* r = (flags & match_case_insensitive) ?
-						stdex::strnistr(set, chr, m_set.size(), m_locale) :
-						stdex::strnstr(set, chr, m_set.size());
-					if (r && !m_invert || !r && m_invert) {
-						hit_offset = r ? r - set : (size_t)-1;
+					size_t r = (flags & match_case_insensitive) ?
+						stdex::strnistr(set, m_set.size(), chr, m_locale) :
+						stdex::strnstr(set, m_set.size(), chr);
+					if (r != stdex::npos && !m_invert || r == stdex::npos && m_invert) {
+						hit_offset = r;
 						interval.start = start;
 						return true;
 					}
