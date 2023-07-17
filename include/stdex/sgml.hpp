@@ -10,6 +10,7 @@
 #include "sgml_unicode.hpp"
 #include "string.hpp"
 #include <assert.h>
+#include <string>
 
 namespace stdex
 {
