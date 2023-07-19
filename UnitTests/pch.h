@@ -14,6 +14,7 @@
 #include <stdex/hex.hpp>
 #include <stdex/idrec.hpp>
 #include <stdex/interval.hpp>
+#include <stdex/ios.hpp>
 #include <stdex/mapping.hpp>
 #include <stdex/parser.hpp>
 #include <stdex/progress.hpp>
