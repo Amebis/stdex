@@ -1,4 +1,4 @@
-/*
+﻿/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2016-2023 Amebis
 */
@@ -13,6 +13,12 @@
 
 namespace stdex
 {
+#ifdef _WIN32
+	using locale_t = _locale_t;
+#else
+	using locale_t = ::locale_t;
+#endif
+
 	///
 	/// UTF-16 code unit
 	///
@@ -806,21 +812,45 @@ namespace stdex
 	}
 
 	/// \cond internal
-	inline int vsnprintf(_Out_z_cap_(capacity) char *str, _In_ size_t capacity, _In_z_ _Printf_format_string_ const char *format, _In_ va_list arg)
+	inline int vsnprintf(_Out_z_cap_(capacity) char *str, _In_ size_t capacity, _In_z_ _Printf_format_string_ const char *format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
-#if _MSC_VER <= 1600
+		int r;
+#ifdef _WIN32
+		// Don't use _vsnprintf_s(). It terminates the string even if we want to print to the edge of the buffer.
 #pragma warning(suppress: 4996)
-		return _vsnprintf(str, capacity, format, arg);
+		r = _vsnprintf_l(str, capacity, format, locale, arg);
 #else
-#pragma warning(suppress: 4996)
-		return ::vsnprintf(str, capacity, format, arg);
+		r = vsnprintf(str, capacity, format, arg);
 #endif
+		if (r == -1 && strnlen(str, capacity) == capacity) {
+			// Buffer overrun. Estimate buffer size for the next iteration.
+			capacity += std::max<size_t>(capacity / 8, 0x80);
+			if (capacity > INT_MAX)
+				throw std::invalid_argument("string too big");
+			return (int)capacity;
+		}
+		return r;
 	}
 
-	inline int vsnprintf(_Out_z_cap_(capacity) wchar_t *str, _In_ size_t capacity, _In_z_ _Printf_format_string_ const wchar_t *format, _In_ va_list arg) noexcept
+	inline int vsnprintf(_Out_z_cap_(capacity) wchar_t *str, _In_ size_t capacity, _In_z_ _Printf_format_string_ const wchar_t *format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
+		int r;
+
+#ifdef _WIN32
+		// Don't use _vsnwprintf_s(). It terminates the string even if we want to print to the edge of the buffer.
 #pragma warning(suppress: 4996)
-		return _vsnwprintf(str, capacity, format, arg);
+		r = _vsnwprintf_l(str, capacity, format, locale, arg);
+#else
+		r = vswprintf(str, capacity, format, arg);
+#endif
+		if (r == -1 && strnlen(str, capacity) == capacity) {
+			// Buffer overrun. Estimate buffer size for the next iteration.
+			capacity += std::max<size_t>(capacity / 8, 0x80);
+			if (capacity > INT_MAX)
+				throw std::invalid_argument("string too big");
+			return (int)capacity;
+		}
+		return r;
 	}
 	/// \endcond
 
@@ -829,15 +859,16 @@ namespace stdex
 	///
 	/// \param[out] str     String to append formatted text
 	/// \param[in ] format  String template using `printf()` style
+	/// \param[in ] locale  Stdlib locale used to perform formatting. Use `NULL` to use locale globally set by `setlocale()`.
 	/// \param[in ] arg     Arguments to `format`
 	///
 	template<class _Elem, class _Traits, class _Ax>
-	inline void vappendf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_ const _Elem *format, _In_ va_list arg)
+	inline void vappendf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_ const _Elem *format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
 		_Elem buf[1024/sizeof(_Elem)];
 
 		// Try with stack buffer first.
-		int count = vsnprintf(buf, _countof(buf) - 1, format, arg);
+		int count = vsnprintf(buf, _countof(buf) - 1, format, locale, arg);
 		if (count >= 0) {
 			// Copy from stack.
 			str.append(buf, count);
@@ -845,7 +876,7 @@ namespace stdex
 			for (size_t capacity = 2*1024/sizeof(_Elem);; capacity *= 2) {
 				// Allocate on heap and retry.
 				auto buf_dyn = std::make_unique<_Elem[]>(capacity);
-				count = vsnprintf(buf_dyn.get(), capacity - 1, format, arg);
+				count = vsnprintf(buf_dyn.get(), capacity - 1, format, locale, arg);
 				if (count >= 0) {
 					str.append(buf_dyn.get(), count);
 					break;
@@ -859,13 +890,14 @@ namespace stdex
 	///
 	/// \param[out] str     String to append formatted text
 	/// \param[in ] format  String template using `printf()` style
+	/// \param[in ] locale  Stdlib locale used to perform formatting. Use `NULL` to use locale globally set by `setlocale()`.
 	///
 	template<class _Elem, class _Traits, class _Ax>
-	inline void appendf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_ const _Elem *format, ...)
+	inline void appendf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_ const _Elem *format, _In_opt_ locale_t locale, ...)
 	{
 		va_list arg;
-		va_start(arg, format);
-		vappendf(str, format, arg);
+		va_start(arg, locale);
+		vappendf(str, format, locale, arg);
 		va_end(arg);
 	}
 
@@ -874,13 +906,14 @@ namespace stdex
 	///
 	/// \param[out] str     Formatted string
 	/// \param[in ] format  String template using `printf()` style
+	/// \param[in ] locale  Stdlib locale used to perform formatting. Use `NULL` to use locale globally set by `setlocale()`.
 	/// \param[in ] arg     Arguments to `format`
 	///
 	template<class _Elem, class _Traits, class _Ax>
-	inline void vsprintf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_ const _Elem *format, _In_ va_list arg)
+	inline void vsprintf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_ const _Elem *format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
 		str.clear();
-		appendf(str, format, arg);
+		appendf(str, format, locale, arg);
 	}
 
 	///
@@ -888,13 +921,14 @@ namespace stdex
 	///
 	/// \param[out] str     Formatted string
 	/// \param[in ] format  String template using `printf()` style
+	/// \param[in ] locale  Stdlib locale used to perform formatting. Use `NULL` to use locale globally set by `setlocale()`.
 	///
 	template<class _Elem, class _Traits, class _Ax>
-	inline void sprintf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_ const _Elem *format, ...)
+	inline void sprintf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_ const _Elem *format, _In_opt_ locale_t locale, ...)
 	{
 		va_list arg;
-		va_start(arg, format);
-		vsprintf(str, format, arg);
+		va_start(arg, locale);
+		vsprintf(str, format, locale, arg);
 		va_end(arg);
 	}
 }
