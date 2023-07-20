@@ -13,17 +13,19 @@
 #include <assert.h>
 #include <stdarg.h>
 #include <stdint.h>
-#include <limits>
-#include <list>
-#include <memory>
-#include <set>
-#include <string>
 #ifdef _WIN32
 #include <winsock2.h>
+#include <ws2ipdef.h>
 #else
 #include <inaddr.h>
 #include <in6addr.h>
 #endif
+#include <limits>
+#include <list>
+#include <locale>
+#include <memory>
+#include <set>
+#include <string>
 
 #ifdef _MSC_VER
 #pragma warning(push)
