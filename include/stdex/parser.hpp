@@ -2108,7 +2108,7 @@ namespace stdex
 					decimal->invalidate();
 				}
 
-				if (!integer->interval.empty() &&
+				if (integer->interval.empty() &&
 					decimal->interval.empty())
 				{
 					// No integer part, no decimal part.
