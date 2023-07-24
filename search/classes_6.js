@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['mapping_0',['mapping',['../structstdex_1_1mapping.html',1,'stdex']]]
+  ['lazy_5fprogress_0',['lazy_progress',['../classstdex_1_1lazy__progress.html',1,'stdex']]]
 ];
