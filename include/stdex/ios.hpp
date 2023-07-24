@@ -82,6 +82,11 @@ namespace stdex
 			return *this;
 		}
 
+		inline basic_ostreamfmt<_Elem, _Traits>& write_byte(_In_ uint8_t value)
+		{
+			return write(value);
+		}
+
 		///
 		/// Formats string using `printf()` and write it to stream.
 		///
@@ -120,7 +125,7 @@ namespace stdex
 		inline basic_ostreamfmt<_Elem, _Traits>& operator <<(_In_ uint16_t value) { return write(value); }
 		inline basic_ostreamfmt<_Elem, _Traits>& operator <<(_In_ uint32_t value) { return write(value); }
 		inline basic_ostreamfmt<_Elem, _Traits>& operator <<(_In_ uint64_t value) { return write(value); }
-#ifdef _NATIVE_SIZE_T_DEFINED
+#if defined(_NATIVE_SIZE_T_DEFINED) && defined(_WIN64)
 		inline basic_ostreamfmt<_Elem, _Traits>& operator <<(_In_ size_t value) { return write(value); }
 #endif
 		inline basic_ostreamfmt<_Elem, _Traits>& operator <<(_In_ float value) { return write(value); }
@@ -202,6 +207,13 @@ namespace stdex
 			return *this;
 		}
 
+		inline uint8_t read_byte()
+		{
+			uint8_t value;
+			read(value);
+			return value;
+		}
+
 		inline basic_istreamfmt<_Elem, _Traits>& operator >>(_Out_ int8_t& value) { return read(value); }
 		inline basic_istreamfmt<_Elem, _Traits>& operator >>(_Out_ int16_t& value) { return read(value); }
 		inline basic_istreamfmt<_Elem, _Traits>& operator >>(_Out_ int32_t& value) { return read(value); }
@@ -210,7 +222,7 @@ namespace stdex
 		inline basic_istreamfmt<_Elem, _Traits>& operator >>(_Out_ uint16_t& value) { return read(value); }
 		inline basic_istreamfmt<_Elem, _Traits>& operator >>(_Out_ uint32_t& value) { return read(value); }
 		inline basic_istreamfmt<_Elem, _Traits>& operator >>(_Out_ uint64_t& value) { return read(value); }
-#ifdef _NATIVE_SIZE_T_DEFINED
+#if defined(_NATIVE_SIZE_T_DEFINED) && defined(_WIN64)
 		inline basic_istreamfmt<_Elem, _Traits>& operator >>(_Out_ size_t& value) { return read(value); }
 #endif
 		inline basic_istreamfmt<_Elem, _Traits>& operator >>(_Out_ float& value) { return read(value); }
@@ -278,9 +290,9 @@ namespace stdex
 			if (which & std::ios_base::in) {
 				_Elem* target;
 				switch (way) {
-				case std::ios_base::beg: target = eback() + off; break;
-				case std::ios_base::cur: target = gptr() + off; break;
-				case std::ios_base::end: target = egptr() + off; break;
+				case std::ios_base::beg: target = eback() + static_cast<ptrdiff_t>(off); break;
+				case std::ios_base::cur: target = gptr() + static_cast<ptrdiff_t>(off); break;
+				case std::ios_base::end: target = egptr() + static_cast<ptrdiff_t>(off); break;
 				default: throw std::invalid_argument("invalid seek reference");
 				}
 				if (eback() <= target && target <= egptr()) {
@@ -295,7 +307,7 @@ namespace stdex
 		{
 			// change to specified position, according to mode
 			if (which & std::ios_base::in) {
-				_Elem* target = eback() + pos;
+				_Elem* target = eback() + static_cast<size_t>(pos);
 				if (eback() <= target && target <= egptr()) {
 					gbump(static_cast<int>(target - gptr()));
 					return pos_type{ off_type{ target - eback() } };
@@ -346,6 +358,11 @@ namespace stdex
 	{
 	public:
 		using _Mybase = std::basic_fstream<_Elem, _Traits>;
+#if _HAS_CXX20
+		using time_point = std::chrono::time_point<std::chrono::file_clock>;
+#else
+		using time_point = std::chrono::time_point<std::chrono::system_clock>;
+#endif
 
 		basic_fstream() {}
 
@@ -392,18 +409,12 @@ namespace stdex
 #endif
 		}
 
-#if _HAS_CXX20
-		using time_type = std::chrono::time_point<std::chrono::file_clock>;
-#else
-		using time_type = std::chrono::time_point<std::chrono::system_clock>;
-#endif
-
 		///
 		/// Returns file modification time
 		///
 		/// \returns File modification time
 		///
-		time_type mtime() const
+		time_point mtime() const
 		{
 			auto h = os_fhandle();
 #ifdef _WIN32
@@ -413,10 +424,10 @@ namespace stdex
 			if (!GetFileTime(h, NULL, NULL, &ft))
 				throw std::runtime_error("failed to get mtime");
 #if _HAS_CXX20
-			return time_type(time_type::duration(((static_cast<int64_t>(ft.dwHighDateTime) << 32) | ft.dwLowDateTime)));
+			return time_point(time_point::duration(((static_cast<int64_t>(ft.dwHighDateTime) << 32) | ft.dwLowDateTime)));
 #else
 			// Adjust epoch to std::chrono::time_point<std::chrono::system_clock>/time_t.
-			return time_type(time_type::duration(((static_cast<int64_t>(ft.dwHighDateTime) << 32) | ft.dwLowDateTime) - 116444736000000000ll));
+			return time_point(time_point::duration(((static_cast<int64_t>(ft.dwHighDateTime) << 32) | ft.dwLowDateTime) - 116444736000000000ll));
 #endif
 #else
 #error Implement!
@@ -468,14 +479,14 @@ namespace stdex
 		///
 		template <class T>
 		explicit basic_stringstream(_In_z_ const T* filename, _In_ std::ios_base::openmode mode = std::ios_base::in, _In_ int prot = std::ios_base::_Default_open_prot) :
-			_Mybase(std::ios_base::in | std::ios_base::out | (mode & std::ios_base::bin | std::ios_base::app))
+			_Mybase(std::ios_base::in | std::ios_base::out | (mode & std::ios_base::binary | std::ios_base::app))
 		{
 			std::basic_ifstream<_Elem, _Traits> input(filename, mode & ~(std::ios_base::ate | std::ios_base::app), prot);
 			input.seekg(0, input.end);
 			auto size = input.tellg();
 			if (size > SIZE_MAX)
 				throw std::runtime_error("file too big to fit into memory");
-			str.reserve(static_cast<size_t>(size));
+			str().reserve(static_cast<size_t>(size));
 			input.seekg(0);
 			do {
 				_Elem buf[0x1000];
@@ -493,10 +504,38 @@ namespace stdex
 		/// \param[in] mode      Mode flags to open file. The std::stringstream returned is always opened as in|out.
 		/// \param[in] prot      Protection flags to open file
 		///
-		template <class T>
-		explicit basic_stringstream(_In_ const std::basic_string<T>& filename, _In_ std::ios_base::openmode mode = std::ios_base::in, _In_ int prot = std::ios_base::_Default_open_prot) :
+		template <class _Elem2, class _Traits2 = std::char_traits<_Elem2>, class _Alloc2 = std::allocator<_Elem2>>
+		explicit basic_stringstream(_In_ const std::basic_string<_Elem2, _Traits2, _Alloc2>& filename, _In_ std::ios_base::openmode mode = std::ios_base::in, _In_ int prot = std::ios_base::_Default_open_prot) :
 			basic_stringstream(filename.c_str(), mode, prot)
 		{}
+
+		///
+		/// Saves stream content to a file.
+		///
+		/// \param[in] filename  File name
+		/// \param[in] mode      Mode flags to open file
+		/// \param[in] prot      Protection flags to open file
+		///
+		template <class T>
+		void save(_In_z_ const T* filename, _In_ std::ios_base::openmode mode = std::ios_base::out, _In_ int prot = std::ios_base::_Default_open_prot)
+		{
+			std::basic_ofstream<_Elem, _Traits> output(filename, mode, prot);
+			auto origin = tellg();
+			seekg(0, end);
+			auto size = tellg();
+			do {
+				_Elem buf[0x1000];
+				read(buf, _countof(buf));
+				output.write(buf, gcount());
+			} while (!eof());
+			seekg(origin);
+		}
+
+		template <class _Elem2, class _Traits2 = std::char_traits<T>, class _Alloc2 = std::allocator<T>>
+		void save(_In_ const std::basic_string<_Elem2, _Traits2, _Alloc2>& filename, _In_ std::ios_base::openmode mode = std::ios_base::out, _In_ int prot = std::ios_base::_Default_open_prot)
+		{
+			save(filename.data(), mode, prot);
+		}
 	};
 
 	using stringstream = basic_stringstream<char, std::char_traits<char>, std::allocator<char>>;
