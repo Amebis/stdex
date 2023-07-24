@@ -98,9 +98,9 @@ Public Types</h2></td></tr>
 <tr class="memitem:abfb59ed2be3cbd175fec442a79e5d587"><td class="memItemLeft" align="right" valign="top"><a id="abfb59ed2be3cbd175fec442a79e5d587" name="abfb59ed2be3cbd175fec442a79e5d587"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>_Mybase</b> = std::basic_fstream&lt; _Elem, _Traits &gt;</td></tr>
 <tr class="separator:abfb59ed2be3cbd175fec442a79e5d587"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0dec3f65add50963c16ae48968e74ea9"><td class="memItemLeft" align="right" valign="top"><a id="a0dec3f65add50963c16ae48968e74ea9" name="a0dec3f65add50963c16ae48968e74ea9"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>time_type</b> = std::chrono::time_point&lt; std::chrono::system_clock &gt;</td></tr>
-<tr class="separator:a0dec3f65add50963c16ae48968e74ea9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94f2e5d39870d66ed9fa2b949c1b9edc"><td class="memItemLeft" align="right" valign="top"><a id="a94f2e5d39870d66ed9fa2b949c1b9edc" name="a94f2e5d39870d66ed9fa2b949c1b9edc"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>time_point</b> = std::chrono::time_point&lt; std::chrono::system_clock &gt;</td></tr>
+<tr class="separator:a94f2e5d39870d66ed9fa2b949c1b9edc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -124,16 +124,16 @@ template&lt;class _Elem2 , class _Traits2 , class _Ax &gt; </td></tr>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>truncate</b> ()</td></tr>
 <tr class="memdesc:a1bd50e0c0e4cd1f3e6c6919df8417d3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets end of file at current put position. <br /></td></tr>
 <tr class="separator:a1bd50e0c0e4cd1f3e6c6919df8417d3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa4b0e6e89e28cfdadb9eec1b8b423899"><td class="memItemLeft" align="right" valign="top">time_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1basic__fstream.html#aa4b0e6e89e28cfdadb9eec1b8b423899">mtime</a> () const</td></tr>
-<tr class="memdesc:aa4b0e6e89e28cfdadb9eec1b8b423899"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns file modification time.  <br /></td></tr>
-<tr class="separator:aa4b0e6e89e28cfdadb9eec1b8b423899"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a183cd8e046c5ae2c3720204a8e61c54d"><td class="memItemLeft" align="right" valign="top">time_point&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1basic__fstream.html#a183cd8e046c5ae2c3720204a8e61c54d">mtime</a> () const</td></tr>
+<tr class="memdesc:a183cd8e046c5ae2c3720204a8e61c54d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns file modification time.  <br /></td></tr>
+<tr class="separator:a183cd8e046c5ae2c3720204a8e61c54d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;class _Elem, class _Traits&gt;<br />
 class stdex::basic_fstream&lt; _Elem, _Traits &gt;</div><p>File stream with additional std::filesystem features. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="aa4b0e6e89e28cfdadb9eec1b8b423899" name="aa4b0e6e89e28cfdadb9eec1b8b423899"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa4b0e6e89e28cfdadb9eec1b8b423899">&#9670;&#160;</a></span>mtime()</h2>
+<a id="a183cd8e046c5ae2c3720204a8e61c54d" name="a183cd8e046c5ae2c3720204a8e61c54d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a183cd8e046c5ae2c3720204a8e61c54d">&#9670;&#160;</a></span>mtime()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -144,7 +144,7 @@ template&lt;class _Elem , class _Traits &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">time_type <a class="el" href="classstdex_1_1basic__fstream.html">stdex::basic_fstream</a>&lt; _Elem, _Traits &gt;::mtime </td>
+          <td class="memname">time_point <a class="el" href="classstdex_1_1basic__fstream.html">stdex::basic_fstream</a>&lt; _Elem, _Traits &gt;::mtime </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -168,7 +168,7 @@ template&lt;class _Elem , class _Traits &gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jul 24 2023 07:46:44 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
+Generated on Mon Jul 24 2023 09:46:51 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
 </small></address>
 </body>
 </html>
