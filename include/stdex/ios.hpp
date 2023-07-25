@@ -15,10 +15,13 @@
 #include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <algorithm>
 #include <chrono>
 #include <fstream>
+#include <iterator>
 #include <istream>
 #include <ostream>
+#include <vector>
 
 namespace stdex
 {
@@ -257,7 +260,7 @@ namespace stdex
 	using wiostreamfmt = basic_iostreamfmt<wchar_t, std::char_traits<wchar_t>>;
 
 	///
-	/// Shared-memory string buffer
+	/// Shared-memory string stream buffer
 	///
 	template <class _Elem, class _Traits>
 	class basic_sharedstrbuf : public std::basic_streambuf<_Elem, _Traits>
@@ -265,12 +268,12 @@ namespace stdex
 	public:
 		basic_sharedstrbuf(_In_reads_(size) const _Elem* data, _In_ size_t size)
 		{
-			std::basic_streambuf<_Elem, _Traits>::setg(const_cast<_Elem*>(data), const_cast<_Elem*>(data), const_cast<_Elem*>(data + size));
+			setg(const_cast<_Elem*>(data), const_cast<_Elem*>(data), const_cast<_Elem*>(data + size));
 		}
 
 		basic_sharedstrbuf(_In_ const basic_sharedstrbuf<_Elem, _Traits>& other)
 		{
-			std::basic_streambuf<_Elem, _Traits>::setg(other.eback(), other.gptr(), other.egptr());
+			setg(other.eback(), other.gptr(), other.egptr());
 		}
 
 		basic_sharedstrbuf<_Elem, _Traits>& operator =(_In_ const basic_sharedstrbuf<_Elem, _Traits>& other)
@@ -303,9 +306,8 @@ namespace stdex
 			return pos_type{ off_type{-1} };
 		}
 
-		virtual pos_type __CLR_OR_THIS_CALL seekpos(pos_type pos, std::ios_base::openmode which = std::ios_base::in | std::ios_base::out)
+		virtual pos_type seekpos(pos_type pos, std::ios_base::openmode which = std::ios_base::in | std::ios_base::out)
 		{
-			// change to specified position, according to mode
 			if (which & std::ios_base::in) {
 				_Elem* target = eback() + static_cast<size_t>(pos);
 				if (eback() <= target && target <= egptr()) {
@@ -332,6 +334,308 @@ namespace stdex
 
 	using isharedstrstream = basic_isharedstrstream<char, std::char_traits<char>>;
 	using wisharedstrstream = basic_isharedstrstream<wchar_t, std::char_traits<wchar_t>>;
+
+	///
+	/// Diagnostic input stream buffer
+	///
+	/// Verifies multiple input streams read the same data.
+	///
+	template <class _Elem, class _Traits>
+	class basic_idiagstreambuf : public std::basic_streambuf<_Elem, _Traits>
+	{
+	public:
+		using guest_stream = std::basic_istream<_Elem, _Traits>;
+
+		basic_idiagstreambuf(_In_reads_(count) const guest_stream** streams, _In_ size_t count, _In_ size_t buf_size = 2048) :
+			m_streams(stream, count),
+			m_buf(buf_size)
+		{}
+
+		template<typename _Iter>
+		basic_idiagstreambuf(_In_ const _Iter first, _In_ const _Iter last, _In_ size_t buf_size = 2048) :
+			m_streams(first, last),
+			m_buf(buf_size)
+		{}
+
+	private:
+		basic_idiagstreambuf(_In_ const basic_idiagstreambuf<_Elem, _Traits>& other);
+		basic_idiagstreambuf<_Elem, _Traits>& operator =(_In_ const basic_idiagstreambuf<_Elem, _Traits>& other);
+		basic_idiagstreambuf(_Inout_ basic_idiagstreambuf<_Elem, _Traits>&& other) noexcept;
+		basic_idiagstreambuf<_Elem, _Traits>& operator =(_Inout_ basic_idiagstreambuf<_Elem, _Traits>&& other) noexcept;
+
+	protected:
+		virtual pos_type seekoff(off_type off, std::ios_base::seekdir way, std::ios_base::openmode which = std::ios_base::in | std::ios_base::out)
+		{
+			if ((which & std::ios_base::in) && !m_streams.empty()) {
+				setg(nullptr, nullptr, nullptr);
+				m_streams[0]->seekg(off, way);
+				bool errors = m_streams[0]->bad();
+				for (size_t i = 1, n = m_streams.size(); i < n; ++i) {
+					m_streams[i]->seekg(off, way);
+					errors |= m_streams[i]->bad();
+				}
+				return errors ? pos_type{ off_type{-1} } : m_streams[0]->tellg();
+			}
+			return pos_type{ off_type{-1} };
+		}
+
+		virtual pos_type seekpos(pos_type pos, std::ios_base::openmode which = std::ios_base::in | std::ios_base::out)
+		{
+			if ((which & std::ios_base::in) && !m_streams.empty()) {
+				setg(nullptr, nullptr, nullptr);
+				m_streams[0]->seekg(pos);
+				bool errors = m_streams[0]->bad();
+				for (size_t i = 1, n = m_streams.size(); i < n; ++i) {
+					m_streams[i]->seekg(pos);
+					errors |= m_streams[i]->bad();
+				}
+				return errors ? pos_type{ off_type{-1} } : m_streams[0]->tellg();
+			}
+			return pos_type{ off_type{-1} };
+		}
+
+		virtual int_type underflow()
+		{
+			if (m_streams.empty())
+				goto error;
+			size_t cap = m_buf.capacity();
+			m_buf.resize(cap);
+			_Elem* data = m_buf.data();
+			m_streams[0]->read(data, cap);
+			auto read = m_streams[0]->gcount();
+			if (!read)
+				goto error;
+			m_temp.resize(cap);
+			_Elem* temp_data = m_temp.data();
+			for (size_t i = 1, n = m_streams.size(); i < n; ++i) {
+				m_streams[i]->read(temp_data, cap);
+				auto temp_read = m_streams[i]->gcount();
+				if (read != temp_read || !std::equal(data, data + read, temp_data))
+					goto error;
+			}
+			setg(data, data, data + read);
+			return _Traits::to_int_type(m_buf.front());
+
+		error:
+			setg(nullptr, nullptr, nullptr);
+			return _Traits::eof();
+		}
+
+	protected:
+		std::vector<guest_stream*> m_streams;
+		std::vector<_Elem> m_buf, m_temp;
+	};
+
+	///
+	/// Diagnostic input stream
+	///
+	/// Verifies multiple input streams read the same data.
+	///
+	template <class _Elem, class _Traits>
+	class basic_idiagstream : public std::basic_istream<_Elem, _Traits>
+	{
+	public:
+		using guest_stream = std::basic_istream<_Elem, _Traits>;
+
+		basic_idiagstream(_In_reads_(count) const guest_stream** streams, _In_ size_t count, _In_ size_t buf_size = 2048) :
+			m_buf(streams, count, buf_size),
+			std::basic_istream<_Elem, _Traits>(&m_buf)
+		{}
+
+		template<typename _Iter>
+		basic_idiagstream(_In_ const _Iter first, _In_ const _Iter last, _In_ size_t buf_size = 2048) :
+			m_buf(first, last, buf_size),
+			std::basic_istream<_Elem, _Traits>(&m_buf)
+		{}
+
+	protected:
+		basic_idiagstreambuf<_Elem, _Traits> m_buf;
+	};
+
+	using idiagstream = basic_idiagstream<char, std::char_traits<char>>;
+	using widiagstream = basic_idiagstream<wchar_t, std::char_traits<wchar_t>>;
+
+	///
+	/// Diagnostic output stream buffer
+	///
+	/// Writes to multiple output streams the same data.
+	///
+	template <class _Elem, class _Traits>
+	class basic_odiagstreambuf : public std::basic_streambuf<_Elem, _Traits>
+	{
+	public:
+		using guest_stream = std::basic_ostream<_Elem, _Traits>;
+
+		basic_odiagstreambuf(_In_reads_(count) const guest_stream** streams, _In_ size_t count, _In_ size_t buf_size = 2048) :
+			m_streams(stream, count),
+			m_buf(buf_size)
+		{
+			setp(m_buf.data(), m_buf.data(), m_buf.data() + m_buf.size());
+		}
+
+		template<typename _Iter>
+		basic_odiagstreambuf(_In_ const _Iter first, _In_ const _Iter last, _In_ size_t buf_size = 2048) :
+			m_streams(first, last),
+			m_buf(buf_size)
+		{}
+
+	private:
+		basic_odiagstreambuf(_In_ const basic_odiagstreambuf<_Elem, _Traits>& other);
+		basic_odiagstreambuf<_Elem, _Traits>& operator =(_In_ const basic_odiagstreambuf<_Elem, _Traits>& other);
+		basic_odiagstreambuf(_Inout_ basic_odiagstreambuf<_Elem, _Traits>&& other) noexcept;
+		basic_odiagstreambuf<_Elem, _Traits>& operator =(_Inout_ basic_odiagstreambuf<_Elem, _Traits>&& other) noexcept;
+
+	protected:
+		virtual pos_type seekoff(off_type off, std::ios_base::seekdir way, std::ios_base::openmode which = std::ios_base::in | std::ios_base::out)
+		{
+			if ((which & std::ios_base::out) && !m_streams.empty()) {
+				if (sync() < 0)
+					return pos_type{ off_type{-1} };
+				m_streams[0]->seekp(off, way);
+				bool errors = m_streams[0]->bad();
+				for (size_t i = 1, n = m_streams.size(); i < n; ++i) {
+					m_streams[i]->seekp(off, way);
+					errors |= m_streams[i]->bad();
+				}
+				return errors ? pos_type{ off_type{-1} } : m_streams[0]->tellp();
+			}
+			return pos_type{ off_type{-1} };
+		}
+
+		virtual pos_type seekpos(pos_type pos, std::ios_base::openmode which = std::ios_base::in | std::ios_base::out)
+		{
+			if ((which & std::ios_base::out) && !m_streams.empty()) {
+				if (sync() < 0)
+					return pos_type{ off_type{-1} };
+				m_streams[0]->seekp(pos);
+				bool errors = m_streams[0]->bad();
+				for (size_t i = 1, n = m_streams.size(); i < n; ++i) {
+					m_streams[i]->seekp(pos);
+					errors |= m_streams[i]->bad();
+				}
+				return errors ? pos_type{ off_type{-1} } : m_streams[0]->tellp();
+			}
+			return pos_type{ off_type{-1} };
+		}
+
+		virtual int_type overflow(int_type ch = _Traits::eof())
+		{
+			if (sync() < 0)
+				return _Traits::eof();
+			if (_Traits::not_eof(ch)) {
+				m_buf.front() = _Traits::to_char_type(ch);
+				_Elem* data = m_buf.data();
+				setp(data, data + 1, data + m_buf.size());
+			}
+			return 0;
+		}
+
+		virtual int sync()
+		{
+			_Elem* data = m_buf.data();
+			size_t size = pptr() - pbase();
+			if (!size)
+				return 0;
+			bool errors = false;
+			for (size_t i = 0, n = m_streams.size(); i < n; ++i) {
+				try { m_streams[i]->write(data, size); }
+				catch (std::exception) { errors = true; }
+				if (!m_streams[i]->good())
+					errors = true;
+			}
+			setp(data, data, data + m_buf.size());
+			return errors ? -1 : 0;
+		}
+
+	protected:
+		std::vector<guest_stream*> m_streams;
+		std::vector<_Elem> m_buf;
+	};
+
+	///
+	/// Diagnostic output stream
+	///
+	/// Writes to multiple output streams the same data.
+	///
+	template <class _Elem, class _Traits>
+	class basic_odiagstream : public std::basic_ostream<_Elem, _Traits>
+	{
+	public:
+		using guest_stream = std::basic_ostream<_Elem, _Traits>;
+
+		basic_odiagstream(_In_reads_(count) const guest_stream** streams, _In_ size_t count, _In_ size_t buf_size = 2048) :
+			m_buf(streams, count, buf_size),
+			std::basic_ostream<_Elem, _Traits>(&m_buf)
+		{}
+
+		template<typename _Iter>
+		basic_odiagstream(_In_ const _Iter first, _In_ const _Iter last, _In_ size_t buf_size = 2048) :
+			m_buf(first, last, buf_size),
+			std::basic_ostream<_Elem, _Traits>(&m_buf)
+		{}
+
+	protected:
+		basic_odiagstreambuf<_Elem, _Traits> m_buf;
+	};
+
+	using odiagstream = basic_odiagstream<char, std::char_traits<char>>;
+	using wodiagstream = basic_odiagstream<wchar_t, std::char_traits<wchar_t>>;
+
+	///
+	/// Diagnostic input/output stream buffer
+	///
+	/// Verifies multiple input streams read the same data.
+	/// Writes to multiple output streams the same data.
+	///
+	template <class _Elem, class _Traits>
+	class basic_diagstreambuf :
+		public basic_idiagstreambuf<_Elem, _Traits>,
+		public basic_odiagstreambuf<_Elem, _Traits>
+	{
+	public:
+		using guest_stream = std::basic_iostream<_Elem, _Traits>;
+
+		basic_diagstreambuf(_In_reads_(count) const guest_stream** streams, _In_ size_t count, _In_ size_t buf_sizeg = 2048, _In_ size_t buf_sizep = 2048) :
+			basic_idiagstreambuf<_Elem, _Traits>(streams, count, buf_sizeg),
+			basic_odiagstreambuf<_Elem, _Traits>(streams, count, buf_sizep)
+		{}
+
+		template<typename _Iter>
+		basic_diagstreambuf(_In_ const _Iter first, _In_ const _Iter last, _In_ size_t buf_sizeg = 2048, _In_ size_t buf_sizep = 2048) :
+			basic_idiagstreambuf<_Elem, _Traits>(first, last, buf_sizeg),
+			basic_odiagstreambuf<_Elem, _Traits>(first, last, buf_sizep)
+		{}
+	};
+
+	///
+	/// Diagnostic input/output stream
+	///
+	/// Verifies multiple input streams read the same data.
+	/// Writes to multiple output streams the same data.
+	///
+	template <class _Elem, class _Traits>
+	class basic_diagstream : public std::basic_iostream<_Elem, _Traits>
+	{
+	public:
+		using guest_stream = std::basic_iostream<_Elem, _Traits>;
+
+		basic_diagstream(_In_reads_(count) const guest_stream** streams, _In_ size_t count, _In_ size_t buf_sizeg = 2048, _In_ size_t buf_sizep = 2048) :
+			m_buf(streams, count, buf_sizeg, buf_sizep),
+			std::basic_iostream<_Elem, _Traits>(&m_buf)
+		{}
+
+		template<typename _Iter>
+		basic_diagstream(_In_ const _Iter first, _In_ const _Iter last, _In_ size_t buf_sizeg = 2048, _In_ size_t buf_sizep = 2048) :
+			m_buf(first, last, buf_sizeg, buf_sizep),
+			std::basic_iostream<_Elem, _Traits>(&m_buf)
+		{}
+
+	protected:
+		basic_diagstreambuf<_Elem, _Traits> m_buf;
+	};
+
+	using diagstream = basic_diagstream<char, std::char_traits<char>>;
+	using wdiagstream = basic_diagstream<wchar_t, std::char_traits<wchar_t>>;
 
 #ifdef _WIN32
 	/// \cond internal

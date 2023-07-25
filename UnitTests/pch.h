@@ -24,3 +24,5 @@
 #include <stdex/vector_queue.hpp>
 
 #include <CppUnitTest.h>
+
+#include <cstdlib>
