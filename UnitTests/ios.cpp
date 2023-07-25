@@ -59,18 +59,17 @@ namespace UnitTests
 		TEST_METHOD(diagstream)
 		{
 			constexpr size_t n = 3;
+			unique_ptr<std::fstream> f[n];
+			vector<std::fstream*> fv(n);
 
 			{
-				unique_ptr<ofstream> f[n];
-				vector<ofstream*> fv(n);
-				for (size_t i = 0; i < n; ++i)
-				{
+				for (size_t i = 0; i < n; ++i) {
 					WCHAR path[MAX_PATH];
 					ExpandEnvironmentStringsW(stdex::sprintf(L"%%temp%%\\file%zu.dat", NULL, i).c_str(), path, _countof(path));
-					f[i].reset(new ofstream(path, ios_base::out | ios_base::binary));
+					f[i].reset(new std::fstream(path, ios_base::out | ios_base::binary));
 					fv[i] = f[i].get();
 				}
-				stdex::odiagstream d(fv.begin(), fv.end(), 8);
+				stdex::diagstream d(fv.begin(), fv.end());
 				srand(0);
 				auto write_some_random = [](_Inout_ ostream& f, _In_ size_t amount)
 				{
@@ -87,16 +86,13 @@ namespace UnitTests
 			}
 
 			{
-				unique_ptr<ifstream> f[n];
-				vector<ifstream*> fv(n);
-				for (size_t i = 0; i < n; ++i)
-				{
+				for (size_t i = 0; i < n; ++i) {
 					WCHAR path[MAX_PATH];
 					ExpandEnvironmentStringsW(stdex::sprintf(L"%%temp%%\\file%zu.dat", NULL, i).c_str(), path, _countof(path));
-					f[i].reset(new ifstream(path, ios_base::in | ios_base::binary));
+					f[i].reset(new std::fstream(path, ios_base::in | ios_base::binary));
 					fv[i] = f[i].get();
 				}
-				stdex::idiagstream d(fv.begin(), fv.end(), 8);
+				stdex::diagstream d(fv.begin(), fv.end());
 				do {
 					uint32_t r;
 					d.read(reinterpret_cast<char*>(&r), sizeof(r) / sizeof(char));
