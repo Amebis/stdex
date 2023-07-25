@@ -39,6 +39,9 @@
 #ifndef _In_reads_or_z_opt_
 #define _In_reads_or_z_opt_(p)
 #endif
+#ifndef _Printf_format_string_params_
+#define _Printf_format_string_params_(n)
+#endif
 
 #ifndef _Inout_
 #define _Inout_

@@ -8,6 +8,7 @@
 #include "sal.hpp"
 #include <assert.h>
 #include <ctype.h>
+#include <stdarg.h>
 #include <stdint.h>
 #include <stdexcept>
 
@@ -812,7 +813,7 @@ namespace stdex
 	}
 
 	/// \cond internal
-	inline int vsnprintf(_Out_z_cap_(capacity) char *str, _In_ size_t capacity, _In_z_ _Printf_format_string_ const char *format, _In_opt_ locale_t locale, _In_ va_list arg)
+	inline int vsnprintf(_Out_z_cap_(capacity) char *str, _In_ size_t capacity, _In_z_ _Printf_format_string_params_(2) const char *format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
 		int r;
 #ifdef _WIN32
@@ -832,7 +833,7 @@ namespace stdex
 		return r;
 	}
 
-	inline int vsnprintf(_Out_z_cap_(capacity) wchar_t *str, _In_ size_t capacity, _In_z_ _Printf_format_string_ const wchar_t *format, _In_opt_ locale_t locale, _In_ va_list arg)
+	inline int vsnprintf(_Out_z_cap_(capacity) wchar_t *str, _In_ size_t capacity, _In_z_ _Printf_format_string_params_(2) const wchar_t *format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
 		int r;
 
@@ -863,7 +864,7 @@ namespace stdex
 	/// \param[in ] arg     Arguments to `format`
 	///
 	template<class _Elem, class _Traits, class _Ax>
-	inline void vappendf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_ const _Elem *format, _In_opt_ locale_t locale, _In_ va_list arg)
+	inline void vappendf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_params_(2) const _Elem *format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
 		_Elem buf[1024/sizeof(_Elem)];
 
@@ -893,7 +894,7 @@ namespace stdex
 	/// \param[in ] locale  Stdlib locale used to perform formatting. Use `NULL` to use locale globally set by `setlocale()`.
 	///
 	template<class _Elem, class _Traits, class _Ax>
-	inline void appendf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_ const _Elem *format, _In_opt_ locale_t locale, ...)
+	inline void appendf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_params_(2) const _Elem *format, _In_opt_ locale_t locale, ...)
 	{
 		va_list arg;
 		va_start(arg, locale);
@@ -910,10 +911,10 @@ namespace stdex
 	/// \param[in ] arg     Arguments to `format`
 	///
 	template<class _Elem, class _Traits, class _Ax>
-	inline void vsprintf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_ const _Elem *format, _In_opt_ locale_t locale, _In_ va_list arg)
+	inline void vsprintf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_params_(2) const _Elem *format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
 		str.clear();
-		appendf(str, format, locale, arg);
+		vappendf(str, format, locale, arg);
 	}
 
 	///
@@ -924,11 +925,46 @@ namespace stdex
 	/// \param[in ] locale  Stdlib locale used to perform formatting. Use `NULL` to use locale globally set by `setlocale()`.
 	///
 	template<class _Elem, class _Traits, class _Ax>
-	inline void sprintf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_ const _Elem *format, _In_opt_ locale_t locale, ...)
+	inline void sprintf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_params_(2) const _Elem *format, _In_opt_ locale_t locale, ...)
 	{
 		va_list arg;
 		va_start(arg, locale);
 		vsprintf(str, format, locale, arg);
 		va_end(arg);
+	}
+
+	///
+	/// Formats string using `printf()`.
+	///
+	/// \param[in ] format  String template using `printf()` style
+	/// \param[in ] locale  Stdlib locale used to perform formatting. Use `NULL` to use locale globally set by `setlocale()`.
+	/// \param[in ] arg     Arguments to `format`
+	///
+	/// \returns Formatted string
+	///
+	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
+	inline std::basic_string<_Elem, _Traits, _Ax> vsprintf(_In_z_ _Printf_format_string_params_(2) const _Elem *format, _In_opt_ locale_t locale, _In_ va_list arg)
+	{
+		std::basic_string<_Elem, _Traits, _Ax> str;
+		vappendf(str, format, locale, arg);
+		return str;
+	}
+
+	///
+	/// Formats string using `printf()`.
+	///
+	/// \param[in ] format  String template using `printf()` style
+	/// \param[in ] locale  Stdlib locale used to perform formatting. Use `NULL` to use locale globally set by `setlocale()`.
+	///
+	/// \returns Formatted string
+	///
+	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
+	inline std::basic_string<_Elem, _Traits, _Ax> sprintf(_In_z_ _Printf_format_string_params_(2) const _Elem *format, _In_opt_ locale_t locale, ...)
+	{
+		va_list arg;
+		va_start(arg, locale);
+		auto str = vsprintf(format, locale, arg);
+		va_end(arg);
+		return str;
 	}
 }
