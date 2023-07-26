@@ -17,6 +17,9 @@ namespace stdex
 {
 	enum class charset_id {
 		default = 0,
+#ifdef _WIN32
+		utf8 = CP_UTF8,
+#endif
 	};
 
 	///
