@@ -134,7 +134,7 @@ namespace stdex
 	/// \param[in] glyph  Start of a glyph
 	/// \param[in] count  Code unit limit
 	///
-	inline size_t glyphlen(_In_reads_or_z_opt_(count) const wchar_t* glyph, size_t count)
+	inline size_t glyphlen(_In_reads_or_z_opt_(count) const wchar_t* glyph, _In_ size_t count)
 	{
 		_Analysis_assume_(glyph || !count);
 		if (count) {
@@ -421,6 +421,26 @@ namespace stdex
 	///
 	/// \param[in] dst    Destination string
 	/// \param[in] src    Source string
+	///
+	/// \return Number of code units excluding zero terminator in the dst string after the operation.
+	///
+	template <class T1, class T2>
+	inline size_t strcpy(
+		_Out_writes_z_(_String_length_(src) + 1) T1* dst,
+		_In_z_ const T2* src)
+	{
+		assert(dst && src);
+		for (size_t i = 0; ; ++i) {
+			if ((dst[i] = src[i]) == 0)
+				return i;
+		}
+	}
+
+	///
+	/// Copy zero-terminated string
+	///
+	/// \param[in] dst    Destination string
+	/// \param[in] src    Source string
 	/// \param[in] count  String code unit count limit
 	///
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
@@ -466,6 +486,79 @@ namespace stdex
 			}
 			if ((dst[i] = src[i]) == 0)
 				return i;
+		}
+	}
+
+	///
+	/// Append zero-terminated string
+	///
+	/// \param[in] dst    Destination string
+	/// \param[in] src    Source string
+	///
+	/// \return Number of code units excluding zero terminator in the dst string after the operation.
+	///
+	template <class T1, class T2>
+	inline size_t strcat(
+		_In_z_ _Out_writes_z_(_String_length_(dst) + _String_length_(src) + 1) T1* dst,
+		_In_z_ const T2* src)
+	{
+		assert(dst && src);
+		for (size_t i = 0, j = stdex::strlen<T1>(dst); ; ++i, ++j) {
+			if ((dst[j] = src[i]) == 0)
+				return j;
+		}
+	}
+
+	///
+	/// Append zero-terminated string
+	///
+	/// \param[in] dst    Destination string
+	/// \param[in] src    Source string
+	/// \param[in] count  String code unit count limit
+	///
+	/// \return Number of code units excluding zero terminator in the dst string after the operation.
+	///
+	template <class T1, class T2>
+	inline size_t strncat(
+		_Out_writes_(count) _Post_maybez_ T1* dst,
+		_In_reads_or_z_opt_(count) const T2* src, _In_ size_t count)
+	{
+		assert(dst && src || !count);
+		for (size_t i = 0, j = stdex::strlen<T1>(dst); ; ++i, ++j) {
+			if (i >= count)
+				return j;
+			if ((dst[j] = src[i]) == 0)
+				return j;
+		}
+	}
+
+	///
+	/// Append zero-terminated string
+	///
+	/// \param[in] dst        Destination string
+	/// \param[in] count_dst  Destination string code unit buffer limit
+	/// \param[in] src        Source string
+	/// \param[in] count_src  Source string code unit count limit
+	///
+	/// \return Number of code units excluding zero terminator in the dst string after the operation.
+	///
+	template <class T1, class T2>
+	inline size_t strncat(
+		_Out_writes_(count_dst) _Post_maybez_ T1* dst, _In_ size_t count_dst,
+		_In_reads_or_z_opt_(count_src) const T2* src, _In_ size_t count_src)
+	{
+		assert(dst || !count_dst);
+		assert(src || !count_src);
+		for (size_t i = 0, j = stdex::strnlen<T1>(dst, count_dst); ; ++i, ++j)
+		{
+			if (j > count_dst)
+				return j;
+			if (i > count_src) {
+				dst[j] = 0;
+				return j;
+			}
+			if ((dst[j] = src[i]) == 0)
+				return j;
 		}
 	}
 
