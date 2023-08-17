@@ -19,6 +19,7 @@
 #include <stdex/math.hpp>
 #include <stdex/parser.hpp>
 #include <stdex/progress.hpp>
+#include <stdex/ring.hpp>
 #include <stdex/sal.hpp>
 #include <stdex/sgml.hpp>
 #include <stdex/string.hpp>
@@ -27,3 +28,4 @@
 #include <CppUnitTest.h>
 
 #include <cstdlib>
+#include <thread>
