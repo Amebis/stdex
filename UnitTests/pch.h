@@ -16,6 +16,7 @@
 #include <stdex/interval.hpp>
 #include <stdex/ios.hpp>
 #include <stdex/mapping.hpp>
+#include <stdex/math.hpp>
 #include <stdex/parser.hpp>
 #include <stdex/progress.hpp>
 #include <stdex/sal.hpp>
