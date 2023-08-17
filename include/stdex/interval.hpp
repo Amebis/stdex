@@ -77,6 +77,15 @@ namespace stdex
 		/// \returns true if intervals are different or false otherwise
 		///
 		inline bool operator!=(const interval& other) const { return !operator==(other); }
+
+		///
+		/// Is value in interval?
+		///
+		/// \param[in] x  Value to test
+		///
+		/// \returns true if x is in [start, end) or false otherwise
+		///
+		inline bool contains(_In_ T x) const { return start <= x && x < end; }
 	};
 
 	template <class T, class _Alloc = std::allocator<interval<T>>>
