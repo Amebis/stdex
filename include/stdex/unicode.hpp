@@ -8,15 +8,19 @@
 #include "sal.hpp"
 #include "system.hpp"
 #include <assert.h>
+#include <stdint.h>
 #include <memory>
 #include <string>
 
 namespace stdex
 {
-	enum class charset_id {
-		default = 0,
+	enum class charset_id : uint16_t {
 #ifdef _WIN32
+		default = CP_ACP,
 		utf8 = CP_UTF8,
+		utf16 = 1200 /*CP_WINUNICODE*/,
+#else
+		default = 0,
 #endif
 	};
 
