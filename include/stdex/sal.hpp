@@ -64,3 +64,25 @@
 #ifndef _Success_
 #define _Success_(p)
 #endif
+#ifndef _Ret_notnull_
+#define _Ret_notnull_
+#endif
+#ifndef _Must_inspect_result_
+#define _Must_inspect_result_
+#endif
+
+#ifndef _Likely_
+#if _HAS_CXX20
+#define _Likely_ [[likely]]
+#else
+#define _Likely_
+#endif
+#endif
+
+#ifndef _Unlikely_
+#if _HAS_CXX20
+#define _Unlikely_ [[unlikely]]
+#else
+#define _Unlikely_
+#endif
+#endif

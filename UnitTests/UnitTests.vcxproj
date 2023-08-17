@@ -111,11 +111,14 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
   <ItemGroup>
-    <ClCompile Include="ios.cpp" />
     <ClCompile Include="math.cpp" />
     <ClCompile Include="parser.cpp" />
     <ClCompile Include="pch.cpp">
@@ -123,6 +126,7 @@
     </ClCompile>
     <ClCompile Include="ring.cpp" />
     <ClCompile Include="sgml.cpp" />
+    <ClCompile Include="stream.cpp" />
     <ClCompile Include="unicode.cpp" />
   </ItemGroup>
   <ItemGroup>

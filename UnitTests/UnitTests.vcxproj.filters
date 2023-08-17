@@ -24,13 +24,13 @@
     <ClCompile Include="parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ios.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="math.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ring.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stream.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="unicode.cpp">
