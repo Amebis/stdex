@@ -714,7 +714,7 @@ namespace stdex
 				(flags & 0x01) ? -value : value;
 
 		case 2:
-			value = (T_bin)strtoint<T, T_U2>(str, count, end, radix, flags);
+			value = (T_bin)strtoint<T, uint16_t>(str, count, end, radix, flags);
 			if ((flags & 0x01) && (value & 0x8000)) {
 				// Sign bit is 1 => overflow.
 				flags |= 0x02;
