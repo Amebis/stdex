@@ -6,10 +6,8 @@
 #pragma once
 
 #include "sal.hpp"
+#include "system.hpp"
 #include <assert.h>
-#ifdef _WIN32
-#include <windows.h>
-#endif
 #include <memory>
 #include <string>
 

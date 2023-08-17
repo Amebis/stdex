@@ -10,6 +10,7 @@
 #include "sal.hpp"
 #include "sgml.hpp"
 #include "string.hpp"
+#include "system.hpp"
 #include <assert.h>
 #include <stdarg.h>
 #include <stdint.h>

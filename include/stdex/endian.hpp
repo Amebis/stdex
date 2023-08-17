@@ -5,10 +5,8 @@
 
 #pragma once
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
 #include "sal.hpp"
+#include "system.hpp"
 #include <assert.h>
 #include <stdint.h>
 
