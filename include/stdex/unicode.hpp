@@ -46,6 +46,7 @@ namespace stdex
 
 		// Try to convert to stack buffer first.
 		WCHAR szStackBuffer[1024/sizeof(WCHAR)];
+#pragma warning(suppress: 6387) // Testing indicates src may be NULL when count_src is also 0. Is SAL of the lpMultiByteStr parameter wrong?
 		int cch = MultiByteToWideChar(static_cast<UINT>(charset), dwFlags, src, static_cast<int>(count_src), szStackBuffer, _countof(szStackBuffer));
 		if (cch) {
 			// Append from stack.
@@ -134,6 +135,7 @@ namespace stdex
 
 		// Try to convert to stack buffer first.
 		CHAR szStackBuffer[1024/sizeof(CHAR)];
+#pragma warning(suppress: 6387) // Testing indicates src may be NULL when count_src is also 0. Is SAL of the lpWideCharStr parameter wrong?
 		int cch = WideCharToMultiByte(static_cast<UINT>(charset), dwFlags, src, static_cast<int>(count_src), szStackBuffer, _countof(szStackBuffer), lpDefaultChar, NULL);
 		if (cch) {
 			// Copy from stack. Be careful not to include zero terminator.

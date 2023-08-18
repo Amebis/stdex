@@ -23,6 +23,7 @@
 #include <stdex/sal.hpp>
 #include <stdex/sgml.hpp>
 #include <stdex/string.hpp>
+#include <stdex/unicode.hpp>
 #include <stdex/vector_queue.hpp>
 
 #include <CppUnitTest.h>

@@ -123,6 +123,7 @@
     </ClCompile>
     <ClCompile Include="ring.cpp" />
     <ClCompile Include="sgml.cpp" />
+    <ClCompile Include="unicode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
