@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['vector_5fqueue_0',['vector_queue',['../classstdex_1_1vector__queue.html#a9cb327539aca0293920c0d436c6ea29b',1,'stdex::vector_queue::vector_queue(size_type size_max)'],['../classstdex_1_1vector__queue.html#a224fc214f514bb6dd333511613d89683',1,'stdex::vector_queue::vector_queue(const vector_queue&lt; value_type &gt; &amp;other)'],['../classstdex_1_1vector__queue.html#a50fcb4c564c100ad02f963969572a7fb',1,'stdex::vector_queue::vector_queue(vector_queue&lt; value_type &gt; &amp;&amp;other)']]],
-  ['vprintf_1',['vprintf',['../classstdex_1_1basic__ostreamfmt.html#a6b57c4ecee218d7fbb2128727fe4edd9',1,'stdex::basic_ostreamfmt']]]
+  ['unlock_0',['unlock',['../classstdex_1_1stream_1_1basic__file.html#adf1a39e7aec3f14fedf6ce5c0984a791',1,'stdex::stream::basic_file::unlock()'],['../classstdex_1_1stream_1_1file__window.html#ac3d9a3cf3636010b43612d2c298e7c3d',1,'stdex::stream::file_window::unlock()'],['../classstdex_1_1stream_1_1cache.html#a7a15ab17abc847b380b13b43b4f1d12e',1,'stdex::stream::cache::unlock()'],['../classstdex_1_1stream_1_1file.html#a28e6d46e4183e094ef9fdcf591ebec46',1,'stdex::stream::file::unlock()'],['../classstdex_1_1stream_1_1diag__file.html#a9f0c158f4875c862f981282b818e7296',1,'stdex::stream::diag_file::unlock()']]],
+  ['user_5fcancelled_1',['user_cancelled',['../classstdex_1_1user__cancelled.html#a69f77539ead37dbd249143ad4b4048bd',1,'stdex::user_cancelled']]]
 ];

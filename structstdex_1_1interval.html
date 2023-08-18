@@ -114,6 +114,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa5e6ff5a63e3cd9f8e36a32663ebfda8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstdex_1_1interval.html#aa5e6ff5a63e3cd9f8e36a32663ebfda8">operator!=</a> (const <a class="el" href="structstdex_1_1interval.html">interval</a> &amp;other) const</td></tr>
 <tr class="memdesc:aa5e6ff5a63e3cd9f8e36a32663ebfda8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Are intervals different?  <br /></td></tr>
 <tr class="separator:aa5e6ff5a63e3cd9f8e36a32663ebfda8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1624ca77e8c9cb45cef61f7f8b532222"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstdex_1_1interval.html#a1624ca77e8c9cb45cef61f7f8b532222">contains</a> (T x) const</td></tr>
+<tr class="memdesc:a1624ca77e8c9cb45cef61f7f8b532222"><td class="mdescLeft">&#160;</td><td class="mdescRight">Is value in interval?  <br /></td></tr>
+<tr class="separator:a1624ca77e8c9cb45cef61f7f8b532222"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -214,6 +217,43 @@ template&lt;class T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a1624ca77e8c9cb45cef61f7f8b532222" name="a1624ca77e8c9cb45cef61f7f8b532222"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1624ca77e8c9cb45cef61f7f8b532222">&#9670;&#160;</a></span>contains()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="structstdex_1_1interval.html">stdex::interval</a>&lt; T &gt;::contains </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>x</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Is value in interval? </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">x</td><td>Value to test</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if x is in [start, end) or false otherwise </dd></dl>
+
+</div>
+</div>
 <a id="a1fa5153f1f7707e21dc41c31197659a4" name="a1fa5153f1f7707e21dc41c31197659a4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1fa5153f1f7707e21dc41c31197659a4">&#9670;&#160;</a></span>empty()</h2>
 
@@ -384,7 +424,7 @@ template&lt;class T &gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jul 26 2023 10:18:12 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
+Generated on Fri Aug 18 2023 13:15:01 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
 </small></address>
 </body>
 </html>

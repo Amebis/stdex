@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['getter_0',['getter',['../structstdex_1_1getter.html',1,'stdex']]],
-  ['global_5fprogress_1',['global_progress',['../classstdex_1_1global__progress.html',1,'stdex']]]
+  ['diag_5ffile_0',['diag_file',['../classstdex_1_1stream_1_1diag__file.html',1,'stdex::stream']]]
 ];
