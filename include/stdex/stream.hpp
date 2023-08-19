@@ -589,7 +589,7 @@ namespace stdex
 			inline basic& operator <<(_In_ const uint32_t data) { return write_data(data); }
 			inline basic& operator >>(_Out_ uint64_t& data) { return read_data(data); }
 			inline basic& operator <<(_In_ const uint64_t data) { return write_data(data); }
-#ifdef _NATIVE_SIZE_T_DEFINED
+#if defined(_WIN64) && defined(_NATIVE_SIZE_T_DEFINED)
 			inline basic& operator >>(_Out_ size_t& data) { return read_data(data); }
 			inline basic& operator <<(_In_ const size_t data) { return write_data(data); }
 #endif
@@ -3291,7 +3291,7 @@ namespace stdex
 			inline void set(_In_ fpos_t offset, _In_ const uint16_t data) { set<uint16_t>(offset, data); }
 			inline void set(_In_ fpos_t offset, _In_ const uint32_t data) { set<uint32_t>(offset, data); }
 			inline void set(_In_ fpos_t offset, _In_ const uint64_t data) { set<uint64_t>(offset, data); }
-#ifdef _NATIVE_SIZE_T_DEFINED
+#if defined(_WIN64) && defined(_NATIVE_SIZE_T_DEFINED)
 			inline void set(_In_ fpos_t offset, _In_ const size_t data) { set<size_t>(offset, data); }
 #endif
 			inline void set(_In_ fpos_t offset, _In_ const float data) { set<float>(offset, data); }
@@ -3328,7 +3328,7 @@ namespace stdex
 			inline void get(_In_ fpos_t offset, _Out_ uint16_t & data) { get<uint16_t>(offset, data); }
 			inline void get(_In_ fpos_t offset, _Out_ uint32_t & data) { get<uint32_t>(offset, data); }
 			inline void get(_In_ fpos_t offset, _Out_ uint64_t & data) { get<uint64_t>(offset, data); }
-#ifdef _NATIVE_SIZE_T_DEFINED
+#if defined(_WIN64) && defined(_NATIVE_SIZE_T_DEFINED)
 			inline void get(_In_ fpos_t offset, _Out_ size_t & data) { get<size_t>(offset, data); }
 #endif
 			inline void get(_In_ fpos_t offset, _Out_ float& data) { get<float>(offset, data); }
@@ -3354,7 +3354,7 @@ namespace stdex
 			inline memory_file& operator >>(_Out_ uint32_t & data) { return read_data(data); }
 			inline memory_file& operator <<(_In_ const uint64_t data) { return write_data(data); }
 			inline memory_file& operator >>(_Out_ uint64_t & data) { return read_data(data); }
-#ifdef _NATIVE_SIZE_T_DEFINED
+#if defined(_WIN64) && defined(_NATIVE_SIZE_T_DEFINED)
 			inline memory_file& operator <<(_In_ const size_t data) { return write_data(data); }
 			inline memory_file& operator >>(_Out_ size_t & data) { return read_data(data); }
 #endif
