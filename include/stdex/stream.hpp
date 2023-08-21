@@ -1644,6 +1644,10 @@ namespace stdex
 				m_state = source.state();
 				m_source = &source;
 				m_offset = source.tell();
+#if SET_FILE_OP_TIMES
+				m_atime = source.atime();
+				m_mtime = source.mtime();
+#endif
 			}
 
 		public:
@@ -1653,15 +1657,17 @@ namespace stdex
 				m_cache(cache_size),
 				m_offset(source.tell())
 #if SET_FILE_OP_TIMES
-				, m_atime(time_point::min()),
-				m_mtime(time_point::min())
+				, m_atime(source.atime()),
+				m_mtime(source.mtime())
 #endif
 			{}
 
-			virtual ~cache()
+			virtual ~cache() noexcept(false)
 			{
 				if (m_source) {
 					flush_cache();
+					if (!ok()) _Unlikely_
+						throw std::runtime_error("cache flush failed"); // Data loss occured
 					m_source->seek(m_offset);
 				}
 			}
@@ -1726,7 +1732,7 @@ namespace stdex
 						return length - to_read;
 					}
 				}
-		}
+			}
 
 			virtual _Success_(return != 0) size_t write(
 				_In_reads_bytes_opt_(length) const void* data, _In_ size_t length)
@@ -1767,12 +1773,12 @@ namespace stdex
 							if (!ok()) _Unlikely_
 								return length - to_write;
 							size_t num_written = m_source->write(data, to_write - static_cast<size_t>(end_max % m_cache.capacity));
-							reinterpret_cast<const uint8_t*&>(data) += num_written;
-							to_write -= num_written;
 							m_offset += num_written;
 							m_state = m_source->state();
+							to_write -= num_written;
 							if (!to_write || !ok())
 								return length - to_write;
+							reinterpret_cast<const uint8_t*&>(data) += num_written;
 						}
 					}
 					load_cache(m_offset);
@@ -1783,7 +1789,9 @@ namespace stdex
 
 			virtual void close()
 			{
-				flush_cache();
+				invalidate_cache();
+				if (!ok()) _Unlikely_
+					throw std::runtime_error("cache flush failed"); // Data loss occured
 				m_source->close();
 				m_state = m_source->state();
 			}
@@ -1833,7 +1841,9 @@ namespace stdex
 
 			virtual fsize_t size()
 			{
-				return m_cache.data ? std::max(m_source->size(), m_cache.region.end) : m_source->size();
+				return m_cache.status != cache_t::cache_t::status_t::empty ?
+					std::max(m_source->size(), m_cache.region.end) :
+					m_source->size();
 			}
 
 			virtual void truncate()
@@ -1851,7 +1861,6 @@ namespace stdex
 				}
 				else {
 					// Truncation invalidates cache.
-					m_cache.region = 0;
 					m_cache.status = cache_t::cache_t::status_t::empty;
 				}
 				m_source->truncate();
@@ -1905,13 +1914,10 @@ namespace stdex
 		protected:
 			void flush_cache()
 			{
-				if (m_cache.status != cache_t::cache_t::status_t::dirty) {
+				if (m_cache.status != cache_t::cache_t::status_t::dirty)
 					m_state = state_t::ok;
-				}
 				else if (!m_cache.region.empty()) {
-					m_source->seek(m_cache.region.start);
-					m_source->write(m_cache.data, static_cast<size_t>(m_cache.region.size()));
-					m_state = m_source->state();
+					write_cache();
 					if (ok())
 						m_cache.status = cache_t::cache_t::status_t::loaded;
 				}
@@ -1923,11 +1929,13 @@ namespace stdex
 
 			void invalidate_cache()
 			{
-				flush_cache();
-				if (ok()) {
-					m_cache.region = 0;
-					m_cache.status = cache_t::cache_t::status_t::empty;
-				}
+				if (m_cache.status == cache_t::cache_t::status_t::dirty && !m_cache.region.empty()) {
+					write_cache();
+					if (!ok()) _Unlikely_
+						return;
+				} else
+					m_state = state_t::ok;
+				m_cache.status = cache_t::cache_t::status_t::empty;
 			}
 
 			void load_cache(_In_ fpos_t start)
@@ -1942,6 +1950,14 @@ namespace stdex
 				}
 				else
 					m_state = state_t::fail;
+			}
+
+			void write_cache()
+			{
+				assert(m_cache.status == cache_t::cache_t::status_t::dirty);
+				m_source->seek(m_cache.region.start);
+				m_source->write(m_cache.data, static_cast<size_t>(m_cache.region.size()));
+				m_state = m_source->state();
 			}
 
 			basic_file* m_source;
@@ -1973,7 +1989,7 @@ namespace stdex
 				m_atime,
 				m_mtime;
 #endif
-			};
+		};
 
 		///
 		/// OS data stream (file, pipe, socket...)
@@ -2675,7 +2691,7 @@ namespace stdex
 			///
 			cached_file(_In_z_ const sys_char* filename, _In_ int mode, _In_ size_t cache_size = default_cache_size) :
 				cache(cache_size),
-				m_source(filename, mode& mode_for_writing ? mode | mode_for_reading : mode)
+				m_source(filename, mode & mode_for_writing ? mode | mode_for_reading : mode)
 			{
 				init(m_source);
 			}
@@ -2689,18 +2705,23 @@ namespace stdex
 			///
 			void open(_In_z_ const sys_char* filename, _In_ int mode)
 			{
-				if (mode & mode_for_writing) mode |= mode_for_reading;
-				m_source.open(filename, mode);
+				invalidate_cache();
+				if (!ok()) _Unlikely_{
+					m_state = state_t::fail;
+					return;
+				}
+				m_source.open(filename, mode & mode_for_writing ? mode | mode_for_reading : mode);
 				if (m_source.ok()) {
 #if SET_FILE_OP_TIMES
-					m_atime = m_mtime = time_point::min();
+					m_atime = m_source.atime();
+					m_mtime = m_source.mtime();
 #endif
 					m_offset = m_source.tell();
 					m_state = state_t::ok;
 					return;
-			}
+				}
 				m_state = state_t::fail;
-		}
+			}
 
 		protected:
 			file m_source;

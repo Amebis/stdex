@@ -101,5 +101,52 @@ namespace UnitTests
 			f3.close();
 			std::filesystem::remove(filename3);
 		}
+
+		TEST_METHOD(open_close)
+		{
+			cached_file dat(invalid_handle, state_t::fail, 4096);
+			const sys_string filepath = temp_path();
+			constexpr size_t count = 3;
+			sys_string filename[count];
+			stdex::stream::fpos_t start[count];
+			for (size_t i = 0; i < count; ++i) {
+				filename[i] = filepath + sprintf(_T("stdex-stream-open_close%zu.tmp"), NULL, i);
+				dat.open(filename[i].c_str(), mode_for_reading | mode_for_writing | share_none | mode_preserve_existing | mode_binary);
+				Assert::IsTrue(dat.ok());
+				start[i] = dat.tell();
+				Assert::AreNotEqual(fpos_max, start[i]);
+				for (size_t j = 0; j < 31 + 11 * i; ++j) {
+					dat << j * count + i;
+					Assert::IsTrue(dat.ok());
+				}
+				dat.close();
+			}
+			for (size_t i = 0; i < count; ++i) {
+				dat.open(filename[i].c_str(), mode_for_reading | share_none | mode_binary);
+				Assert::IsTrue(dat.ok());
+				for (;;) {
+					size_t x;
+					dat >> x;
+					if (!dat.ok())
+						break;
+					Assert::AreEqual(i, x % count);
+				}
+			}
+			dat.close();
+			for (size_t i = 0; i < count; ++i)
+				std::filesystem::remove(filename[i]);
+		}
+
+	protected:
+		static sys_string temp_path()
+		{
+#ifdef _WIN32
+			TCHAR temp_path[MAX_PATH];
+			Assert::IsTrue(ExpandEnvironmentStrings(_T("%TEMP%\\"), temp_path, _countof(temp_path)) < MAX_PATH);
+			return temp_path;
+#else
+			return "/tmp/";
+#endif
+		}
 	};
 }
