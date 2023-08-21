@@ -16,6 +16,7 @@
 #include "sal.hpp"
 #include <assert.h>
 #include <stdexcept>
+#include <string>
 
 // In case somebody #included <windows.h> before us and didn't #define NOMINMAX
 #ifdef _WIN32
@@ -49,6 +50,11 @@ namespace stdex
 	using sys_char = char;
 #define _T(x) x
 #endif
+
+	///
+	/// String for system functions
+	///
+	using sys_string = std::basic_string<stdex::sys_char>;
 
 	///
 	/// Operating system object (file, pipe, anything with an OS handle etc.)
