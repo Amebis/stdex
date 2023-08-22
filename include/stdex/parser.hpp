@@ -4001,15 +4001,15 @@ namespace stdex
 		///
 		/// Date format type
 		///
-		ENUM_FLAGS(date_format_t, int) {
-			none = 0,
-			dmy = 0x1,
-			mdy = 0x2,
-			ymd = 0x4,
-			ym = 0x8,
-			my = 0x10,
-			dm = 0x20,
-			md = 0x40,
+		enum date_format_t {
+			date_format_none = 0,
+			date_format_dmy = 0x1,
+			date_format_mdy = 0x2,
+			date_format_ymd = 0x4,
+			date_format_ym = 0x8,
+			date_format_my = 0x10,
+			date_format_dm = 0x20,
+			date_format_md = 0x40,
 		};
 
 		///
@@ -4028,7 +4028,7 @@ namespace stdex
 				_In_ const std::shared_ptr<basic_parser<T>>& space,
 				_In_ const std::locale& locale = std::locale()) :
 				basic_parser<T>(locale),
-				format(date_format_t::none),
+				format(date_format_none),
 				m_format_mask(format_mask),
 				day(_day),
 				month(_month),
@@ -4046,7 +4046,7 @@ namespace stdex
 				assert(text || start >= end);
 
 				const int space_match_flags = flags & ~match_multiline; // Spaces in dates must never be broken in new line.
-				if ((m_format_mask & date_format_t::dmy) == date_format_t::dmy) {
+				if ((m_format_mask & date_format_dmy) == date_format_dmy) {
 					if (day->match(text, start, end, flags)) {
 						for (interval.end = day->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
 						if (m_separator->match(text, interval.end, end, flags)) {
@@ -4063,7 +4063,7 @@ namespace stdex
 									{
 										interval.start = start;
 										interval.end = year->interval.end;
-										format = date_format_t::dmy;
+										format = date_format_dmy;
 										return true;
 									}
 								}
@@ -4072,7 +4072,7 @@ namespace stdex
 					}
 				}
 
-				if ((m_format_mask & date_format_t::mdy) == date_format_t::mdy) {
+				if ((m_format_mask & date_format_mdy) == date_format_mdy) {
 					if (month->match(text, start, end, flags)) {
 						for (interval.end = month->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
 						if (m_separator->match(text, interval.end, end, flags)) {
@@ -4089,7 +4089,7 @@ namespace stdex
 									{
 										interval.start = start;
 										interval.end = year->interval.end;
-										format = date_format_t::mdy;
+										format = date_format_mdy;
 										return true;
 									}
 								}
@@ -4098,7 +4098,7 @@ namespace stdex
 					}
 				}
 
-				if ((m_format_mask & date_format_t::ymd) == date_format_t::ymd) {
+				if ((m_format_mask & date_format_ymd) == date_format_ymd) {
 					if (year->match(text, start, end, flags)) {
 						for (interval.end = year->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
 						if (m_separator->match(text, interval.end, end, flags)) {
@@ -4115,7 +4115,7 @@ namespace stdex
 									{
 										interval.start = start;
 										interval.end = day->interval.end;
-										format = date_format_t::ymd;
+										format = date_format_ymd;
 										return true;
 									}
 								}
@@ -4124,7 +4124,7 @@ namespace stdex
 					}
 				}
 
-				if ((m_format_mask & date_format_t::ym) == date_format_t::ym) {
+				if ((m_format_mask & date_format_ym) == date_format_ym) {
 					if (year->match(text, start, end, flags)) {
 						for (interval.end = year->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
 						if (m_separator->match(text, interval.end, end, flags)) {
@@ -4135,14 +4135,14 @@ namespace stdex
 								if (day) day->invalidate();
 								interval.start = start;
 								interval.end = month->interval.end;
-								format = date_format_t::ym;
+								format = date_format_ym;
 								return true;
 							}
 						}
 					}
 				}
 
-				if ((m_format_mask & date_format_t::my) == date_format_t::my) {
+				if ((m_format_mask & date_format_my) == date_format_my) {
 					if (month->match(text, start, end, flags)) {
 						for (interval.end = month->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
 						if (m_separator->match(text, interval.end, end, flags)) {
@@ -4153,14 +4153,14 @@ namespace stdex
 								if (day) day->invalidate();
 								interval.start = start;
 								interval.end = year->interval.end;
-								format = date_format_t::my;
+								format = date_format_my;
 								return true;
 							}
 						}
 					}
 				}
 
-				if ((m_format_mask & date_format_t::dm) == date_format_t::dm) {
+				if ((m_format_mask & date_format_dm) == date_format_dm) {
 					if (day->match(text, start, end, flags)) {
 						for (interval.end = day->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
 						if (m_separator->match(text, interval.end, end, flags)) {
@@ -4177,14 +4177,14 @@ namespace stdex
 									interval.end = m_separator->interval.end;
 								else
 									interval.end = month->interval.end;
-								format = date_format_t::dm;
+								format = date_format_dm;
 								return true;
 							}
 						}
 					}
 				}
 
-				if ((m_format_mask & date_format_t::md) == date_format_t::md) {
+				if ((m_format_mask & date_format_md) == date_format_md) {
 					if (month->match(text, start, end, flags)) {
 						for (interval.end = month->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
 						if (m_separator->match(text, interval.end, end, flags)) {
@@ -4201,7 +4201,7 @@ namespace stdex
 									interval.end = m_separator->interval.end;
 								else
 									interval.end = day->interval.end;
-								format = date_format_t::md;
+								format = date_format_md;
 								return true;
 							}
 						}
@@ -4211,7 +4211,7 @@ namespace stdex
 				if (day) day->invalidate();
 				if (month) month->invalidate();
 				if (year) year->invalidate();
-				format = date_format_t::none;
+				format = date_format_none;
 				interval.start = (interval.end = start) + 1;
 				return false;
 			}
@@ -4221,7 +4221,7 @@ namespace stdex
 				if (day) day->invalidate();
 				if (month) month->invalidate();
 				if (year) year->invalidate();
-				format = date_format_t::none;
+				format = date_format_none;
 				basic_parser<T>::invalidate();
 			}
 
