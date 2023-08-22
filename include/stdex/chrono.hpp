@@ -7,8 +7,10 @@
 
 #include "sal.hpp"
 #include "system.hpp"
+#include "string.hpp"
 #include <stdint.h>
 #include <chrono>
+#include <memory>
 #include <stdexcept>
 
 namespace stdex {
@@ -256,6 +258,23 @@ namespace stdex {
 			}
 #endif
 
+			static void to_system(_In_ time_point tp, _Out_ struct tm& date) noexcept
+			{
+				uint8_t day, month, hour, minute, second;
+				uint16_t millisecond;
+				int32_t year;
+				to_dmy(tp, &day, &month, &year, &hour, &minute, &second, &millisecond);
+				date.tm_sec = second;
+				date.tm_min = minute;
+				date.tm_hour = hour;
+				date.tm_mday = day;
+				date.tm_mon = month - 1;
+				date.tm_year = year - 1900;
+				date.tm_wday = (static_cast<int>(aosn_date::day_of_week(to_date(tp))) + 1) % 7;
+				date.tm_yday = 0;
+				date.tm_isdst = 0;
+			}
+
 			///
 			/// Returns aosn_date::time_point from time point
 			///
@@ -300,6 +319,78 @@ namespace stdex {
 				if (minute) *minute = static_cast<uint8_t>(u % f_hour);
 				u = u / f_hour;
 				if (hour) *hour = static_cast<uint8_t>(u);
+			}
+
+			template<class _Traits = std::char_traits<char>, class _Ax = std::allocator<char>>
+			static std::basic_string<char, _Traits, _Ax> to_str(_In_ const time_point tp, _In_z_ const char* format, _In_opt_ locale_t locale)
+			{
+				struct tm date;
+				to_system(tp, date);
+				std::basic_string<char, _Traits, _Ax> str;
+				char stack_buffer[1024 / sizeof(char)];
+				size_t n;
+#if _WIN32
+				n = _strftime_l(stack_buffer, _countof(stack_buffer), format, &date, locale);
+#else
+				n = strftime_l(stack_buffer, _countof(stack_buffer), format, &date, locale);
+#endif
+				if (n) {
+					str.assign(stack_buffer, stack_buffer + n);
+					return str;
+				}
+				size_t num_chars = stdex::mul(_countof(stack_buffer), 2);
+				for (;;) {
+					std::unique_ptr<char> buf(new char[num_chars]);
+#if _WIN32
+					n = _strftime_l(buf.get(), num_chars, format, &date, locale);
+#else
+					n = strftime_l(buf.get(), num_chars, format, &date, locale);
+#endif
+					if (n) {
+						str.assign(buf.get(), buf.get() + n);
+						return str;
+					}
+					num_chars = stdex::mul(num_chars, 2);
+				}
+			}
+
+			template<class _Traits = std::char_traits<wchar_t>, class _Ax = std::allocator<wchar_t>>
+			static std::basic_string<wchar_t, _Traits, _Ax> to_str(_In_ const time_point tp, _In_z_ const wchar_t* format, _In_opt_ locale_t locale)
+			{
+				struct tm date;
+				to_system(tp, date);
+				std::basic_string<wchar_t, _Traits, _Ax> str;
+				wchar_t stack_buffer[1024 / sizeof(wchar_t)];
+				size_t n;
+#if _WIN32
+				n = _wcsftime_l(stack_buffer, _countof(stack_buffer), format, &date, locale);
+#else
+				n = wcsftime_l(stack_buffer, _countof(stack_buffer), format, &date, locale);
+#endif
+				if (n) {
+					str.assign(stack_buffer, stack_buffer + n);
+					return str;
+				}
+				size_t num_chars = stdex::mul(_countof(stack_buffer), 2);
+				for (;;) {
+					std::unique_ptr<wchar_t> buf(new wchar_t[num_chars]);
+#if _WIN32
+					n = _wcsftime_l(buf.get(), num_chars, format, &date, locale);
+#else
+					n = wcsftime_l(buf.get(), num_chars, format, &date, locale);
+#endif
+					if (n) {
+						str.assign(buf.get(), buf.get() + n);
+						return str;
+					}
+					num_chars = stdex::mul(num_chars, 2);
+				}
+			}
+
+			template<class _Traits = std::char_traits<char>, class _Ax = std::allocator<char>>
+			static std::basic_string<char, _Traits, _Ax> to_rfc822(_In_ const time_point tp)
+			{
+				return to_str(tp, "%a, %d %b %Y %H:%M:%S GMT", locale_C);
 			}
 		};
 	}
