@@ -121,6 +121,9 @@ static time_point&#160;</td><td class="memItemRight" valign="bottom"><b>from_tim
 static time_point&#160;</td><td class="memItemRight" valign="bottom"><b>from_system</b> (const struct timespec &amp;t) noexcept</td></tr>
 <tr class="memdesc:aa8da2be29dabc3fb0a5d46fb9075e830"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns time point from struct timespec. <br /></td></tr>
 <tr class="separator:aa8da2be29dabc3fb0a5d46fb9075e830"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad81a80bf93393858b7b7def2c5d7d668"><td class="memItemLeft" align="right" valign="top"><a id="ad81a80bf93393858b7b7def2c5d7d668" name="ad81a80bf93393858b7b7def2c5d7d668"></a>
+static void&#160;</td><td class="memItemRight" valign="bottom"><b>to_system</b> (time_point tp, struct tm &amp;date) noexcept</td></tr>
+<tr class="separator:ad81a80bf93393858b7b7def2c5d7d668"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a805c2ab1855a554a0fc2be56fa234489"><td class="memItemLeft" align="right" valign="top"><a id="a805c2ab1855a554a0fc2be56fa234489" name="a805c2ab1855a554a0fc2be56fa234489"></a>
 static aosn_date::time_point&#160;</td><td class="memItemRight" valign="bottom"><b>to_date</b> (time_point tp) noexcept</td></tr>
 <tr class="memdesc:a805c2ab1855a554a0fc2be56fa234489"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns aosn_date::time_point from time point. <br /></td></tr>
@@ -137,6 +140,18 @@ static time_point&#160;</td><td class="memItemRight" valign="bottom"><b>from_dmy
 static void&#160;</td><td class="memItemRight" valign="bottom"><b>to_dmy</b> (const time_point tp, uint8_t *day, uint8_t *month, int32_t *year, uint8_t *hour, uint8_t *minute, uint8_t *second, uint16_t *millisecond) noexcept</td></tr>
 <tr class="memdesc:ae20e512af8ec094253b5af13f1d2e9ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns calendar day, month, year and time from time point. <br /></td></tr>
 <tr class="separator:ae20e512af8ec094253b5af13f1d2e9ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a91d31d67efaeb9d206e4401ecb2eda"><td class="memTemplParams" colspan="2"><a id="a6a91d31d67efaeb9d206e4401ecb2eda" name="a6a91d31d67efaeb9d206e4401ecb2eda"></a>
+template&lt;class _Traits  = std::char_traits&lt;char&gt;, class _Ax  = std::allocator&lt;char&gt;&gt; </td></tr>
+<tr class="memitem:a6a91d31d67efaeb9d206e4401ecb2eda"><td class="memTemplItemLeft" align="right" valign="top">static std::basic_string&lt; char, _Traits, _Ax &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>to_str</b> (const time_point tp, const char *format, locale_t locale)</td></tr>
+<tr class="separator:a6a91d31d67efaeb9d206e4401ecb2eda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a239283cf0f2d37758462556474393110"><td class="memTemplParams" colspan="2"><a id="a239283cf0f2d37758462556474393110" name="a239283cf0f2d37758462556474393110"></a>
+template&lt;class _Traits  = std::char_traits&lt;wchar_t&gt;, class _Ax  = std::allocator&lt;wchar_t&gt;&gt; </td></tr>
+<tr class="memitem:a239283cf0f2d37758462556474393110"><td class="memTemplItemLeft" align="right" valign="top">static std::basic_string&lt; wchar_t, _Traits, _Ax &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>to_str</b> (const time_point tp, const wchar_t *format, locale_t locale)</td></tr>
+<tr class="separator:a239283cf0f2d37758462556474393110"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04417b39986e85a41bc7ac434cd31631"><td class="memTemplParams" colspan="2"><a id="a04417b39986e85a41bc7ac434cd31631" name="a04417b39986e85a41bc7ac434cd31631"></a>
+template&lt;class _Traits  = std::char_traits&lt;char&gt;, class _Ax  = std::allocator&lt;char&gt;&gt; </td></tr>
+<tr class="memitem:a04417b39986e85a41bc7ac434cd31631"><td class="memTemplItemLeft" align="right" valign="top">static std::basic_string&lt; char, _Traits, _Ax &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>to_rfc822</b> (const time_point tp)</td></tr>
+<tr class="separator:a04417b39986e85a41bc7ac434cd31631"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -182,7 +197,7 @@ static constexpr rep&#160;</td><td class="memItemRight" valign="bottom"><b>p_wee
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Aug 21 2023 14:33:24 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
+Generated on Tue Aug 22 2023 15:16:47 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
 </small></address>
 </body>
 </html>
