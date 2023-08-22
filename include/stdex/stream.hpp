@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #if defined(_WIN32) && !defined(WIN32_LEAN_AND_MEAN)
 #include <asptlb.h>
+#include <objidl.h>
 #endif
 #include <chrono>
 #include <condition_variable>
@@ -2142,15 +2143,15 @@ namespace stdex
 		///
 		/// Wrapper for ISequentialStream
 		///
-		class ISequentialStream : public basic
+		class sequential_stream : public basic
 		{
 		public:
-			ISequentialStream(_In_::ISequentialStream* source) : m_source(source)
+			sequential_stream(_In_ ISequentialStream* source) : m_source(source)
 			{
 				m_source->AddRef();
 			}
 
-			virtual ~ISequentialStream()
+			virtual ~sequential_stream()
 			{
 				m_source->Release();
 			}
@@ -2206,7 +2207,7 @@ namespace stdex
 			}
 
 		protected:
-			::ISequentialStream* m_source;
+			ISequentialStream* m_source;
 		};
 
 #ifndef WIN32_LEAN_AND_MEAN
