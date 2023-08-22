@@ -8,14 +8,32 @@
 #include "sal.hpp"
 #include <assert.h>
 #include <ctype.h>
+#include <locale.h>
 #include <stdarg.h>
 #include <stdint.h>
+#include <memory>
 #include <stdexcept>
 
 namespace stdex
 {
 #ifdef _WIN32
 	using locale_t = _locale_t;
+
+	///
+	/// Deleter for unique_ptr using _free_locale
+	///
+	struct free_locale_delete
+	{
+		///
+		/// Delete a pointer
+		///
+		void operator()(_In_ locale_t locale) const
+		{
+			_free_locale(locale);
+		}
+	};
+
+	static std::unique_ptr<__crt_locale_pointers, free_locale_delete> locale_C(_create_locale(LC_ALL, "C"));
 #else
 	using locale_t = ::locale_t;
 #endif
