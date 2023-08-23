@@ -362,6 +362,26 @@ namespace stdex
 	/// Convert SGML string to Unicode (UTF-16 on Windows)
 	///
 	/// \param[inout]  dst        String to write Unicode to
+	/// \param[in]     src        SGML string
+	/// \param[in]     skip       Bitwise flag of stdex::sgml_* constants that list SGML entities to skip converting
+	/// \param[in]     offset     Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
+	/// \param[out]    map        The vector to write index mapping between source and destination string to.
+	///
+	template<class _Elem, class _Traits, class _Ax>
+	inline void sgml2wstrcpy(
+		_Inout_ std::wstring& dst,
+		_In_ const std::basic_string<_Elem, _Traits, _Ax>& src,
+		_In_ int skip = 0,
+		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
+		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
+	{
+		sgml2wstrcpy(dst, src.data(), src.size(), skip, offset, map);
+	}
+
+	///
+	/// Convert SGML string to Unicode (UTF-16 on Windows)
+	///
+	/// \param[inout]  dst        String to write Unicode to
 	/// \param[in]     count_dst  Unicode string character count limit. Function throws std::invalid_argument if there is not enough space in Unicode string (including space for zero-terminator).
 	/// \param[in]     src        SGML string
 	/// \param[in]     count_src  SGML string character count limit
@@ -384,7 +404,7 @@ namespace stdex
 			dst[0] = 0;
 		if (map)
 			map->clear();
-		sgml2wstrcat(dst, count_dst, src, count_src, skip, offset, map);
+		return sgml2wstrcat(dst, count_dst, src, count_src, skip, offset, map);
 	}
 
 	///
@@ -754,6 +774,21 @@ namespace stdex
 	/// Convert Unicode string (UTF-16 on Windows) to SGML
 	///
 	/// \param[inout]  dst        String to write SGML to
+	/// \param[in]     src        Unicode string
+	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
+	///
+	inline void wstr2sgmlcpy(
+		_Inout_ std::string& dst,
+		_In_ const std::wstring& src,
+		_In_ size_t what = 0)
+	{
+		wstr2sgmlcpy(dst, src.data(), src.size(), what);
+	}
+
+	///
+	/// Convert Unicode string (UTF-16 on Windows) to SGML
+	///
+	/// \param[inout]  dst        String to write SGML to
 	/// \param[in]     count_dst  SGML string character count limit. Function throws std::invalid_argument if there is not enough space in SGML string (including space for zero-terminator).
 	/// \param[in]     src        Unicode string
 	/// \param[in]     count_src  Unicode string character count limit
@@ -769,7 +804,7 @@ namespace stdex
 		assert(dst || !count_dst);
 		if (count_dst)
 			dst[0] = 0;
-		wstr2sgmlcat(dst, count_dst, src, count_src, what);
+		return wstr2sgmlcat(dst, count_dst, src, count_src, what);
 	}
 
 	///

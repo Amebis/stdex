@@ -280,7 +280,7 @@ namespace stdex
 		_In_ charset_id charset = charset_id::default)
 	{
 		std::string dst;
-		wstr2str(dst, src, count_src, charset);
+		strcat(dst, src, count_src, charset);
 		return dst;
 	}
 
