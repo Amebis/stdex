@@ -86,3 +86,9 @@
 #define _Unlikely_
 #endif
 #endif
+
+#ifdef _MSC_VER
+#define _Deprecated_(message) __declspec(deprecated(message))
+#else
+#define _Deprecated_(message) [[deprecated(message)]]
+#endif

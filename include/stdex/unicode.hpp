@@ -34,7 +34,7 @@ namespace stdex
 	///
 	/// \return Unicode string
 	///
-	inline void str2wstr(
+	inline void strcat(
 		_Inout_ std::wstring& dst,
 		_In_reads_or_z_opt_(count_src) const char* src, _In_ size_t count_src,
 		_In_ charset_id charset = charset_id::default)
@@ -63,6 +63,14 @@ namespace stdex
 #endif
 	}
 
+	inline _Deprecated_("Use stdex::strcat") void str2wstr(
+		_Inout_ std::wstring& dst,
+		_In_reads_or_z_opt_(count_src) const char* src, _In_ size_t count_src,
+		_In_ charset_id charset = charset_id::default)
+	{
+		strcat(dst, src, count_src, charset);
+	}
+
 	///
 	/// Convert string to Unicode (UTF-16 on Windows) and append to string
 	///
@@ -72,12 +80,56 @@ namespace stdex
 	///
 	/// \return Unicode string
 	///
-	inline void str2wstr(
+	inline void strcat(
 		_Inout_ std::wstring& dst,
 		_In_ const std::string& src,
 		_In_ charset_id charset = charset_id::default)
 	{
-		str2wstr(dst, src.data(), src.size(), charset);
+		strcat(dst, src.data(), src.size(), charset);
+	}
+
+	inline _Deprecated_("Use stdex::strcat") void str2wstr(
+		_Inout_ std::wstring& dst,
+		_In_ const std::string& src,
+		_In_ charset_id charset = charset_id::default)
+	{
+		strcat(dst, src, charset);
+	}
+
+	///
+	/// Convert string to Unicode (UTF-16 on Windows)
+	///
+	/// \param[inout]  dst        String to write Unicode to
+	/// \param[in]     src        String
+	/// \param[in]     count_src  String character count limit
+	/// \param[in]     charset    Charset (stdex::charset_id::default - system default)
+	///
+	/// \return Unicode string
+	///
+	inline void strcpy(
+		_Inout_ std::wstring& dst,
+		_In_reads_or_z_opt_(count_src) const char* src, _In_ size_t count_src,
+		_In_ charset_id charset = charset_id::default)
+	{
+		dst.clear();
+		strcat(dst, src, count_src, charset);
+	}
+
+	///
+	/// Convert string to Unicode (UTF-16 on Windows)
+	///
+	/// \param[inout]  dst        String to write Unicode to
+	/// \param[in]     src        String
+	/// \param[in]     charset    Charset (stdex::charset_id::default - system default)
+	///
+	/// \return Unicode string
+	///
+	inline void strcpy(
+		_Inout_ std::wstring& dst,
+		_In_ const std::string& src,
+		_In_ charset_id charset = charset_id::default)
+	{
+		strcpy(dst, src.data(), src.size(), charset);
 	}
 
 	///
@@ -94,7 +146,7 @@ namespace stdex
 		_In_ charset_id charset = charset_id::default)
 	{
 		std::wstring dst;
-		str2wstr(dst, src, count_src, charset);
+		strcat(dst, src, count_src, charset);
 		return dst;
 	}
 
@@ -121,10 +173,9 @@ namespace stdex
 	/// \param[in]     count_src  Unicode string character count limit
 	/// \param[in]     charset    Charset (stdex::charset_id::default - system default)
 	///
-	inline void wstr2str(
+	inline void strcat(
 		_Inout_ std::string& dst,
-		_In_reads_or_z_opt_(count_src) const wchar_t* src,
-		_In_ size_t count_src,
+		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
 		_In_ charset_id charset = charset_id::default)
 	{
 		assert(src || !count_src);
@@ -152,6 +203,14 @@ namespace stdex
 #endif
 	}
 
+	inline _Deprecated_("Use stdex::strcat") void wstr2str(
+		_Inout_ std::string& dst,
+		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
+		_In_ charset_id charset = charset_id::default)
+	{
+		strcat(dst, src, count_src, charset);
+	}
+
 	///
 	/// Convert Unicode string (UTF-16 on Windows) to SGML and append to string
 	///
@@ -159,12 +218,52 @@ namespace stdex
 	/// \param[in]     src        Unicode string
 	/// \param[in]     charset    Charset (stdex::charset_id::default - system default)
 	///
-	inline void wstr2str(
+	inline void strcat(
 		_Inout_ std::string& dst,
 		_In_ const std::wstring& src,
 		_In_ charset_id charset = charset_id::default)
 	{
-		wstr2str(dst, src.c_str(), src.size(), charset);
+		strcat(dst, src.c_str(), src.size(), charset);
+	}
+
+	inline _Deprecated_("Use stdex::strcat") void wstr2str(
+		_Inout_ std::string& dst,
+		_In_ const std::wstring& src,
+		_In_ charset_id charset = charset_id::default)
+	{
+		strcat(dst, src, charset);
+	}
+
+	///
+	/// Convert Unicode string (UTF-16 on Windows) to SGML
+	///
+	/// \param[inout]  dst        String to write SGML to
+	/// \param[in]     src        Unicode string
+	/// \param[in]     count_src  Unicode string character count limit
+	/// \param[in]     charset    Charset (stdex::charset_id::default - system default)
+	///
+	inline void strcpy(
+		_Inout_ std::string& dst,
+		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
+		_In_ charset_id charset = charset_id::default)
+	{
+		dst.clear();
+		strcat(dst, src, count_src, charset);
+	}
+
+	///
+	/// Convert Unicode string (UTF-16 on Windows) to SGML
+	///
+	/// \param[inout]  dst        String to write SGML to
+	/// \param[in]     src        Unicode string
+	/// \param[in]     charset    Charset (stdex::charset_id::default - system default)
+	///
+	inline void strcpy(
+		_Inout_ std::string& dst,
+		_In_ const std::wstring& src,
+		_In_ charset_id charset = charset_id::default)
+	{
+		strcpy(dst, src.data(), src.size(), charset);
 	}
 
 	///
@@ -177,8 +276,7 @@ namespace stdex
 	/// \return String
 	///
 	inline std::string wstr2str(
-		_In_reads_or_z_opt_(count_src) const wchar_t* src,
-		_In_ size_t count_src,
+		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
 		_In_ charset_id charset = charset_id::default)
 	{
 		std::string dst;

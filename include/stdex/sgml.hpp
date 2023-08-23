@@ -90,7 +90,7 @@ namespace stdex
 	/// \param[out]    map        The vector to append index mapping between source and destination string to.
 	///
 	template <class T>
-	inline void sgml2wstr(
+	inline void sgml2wstrcat(
 		_Inout_ std::wstring& dst,
 		_In_reads_or_z_opt_(count_src) const T* src, _In_ size_t count_src,
 		_In_ int skip = 0,
@@ -172,6 +172,50 @@ namespace stdex
 		}
 	}
 
+	template <class T>
+	inline _Deprecated_("Use stdex::sgml2wstrcat") void sgml2wstr(
+		_Inout_ std::wstring& dst,
+		_In_reads_or_z_opt_(count_src) const T* src, _In_ size_t count_src,
+		_In_ int skip = 0,
+		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
+		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
+	{
+		sgml2wstrcat(dst, src, count_src, skip, offset, map);
+	}
+
+	///
+	/// Convert SGML string to Unicode (UTF-16 on Windows) and append to string
+	///
+	/// \param[inout]  dst        String to append Unicode to
+	/// \param[in]     src        SGML string
+	/// \param[in]     skip       Bitwise flag of stdex::sgml_* constants that list SGML entities to skip converting
+	/// \param[in]     offset     Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
+	/// \param[out]    map        The vector to append index mapping between source and destination string to.
+	///
+	/// \return Unicode string
+	///
+	template <class T>
+	inline void sgml2wstrcat(
+		_Inout_ std::wstring& dst,
+		_In_ const std::basic_string<T>& src,
+		_In_ int skip = 0,
+		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
+		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
+	{
+		sgml2wstrcat(dst, src.data(), src.size(), skip, offset, map);
+	}
+
+	template <class T>
+	inline _Deprecated_("Use stdex::sgml2wstrcat") void sgml2wstr(
+		_Inout_ std::wstring& dst,
+		_In_ const std::basic_string<T>& src,
+		_In_ int skip = 0,
+		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
+		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
+	{
+		sgml2wstrcat(dst, src, skip, offset, map);
+	}
+
 	///
 	/// Convert SGML string to Unicode (UTF-16 on Windows) and append to string
 	///
@@ -186,13 +230,14 @@ namespace stdex
 	/// \return Final length of SGML string in code points excluding zero-terminator
 	///
 	template <class T>
-	inline size_t sgml2wstr(
+	inline size_t sgml2wstrcat(
 		_Inout_cap_(count_dst) wchar_t* dst, _In_ size_t count_dst,
 		_In_reads_or_z_opt_(count_src) const T* src, _In_ size_t count_src,
 		_In_ int skip = 0,
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
 		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
 	{
+		assert(dst || !count_dst);
 		assert(src || !count_src);
 
 		static const std::invalid_argument buffer_overrun("buffer overrun");
@@ -278,26 +323,68 @@ namespace stdex
 		return j;
 	}
 
-	///
-	/// Convert SGML string to Unicode (UTF-16 on Windows) and append to string
-	///
-	/// \param[inout]  dst        String to append Unicode to
-	/// \param[in]     src        SGML string
-	/// \param[in]     skip       Bitwise flag of stdex::sgml_* constants that list SGML entities to skip converting
-	/// \param[in]     offset     Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
-	/// \param[out]    map        The vector to append index mapping between source and destination string to.
-	///
-	/// \return Unicode string
-	///
 	template <class T>
-	inline void sgml2wstr(
-		_Inout_ std::wstring& dst,
-		_In_ const std::basic_string<T>& src,
+	inline _Deprecated_("Use stdex::sgml2wstrcat") size_t sgml2wstr(
+		_Inout_cap_(count_dst) wchar_t* dst, _In_ size_t count_dst,
+		_In_reads_or_z_opt_(count_src) const T* src, _In_ size_t count_src,
 		_In_ int skip = 0,
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
 		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
 	{
-		sgml2wstr(dst, src.data(), src.size(), skip, offset, map);
+		return sgml2wstrcat(dst, count_dst, src, count_src, skip, offset, map);
+	}
+
+	///
+	/// Convert SGML string to Unicode (UTF-16 on Windows)
+	///
+	/// \param[inout]  dst        String to write Unicode to
+	/// \param[in]     src        SGML string
+	/// \param[in]     count_src  SGML string character count limit
+	/// \param[in]     skip       Bitwise flag of stdex::sgml_* constants that list SGML entities to skip converting
+	/// \param[in]     offset     Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
+	/// \param[out]    map        The vector to write index mapping between source and destination string to.
+	///
+	template <class T>
+	inline void sgml2wstrcpy(
+		_Inout_ std::wstring& dst,
+		_In_reads_or_z_opt_(count_src) const T* src, _In_ size_t count_src,
+		_In_ int skip = 0,
+		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
+		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
+	{
+		dst.clear();
+		if (map)
+			map->clear();
+		sgml2wstrcat(dst, src, count_src, skip, offset, map);
+	}
+
+	///
+	/// Convert SGML string to Unicode (UTF-16 on Windows)
+	///
+	/// \param[inout]  dst        String to write Unicode to
+	/// \param[in]     count_dst  Unicode string character count limit. Function throws std::invalid_argument if there is not enough space in Unicode string (including space for zero-terminator).
+	/// \param[in]     src        SGML string
+	/// \param[in]     count_src  SGML string character count limit
+	/// \param[in]     skip       Bitwise flag of stdex::sgml_* constants that list SGML entities to skip converting
+	/// \param[in]     offset     Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
+	/// \param[out]    map        The vector to write index mapping between source and destination string to.
+	///
+	/// \return Final length of SGML string in code points excluding zero-terminator
+	///
+	template <class T>
+	inline size_t sgml2wstrcpy(
+		_Inout_cap_(count_dst) wchar_t* dst, _In_ size_t count_dst,
+		_In_reads_or_z_opt_(count_src) const T* src, _In_ size_t count_src,
+		_In_ int skip = 0,
+		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
+		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
+	{
+		assert(dst || !count_dst);
+		if (count_dst)
+			dst[0] = 0;
+		if (map)
+			map->clear();
+		sgml2wstrcat(dst, count_dst, src, count_src, skip, offset, map);
 	}
 
 	///
@@ -319,7 +406,7 @@ namespace stdex
 		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
 	{
 		std::wstring dst;
-		sgml2wstr(dst, src, count_src, skip, offset, map);
+		sgml2wstrcat(dst, src, count_src, skip, offset, map);
 		return dst;
 	}
 
@@ -380,7 +467,7 @@ namespace stdex
 	/// \param[in]     count_src  Unicode string character count limit
 	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
 	///
-	inline void wstr2sgml(
+	inline void wstr2sgmlcat(
 		_Inout_ std::string& dst,
 		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
 		_In_ size_t what = 0)
@@ -475,6 +562,37 @@ namespace stdex
 		}
 	}
 
+	inline _Deprecated_("Use stdex::wstr2sgmlcat") void wstr2sgml(
+		_Inout_ std::string& dst,
+		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
+		_In_ size_t what = 0)
+	{
+		wstr2sgmlcat(dst, src, count_src, what);
+	}
+
+	///
+	/// Convert Unicode string (UTF-16 on Windows) to SGML and append to string
+	///
+	/// \param[inout]  dst        String to append SGML to
+	/// \param[in]     src        Unicode string
+	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
+	///
+	inline void wstr2sgmlcat(
+		_Inout_ std::string& dst,
+		_In_ const std::wstring& src,
+		_In_ size_t what = 0)
+	{
+		wstr2sgmlcat(dst, src.c_str(), src.size(), what);
+	}
+
+	inline _Deprecated_("Use stdex::wstr2sgmlcat") void wstr2sgml(
+		_Inout_ std::string& dst,
+		_In_ const std::wstring& src,
+		_In_ size_t what = 0)
+	{
+		wstr2sgmlcat(dst, src, what);
+	}
+
 	///
 	/// Convert Unicode string (UTF-16 on Windows) to SGML and append to string
 	///
@@ -486,7 +604,7 @@ namespace stdex
 	///
 	/// \return Final length of SGML string in code points excluding zero-terminator
 	///
-	inline size_t wstr2sgml(
+	inline size_t wstr2sgmlcat(
 		_Inout_cap_(count_dst) char* dst, _In_ size_t count_dst,
 		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
 		_In_ size_t what = 0)
@@ -607,19 +725,51 @@ namespace stdex
 		return j;
 	}
 
-	///
-	/// Convert Unicode string (UTF-16 on Windows) to SGML and append to string
-	///
-	/// \param[inout]  dst        String to append SGML to
-	/// \param[in]     src        Unicode string
-	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
-	///
-	inline void wstr2sgml(
-		_Inout_ std::string& dst,
-		_In_ const std::wstring& src,
+	inline _Deprecated_("Use stdex::wstr2sgmlcat") size_t wstr2sgml(
+		_Inout_cap_(count_dst) char* dst, _In_ size_t count_dst,
+		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
 		_In_ size_t what = 0)
 	{
-		wstr2sgml(dst, src.c_str(), src.size(), what);
+		return wstr2sgmlcat(dst, count_dst, src, count_src, what);
+	}
+
+	///
+	/// Convert Unicode string (UTF-16 on Windows) to SGML
+	///
+	/// \param[inout]  dst        String to write SGML to
+	/// \param[in]     src        Unicode string
+	/// \param[in]     count_src  Unicode string character count limit
+	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
+	///
+	inline void wstr2sgmlcpy(
+		_Inout_ std::string& dst,
+		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
+		_In_ size_t what = 0)
+	{
+		dst.clear();
+		wstr2sgmlcat(dst, src, count_src, what);
+	}
+
+	///
+	/// Convert Unicode string (UTF-16 on Windows) to SGML
+	///
+	/// \param[inout]  dst        String to write SGML to
+	/// \param[in]     count_dst  SGML string character count limit. Function throws std::invalid_argument if there is not enough space in SGML string (including space for zero-terminator).
+	/// \param[in]     src        Unicode string
+	/// \param[in]     count_src  Unicode string character count limit
+	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
+	///
+	/// \return Final length of SGML string in code points excluding zero-terminator
+	///
+	inline size_t wstr2sgmlcpy(
+		_Inout_cap_(count_dst) char* dst, _In_ size_t count_dst,
+		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
+		_In_ size_t what = 0)
+	{
+		assert(dst || !count_dst);
+		if (count_dst)
+			dst[0] = 0;
+		wstr2sgmlcat(dst, count_dst, src, count_src, what);
 	}
 
 	///
@@ -636,7 +786,7 @@ namespace stdex
 		_In_ size_t what = 0)
 	{
 		std::string dst;
-		wstr2sgml(dst, src, count_src, what);
+		wstr2sgmlcat(dst, src, count_src, what);
 		return dst;
 	}
 
