@@ -135,6 +135,23 @@ namespace stdex
 	///
 	/// Convert string to Unicode string (UTF-16 on Windows)
 	///
+	/// \param[in]  src        String. Must be zero-terminated.
+	/// \param[in]  charset    Charset (stdex::charset_id::default - system default)
+	///
+	/// \return Unicode string
+	///
+	inline std::wstring str2wstr(
+		_In_z_ const char* src,
+		_In_ charset_id charset = charset_id::default)
+	{
+		std::wstring dst;
+		strcat(dst, src, SIZE_MAX, charset);
+		return dst;
+	}
+
+	///
+	/// Convert string to Unicode string (UTF-16 on Windows)
+	///
 	/// \param[in]  src        String
 	/// \param[in]  count_src  String character count limit
 	/// \param[in]  charset    Charset (stdex::charset_id::default - system default)
@@ -264,6 +281,23 @@ namespace stdex
 		_In_ charset_id charset = charset_id::default)
 	{
 		strcpy(dst, src.data(), src.size(), charset);
+	}
+
+	///
+	/// Convert Unicode string (UTF-16 on Windows) to string
+	///
+	/// \param[in]  src        Unicode string. Must be zero-terminated.
+	/// \param[in]  charset    Charset (stdex::charset_id::default - system default)
+	///
+	/// \return String
+	///
+	inline std::string wstr2str(
+		_In_z_ const wchar_t* src,
+		_In_ charset_id charset = charset_id::default)
+	{
+		std::string dst;
+		strcat(dst, src, SIZE_MAX, charset);
+		return dst;
 	}
 
 	///
