@@ -858,6 +858,11 @@ namespace stdex
 				m_source = &source;
 			}
 
+			void done()
+			{
+				m_source = nullptr;
+			}
+
 		public:
 			converter(_Inout_ basic& source) :
 				basic(source.state()),
@@ -1214,6 +1219,13 @@ namespace stdex
 				m_read_buffer(read_buffer_size),
 				m_write_buffer(write_buffer_size)
 			{}
+
+			void done()
+			{
+				if (m_source)
+					flush_write();
+				converter::done();
+			}
 
 		public:
 			buffer(_Inout_ basic& source, _In_ size_t read_buffer_size = default_buffer_size, _In_ size_t write_buffer_size = default_buffer_size) :
@@ -1649,6 +1661,17 @@ namespace stdex
 				m_atime = source.atime();
 				m_mtime = source.mtime();
 #endif
+			}
+
+			void done()
+			{
+				if (m_source) {
+					flush_cache();
+					if (!ok()) _Unlikely_
+						throw std::runtime_error("cache flush failed"); // Data loss occured
+					m_source->seek(m_offset);
+					m_source = nullptr;
+				}
 			}
 
 		public:
@@ -2133,6 +2156,11 @@ namespace stdex
 				m_source(h)
 			{
 				init(m_source);
+			}
+
+			virtual ~buffered_sys()
+			{
+				done();
 			}
 
 		protected:
@@ -2695,6 +2723,11 @@ namespace stdex
 				m_source(filename, mode & mode_for_writing ? mode | mode_for_reading : mode)
 			{
 				init(m_source);
+			}
+
+			virtual ~cached_file()
+			{
+				done();
 			}
 
 			///
