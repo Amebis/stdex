@@ -33,7 +33,12 @@ namespace stdex
 		}
 	};
 
-	static std::unique_ptr<__crt_locale_pointers, free_locale_delete> locale_C(_create_locale(LC_ALL, "C"));
+	using locale = std::unique_ptr<__crt_locale_pointers, free_locale_delete>;
+	static locale locale_C(_create_locale(LC_ALL, "C"));
+
+	inline locale_t create_locale(_In_ int category, _In_z_ const char* locale) { return _create_locale(category, locale); }
+	inline locale_t create_locale(_In_ int category, _In_z_ const wchar_t* locale) { return _wcreate_locale(category, locale); }
+	inline void free_locale(_In_opt_ _locale_t locale) { _free_locale(locale); }
 #else
 	using locale_t = ::locale_t;
 #endif
