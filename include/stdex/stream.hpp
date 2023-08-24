@@ -397,6 +397,26 @@ namespace stdex
 			///
 			/// Writes array of characters to the stream
 			///
+			/// \param[in] wstr       String to write. Must be zero-terminated.
+			/// \param[in] charset    Charset to convert string to
+			///
+			/// \return Number of code units written
+			///
+			size_t write_array(_In_z_ const wchar_t* wstr, _In_ charset_id charset)
+			{
+				if (!ok()) _Unlikely_
+					return 0;
+				size_t num_chars = stdex::strlen(wstr);
+				if (charset != charset_id::utf16) {
+					std::string str(wstr2str(wstr, num_chars, charset));
+					return write_array(str.data(), sizeof(char), str.size());
+				}
+				return write_array(wstr, sizeof(wchar_t), num_chars);
+			}
+
+			///
+			/// Writes array of characters to the stream
+			///
 			/// \param[in] wstr       String to write
 			/// \param[in] num_chars  String code unit count limit
 			/// \param[in] charset    Charset to convert string to
@@ -413,6 +433,26 @@ namespace stdex
 					return write_array(str.data(), sizeof(char), str.size());
 				}
 				return write_array(wstr, sizeof(wchar_t), num_chars);
+			}
+
+			///
+			/// Writes array of characters to the stream
+			///
+			/// \param[in] wstr       String to write
+			/// \param[in] charset    Charset to convert string to
+			///
+			/// \return Number of code units written
+			///
+			template<class _Traits = std::char_traits<wchar_t>, class _Ax = std::allocator<wchar_t>>
+			size_t write_array(_In_ const std::basic_string<wchar_t, _Traits, _Ax>& wstr, _In_ charset_id charset)
+			{
+				if (!ok()) _Unlikely_
+					return 0;
+				if (charset != charset_id::utf16) {
+					std::string str(wstr2str(wstr, charset));
+					return write_array(str.data(), sizeof(char), str.size());
+				}
+				return write_array(wstr.data(), sizeof(wchar_t), wstr.size());
 			}
 
 			///
