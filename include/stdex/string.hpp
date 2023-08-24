@@ -586,6 +586,48 @@ namespace stdex
 	}
 
 	///
+	/// Returns duplicated string on the heap
+	///
+	/// In contrast with the stdlib C strdup, the memory is allocated using operator new T[].
+	/// This allows returned string to be fed into std::unique_ptr<T> for auto release.
+	///
+	/// \param[in] str  String to duplicate. Must be zero-terminated.
+	/// 
+	/// \return Pointer to duplicated string; or nullptr if str is nullptr. Use delete operator to free the memory.
+	///
+	template <class T>
+	inline _Check_return_ _Ret_maybenull_z_ T* strdup(_In_opt_z_ const T* str)
+	{
+		if (!str) _Unlikely_
+			return nullptr;
+		size_t count = strlen(str) + 1;
+		T* dst = new T[count];
+		strncpy(dst, count, str, SIZE_MAX);
+		return dst;
+	}
+
+	///
+	/// Returns duplicated string on the heap
+	///
+	/// In contrast with the stdlib C strdup, the memory is allocated using operator new T[].
+	/// This allows returned string to be fed into std::unique_ptr<T> for auto release.
+	///
+	/// \param[in] str    String to duplicate.
+	/// \param[in] count  Number of code units in str.
+	/// 
+	/// \return Pointer to duplicated string. Use delete operator to free the memory.
+	///
+	template <class T>
+	inline _Ret_z_ T* strndup(
+		_In_reads_or_z_opt_(count) const T* str,
+		_In_ size_t count)
+	{
+		T* dst = new T[count];
+		strncpy(dst, count, str, SIZE_MAX);
+		return dst;
+	}
+
+	///
 	/// Convert CRLF to LF
 	/// Source and destination strings may point to the same buffer for inline conversion.
 	///
