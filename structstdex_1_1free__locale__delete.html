@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.7"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>stdex: Class Members</title>
+<title>stdex: stdex::free_locale_delete Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -47,7 +47,6 @@ $(function() {
 /* @license-end */
 </script>
 <div id="main-nav"></div>
-</div><!-- top -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -69,24 +68,40 @@ $(function() {
 </div>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><b>stdex</b></li><li class="navelem"><a class="el" href="structstdex_1_1free__locale__delete.html">free_locale_delete</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="structstdex_1_1free__locale__delete-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">stdex::free_locale_delete Struct Reference</div></div>
+</div><!--header-->
 <div class="contents">
-<div class="textblock">Here is a list of all documented class members with links to the class documentation for each member:</div>
 
-<h3><a id="index_o" name="index_o"></a>- o -</h3><ul>
-<li>ok()&#160;:&#160;<a class="el" href="classstdex_1_1stream_1_1basic.html#a0295e4efe18eef2a8962680274957ac1">stdex::stream::basic</a></li>
-<li>op&#160;:&#160;<a class="el" href="classstdex_1_1stream_1_1replicator_1_1worker.html#a9ddd37c6da22d559f6deb46102833f31">stdex::stream::replicator::worker</a></li>
-<li>open()&#160;:&#160;<a class="el" href="classstdex_1_1idrec_1_1record.html#a379d9eeac3c52375982ba75df33604ca">stdex::idrec::record&lt; T, T_ID, ID, T_SIZE, ALIGN &gt;</a>, <a class="el" href="classstdex_1_1stream_1_1cached__file.html#ac2a52fed78cb08987e63210b4f34fd1b">stdex::stream::cached_file</a>, <a class="el" href="classstdex_1_1stream_1_1file.html#a70b9101a911ed513fb0097d3bec5023a">stdex::stream::file</a></li>
-<li>operator bool()&#160;:&#160;<a class="el" href="structstdex_1_1interval.html#a15945d1ba829410c61466d95922000d0">stdex::interval&lt; T &gt;</a>, <a class="el" href="classstdex_1_1sys__object.html#a529b0f9294ed46591389ca3dd9c540f3">stdex::sys_object</a></li>
-<li>operator!=()&#160;:&#160;<a class="el" href="structstdex_1_1interval.html#aa5e6ff5a63e3cd9f8e36a32663ebfda8">stdex::interval&lt; T &gt;</a>, <a class="el" href="structstdex_1_1mapping.html#a99e44b5840a155e5ce366d440cbe234b">stdex::mapping&lt; T &gt;</a></li>
-<li>operator()()&#160;:&#160;<a class="el" href="structstdex_1_1free__locale__delete.html#ab7a2cd4be45534b436a871e09805b36f">stdex::free_locale_delete</a></li>
-<li>operator=()&#160;:&#160;<a class="el" href="classstdex_1_1idrec_1_1record.html#a3d4bff1bf080fb8cb3960b5b5018392c">stdex::idrec::record&lt; T, T_ID, ID, T_SIZE, ALIGN &gt;</a>, <a class="el" href="classstdex_1_1vector__queue.html#a00e42f0b6c31aa16e47a1093e90fd1aa">stdex::vector_queue&lt; T &gt;</a></li>
-<li>operator==()&#160;:&#160;<a class="el" href="structstdex_1_1interval.html#abec7b896ea0d650fc086955b0cba00a9">stdex::interval&lt; T &gt;</a>, <a class="el" href="structstdex_1_1mapping.html#a6d9fa746849e2ea27f53e40b8b44fb46">stdex::mapping&lt; T &gt;</a></li>
-<li>operator[]()&#160;:&#160;<a class="el" href="classstdex_1_1vector__queue.html#a21497b5396ef80a2d641f8ee767a3b17">stdex::vector_queue&lt; T &gt;</a></li>
+<p>Deleter for unique_ptr using free_locale.  
+ <a href="structstdex_1_1free__locale__delete.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="string_8hpp_source.html">stdex/string.hpp</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:ab7a2cd4be45534b436a871e09805b36f"><td class="memItemLeft" align="right" valign="top"><a id="ab7a2cd4be45534b436a871e09805b36f" name="ab7a2cd4be45534b436a871e09805b36f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (locale_t locale) const</td></tr>
+<tr class="memdesc:ab7a2cd4be45534b436a871e09805b36f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a pointer. <br /></td></tr>
+<tr class="separator:ab7a2cd4be45534b436a871e09805b36f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Deleter for unique_ptr using free_locale. </p>
+</div><hr/>The documentation for this struct was generated from the following file:<ul>
+<li>include/stdex/<a class="el" href="string_8hpp_source.html">string.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Aug 25 2023 09:25:10 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
+Generated on Fri Aug 25 2023 09:25:09 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
 </small></address>
 </body>
 </html>

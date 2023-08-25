@@ -207,9 +207,16 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>write_byte</b> (uint8
 <tr class="memitem:af6c10ec4ab181b5ed5b061d115059b7a inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1basic.html#af6c10ec4ab181b5ed5b061d115059b7a">write_array</a> (_In_reads_bytes_opt_(size *count) const void *array, size_t size, size_t count)</td></tr>
 <tr class="memdesc:af6c10ec4ab181b5ed5b061d115059b7a inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes an array of data to the stream.  <br /></td></tr>
 <tr class="separator:af6c10ec4ab181b5ed5b061d115059b7a inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca55a448ce9bec6b50be680f1ac63b09 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1basic.html#aca55a448ce9bec6b50be680f1ac63b09">write_array</a> (const wchar_t *wstr, charset_id charset)</td></tr>
+<tr class="memdesc:aca55a448ce9bec6b50be680f1ac63b09 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes array of characters to the stream.  <br /></td></tr>
+<tr class="separator:aca55a448ce9bec6b50be680f1ac63b09 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a248d5e688633f04139ee36aacc0258ad inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1basic.html#a248d5e688633f04139ee36aacc0258ad">write_array</a> (_In_reads_or_z_opt_(num_chars) const wchar_t *wstr, size_t num_chars, charset_id charset)</td></tr>
 <tr class="memdesc:a248d5e688633f04139ee36aacc0258ad inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes array of characters to the stream.  <br /></td></tr>
 <tr class="separator:a248d5e688633f04139ee36aacc0258ad inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7e725d1bfe3b7a08a87c969ce441a7a inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memTemplParams" colspan="2">template&lt;class _Traits  = std::char_traits&lt;wchar_t&gt;, class _Ax  = std::allocator&lt;wchar_t&gt;&gt; </td></tr>
+<tr class="memitem:ae7e725d1bfe3b7a08a87c969ce441a7a inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memTemplItemLeft" align="right" valign="top">size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1basic.html#ae7e725d1bfe3b7a08a87c969ce441a7a">write_array</a> (const std::basic_string&lt; wchar_t, _Traits, _Ax &gt; &amp;wstr, charset_id charset)</td></tr>
+<tr class="memdesc:ae7e725d1bfe3b7a08a87c969ce441a7a inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes array of characters to the stream.  <br /></td></tr>
+<tr class="separator:ae7e725d1bfe3b7a08a87c969ce441a7a inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2fece103fa6ca15dfe093fe90ceae65e inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memTemplParams" colspan="2">template&lt;class _Elem , class _Traits  = std::char_traits&lt;_Elem&gt;, class _Ax  = std::allocator&lt;_Elem&gt;&gt; </td></tr>
 <tr class="memitem:a2fece103fa6ca15dfe093fe90ceae65e inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classstdex_1_1stream_1_1basic.html">basic</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1basic.html#a2fece103fa6ca15dfe093fe90ceae65e">read_str</a> (std::basic_string&lt; _Elem, _Traits, _Ax &gt; &amp;data)</td></tr>
 <tr class="memdesc:a2fece103fa6ca15dfe093fe90ceae65e inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads length-prefixed string from the stream.  <br /></td></tr>
@@ -317,6 +324,9 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:ae1fda90fb57e5dbfc4bdf8d648d23ca3"><td class="memItemLeft" align="right" valign="top"><a id="ae1fda90fb57e5dbfc4bdf8d648d23ca3" name="ae1fda90fb57e5dbfc4bdf8d648d23ca3"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>buffer</b> (size_t read_buffer_size=default_buffer_size, size_t write_buffer_size=default_buffer_size)</td></tr>
 <tr class="separator:ae1fda90fb57e5dbfc4bdf8d648d23ca3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25bc9fd29ba328cef292a868080b5775"><td class="memItemLeft" align="right" valign="top"><a id="a25bc9fd29ba328cef292a868080b5775" name="a25bc9fd29ba328cef292a868080b5775"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>done</b> ()</td></tr>
+<tr class="separator:a25bc9fd29ba328cef292a868080b5775"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6bd1f6c00288dd202eacc34af2fadae"><td class="memItemLeft" align="right" valign="top"><a id="ab6bd1f6c00288dd202eacc34af2fadae" name="ab6bd1f6c00288dd202eacc34af2fadae"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>flush_write</b> ()</td></tr>
 <tr class="separator:ab6bd1f6c00288dd202eacc34af2fadae"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -324,6 +334,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>flush_write</b> ()</t
 <tr class="memitem:aa1c593742ba915b3023009ace181a2ec inherit pro_methods_classstdex_1_1stream_1_1converter"><td class="memItemLeft" align="right" valign="top">
 void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (<a class="el" href="classstdex_1_1stream_1_1basic.html">basic</a> &amp;source)</td></tr>
 <tr class="separator:aa1c593742ba915b3023009ace181a2ec inherit pro_methods_classstdex_1_1stream_1_1converter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65eb6b91f2e89832c586f9d42a53552f inherit pro_methods_classstdex_1_1stream_1_1converter"><td class="memItemLeft" align="right" valign="top">
+void&#160;</td><td class="memItemRight" valign="bottom"><b>done</b> ()</td></tr>
+<tr class="separator:a65eb6b91f2e89832c586f9d42a53552f inherit pro_methods_classstdex_1_1stream_1_1converter"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -476,7 +489,7 @@ state_t&#160;</td><td class="memItemRight" valign="bottom"><b>m_state</b></td></
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 23 2023 13:31:16 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
+Generated on Fri Aug 25 2023 09:25:10 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
 </small></address>
 </body>
 </html>

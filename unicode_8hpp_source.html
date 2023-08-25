@@ -173,113 +173,131 @@ $(function() {
 <div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>        strcpy(dst, src.data(), src.size(), charset);</div>
 <div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>    }</div>
 <div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span> </div>
-<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>    <span class="keyword">inline</span> std::wstring str2wstr(</div>
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>        _In_reads_or_z_opt_(count_src) <span class="keyword">const</span> <span class="keywordtype">char</span>* src, _In_ <span class="keywordtype">size_t</span> count_src,</div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>        _In_ charset_id charset = charset_id::default)</div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    {</div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>        std::wstring dst;</div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>        strcat(dst, src, count_src, charset);</div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>        <span class="keywordflow">return</span> dst;</div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>    }</div>
-<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span> </div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>    <span class="keyword">inline</span> std::wstring str2wstr(</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>        _In_z_ <span class="keyword">const</span> <span class="keywordtype">char</span>* src,</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>        _In_ charset_id charset = charset_id::default)</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    {</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>        std::wstring dst;</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>        strcat(dst, src, SIZE_MAX, charset);</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>        <span class="keywordflow">return</span> dst;</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>    }</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span> </div>
 <div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>    <span class="keyword">inline</span> std::wstring str2wstr(</div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>        _In_ <span class="keyword">const</span> std::string&amp; src,</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>        _In_reads_or_z_opt_(count_src) <span class="keyword">const</span> <span class="keywordtype">char</span>* src, _In_ <span class="keywordtype">size_t</span> count_src,</div>
 <div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>        _In_ charset_id charset = charset_id::default)</div>
 <div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>    {</div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>        <span class="keywordflow">return</span> str2wstr(src.c_str(), src.size(), charset);</div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>    }</div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span> </div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> strcat(</div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>        _Inout_ std::string&amp; dst,</div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>        _In_reads_or_z_opt_(count_src) <span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* src, _In_ <span class="keywordtype">size_t</span> count_src,</div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>        _In_ charset_id charset = charset_id::default)</div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>    {</div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>        assert(src || !count_src);</div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span><span class="preprocessor">#ifdef _WIN32</span></div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>        assert(count_src &lt; INT_MAX || count_src == SIZE_MAX);</div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>        <span class="keyword">constexpr</span> DWORD dwFlags = 0;</div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>        <span class="keyword">constexpr</span> LPCCH lpDefaultChar = NULL;</div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span> </div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>        <span class="comment">// Try to convert to stack buffer first.</span></div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>        CHAR szStackBuffer[1024/<span class="keyword">sizeof</span>(CHAR)];</div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span><span class="preprocessor">#pragma warning(suppress: 6387) </span><span class="comment">// Testing indicates src may be NULL when count_src is also 0. Is SAL of the lpWideCharStr parameter wrong?</span></div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>        <span class="keywordtype">int</span> cch = WideCharToMultiByte(<span class="keyword">static_cast&lt;</span>UINT<span class="keyword">&gt;</span>(charset), dwFlags, src, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(count_src), szStackBuffer, _countof(szStackBuffer), lpDefaultChar, NULL);</div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>        <span class="keywordflow">if</span> (cch) {</div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>            <span class="comment">// Copy from stack. Be careful not to include zero terminator.</span></div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>            dst.append(szStackBuffer, count_src != SIZE_MAX ? strnlen(szStackBuffer, cch) : (size_t)cch - 1);</div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (::GetLastError() == ERROR_INSUFFICIENT_BUFFER) {</div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>            <span class="comment">// Query the required output size. Allocate buffer. Then convert again.</span></div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>            cch = WideCharToMultiByte(<span class="keyword">static_cast&lt;</span>UINT<span class="keyword">&gt;</span>(charset), dwFlags, src, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(count_src), NULL, 0, lpDefaultChar, NULL);</div>
-<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>            std::unique_ptr&lt;CHAR[]&gt; szBuffer(<span class="keyword">new</span> CHAR[cch]);</div>
-<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>            cch = WideCharToMultiByte(<span class="keyword">static_cast&lt;</span>UINT<span class="keyword">&gt;</span>(charset), dwFlags, src, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(count_src), szBuffer.get(), cch, lpDefaultChar, NULL);</div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>            dst.append(szBuffer.get(), count_src != SIZE_MAX ? strnlen(szBuffer.get(), cch) : (size_t)cch - 1);</div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>        }</div>
-<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span><span class="preprocessor">#else</span></div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>        <span class="keywordflow">throw</span> std::exception(<span class="stringliteral">&quot;not implemented&quot;</span>);</div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>    }</div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span> </div>
-<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>    <span class="keyword">inline</span> _Deprecated_(<span class="stringliteral">&quot;Use stdex::strcat&quot;</span>) void wstr2str(</div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>        _Inout_ std::<span class="keywordtype">string</span>&amp; dst,</div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>        _In_reads_or_z_opt_(count_src) const <span class="keywordtype">wchar_t</span>* src, _In_ <span class="keywordtype">size_t</span> count_src,</div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>        _In_ charset_id charset = charset_id::default)</div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>    {</div>
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>        strcat(dst, src, count_src, charset);</div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>    }</div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span> </div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> strcat(</div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>        _Inout_ std::string&amp; dst,</div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>        _In_ <span class="keyword">const</span> std::wstring&amp; src,</div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>        _In_ charset_id charset = charset_id::default)</div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>    {</div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>        strcat(dst, src.c_str(), src.size(), charset);</div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>    }</div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span> </div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>    <span class="keyword">inline</span> _Deprecated_(<span class="stringliteral">&quot;Use stdex::strcat&quot;</span>) void wstr2str(</div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>        _Inout_ std::<span class="keywordtype">string</span>&amp; dst,</div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>        _In_ const std::wstring&amp; src,</div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>        _In_ charset_id charset = charset_id::default)</div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>    {</div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>        strcat(dst, src, charset);</div>
-<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>    }</div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span> </div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> strcpy(</div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>        _Inout_ std::string&amp; dst,</div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>        _In_reads_or_z_opt_(count_src) <span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* src, _In_ <span class="keywordtype">size_t</span> count_src,</div>
-<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>        _In_ charset_id charset = charset_id::default)</div>
-<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>    {</div>
-<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>        dst.clear();</div>
-<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>        strcat(dst, src, count_src, charset);</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>        std::wstring dst;</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>        strcat(dst, src, count_src, charset);</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>        <span class="keywordflow">return</span> dst;</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>    }</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span> </div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>    <span class="keyword">inline</span> std::wstring str2wstr(</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>        _In_ <span class="keyword">const</span> std::string&amp; src,</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>        _In_ charset_id charset = charset_id::default)</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>    {</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>        <span class="keywordflow">return</span> str2wstr(src.c_str(), src.size(), charset);</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>    }</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span> </div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> strcat(</div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>        _Inout_ std::string&amp; dst,</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>        _In_reads_or_z_opt_(count_src) <span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* src, _In_ <span class="keywordtype">size_t</span> count_src,</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>        _In_ charset_id charset = charset_id::default)</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>    {</div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>        assert(src || !count_src);</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span><span class="preprocessor">#ifdef _WIN32</span></div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>        assert(count_src &lt; INT_MAX || count_src == SIZE_MAX);</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>        <span class="keyword">constexpr</span> DWORD dwFlags = 0;</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>        <span class="keyword">constexpr</span> LPCCH lpDefaultChar = NULL;</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span> </div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>        <span class="comment">// Try to convert to stack buffer first.</span></div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>        CHAR szStackBuffer[1024/<span class="keyword">sizeof</span>(CHAR)];</div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span><span class="preprocessor">#pragma warning(suppress: 6387) </span><span class="comment">// Testing indicates src may be NULL when count_src is also 0. Is SAL of the lpWideCharStr parameter wrong?</span></div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>        <span class="keywordtype">int</span> cch = WideCharToMultiByte(<span class="keyword">static_cast&lt;</span>UINT<span class="keyword">&gt;</span>(charset), dwFlags, src, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(count_src), szStackBuffer, _countof(szStackBuffer), lpDefaultChar, NULL);</div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>        <span class="keywordflow">if</span> (cch) {</div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>            <span class="comment">// Copy from stack. Be careful not to include zero terminator.</span></div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>            dst.append(szStackBuffer, count_src != SIZE_MAX ? strnlen(szStackBuffer, cch) : (size_t)cch - 1);</div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (::GetLastError() == ERROR_INSUFFICIENT_BUFFER) {</div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>            <span class="comment">// Query the required output size. Allocate buffer. Then convert again.</span></div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>            cch = WideCharToMultiByte(<span class="keyword">static_cast&lt;</span>UINT<span class="keyword">&gt;</span>(charset), dwFlags, src, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(count_src), NULL, 0, lpDefaultChar, NULL);</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>            std::unique_ptr&lt;CHAR[]&gt; szBuffer(<span class="keyword">new</span> CHAR[cch]);</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>            cch = WideCharToMultiByte(<span class="keyword">static_cast&lt;</span>UINT<span class="keyword">&gt;</span>(charset), dwFlags, src, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(count_src), szBuffer.get(), cch, lpDefaultChar, NULL);</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>            dst.append(szBuffer.get(), count_src != SIZE_MAX ? strnlen(szBuffer.get(), cch) : (size_t)cch - 1);</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>        }</div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>        <span class="keywordflow">throw</span> std::exception(<span class="stringliteral">&quot;not implemented&quot;</span>);</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>    }</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span> </div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>    <span class="keyword">inline</span> _Deprecated_(<span class="stringliteral">&quot;Use stdex::strcat&quot;</span>) void wstr2str(</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>        _Inout_ std::<span class="keywordtype">string</span>&amp; dst,</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>        _In_reads_or_z_opt_(count_src) const <span class="keywordtype">wchar_t</span>* src, _In_ <span class="keywordtype">size_t</span> count_src,</div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>        _In_ charset_id charset = charset_id::default)</div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>    {</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>        strcat(dst, src, count_src, charset);</div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>    }</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span> </div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> strcat(</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>        _Inout_ std::string&amp; dst,</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>        _In_ <span class="keyword">const</span> std::wstring&amp; src,</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>        _In_ charset_id charset = charset_id::default)</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>    {</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>        strcat(dst, src.c_str(), src.size(), charset);</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>    }</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span> </div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>    <span class="keyword">inline</span> _Deprecated_(<span class="stringliteral">&quot;Use stdex::strcat&quot;</span>) void wstr2str(</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>        _Inout_ std::<span class="keywordtype">string</span>&amp; dst,</div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>        _In_ const std::wstring&amp; src,</div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>        _In_ charset_id charset = charset_id::default)</div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>    {</div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>        strcat(dst, src, charset);</div>
 <div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>    }</div>
 <div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span> </div>
-<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> strcpy(</div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>        _Inout_ std::string&amp; dst,</div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>        _In_ <span class="keyword">const</span> std::wstring&amp; src,</div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>        _In_ charset_id charset = charset_id::default)</div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>    {</div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>        strcpy(dst, src.data(), src.size(), charset);</div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    }</div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span> </div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>    <span class="keyword">inline</span> std::string wstr2str(</div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>        _In_reads_or_z_opt_(count_src) <span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* src, _In_ <span class="keywordtype">size_t</span> count_src,</div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>        _In_ charset_id charset = charset_id::default)</div>
-<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>    {</div>
-<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>        std::string dst;</div>
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>        strcat(dst, src, count_src, charset);</div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>        <span class="keywordflow">return</span> dst;</div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>    }</div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span> </div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>    <span class="keyword">inline</span> std::string wstr2str(</div>
-<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>        _In_ <span class="keyword">const</span> std::wstring&amp; src,</div>
-<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>        _In_ charset_id charset = charset_id::default)</div>
-<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>    {</div>
-<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>        <span class="keywordflow">return</span> wstr2str(src.c_str(), src.size(), charset);</div>
-<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>    }</div>
-<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>}</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> strcpy(</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>        _Inout_ std::string&amp; dst,</div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>        _In_reads_or_z_opt_(count_src) <span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* src, _In_ <span class="keywordtype">size_t</span> count_src,</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>        _In_ charset_id charset = charset_id::default)</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>    {</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>        dst.clear();</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>        strcat(dst, src, count_src, charset);</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>    }</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span> </div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> strcpy(</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>        _Inout_ std::string&amp; dst,</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>        _In_ <span class="keyword">const</span> std::wstring&amp; src,</div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>        _In_ charset_id charset = charset_id::default)</div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>    {</div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>        strcpy(dst, src.data(), src.size(), charset);</div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>    }</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span> </div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>    <span class="keyword">inline</span> std::string wstr2str(</div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>        _In_z_ <span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* src,</div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>        _In_ charset_id charset = charset_id::default)</div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>    {</div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>        std::string dst;</div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>        strcat(dst, src, SIZE_MAX, charset);</div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>        <span class="keywordflow">return</span> dst;</div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>    }</div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span> </div>
+<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>    <span class="keyword">inline</span> std::string wstr2str(</div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>        _In_reads_or_z_opt_(count_src) <span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* src, _In_ <span class="keywordtype">size_t</span> count_src,</div>
+<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>        _In_ charset_id charset = charset_id::default)</div>
+<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>    {</div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>        std::string dst;</div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>        strcat(dst, src, count_src, charset);</div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>        <span class="keywordflow">return</span> dst;</div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>    }</div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span> </div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>    <span class="keyword">inline</span> std::string wstr2str(</div>
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>        _In_ <span class="keyword">const</span> std::wstring&amp; src,</div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>        _In_ charset_id charset = charset_id::default)</div>
+<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>    {</div>
+<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>        <span class="keywordflow">return</span> wstr2str(src.c_str(), src.size(), charset);</div>
+<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>    }</div>
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span>}</div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 23 2023 13:31:15 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
+Generated on Fri Aug 25 2023 09:25:09 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
 </small></address>
 </body>
 </html>

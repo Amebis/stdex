@@ -186,9 +186,16 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>write_byte</b> (uint8
 <tr class="memitem:af6c10ec4ab181b5ed5b061d115059b7a"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1basic.html#af6c10ec4ab181b5ed5b061d115059b7a">write_array</a> (_In_reads_bytes_opt_(size *count) const void *array, size_t size, size_t count)</td></tr>
 <tr class="memdesc:af6c10ec4ab181b5ed5b061d115059b7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes an array of data to the stream.  <br /></td></tr>
 <tr class="separator:af6c10ec4ab181b5ed5b061d115059b7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca55a448ce9bec6b50be680f1ac63b09"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1basic.html#aca55a448ce9bec6b50be680f1ac63b09">write_array</a> (const wchar_t *wstr, charset_id charset)</td></tr>
+<tr class="memdesc:aca55a448ce9bec6b50be680f1ac63b09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes array of characters to the stream.  <br /></td></tr>
+<tr class="separator:aca55a448ce9bec6b50be680f1ac63b09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a248d5e688633f04139ee36aacc0258ad"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1basic.html#a248d5e688633f04139ee36aacc0258ad">write_array</a> (_In_reads_or_z_opt_(num_chars) const wchar_t *wstr, size_t num_chars, charset_id charset)</td></tr>
 <tr class="memdesc:a248d5e688633f04139ee36aacc0258ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes array of characters to the stream.  <br /></td></tr>
 <tr class="separator:a248d5e688633f04139ee36aacc0258ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7e725d1bfe3b7a08a87c969ce441a7a"><td class="memTemplParams" colspan="2">template&lt;class _Traits  = std::char_traits&lt;wchar_t&gt;, class _Ax  = std::allocator&lt;wchar_t&gt;&gt; </td></tr>
+<tr class="memitem:ae7e725d1bfe3b7a08a87c969ce441a7a"><td class="memTemplItemLeft" align="right" valign="top">size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1basic.html#ae7e725d1bfe3b7a08a87c969ce441a7a">write_array</a> (const std::basic_string&lt; wchar_t, _Traits, _Ax &gt; &amp;wstr, charset_id charset)</td></tr>
+<tr class="memdesc:ae7e725d1bfe3b7a08a87c969ce441a7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes array of characters to the stream.  <br /></td></tr>
+<tr class="separator:ae7e725d1bfe3b7a08a87c969ce441a7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2fece103fa6ca15dfe093fe90ceae65e"><td class="memTemplParams" colspan="2">template&lt;class _Elem , class _Traits  = std::char_traits&lt;_Elem&gt;, class _Ax  = std::allocator&lt;_Elem&gt;&gt; </td></tr>
 <tr class="memitem:a2fece103fa6ca15dfe093fe90ceae65e"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classstdex_1_1stream_1_1basic.html">basic</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1basic.html#a2fece103fa6ca15dfe093fe90ceae65e">read_str</a> (std::basic_string&lt; _Elem, _Traits, _Ax &gt; &amp;data)</td></tr>
 <tr class="memdesc:a2fece103fa6ca15dfe093fe90ceae65e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads length-prefixed string from the stream.  <br /></td></tr>
@@ -821,7 +828,7 @@ template&lt;class _Traits  = std::char_traits&lt;wchar_t&gt;, class _Ax  = std::
 </div>
 </div>
 <a id="af6c10ec4ab181b5ed5b061d115059b7a" name="af6c10ec4ab181b5ed5b061d115059b7a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af6c10ec4ab181b5ed5b061d115059b7a">&#9670;&#160;</a></span>write_array() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#af6c10ec4ab181b5ed5b061d115059b7a">&#9670;&#160;</a></span>write_array() <span class="overload">[1/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -866,7 +873,7 @@ template&lt;class _Traits  = std::char_traits&lt;wchar_t&gt;, class _Ax  = std::
 </div>
 </div>
 <a id="a248d5e688633f04139ee36aacc0258ad" name="a248d5e688633f04139ee36aacc0258ad"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a248d5e688633f04139ee36aacc0258ad">&#9670;&#160;</a></span>write_array() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a248d5e688633f04139ee36aacc0258ad">&#9670;&#160;</a></span>write_array() <span class="overload">[2/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -910,6 +917,100 @@ template&lt;class _Traits  = std::char_traits&lt;wchar_t&gt;, class _Ax  = std::
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">wstr</td><td>String to write </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">num_chars</td><td>String code unit count limit </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">charset</td><td>Charset to convert string to</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of code units written </dd></dl>
+
+</div>
+</div>
+<a id="ae7e725d1bfe3b7a08a87c969ce441a7a" name="ae7e725d1bfe3b7a08a87c969ce441a7a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7e725d1bfe3b7a08a87c969ce441a7a">&#9670;&#160;</a></span>write_array() <span class="overload">[3/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class _Traits  = std::char_traits&lt;wchar_t&gt;, class _Ax  = std::allocator&lt;wchar_t&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t stdex::stream::basic::write_array </td>
+          <td>(</td>
+          <td class="paramtype">const std::basic_string&lt; wchar_t, _Traits, _Ax &gt; &amp;&#160;</td>
+          <td class="paramname"><em>wstr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">charset_id&#160;</td>
+          <td class="paramname"><em>charset</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Writes array of characters to the stream. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">wstr</td><td>String to write </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">charset</td><td>Charset to convert string to</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of code units written </dd></dl>
+
+</div>
+</div>
+<a id="aca55a448ce9bec6b50be680f1ac63b09" name="aca55a448ce9bec6b50be680f1ac63b09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca55a448ce9bec6b50be680f1ac63b09">&#9670;&#160;</a></span>write_array() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t stdex::stream::basic::write_array </td>
+          <td>(</td>
+          <td class="paramtype">const wchar_t *&#160;</td>
+          <td class="paramname"><em>wstr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">charset_id&#160;</td>
+          <td class="paramname"><em>charset</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Writes array of characters to the stream. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">wstr</td><td>String to write. Must be zero-terminated. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">charset</td><td>Charset to convert string to</td></tr>
   </table>
   </dd>
@@ -1219,7 +1320,7 @@ template&lt;class T &gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 23 2023 13:31:16 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
+Generated on Fri Aug 25 2023 09:25:10 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7
 </small></address>
 </body>
 </html>
