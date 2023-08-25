@@ -19,8 +19,15 @@ namespace stdex
 #ifdef _WIN32
 	using locale_t = _locale_t;
 
+	inline locale_t create_locale(_In_ int category, _In_z_ const char* locale) { return _create_locale(category, locale); }
+	inline locale_t create_locale(_In_ int category, _In_z_ const wchar_t* locale) { return _wcreate_locale(category, locale); }
+	inline void free_locale(_In_opt_ _locale_t locale) { _free_locale(locale); }
+#else
+	using locale_t = ::locale_t;
+#endif
+
 	///
-	/// Deleter for unique_ptr using _free_locale
+	/// Deleter for unique_ptr using free_locale
 	///
 	struct free_locale_delete
 	{
@@ -29,19 +36,19 @@ namespace stdex
 		///
 		void operator()(_In_ locale_t locale) const
 		{
-			_free_locale(locale);
+			free_locale(locale);
 		}
 	};
 
+	///
+	/// locale_t helper class to free_locale when going out of scope
+	///
 	using locale = std::unique_ptr<__crt_locale_pointers, free_locale_delete>;
-	static locale locale_C(_create_locale(LC_ALL, "C"));
 
-	inline locale_t create_locale(_In_ int category, _In_z_ const char* locale) { return _create_locale(category, locale); }
-	inline locale_t create_locale(_In_ int category, _In_z_ const wchar_t* locale) { return _wcreate_locale(category, locale); }
-	inline void free_locale(_In_opt_ _locale_t locale) { _free_locale(locale); }
-#else
-	using locale_t = ::locale_t;
-#endif
+	///
+	/// Reusable C locale
+	///
+	static locale locale_C(_create_locale(LC_ALL, "C"));
 
 	///
 	/// UTF-16 code unit
