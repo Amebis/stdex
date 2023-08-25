@@ -15,8 +15,10 @@
 #include <stdarg.h>
 #include <stdint.h>
 #ifdef _WIN32
+#ifndef _WINSOCKAPI_
 #include <winsock2.h>
 #include <ws2ipdef.h>
+#endif
 #else
 #include <inaddr.h>
 #include <in6addr.h>

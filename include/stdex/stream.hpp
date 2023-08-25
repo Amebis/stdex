@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>
-#if defined(_WIN32) && !defined(WIN32_LEAN_AND_MEAN)
+#if defined(_WIN32)
 #include <asptlb.h>
 #include <objidl.h>
 #endif
@@ -2278,7 +2278,6 @@ namespace stdex
 			ISequentialStream* m_source;
 		};
 
-#ifndef WIN32_LEAN_AND_MEAN
 		///
 		/// Wrapper for IIS ASP IRequest and IResponse
 		///
@@ -2395,7 +2394,6 @@ namespace stdex
 			IRequest* m_request;
 			IResponse* m_response;
 		};
-#endif
 #endif
 
 		///

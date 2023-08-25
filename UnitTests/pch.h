@@ -5,9 +5,6 @@
 
 #pragma once
 
-#define SECURITY_WIN32
-#define _WINSOCKAPI_	// Prevent inclusion of winsock.h in windows.h
-
 #include <stdex/base64.hpp>
 #include <stdex/errno.hpp>
 #include <stdex/exception.hpp>
