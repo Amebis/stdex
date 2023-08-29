@@ -151,7 +151,7 @@ namespace stdex
 								break;
 						}
 					}
-					catch (std::bad_alloc) { m_state = state_t::fail; }
+					catch (const std::bad_alloc&) { m_state = state_t::fail; }
 				}
 			}
 
@@ -181,7 +181,7 @@ namespace stdex
 				while (offset < max_length) {
 					length = std::min(length, max_length);
 					try { result.resize(length); }
-					catch (std::bad_alloc) {
+					catch (const std::bad_alloc&) {
 						m_state = state_t::fail;
 						return result;
 					}
@@ -231,7 +231,7 @@ namespace stdex
 								break;
 						}
 					}
-					catch (std::bad_alloc) { m_state = state_t::fail; }
+					catch (const std::bad_alloc&) { m_state = state_t::fail; }
 				}
 			}
 
@@ -699,7 +699,7 @@ namespace stdex
 				size_t length = std::min<size_t>(max_length, static_cast<size_t>(size() - tell()));
 				std::vector<uint8_t> result;
 				try { result.resize(length); }
-				catch (std::bad_alloc) {
+				catch (const std::bad_alloc&) {
 					m_state = state_t::fail;
 					return result;
 				}
@@ -2170,7 +2170,7 @@ namespace stdex
 					sys_object::close();
 					m_state = state_t::ok;
 				}
-				catch (std::exception) {
+				catch (const std::exception&) {
 					m_state = state_t::fail;
 				}
 			}
@@ -3548,7 +3548,7 @@ namespace stdex
 					m_state = state_t::ok;
 					return length;
 				}
-				catch (std::bad_alloc) {
+				catch (const std::bad_alloc&) {
 					m_state = state_t::fail;
 					return 0;
 				}
