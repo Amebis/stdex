@@ -2,7 +2,7 @@ var searchData=
 [
   ['back_0',['back',['../classstdex_1_1ring.html#a3e41365e5bcb914099baff6b02686bca',1,'stdex::ring::back()'],['../classstdex_1_1vector__queue.html#a564c31d1a260f9f210541b7fd4803d3e',1,'stdex::vector_queue::back()'],['../classstdex_1_1vector__queue.html#a4a76efc22a2e2b9310b541ba44fd05e9',1,'stdex::vector_queue::back() const']]],
   ['base64_5fdec_1',['base64_dec',['../classstdex_1_1base64__dec.html#a17d956a883e99d8d884d2cb2edade8c5',1,'stdex::base64_dec::base64_dec()'],['../classstdex_1_1base64__dec.html',1,'stdex::base64_dec']]],
-  ['base64_5fenc_2',['base64_enc',['../classstdex_1_1base64__enc.html#abc6c72530634c3fea8168710ab5b1a28',1,'stdex::base64_enc::base64_enc()'],['../classstdex_1_1base64__enc.html',1,'stdex::base64_enc']]],
+  ['base64_5fenc_2',['base64_enc',['../classstdex_1_1base64__enc.html',1,'stdex::base64_enc'],['../classstdex_1_1base64__enc.html#abc6c72530634c3fea8168710ab5b1a28',1,'stdex::base64_enc::base64_enc()']]],
   ['basic_3',['basic',['../classstdex_1_1stream_1_1basic.html',1,'stdex::stream']]],
   ['basic_5fangle_4',['basic_angle',['../classstdex_1_1parser_1_1basic__angle.html',1,'stdex::parser']]],
   ['basic_5fany_5fcu_5',['basic_any_cu',['../classstdex_1_1parser_1_1basic__any__cu.html',1,'stdex::parser']]],

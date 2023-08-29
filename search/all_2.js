@@ -2,7 +2,7 @@ var searchData=
 [
   ['cache_0',['cache',['../classstdex_1_1stream_1_1cache.html',1,'stdex::stream']]],
   ['cache_5ft_1',['cache_t',['../structstdex_1_1stream_1_1cache_1_1cache__t.html',1,'stdex::stream::cache']]],
-  ['cached_5ffile_2',['cached_file',['../classstdex_1_1stream_1_1cached__file.html#aace5ebb17927a869e6e923b592d8b3da',1,'stdex::stream::cached_file::cached_file()'],['../classstdex_1_1stream_1_1cached__file.html',1,'stdex::stream::cached_file']]],
+  ['cached_5ffile_2',['cached_file',['../classstdex_1_1stream_1_1cached__file.html',1,'stdex::stream::cached_file'],['../classstdex_1_1stream_1_1cached__file.html#aa53149a79b463450f64223f45285dc02',1,'stdex::stream::cached_file::cached_file()']]],
   ['cancel_3',['cancel',['../classstdex_1_1progress.html#a03380c822297092b3bb9867deee26202',1,'stdex::progress::cancel()'],['../classstdex_1_1global__progress.html#a74a5ea9089ff7b7015ea4a2071f3113e',1,'stdex::global_progress::cancel()']]],
   ['capacity_4',['capacity',['../classstdex_1_1vector__queue.html#add3d6ed93d3c1471b80351c56639bab7',1,'stdex::vector_queue']]],
   ['clear_5',['clear',['../classstdex_1_1base64__enc.html#afb6a85176589d9ce1f65ce6355592fe7',1,'stdex::base64_enc::clear()'],['../classstdex_1_1base64__dec.html#a94738b63789489022e0c16063b732305',1,'stdex::base64_dec::clear()'],['../classstdex_1_1hex__dec.html#a282bf5db0d16b29b12c71b73d3a33cc4',1,'stdex::hex_dec::clear()'],['../classstdex_1_1vector__queue.html#a93259be5f471580d2f8d7bee41032f9b',1,'stdex::vector_queue::clear()']]],

@@ -2,8 +2,8 @@ var searchData=
 [
   ['has_5fseparators_0',['has_separators',['../classstdex_1_1parser_1_1basic__integer10ts.html#a2ac33bec062d1f6b21d033831a8742a9',1,'stdex::parser::basic_integer10ts']]],
   ['head_1',['head',['../classstdex_1_1vector__queue.html#a5d1e9d77cf329abd9127d2a6dfbd08c4',1,'stdex::vector_queue']]],
-  ['hex_5fdec_2',['hex_dec',['../classstdex_1_1hex__dec.html#a61bd84f6b79b2b8e9daebfafeb2f17ad',1,'stdex::hex_dec::hex_dec()'],['../classstdex_1_1hex__dec.html',1,'stdex::hex_dec']]],
-  ['hex_5fenc_3',['hex_enc',['../classstdex_1_1hex__enc.html#a882581bc4798b138de9322d1b0bdd433',1,'stdex::hex_enc::hex_enc()'],['../classstdex_1_1hex__enc.html',1,'stdex::hex_enc']]],
+  ['hex_5fdec_2',['hex_dec',['../classstdex_1_1hex__dec.html',1,'stdex::hex_dec'],['../classstdex_1_1hex__dec.html#a61bd84f6b79b2b8e9daebfafeb2f17ad',1,'stdex::hex_dec::hex_dec()']]],
+  ['hex_5fenc_3',['hex_enc',['../classstdex_1_1hex__enc.html',1,'stdex::hex_enc'],['../classstdex_1_1hex__enc.html#a882581bc4798b138de9322d1b0bdd433',1,'stdex::hex_enc::hex_enc()']]],
   ['http_5fagent_4',['http_agent',['../classstdex_1_1parser_1_1http__agent.html',1,'stdex::parser']]],
   ['http_5fany_5ftype_5',['http_any_type',['../classstdex_1_1parser_1_1http__any__type.html',1,'stdex::parser']]],
   ['http_5fasterisk_6',['http_asterisk',['../classstdex_1_1parser_1_1http__asterisk.html',1,'stdex::parser']]],

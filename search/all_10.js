@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['save_0',['save',['../classstdex_1_1stream_1_1memory__file.html#aef50ff3c88577d89d83ee625cc5d1bfd',1,'stdex::stream::memory_file']]],
+  ['save_0',['save',['../classstdex_1_1stream_1_1memory__file.html#a96210fbbca48af7097ddad7cc9bf6cb5',1,'stdex::stream::memory_file']]],
   ['scope_5fid_1',['scope_id',['../classstdex_1_1parser_1_1basic__ipv6__address.html#a67486e83888f48afc62b031f745012c0',1,'stdex::parser::basic_ipv6_address']]],
   ['seek_2',['seek',['../classstdex_1_1stream_1_1diag__file.html#a9f616580a2547b37beccd7d114ed06d0',1,'stdex::stream::diag_file::seek()'],['../classstdex_1_1stream_1_1memory__file.html#a9e67e40e9e3c0f7b002fcdab5220b4e7',1,'stdex::stream::memory_file::seek()'],['../classstdex_1_1stream_1_1file.html#acdfc1dc079ebeaeb05312e03925485ff',1,'stdex::stream::file::seek()'],['../classstdex_1_1stream_1_1cache.html#af2979118bdeca35cbfd84a8a2be00f8a',1,'stdex::stream::cache::seek()'],['../classstdex_1_1stream_1_1file__window.html#a53a12a1979b770030c0de05b349f1e55',1,'stdex::stream::file_window::seek()'],['../classstdex_1_1stream_1_1basic__file.html#afcaac612398bd7d02d8d146dcad74465',1,'stdex::stream::basic_file::seek(foff_t offset, seek_t how=seek_t::beg)=0']]],
   ['seekbeg_3',['seekbeg',['../classstdex_1_1stream_1_1basic__file.html#a6a8da9a1b0a3926b9bc453bf0209ee5e',1,'stdex::stream::basic_file']]],
