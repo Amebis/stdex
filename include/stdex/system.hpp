@@ -46,16 +46,28 @@ namespace stdex
 	/// Character type for system functions
 	///
 #if defined(_WIN32)
-	using sys_char = TCHAR;
+	using schar_t = TCHAR;
 #else
-	using sys_char = char;
+	using schar_t = char;
 #define _T(x) x
 #endif
 
 	///
+	/// Character type for system functions for backward compatibility
+	/// Use stdex::schar_t
+	///
+	using sys_char = schar_t;
+
+	///
 	/// String for system functions
 	///
-	using sys_string = std::basic_string<stdex::sys_char>;
+	using sstring = std::basic_string<stdex::schar_t>;
+
+	///
+	/// String for system functions for backward compatibility
+	/// Use stdex::sstring
+	///
+	using sys_string = sstring;
 
 	///
 	/// Operating system object (file, pipe, anything with an OS handle etc.)

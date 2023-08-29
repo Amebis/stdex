@@ -2440,7 +2440,7 @@ namespace stdex
 			/// \param[in] filename  Filename
 			/// \param[in] mode      Bitwise combination of mode_t flags
 			///
-			file(_In_z_ const sys_char* filename, _In_ int mode)
+			file(_In_z_ const schar_t* filename, _In_ int mode)
 			{
 				open(filename, mode);
 			}
@@ -2451,7 +2451,7 @@ namespace stdex
 			/// \param[in] filename  Filename
 			/// \param[in] mode      Bitwise combination of mode_t flags
 			///
-			void open(_In_z_ const sys_char* filename, _In_ int mode)
+			void open(_In_z_ const schar_t* filename, _In_ int mode)
 			{
 				if (m_h != invalid_handle)
 					close();
@@ -2756,7 +2756,7 @@ namespace stdex
 			/// \param[in] mode        Bitwise combination of mode_t flags
 			/// \param[in] cache_size  Size of the cache block
 			///
-			cached_file(_In_z_ const sys_char* filename, _In_ int mode, _In_ size_t cache_size = default_cache_size) :
+			cached_file(_In_z_ const schar_t* filename, _In_ int mode, _In_ size_t cache_size = default_cache_size) :
 				cache(cache_size),
 				m_source(filename, mode & mode_for_writing ? mode | mode_for_reading : mode)
 			{
@@ -2775,7 +2775,7 @@ namespace stdex
 			/// \param[in] mode        Bitwise combination of mode_t flags
 			/// \param[in] cache_size  Size of the cache block
 			///
-			void open(_In_z_ const sys_char* filename, _In_ int mode)
+			void open(_In_z_ const schar_t* filename, _In_ int mode)
 			{
 				invalidate_cache();
 				if (!ok()) _Unlikely_{
@@ -2881,7 +2881,7 @@ namespace stdex
 			/// \param[in] filename  Filename
 			/// \param[in] mode      Bitwise combination of mode_t flags
 			///
-			memory_file(_In_z_ const sys_char* filename, _In_ int mode) : memory_file()
+			memory_file(_In_z_ const schar_t* filename, _In_ int mode) : memory_file()
 			{
 				load(filename, mode);
 			}
@@ -2927,7 +2927,7 @@ namespace stdex
 			/// \param[in] filename  Filename
 			/// \param[in] mode      Bitwise combination of mode_t flags
 			///
-			void load(_In_z_ const sys_char* filename, _In_ int mode)
+			void load(_In_z_ const schar_t* filename, _In_ int mode)
 			{
 				file f(filename, (mode & ~hint_random_access) | mode_for_reading | hint_sequential_access);
 				if (!f.ok()) {
@@ -2960,7 +2960,7 @@ namespace stdex
 			/// \param[in] filename  Filename
 			/// \param[in] mode      Bitwise combination of mode_t flags
 			///
-			void save(_In_z_ const sys_char* filename, _In_ int mode)
+			void save(_In_z_ const schar_t* filename, _In_ int mode)
 			{
 				file f(filename, (mode & ~hint_random_access) | mode_for_writing | hint_sequential_access);
 				if (!f.ok()) {

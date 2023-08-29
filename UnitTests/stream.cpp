@@ -46,7 +46,7 @@ namespace UnitTests
 
 			memory_file f1(mul(total, sizeof(size_t)));
 
-			sys_string filename2, filename3;
+			sstring filename2, filename3;
 			filename2 = filename3 = temp_path();
 			filename2 += _T("stdex-stream-replicator-2.tmp");
 			file f2(
@@ -105,9 +105,9 @@ namespace UnitTests
 		TEST_METHOD(open_close)
 		{
 			cached_file dat(invalid_handle, state_t::fail, 4096);
-			const sys_string filepath = temp_path();
+			const sstring filepath = temp_path();
 			constexpr size_t count = 3;
-			sys_string filename[count];
+			sstring filename[count];
 			stdex::stream::fpos_t start[count];
 			for (size_t i = 0; i < count; ++i) {
 				filename[i] = filepath + sprintf(_T("stdex-stream-open_close%zu.tmp"), NULL, i);
@@ -138,7 +138,7 @@ namespace UnitTests
 		}
 
 	protected:
-		static sys_string temp_path()
+		static sstring temp_path()
 		{
 #ifdef _WIN32
 			TCHAR temp_path[MAX_PATH];
