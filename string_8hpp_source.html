@@ -217,7 +217,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;</div>
 <div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>    <span class="keyword">inline</span> <span class="keywordtype">size_t</span> strnlen(_In_reads_or_z_opt_(count) <span class="keyword">const</span> T* str, _In_ <span class="keywordtype">size_t</span> count)</div>
 <div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>    {</div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>        assert(str);</div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>        assert(str || !count);</div>
 <div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>        <span class="keywordtype">size_t</span> i;</div>
 <div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>        <span class="keywordflow">for</span> (i = 0; i &lt; count &amp;&amp; str[i]; ++i);</div>
 <div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>        <span class="keywordflow">return</span> i;</div>
@@ -848,7 +848,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Aug 29 2023 14:20:17 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Mon Sep 4 2023 08:10:28 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
