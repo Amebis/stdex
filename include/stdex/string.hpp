@@ -206,7 +206,7 @@ namespace stdex
 	template <class T>
 	inline size_t strnlen(_In_reads_or_z_opt_(count) const T* str, _In_ size_t count)
 	{
-		assert(str);
+		assert(str || !count);
 		size_t i;
 		for (i = 0; i < count && str[i]; ++i);
 		return i;
