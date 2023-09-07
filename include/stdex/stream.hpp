@@ -2170,7 +2170,7 @@ namespace stdex
 					sys_object::close();
 					m_state = state_t::ok;
 				}
-				catch (const std::exception&) {
+				catch (...) {
 					m_state = state_t::fail;
 				}
 			}
