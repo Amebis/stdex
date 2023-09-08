@@ -218,6 +218,23 @@ namespace stdex
 	/// Find a code unit in a string.
 	///
 	/// \param[in] str    String
+	/// \param[in] chr    Code unit to search for
+	///
+	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
+	///
+	template <class T>
+	inline size_t strchr(_In_z_ const T* str, _In_ T chr)
+	{
+		assert(str);
+		for (size_t i = 0; str[i]; ++i)
+			if (str[i] == chr) return i;
+		return npos;
+	}
+
+	///
+	/// Find a code unit in a string.
+	///
+	/// \param[in] str    String
 	/// \param[in] count  Code unit count limit
 	/// \param[in] chr    Code unit to search for
 	///
@@ -386,7 +403,34 @@ namespace stdex
 	}
 
 	///
-	/// Binary search for a substring
+	/// Search for a substring
+	///
+	/// \param[in] str     String to search in
+	/// \param[in] sample  Substring to search for
+	///
+	/// \return Offset inside str where sample string is found; stdex::npos if not found
+	///
+	template <class T1, class T2>
+	inline size_t strstr(
+		_In_z_ const T1* str,
+		_In_z_ const T2* sample)
+	{
+		assert(str);
+		assert(sample);
+		for (size_t offset = 0;; ++offset) {
+			for (size_t i = offset, j = 0;; ++i, ++j) {
+				if (!sample[j])
+					return offset;
+				if (!str[i])
+					return npos;
+				if (str[i] != sample[j])
+					break;
+			}
+		}
+	}
+
+	///
+	/// Search for a substring
 	///
 	/// \param[in] str     String to search in
 	/// \param[in] count   String code unit count limit
@@ -415,7 +459,37 @@ namespace stdex
 	}
 
 	///
-	/// Binary search for a substring case-insensitive
+	/// Search for a substring case-insensitive
+	///
+	/// \param[in] str     String to search in
+	/// \param[in] sample  Substring to search for
+	///
+	/// \return Offset inside str where sample string is found; stdex::npos if not found
+	///
+	template <class T1, class T2>
+	inline size_t stristr(
+		_In_z_ const T1* str,
+		_In_z_ const T2* sample,
+		_In_ const std::locale& locale)
+	{
+		assert(str);
+		assert(sample);
+		const auto& ctype1 = std::use_facet<std::ctype<T1>>(locale);
+		const auto& ctype2 = std::use_facet<std::ctype<T2>>(locale);
+		for (size_t offset = 0;; ++offset) {
+			for (size_t i = offset, j = 0;; ++i, ++j) {
+				if (!sample[j])
+					return offset;
+				if (!str[i])
+					return npos;
+				if (ctype1.tolower(str[i]) != ctype2.tolower(sample[j]))
+					break;
+			}
+		}
+	}
+
+	///
+	/// Search for a substring case-insensitive
 	///
 	/// \param[in] str     String to search in
 	/// \param[in] count   String code unit count limit
