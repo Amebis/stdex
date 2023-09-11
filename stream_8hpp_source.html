@@ -153,8 +153,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00087" name="l00087"></a><span class="lineno"><a class="line" href="classstdex_1_1stream_1_1basic.html#aa5d4693fd583cd7ef0ffa9b846136a5a">   87</a></span>            <span class="keyword">virtual</span> _Success_(<span class="keywordflow">return</span> != 0 || length == 0) size_t <a class="code hl_function" href="classstdex_1_1stream_1_1basic.html#aa5d4693fd583cd7ef0ffa9b846136a5a">read</a>(</div>
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>                _Out_writes_bytes_to_opt_(length, return) <span class="keywordtype">void</span>* data, _In_ <span class="keywordtype">size_t</span> length)</div>
 <div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>            {</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>                UNREFERENCED_PARAMETER(data);</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>                UNREFERENCED_PARAMETER(length);</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>                _Unreferenced_(data);</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>                _Unreferenced_(length);</div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>                m_state = state_t::fail;</div>
 <div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>                <span class="keywordflow">return</span> 0;</div>
 <div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>            }</div>
@@ -164,8 +164,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00105" name="l00105"></a><span class="lineno"><a class="line" href="classstdex_1_1stream_1_1basic.html#ad8af0444273509eb36ad81046ac92081">  105</a></span>            <span class="keyword">virtual</span> _Success_(<span class="keywordflow">return</span> != 0) size_t <a class="code hl_function" href="classstdex_1_1stream_1_1basic.html#ad8af0444273509eb36ad81046ac92081">write</a>(</div>
 <div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>                _In_reads_bytes_opt_(length) const <span class="keywordtype">void</span>* data, _In_ <span class="keywordtype">size_t</span> length)</div>
 <div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>            {</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>                UNREFERENCED_PARAMETER(data);</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>                UNREFERENCED_PARAMETER(length);</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>                _Unreferenced_(data);</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>                _Unreferenced_(length);</div>
 <div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>                m_state = state_t::fail;</div>
 <div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>                <span class="keywordflow">return</span> 0;</div>
 <div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>            }</div>
@@ -666,8 +666,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="foldopen" id="foldopen00754" data-start="{" data-end="}">
 <div class="line"><a id="l00754" name="l00754"></a><span class="lineno"><a class="line" href="classstdex_1_1stream_1_1basic__file.html#a484ec74004fe0b4528c11675b91161e0">  754</a></span>            <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classstdex_1_1stream_1_1basic__file.html#a484ec74004fe0b4528c11675b91161e0">lock</a>(_In_ fpos_t offset, _In_ fsize_t length)</div>
 <div class="line"><a id="l00755" name="l00755"></a><span class="lineno">  755</span>            {</div>
-<div class="line"><a id="l00756" name="l00756"></a><span class="lineno">  756</span>                UNREFERENCED_PARAMETER(offset);</div>
-<div class="line"><a id="l00757" name="l00757"></a><span class="lineno">  757</span>                UNREFERENCED_PARAMETER(length);</div>
+<div class="line"><a id="l00756" name="l00756"></a><span class="lineno">  756</span>                _Unreferenced_(offset);</div>
+<div class="line"><a id="l00757" name="l00757"></a><span class="lineno">  757</span>                _Unreferenced_(length);</div>
 <div class="line"><a id="l00758" name="l00758"></a><span class="lineno">  758</span>                <span class="keywordflow">throw</span> std::exception(<span class="stringliteral">&quot;not implemented&quot;</span>);</div>
 <div class="line"><a id="l00759" name="l00759"></a><span class="lineno">  759</span>            }</div>
 </div>
@@ -675,8 +675,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="foldopen" id="foldopen00764" data-start="{" data-end="}">
 <div class="line"><a id="l00764" name="l00764"></a><span class="lineno"><a class="line" href="classstdex_1_1stream_1_1basic__file.html#adf1a39e7aec3f14fedf6ce5c0984a791">  764</a></span>            <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classstdex_1_1stream_1_1basic__file.html#adf1a39e7aec3f14fedf6ce5c0984a791">unlock</a>(_In_ fpos_t offset, _In_ fsize_t length)</div>
 <div class="line"><a id="l00765" name="l00765"></a><span class="lineno">  765</span>            {</div>
-<div class="line"><a id="l00766" name="l00766"></a><span class="lineno">  766</span>                UNREFERENCED_PARAMETER(offset);</div>
-<div class="line"><a id="l00767" name="l00767"></a><span class="lineno">  767</span>                UNREFERENCED_PARAMETER(length);</div>
+<div class="line"><a id="l00766" name="l00766"></a><span class="lineno">  766</span>                _Unreferenced_(offset);</div>
+<div class="line"><a id="l00767" name="l00767"></a><span class="lineno">  767</span>                _Unreferenced_(length);</div>
 <div class="line"><a id="l00768" name="l00768"></a><span class="lineno">  768</span>                <span class="keywordflow">throw</span> std::exception(<span class="stringliteral">&quot;not implemented&quot;</span>);</div>
 <div class="line"><a id="l00769" name="l00769"></a><span class="lineno">  769</span>            }</div>
 </div>
@@ -709,7 +709,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="foldopen" id="foldopen00809" data-start="{" data-end="}">
 <div class="line"><a id="l00809" name="l00809"></a><span class="lineno"><a class="line" href="classstdex_1_1stream_1_1basic__file.html#aba668e53fc4709cd545f12a49521ed56">  809</a></span>            <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classstdex_1_1stream_1_1basic__file.html#aba668e53fc4709cd545f12a49521ed56">set_ctime</a>(time_point date)</div>
 <div class="line"><a id="l00810" name="l00810"></a><span class="lineno">  810</span>            {</div>
-<div class="line"><a id="l00811" name="l00811"></a><span class="lineno">  811</span>                UNREFERENCED_PARAMETER(date);</div>
+<div class="line"><a id="l00811" name="l00811"></a><span class="lineno">  811</span>                _Unreferenced_(date);</div>
 <div class="line"><a id="l00812" name="l00812"></a><span class="lineno">  812</span>                <span class="keywordflow">throw</span> std::exception(<span class="stringliteral">&quot;not implemented&quot;</span>);</div>
 <div class="line"><a id="l00813" name="l00813"></a><span class="lineno">  813</span>            }</div>
 </div>
@@ -717,7 +717,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="foldopen" id="foldopen00818" data-start="{" data-end="}">
 <div class="line"><a id="l00818" name="l00818"></a><span class="lineno"><a class="line" href="classstdex_1_1stream_1_1basic__file.html#ae76436514ac66d88bbd584ea07d879d0">  818</a></span>            <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classstdex_1_1stream_1_1basic__file.html#ae76436514ac66d88bbd584ea07d879d0">set_atime</a>(time_point date)</div>
 <div class="line"><a id="l00819" name="l00819"></a><span class="lineno">  819</span>            {</div>
-<div class="line"><a id="l00820" name="l00820"></a><span class="lineno">  820</span>                UNREFERENCED_PARAMETER(date);</div>
+<div class="line"><a id="l00820" name="l00820"></a><span class="lineno">  820</span>                _Unreferenced_(date);</div>
 <div class="line"><a id="l00821" name="l00821"></a><span class="lineno">  821</span>                <span class="keywordflow">throw</span> std::exception(<span class="stringliteral">&quot;not implemented&quot;</span>);</div>
 <div class="line"><a id="l00822" name="l00822"></a><span class="lineno">  822</span>            }</div>
 </div>
@@ -725,7 +725,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="foldopen" id="foldopen00827" data-start="{" data-end="}">
 <div class="line"><a id="l00827" name="l00827"></a><span class="lineno"><a class="line" href="classstdex_1_1stream_1_1basic__file.html#a814a080cb6da2041013749cc125bfd2b">  827</a></span>            <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classstdex_1_1stream_1_1basic__file.html#a814a080cb6da2041013749cc125bfd2b">set_mtime</a>(time_point date)</div>
 <div class="line"><a id="l00828" name="l00828"></a><span class="lineno">  828</span>            {</div>
-<div class="line"><a id="l00829" name="l00829"></a><span class="lineno">  829</span>                UNREFERENCED_PARAMETER(date);</div>
+<div class="line"><a id="l00829" name="l00829"></a><span class="lineno">  829</span>                _Unreferenced_(date);</div>
 <div class="line"><a id="l00830" name="l00830"></a><span class="lineno">  830</span>                <span class="keywordflow">throw</span> std::exception(<span class="stringliteral">&quot;not implemented&quot;</span>);</div>
 <div class="line"><a id="l00831" name="l00831"></a><span class="lineno">  831</span>            }</div>
 </div>
@@ -3867,7 +3867,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Sep 11 2023 11:06:18 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Mon Sep 11 2023 15:42:32 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
