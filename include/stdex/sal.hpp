@@ -92,3 +92,9 @@
 #else
 #define _Deprecated_(message) [[deprecated(message)]]
 #endif
+
+#ifdef _WIN32
+#define _Unreferenced_(x) UNREFERENCED_PARAMETER(x)
+#else
+#define _Unreferenced_(x)
+#endif

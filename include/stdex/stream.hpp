@@ -87,8 +87,8 @@ namespace stdex
 			virtual _Success_(return != 0 || length == 0) size_t read(
 				_Out_writes_bytes_to_opt_(length, return) void* data, _In_ size_t length)
 			{
-				UNREFERENCED_PARAMETER(data);
-				UNREFERENCED_PARAMETER(length);
+				_Unreferenced_(data);
+				_Unreferenced_(length);
 				m_state = state_t::fail;
 				return 0;
 			}
@@ -105,8 +105,8 @@ namespace stdex
 			virtual _Success_(return != 0) size_t write(
 				_In_reads_bytes_opt_(length) const void* data, _In_ size_t length)
 			{
-				UNREFERENCED_PARAMETER(data);
-				UNREFERENCED_PARAMETER(length);
+				_Unreferenced_(data);
+				_Unreferenced_(length);
 				m_state = state_t::fail;
 				return 0;
 			}
@@ -753,8 +753,8 @@ namespace stdex
 			///
 			virtual void lock(_In_ fpos_t offset, _In_ fsize_t length)
 			{
-				UNREFERENCED_PARAMETER(offset);
-				UNREFERENCED_PARAMETER(length);
+				_Unreferenced_(offset);
+				_Unreferenced_(length);
 				throw std::exception("not implemented");
 			}
 
@@ -763,8 +763,8 @@ namespace stdex
 			///
 			virtual void unlock(_In_ fpos_t offset, _In_ fsize_t length)
 			{
-				UNREFERENCED_PARAMETER(offset);
-				UNREFERENCED_PARAMETER(length);
+				_Unreferenced_(offset);
+				_Unreferenced_(length);
 				throw std::exception("not implemented");
 			}
 
@@ -808,7 +808,7 @@ namespace stdex
 			///
 			virtual void set_ctime(time_point date)
 			{
-				UNREFERENCED_PARAMETER(date);
+				_Unreferenced_(date);
 				throw std::exception("not implemented");
 			}
 
@@ -817,7 +817,7 @@ namespace stdex
 			///
 			virtual void set_atime(time_point date)
 			{
-				UNREFERENCED_PARAMETER(date);
+				_Unreferenced_(date);
 				throw std::exception("not implemented");
 			}
 
@@ -826,7 +826,7 @@ namespace stdex
 			///
 			virtual void set_mtime(time_point date)
 			{
-				UNREFERENCED_PARAMETER(date);
+				_Unreferenced_(date);
 				throw std::exception("not implemented");
 			}
 

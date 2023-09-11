@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023 Amebis
 */
@@ -136,12 +136,12 @@ namespace stdex
 		///
 		/// Closes object
 		///
-		static void close(sys_handle h)
+		static void close(_In_ sys_handle h)
 		{
 #ifdef _WIN32
 			if (CloseHandle(h) || GetLastError() == ERROR_INVALID_HANDLE)
 #else
-			if (close(h) >= 0 || errno == EBADF)
+			if (::close(h) >= 0 || errno == EBADF)
 #endif
 				return;
 			throw std::runtime_error("failed to close handle");
@@ -157,7 +157,7 @@ namespace stdex
 			HANDLE process = GetCurrentProcess();
 			if (DuplicateHandle(process, h, process, &h_new, 0, inherit, DUPLICATE_SAME_ACCESS))
 #else
-			UNREFERENCED_PARAMETER(inherit);
+			_Unreferenced_(inherit);
 			if ((h_new = dup(h)) >= 0)
 #endif
 				return h_new;
