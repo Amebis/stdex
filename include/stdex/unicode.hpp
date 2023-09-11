@@ -27,7 +27,7 @@ namespace stdex
 	///
 	/// Convert string to Unicode (UTF-16 on Windows) and append to string
 	///
-	/// \param[inout]  dst        String to append Unicode to
+	/// \param[in,out] dst        String to append Unicode to
 	/// \param[in]     src        String
 	/// \param[in]     count_src  String character count limit
 	/// \param[in]     charset    Charset (stdex::charset_id::default - system default)
@@ -74,7 +74,7 @@ namespace stdex
 	///
 	/// Convert string to Unicode (UTF-16 on Windows) and append to string
 	///
-	/// \param[inout]  dst        String to append Unicode to
+	/// \param[in,out] dst        String to append Unicode to
 	/// \param[in]     src        String
 	/// \param[in]     charset    Charset (stdex::charset_id::default - system default)
 	///
@@ -99,7 +99,7 @@ namespace stdex
 	///
 	/// Convert string to Unicode (UTF-16 on Windows)
 	///
-	/// \param[inout]  dst        String to write Unicode to
+	/// \param[in,out] dst        String to write Unicode to
 	/// \param[in]     src        String
 	/// \param[in]     count_src  String character count limit
 	/// \param[in]     charset    Charset (stdex::charset_id::default - system default)
@@ -118,7 +118,7 @@ namespace stdex
 	///
 	/// Convert string to Unicode (UTF-16 on Windows)
 	///
-	/// \param[inout]  dst        String to write Unicode to
+	/// \param[in,out] dst        String to write Unicode to
 	/// \param[in]     src        String
 	/// \param[in]     charset    Charset (stdex::charset_id::default - system default)
 	///
@@ -185,7 +185,7 @@ namespace stdex
 	///
 	/// Convert Unicode string (UTF-16 on Windows) to SGML and append to string
 	///
-	/// \param[inout]  dst        String to append SGML to
+	/// \param[in,out] dst        String to append SGML to
 	/// \param[in]     src        Unicode string
 	/// \param[in]     count_src  Unicode string character count limit
 	/// \param[in]     charset    Charset (stdex::charset_id::default - system default)
@@ -231,7 +231,7 @@ namespace stdex
 	///
 	/// Convert Unicode string (UTF-16 on Windows) to SGML and append to string
 	///
-	/// \param[inout]  dst        String to append SGML to
+	/// \param[in,out] dst        String to append SGML to
 	/// \param[in]     src        Unicode string
 	/// \param[in]     charset    Charset (stdex::charset_id::default - system default)
 	///
@@ -254,7 +254,7 @@ namespace stdex
 	///
 	/// Convert Unicode string (UTF-16 on Windows) to SGML
 	///
-	/// \param[inout]  dst        String to write SGML to
+	/// \param[in,out] dst        String to write SGML to
 	/// \param[in]     src        Unicode string
 	/// \param[in]     count_src  Unicode string character count limit
 	/// \param[in]     charset    Charset (stdex::charset_id::default - system default)
@@ -271,7 +271,7 @@ namespace stdex
 	///
 	/// Convert Unicode string (UTF-16 on Windows) to SGML
 	///
-	/// \param[inout]  dst        String to write SGML to
+	/// \param[in,out] dst        String to write SGML to
 	/// \param[in]     src        Unicode string
 	/// \param[in]     charset    Charset (stdex::charset_id::default - system default)
 	///

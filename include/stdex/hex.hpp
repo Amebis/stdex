@@ -31,9 +31,9 @@ namespace stdex
 		///
 		/// Encodes one block of information, and _appends_ it to the output
 		///
-		/// \param[out] out   Output
-		/// \param[in ] data  Data to encode
-		/// \param[in ] size  Length of `data` in bytes
+		/// \param[in,out] out   Output
+		/// \param[in]     data  Data to encode
+		/// \param[in]     size  Length of `data` in bytes
 		///
 		template<class _Elem, class _Traits, class _Ax>
 		void encode(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &out, _In_bytecount_(size) const void *data, _In_ size_t size)
@@ -89,10 +89,10 @@ namespace stdex
 		///
 		/// Decodes one block of information, and _appends_ it to the output
 		///
-		/// \param[inout] out      Output
-		/// \param[out  ] is_last  Was this the last block of data? Actually, is this block of data complete?
-		/// \param[in   ] data     Data to decode
-		/// \param[in   ] size     Length of `data` in bytes
+		/// \param[in,out] out      Output
+		/// \param[out]    is_last  Was this the last block of data? Actually, is this block of data complete?
+		/// \param[in]     data     Data to decode
+		/// \param[in]     size     Length of `data` in bytes
 		///
 		template<class _Ty, class _Ax, class _Tchr>
 		void decode(_Inout_ std::vector<_Ty, _Ax> &out, _Out_ bool &is_last, _In_z_count_(size) const _Tchr *data, _In_ size_t size)

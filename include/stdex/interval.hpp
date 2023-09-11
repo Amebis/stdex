@@ -105,7 +105,7 @@ inline stdex::interval<T> operator+(_In_ const stdex::interval<T>& i, _In_ const
 ///
 /// Moves interval towards the end by one
 ///
-/// \param[in] i  Interval to move
+/// \param[in,out] i  Interval to move
 ///
 /// \returns Moved interval
 ///
@@ -120,7 +120,7 @@ inline stdex::interval<T> operator++(_Inout_ stdex::interval<T>& i)
 ///
 /// Moves interval towards the end by one
 ///
-/// \param[in] i  Interval to move
+/// \param[in,out] i  Interval to move
 ///
 /// \returns Original interval
 ///
@@ -164,7 +164,7 @@ inline stdex::interval<T> operator-(_In_ const stdex::interval<T>& i, _In_ const
 ///
 /// Moves interval towards the begginning by one
 ///
-/// \param[in] i  Interval to move
+/// \param[in,out] i  Interval to move
 ///
 /// \returns Moved interval
 ///
@@ -179,7 +179,7 @@ inline stdex::interval<T> operator--(_Inout_ stdex::interval<T>& i)
 ///
 /// Moves interval towards the begginning by one
 ///
-/// \param[in] i  Interval to move
+/// \param[in,out] i  Interval to move
 ///
 /// \returns Original interval
 ///

@@ -89,7 +89,7 @@ namespace stdex
 		///
 		/// Moves existing queue.
 		///
-		/// \param[inout] other  Queue to move
+		/// \param[in,out] other  Queue to move
 		///
 		vector_queue(_Inout_ vector_queue<value_type> &&other) :
 			m_data    (std::move(other.m_data    )),
@@ -131,7 +131,7 @@ namespace stdex
 		///
 		/// Moves existing queue.
 		///
-		/// \param[inout] other  Queue to move
+		/// \param[in,out] other  Queue to move
 		///
 		vector_queue<value_type>& operator=(_Inout_ vector_queue<value_type> &&other)
 		{
