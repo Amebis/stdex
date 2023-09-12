@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023 Amebis
 */
@@ -8,7 +8,9 @@
 using namespace std;
 using namespace stdex;
 using namespace stdex::parser;
+#ifdef _WIN32
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+#endif
 
 namespace UnitTests
 {
@@ -176,6 +178,7 @@ namespace UnitTests
 
 		TEST_METHOD(sgml_test)
 		{
+			std::locale locale_slSI("sl_SI");
 			static const char text[] = "V ko&zcaron;u&scaron;&ccaron;ku zlobnega mizarja stopiclja fant\nin kli&ccaron;e&nbsp;1234567890.";
 
 			{
@@ -194,7 +197,7 @@ namespace UnitTests
 			}
 
 			{
-				sgml_cp p("&Zcaron;");
+				sgml_cp p("&Zcaron;", SIZE_MAX, false, locale_slSI);
 				Assert::IsFalse(p.match(text, 4));
 				Assert::IsTrue(p.match(text, 4, _countof(text), match_case_insensitive));
 				Assert::AreEqual((size_t)4, p.interval.start);
@@ -202,7 +205,7 @@ namespace UnitTests
 			}
 
 			{
-				sgml_space_cp p;
+				sgml_space_cp p(false, locale_slSI);
 				Assert::IsFalse(p.match(text));
 				Assert::IsTrue(p.match(text, 1));
 				Assert::AreEqual((size_t)1, p.interval.start);
@@ -213,7 +216,7 @@ namespace UnitTests
 			}
 
 			{
-				sgml_string_branch p("apple", "orange", "Ko&Zcaron;u&Scaron;&ccaron;Ku", nullptr);
+				sgml_string_branch p(locale_slSI, "apple", "orange", "Ko&Zcaron;u&Scaron;&ccaron;Ku", nullptr);
 				Assert::IsFalse(p.match(text, 2));
 				Assert::IsTrue(p.match(text, 2, _countof(text), match_case_insensitive));
 				Assert::AreEqual((size_t)2, p.hit_offset);

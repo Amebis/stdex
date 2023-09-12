@@ -1,12 +1,12 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023 Amebis
 */
 
 #pragma once
 
+#include "compat.hpp"
 #include "mapping.hpp"
-#include "sal.hpp"
 #include "sgml_unicode.hpp"
 #include "string.hpp"
 #include <assert.h>
@@ -173,7 +173,8 @@ namespace stdex
 	}
 
 	template <class T>
-	inline _Deprecated_("Use stdex::sgml2wstrcat") void sgml2wstr(
+	_Deprecated_("Use stdex::sgml2wstrcat")
+	inline void sgml2wstr(
 		_Inout_ std::wstring& dst,
 		_In_reads_or_z_opt_(count_src) const T* src, _In_ size_t count_src,
 		_In_ int skip = 0,
@@ -192,8 +193,6 @@ namespace stdex
 	/// \param[in]     offset     Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
 	/// \param[in,out] map        The vector to append index mapping between source and destination string to.
 	///
-	/// \return Unicode string
-	///
 	template <class T>
 	inline void sgml2wstrcat(
 		_Inout_ std::wstring& dst,
@@ -206,7 +205,8 @@ namespace stdex
 	}
 
 	template <class T>
-	inline _Deprecated_("Use stdex::sgml2wstrcat") void sgml2wstr(
+	_Deprecated_("Use stdex::sgml2wstrcat")
+	inline void sgml2wstr(
 		_Inout_ std::wstring& dst,
 		_In_ const std::basic_string<T>& src,
 		_In_ int skip = 0,
@@ -324,7 +324,8 @@ namespace stdex
 	}
 
 	template <class T>
-	inline _Deprecated_("Use stdex::sgml2wstrcat") size_t sgml2wstr(
+	_Deprecated_("Use stdex::sgml2wstrcat")
+	inline size_t sgml2wstr(
 		_Inout_cap_(count_dst) wchar_t* dst, _In_ size_t count_dst,
 		_In_reads_or_z_opt_(count_src) const T* src, _In_ size_t count_src,
 		_In_ int skip = 0,
@@ -582,7 +583,8 @@ namespace stdex
 		}
 	}
 
-	inline _Deprecated_("Use stdex::wstr2sgmlcat") void wstr2sgml(
+	_Deprecated_("Use stdex::wstr2sgmlcat")
+	inline void wstr2sgml(
 		_Inout_ std::string& dst,
 		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
 		_In_ size_t what = 0)
@@ -605,7 +607,8 @@ namespace stdex
 		wstr2sgmlcat(dst, src.c_str(), src.size(), what);
 	}
 
-	inline _Deprecated_("Use stdex::wstr2sgmlcat") void wstr2sgml(
+	_Deprecated_("Use stdex::wstr2sgmlcat")
+	inline void wstr2sgml(
 		_Inout_ std::string& dst,
 		_In_ const std::wstring& src,
 		_In_ size_t what = 0)
@@ -745,7 +748,8 @@ namespace stdex
 		return j;
 	}
 
-	inline _Deprecated_("Use stdex::wstr2sgmlcat") size_t wstr2sgml(
+	_Deprecated_("Use stdex::wstr2sgmlcat")
+	inline size_t wstr2sgml(
 		_Inout_cap_(count_dst) char* dst, _In_ size_t count_dst,
 		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
 		_In_ size_t what = 0)

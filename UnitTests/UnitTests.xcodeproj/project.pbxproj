@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F48105AD2AAF5FD4004DE682 /* math.hpp in Sources */ = {isa = PBXBuildFile; fileRef = F48105AC2AAF5FD4004DE682 /* math.hpp */; };
-		F4B7FBE02AAF49BC00C6BE9F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4B7FBDF2AAF49BC00C6BE9F /* main.cpp */; };
+		F4C07F522AB059580044EDC0 /* pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4C07F512AB059580044EDC0 /* pch.cpp */; };
+		F4C07F552AB05B5B0044EDC0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4C07F542AB05B5B0044EDC0 /* main.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,10 +24,17 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		F48105AC2AAF5FD4004DE682 /* math.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = math.hpp; sourceTree = "<group>"; };
-		F48105AE2AAF64C7004DE682 /* common.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = common.hpp; sourceTree = "<group>"; };
 		F4B7FBDC2AAF49BC00C6BE9F /* UnitTests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = UnitTests; sourceTree = BUILT_PRODUCTS_DIR; };
-		F4B7FBDF2AAF49BC00C6BE9F /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		F4C07F4E2AB059300044EDC0 /* math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = math.cpp; sourceTree = "<group>"; };
+		F4C07F502AB059580044EDC0 /* pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pch.h; sourceTree = "<group>"; };
+		F4C07F512AB059580044EDC0 /* pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pch.cpp; sourceTree = "<group>"; };
+		F4C07F532AB05A240044EDC0 /* compat.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = compat.hpp; sourceTree = "<group>"; };
+		F4C07F542AB05B5B0044EDC0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		F4C07F562AB08E690044EDC0 /* parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = parser.cpp; sourceTree = "<group>"; };
+		F4C07F572AB08E690044EDC0 /* unicode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = unicode.cpp; sourceTree = "<group>"; };
+		F4C07F582AB08E690044EDC0 /* sgml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sgml.cpp; sourceTree = "<group>"; };
+		F4C07F592AB08E690044EDC0 /* ring.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ring.cpp; sourceTree = "<group>"; };
+		F4C07F5A2AB08E690044EDC0 /* stream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stream.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,7 +51,16 @@
 		F4B7FBD32AAF49BC00C6BE9F = {
 			isa = PBXGroup;
 			children = (
-				F4B7FBDE2AAF49BC00C6BE9F /* UnitTests */,
+				F4C07F542AB05B5B0044EDC0 /* main.cpp */,
+				F4C07F4E2AB059300044EDC0 /* math.cpp */,
+				F4C07F562AB08E690044EDC0 /* parser.cpp */,
+				F4C07F512AB059580044EDC0 /* pch.cpp */,
+				F4C07F592AB08E690044EDC0 /* ring.cpp */,
+				F4C07F582AB08E690044EDC0 /* sgml.cpp */,
+				F4C07F5A2AB08E690044EDC0 /* stream.cpp */,
+				F4C07F572AB08E690044EDC0 /* unicode.cpp */,
+				F4C07F502AB059580044EDC0 /* pch.h */,
+				F4C07F532AB05A240044EDC0 /* compat.hpp */,
 				F4B7FBDD2AAF49BC00C6BE9F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -56,16 +72,6 @@
 				F4B7FBDC2AAF49BC00C6BE9F /* UnitTests */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		F4B7FBDE2AAF49BC00C6BE9F /* UnitTests */ = {
-			isa = PBXGroup;
-			children = (
-				F48105AE2AAF64C7004DE682 /* common.hpp */,
-				F48105AC2AAF5FD4004DE682 /* math.hpp */,
-				F4B7FBDF2AAF49BC00C6BE9F /* main.cpp */,
-			);
-			path = UnitTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -125,8 +131,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F4B7FBE02AAF49BC00C6BE9F /* main.cpp in Sources */,
-				F48105AD2AAF5FD4004DE682 /* math.hpp in Sources */,
+				F4C07F552AB05B5B0044EDC0 /* main.cpp in Sources */,
+				F4C07F522AB059580044EDC0 /* pch.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -184,10 +190,11 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = ../include;
-				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-liconv";
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -237,9 +244,10 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = ../include;
-				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = "-liconv";
 				SDKROOT = macosx;
 			};
 			name = Release;

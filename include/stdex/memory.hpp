@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023 Amebis
 */
@@ -19,7 +19,7 @@ namespace stdex
 		template <class T2, std::enable_if_t<std::is_convertible_v<T2*, T*>, int> = 0>
 		inline no_delete(const no_delete<T2>&) noexcept {}
 
-		inline void operator()(T* p) const noexcept { p; }
+		inline void operator()(T* p) const noexcept { _Unreferenced_(p); }
 	};
 
 	///

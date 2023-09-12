@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023 Amebis
 */
@@ -8,7 +8,9 @@
 using namespace std;
 using namespace stdex;
 using namespace stdex::stream;
+#ifdef _WIN32
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+#endif
 
 namespace UnitTests
 {
@@ -17,11 +19,11 @@ namespace UnitTests
 	public:
 		TEST_METHOD(async)
 		{
-			constexpr size_t total = 1000;
-			memory_file source(mul(total, sizeof(size_t)));
+			constexpr uint32_t total = 1000;
+			memory_file source(mul(total, sizeof(uint32_t)));
 			{
 				async_writer<70> writer(source);
-				for (size_t i = 0; i < total; ++i) {
+				for (uint32_t i = 0; i < total; ++i) {
 					Assert::IsTrue(writer.ok());
 					writer << i;
 				}
@@ -29,8 +31,8 @@ namespace UnitTests
 			Assert::AreEqual<stdex::stream::fpos_t>(0, source.seekbeg(0));
 			{
 				async_reader<50> reader(source);
-				size_t x;
-				for (size_t i = 0; i < total; ++i) {
+				uint32_t x;
+				for (uint32_t i = 0; i < total; ++i) {
 					reader >> x;
 					Assert::IsTrue(reader.ok());
 					Assert::AreEqual(i, x);
@@ -42,9 +44,9 @@ namespace UnitTests
 
 		TEST_METHOD(replicator)
 		{
-			constexpr size_t total = 1000;
+			constexpr uint32_t total = 1000;
 
-			memory_file f1(mul(total, sizeof(size_t)));
+			memory_file f1(mul(total, sizeof(uint32_t)));
 
 			sstring filename2, filename3;
 			filename2 = filename3 = temp_path();
@@ -65,7 +67,7 @@ namespace UnitTests
 				writer.push_back(&f1);
 				writer.push_back(&f2_buf);
 				writer.push_back(&f3);
-				for (size_t i = 0; i < total; ++i) {
+				for (uint32_t i = 0; i < total; ++i) {
 					Assert::IsTrue(writer.ok());
 					writer << i;
 				}
@@ -76,8 +78,8 @@ namespace UnitTests
 			f3.seekbeg(0);
 			{
 				buffer f2_buf(f2, 64, 0);
-				size_t x;
-				for (size_t i = 0; i < total; ++i) {
+				uint32_t x;
+				for (uint32_t i = 0; i < total; ++i) {
 					f1 >> x;
 					Assert::IsTrue(f1.ok());
 					Assert::AreEqual(i, x);
@@ -106,26 +108,26 @@ namespace UnitTests
 		{
 			cached_file dat(invalid_handle, state_t::fail, 4096);
 			const sstring filepath = temp_path();
-			constexpr size_t count = 3;
+			constexpr uint32_t count = 3;
 			sstring filename[count];
 			stdex::stream::fpos_t start[count];
-			for (size_t i = 0; i < count; ++i) {
+			for (uint32_t i = 0; i < count; ++i) {
 				filename[i] = filepath + sprintf(_T("stdex-stream-open_close%zu.tmp"), NULL, i);
 				dat.open(filename[i].c_str(), mode_for_reading | mode_for_writing | share_none | mode_preserve_existing | mode_binary);
 				Assert::IsTrue(dat.ok());
 				start[i] = dat.tell();
 				Assert::AreNotEqual(fpos_max, start[i]);
-				for (size_t j = 0; j < 31 + 11 * i; ++j) {
+				for (uint32_t j = 0; j < 31 + 11 * i; ++j) {
 					dat << j * count + i;
 					Assert::IsTrue(dat.ok());
 				}
 				dat.close();
 			}
-			for (size_t i = 0; i < count; ++i) {
+			for (uint32_t i = 0; i < count; ++i) {
 				dat.open(filename[i].c_str(), mode_for_reading | share_none | mode_binary);
 				Assert::IsTrue(dat.ok());
 				for (;;) {
-					size_t x;
+					uint32_t x;
 					dat >> x;
 					if (!dat.ok())
 						break;
@@ -133,7 +135,7 @@ namespace UnitTests
 				}
 			}
 			dat.close();
-			for (size_t i = 0; i < count; ++i)
+			for (uint32_t i = 0; i < count; ++i)
 				std::filesystem::remove(filename[i]);
 		}
 

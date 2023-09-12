@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023 Amebis
 */
@@ -6,7 +6,9 @@
 #include "pch.h"
 
 using namespace std;
+#ifdef _WIN32
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+#endif
 
 namespace UnitTests
 {
@@ -38,9 +40,15 @@ namespace UnitTests
 				{ i + 35, j + 12 },
 				{ i + 42, j + 14 },
 				{ i + 53, j + 25 },
+#ifdef _WIN32 // wchar_t* is UTF-16
 				{ i + 62, j + 27 },
 				{ i + 62, j + 27 },
 				{ i + 71, j + 29 },
+#else // wchar_t* is UTF-32
+				{ i + 62, j + 26 },
+				{ i + 62, j + 26 },
+				{ i + 71, j + 27 },
+#endif
 			} == map);
 		}
 

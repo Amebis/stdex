@@ -1,11 +1,11 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023 Amebis
 */
 
 #pragma once
 
-#include "sal.hpp"
+#include "compat.hpp"
 #include <exception>
 
 namespace stdex
@@ -13,7 +13,7 @@ namespace stdex
 	///
 	/// User cancelled exception
 	///
-	class user_cancelled : public std::exception
+	class user_cancelled : public std::runtime_error
 	{
 	public:
 		///
@@ -21,7 +21,7 @@ namespace stdex
 		///
 		/// \param[in] msg  Error message
 		///
-		user_cancelled(_In_opt_z_ const char *msg = nullptr) : exception(msg)
+		user_cancelled(_In_opt_z_ const char *msg = nullptr) : runtime_error(msg)
 		{
 		}
 	};

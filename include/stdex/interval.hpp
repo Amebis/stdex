@@ -1,11 +1,11 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023 Amebis
 */
 
 #pragma once
 
-#include "sal.hpp"
+#include "compat.hpp"
 #include <vector>
 
 namespace stdex
@@ -78,7 +78,7 @@ namespace stdex
 /// Adds two intervals by components
 ///
 /// \param[in] a  First interval
-/// \param[in] a  Second interval
+/// \param[in] b  Second interval
 ///
 /// \returns Resulting interval
 ///
@@ -137,7 +137,7 @@ inline stdex::interval<T> operator++(_Inout_ stdex::interval<T>& i, int) // Post
 /// Subtracts two intervals by components
 ///
 /// \param[in] a  First interval
-/// \param[in] a  Second interval
+/// \param[in] b  Second interval
 ///
 /// \returns Resulting interval
 ///

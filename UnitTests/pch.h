@@ -6,6 +6,7 @@
 #pragma once
 
 #include <stdex/base64.hpp>
+#include <stdex/compat.hpp>
 #include <stdex/errno.hpp>
 #include <stdex/exception.hpp>
 #include <stdex/hex.hpp>
@@ -16,7 +17,6 @@
 #include <stdex/parser.hpp>
 #include <stdex/progress.hpp>
 #include <stdex/ring.hpp>
-#include <stdex/sal.hpp>
 #include <stdex/sgml.hpp>
 #include <stdex/stream.hpp>
 #include <stdex/string.hpp>
@@ -24,7 +24,7 @@
 #include <stdex/unicode.hpp>
 #include <stdex/vector_queue.hpp>
 
-#include <CppUnitTest.h>
+#include "compat.hpp"
 
 #include <cstdlib>
 #include <filesystem>

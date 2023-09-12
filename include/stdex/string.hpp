@@ -1,16 +1,22 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2016-2023 Amebis
 */
 
 #pragma once
 
-#include "sal.hpp"
+#include "compat.hpp"
 #include <assert.h>
 #include <ctype.h>
 #include <locale.h>
 #include <stdarg.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdarg.h>
+#ifdef __APPLE__
+#include <xlocale.h>
+#endif
+#include <locale>
 #include <memory>
 #include <stdexcept>
 
@@ -36,19 +42,35 @@ namespace stdex
 		///
 		void operator()(_In_ locale_t locale) const
 		{
+#ifdef _WIN32
 			free_locale(locale);
+#else
+			freelocale(locale);
+#endif
 		}
 	};
 
 	///
 	/// locale_t helper class to free_locale when going out of scope
 	///
+#if defined(_WIN32)
 	using locale = std::unique_ptr<__crt_locale_pointers, free_locale_delete>;
+#elif defined(__APPLE__)
+	using locale = std::unique_ptr<struct _xlocale, free_locale_delete>;
+#else
+	using locale = std::unique_ptr<struct __locale_struct, free_locale_delete>;
+#endif
 
 	///
 	/// Reusable C locale
 	///
+#if defined(_WIN32)
 	static locale locale_C(_create_locale(LC_ALL, "C"));
+#elif defined(__APPLE__)
+	static locale locale_C(newlocale(LC_ALL_MASK, "C", LC_GLOBAL_LOCALE));
+#else
+#error TODO
+#endif
 
 	///
 	/// UTF-16 code unit
@@ -124,10 +146,10 @@ namespace stdex
 	inline bool iscombining(_In_ char32_t chr)
 	{
 		return
-			0x0300 <= chr && chr < 0x0370 ||
-			0x1dc0 <= chr && chr < 0x1e00 ||
-			0x20d0 <= chr && chr < 0x2100 ||
-			0xfe20 <= chr && chr < 0xfe30;
+			(0x0300 <= chr && chr < 0x0370) ||
+			(0x1dc0 <= chr && chr < 0x1e00) ||
+			(0x20d0 <= chr && chr < 0x2100) ||
+			(0xfe20 <= chr && chr < 0xfe30);
 	}
 
 	///
@@ -151,7 +173,7 @@ namespace stdex
 	inline size_t islbreak(_In_reads_or_z_opt_(count) const T* chr, _In_ size_t count)
 	{
 		_Analysis_assume_(chr || !count);
-		if (count >= 2 && (chr[0] == '\r' && chr[1] == '\n' || chr[0] == '\n' && chr[1] == '\r'))
+		if (count >= 2 && ((chr[0] == '\r' && chr[1] == '\n') || (chr[0] == '\n' && chr[1] == '\r')))
 			return 2;
 		if (count > 1 && (chr[0] == '\n' || chr[0] == '\r'))
 			return 1;
@@ -811,7 +833,7 @@ namespace stdex
 				goto error;
 
 			if (value < max_ui_pre1 || // Multiplication nor addition will not overflow.
-				value == max_ui_pre1 && digit <= max_ui_pre2) // Small digits will not overflow.
+				(value == max_ui_pre1 && digit <= max_ui_pre2)) // Small digits will not overflow.
 				value = value * (T_bin)radix + digit;
 			else {
 				// Overflow!
@@ -1060,7 +1082,7 @@ namespace stdex
 #pragma warning(suppress: 4996)
 		r = _vsnprintf_l(str, capacity, format, locale, arg);
 #else
-		r = vsnprintf(str, capacity, format, arg);
+		r = ::vsnprintf(str, capacity, format, arg);
 #endif
 		if (r == -1 && strnlen(str, capacity) == capacity) {
 			// Buffer overrun. Estimate buffer size for the next iteration.

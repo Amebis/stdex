@@ -1,11 +1,11 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023 Amebis
 */
 
 #pragma once
 
-#include "sal.hpp"
+#include "compat.hpp"
 #include "interval.hpp"
 #include <chrono>
 
@@ -25,7 +25,7 @@ namespace stdex
 		///
 		virtual void set_text(_In_z_ const char* msg)
 		{
-			msg;
+			_Unreferenced_(msg);
 		}
 
 		///
@@ -56,7 +56,7 @@ namespace stdex
 		///
 		virtual void show(_In_ bool show = true)
 		{
-			show;
+			_Unreferenced_(show);
 		}
 
 		///
@@ -168,7 +168,7 @@ namespace stdex
 		///
 		inline progress<T>* detach()
 		{
-			progress* k = m_host;
+			progress<T>* k = m_host;
 			m_host = NULL;
 			return k;
 		}
@@ -258,7 +258,7 @@ namespace stdex
 		}
 
 	protected:
-		progress* m_host;
+		progress<T>* m_host;
 		interval<T> m_local, m_global, m_section;
 	};
 
@@ -281,7 +281,7 @@ namespace stdex
 
 		~progress_switcher()
 		{
-			m_host_ref = detach();
+			m_host_ref = this->detach();
 		}
 
 	protected:

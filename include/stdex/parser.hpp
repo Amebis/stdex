@@ -1,24 +1,26 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023 Amebis
 */
 
 #pragma once
 
+#include "compat.hpp"
 #include "interval.hpp"
 #include "memory.hpp"
-#include "sal.hpp"
 #include "sgml.hpp"
 #include "string.hpp"
 #include "system.hpp"
 #include <assert.h>
 #include <stdarg.h>
 #include <stdint.h>
-#ifdef _WIN32
+#if defined(_WIN32)
 #ifndef _WINSOCKAPI_
 #include <winsock2.h>
 #include <ws2ipdef.h>
 #endif
+#elif defined(__APPLE__)
+#include <netinet/in.h>
 #else
 #include <inaddr.h>
 #include <in6addr.h>
@@ -100,8 +102,8 @@ namespace stdex
 
 			virtual void invalidate()
 			{
-				interval.start = 1;
-				interval.end = 0;
+				this->interval.start = 1;
+				this->interval.end = 0;
 			}
 
 		protected:
@@ -194,10 +196,10 @@ namespace stdex
 			{
 				assert(text || start >= end);
 				if (start < end && text[start]) {
-					interval.start = interval.end = start;
+					this->interval.start = this->interval.end = start;
 					return true;
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 		};
@@ -228,10 +230,10 @@ namespace stdex
 			{
 				assert(text || start >= end);
 				if (start < end && text[start]) {
-					interval.end = (interval.start = start) + 1;
+					this->interval.end = (this->interval.start = start) + 1;
 					return true;
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 		};
@@ -263,20 +265,20 @@ namespace stdex
 					if (text[start] == '&') {
 						// SGML entity
 						const auto& ctype = std::use_facet<std::ctype<char>>(m_locale);
-						for (interval.end = start + 1; interval.end < end && text[interval.end]; interval.end++)
-							if (text[interval.end] == ';') {
-								interval.end++;
-								interval.start = start;
+						for (this->interval.end = start + 1; this->interval.end < end && text[this->interval.end]; this->interval.end++)
+							if (text[this->interval.end] == ';') {
+								this->interval.end++;
+								this->interval.start = start;
 								return true;
 							}
-							else if (text[interval.end] == '&' || ctype.is(ctype.space, text[interval.end]))
+							else if (text[this->interval.end] == '&' || ctype.is(ctype.space, text[this->interval.end]))
 								break;
 						// Unterminated entity
 					}
-					interval.end = (interval.start = start) + 1;
+					this->interval.end = (this->interval.start = start) + 1;
 					return true;
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 		};
@@ -304,17 +306,17 @@ namespace stdex
 				if (start < end && text[start]) {
 					bool r;
 					if (flags & match_case_insensitive) {
-						const auto& ctype = std::use_facet<std::ctype<T>>(m_locale);
+						const auto& ctype = std::use_facet<std::ctype<T>>(this->m_locale);
 						r = ctype.tolower(text[start]) == ctype.tolower(m_chr);
 					}
 					else
 						r = text[start] == m_chr;
-					if (r && !m_invert || !r && m_invert) {
-						interval.end = (interval.start = start) + 1;
+					if ((r && !m_invert) || (!r && m_invert)) {
+						this->interval.end = (this->interval.start = start) + 1;
 						return true;
 					}
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -356,16 +358,16 @@ namespace stdex
 				assert(text || start >= end);
 				if (start < end && text[start]) {
 					wchar_t buf[3];
-					const wchar_t* chr = next_sgml_cp(text, start, end, interval.end, buf);
+					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					bool r = ((flags & match_case_insensitive) ?
 						stdex::strnicmp(chr, (size_t)-1, m_chr.c_str(), m_chr.size(), m_locale) :
 						stdex::strncmp(chr, (size_t)-1, m_chr.c_str(), m_chr.size())) == 0;
-					if (r && !m_invert || !r && m_invert) {
-						interval.start = start;
+					if ((r && !m_invert) || (!r && m_invert)) {
+						this->interval.start = start;
 						return true;
 					}
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -396,13 +398,13 @@ namespace stdex
 				if (start < end && text[start]) {
 					bool r =
 						((flags & match_multiline) || !islbreak(text[start])) &&
-						std::use_facet<std::ctype<T>>(m_locale).is(std::ctype_base::space, text[start]);
-					if (r && !m_invert || !r && m_invert) {
-						interval.end = (interval.start = start) + 1;
+						std::use_facet<std::ctype<T>>(this->m_locale).is(std::ctype_base::space, text[start]);
+					if ((r && !m_invert) || (!r && m_invert)) {
+						this->interval.end = (this->interval.start = start) + 1;
 						return true;
 					}
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -437,18 +439,18 @@ namespace stdex
 				assert(text || start >= end);
 				if (start < end && text[start]) {
 					wchar_t buf[3];
-					const wchar_t* chr = next_sgml_cp(text, start, end, interval.end, buf);
+					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* chr_end = chr + stdex::strlen(chr);
 					bool r =
 						((flags & match_multiline) || !islbreak(chr, (size_t)-1)) &&
 						std::use_facet<std::ctype<wchar_t>>(m_locale).scan_not(std::ctype_base::space, chr, chr_end) == chr_end;
-					if (r && !m_invert || !r && m_invert) {
-						interval.start = start;
+					if ((r && !m_invert) || (!r && m_invert)) {
+						this->interval.start = start;
 						return true;
 					}
 				}
 
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 		};
@@ -473,13 +475,13 @@ namespace stdex
 			{
 				assert(text || start >= end);
 				if (start < end && text[start]) {
-					bool r = std::use_facet<std::ctype<T>>(m_locale).is(std::ctype_base::punct, text[start]);
-					if (r && !m_invert || !r && m_invert) {
-						interval.end = (interval.start = start) + 1;
+					bool r = std::use_facet<std::ctype<T>>(this->m_locale).is(std::ctype_base::punct, text[start]);
+					if ((r && !m_invert) || (!r && m_invert)) {
+						this->interval.end = (this->interval.start = start) + 1;
 						return true;
 					}
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -514,15 +516,15 @@ namespace stdex
 				assert(text || start >= end);
 				if (start < end && text[start]) {
 					wchar_t buf[3];
-					const wchar_t* chr = next_sgml_cp(text, start, end, interval.end, buf);
+					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* chr_end = chr + stdex::strlen(chr);
 					bool r = std::use_facet<std::ctype<wchar_t>>(m_locale).scan_not(std::ctype_base::punct, chr, chr_end) == chr_end;
-					if (r && !m_invert || !r && m_invert) {
-						interval.start = start;
+					if ((r && !m_invert) || (!r && m_invert)) {
+						this->interval.start = start;
 						return true;
 					}
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 		};
@@ -549,13 +551,13 @@ namespace stdex
 				if (start < end && text[start]) {
 					bool r =
 						((flags & match_multiline) || !islbreak(text[start])) &&
-						std::use_facet<std::ctype<T>>(m_locale).is(std::ctype_base::space | std::ctype_base::punct, text[start]);
-					if (r && !m_invert || !r && m_invert) {
-						interval.end = (interval.start = start) + 1;
+						std::use_facet<std::ctype<T>>(this->m_locale).is(std::ctype_base::space | std::ctype_base::punct, text[start]);
+					if ((r && !m_invert) || (!r && m_invert)) {
+						this->interval.end = (this->interval.start = start) + 1;
 						return true;
 					}
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -590,17 +592,17 @@ namespace stdex
 				assert(text || start >= end);
 				if (start < end && text[start]) {
 					wchar_t buf[3];
-					const wchar_t* chr = next_sgml_cp(text, start, end, interval.end, buf);
+					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* chr_end = chr + stdex::strlen(chr);
 					bool r =
 						((flags & match_multiline) || !islbreak(chr, (size_t)-1)) &&
 						std::use_facet<std::ctype<wchar_t>>(m_locale).scan_not(std::ctype_base::space | std::ctype_base::punct, chr, chr_end) == chr_end;
-					if (r && !m_invert || !r && m_invert) {
-						interval.start = start;
+					if ((r && !m_invert) || (!r && m_invert)) {
+						this->interval.start = start;
 						return true;
 					}
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 		};
@@ -621,12 +623,12 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				bool r = start == 0 || start <= end && islbreak(text[start - 1]);
-				if (r && !m_invert || !r && m_invert) {
-					interval.end = interval.start = start;
+				bool r = start == 0 || (start <= end && islbreak(text[start - 1]));
+				if ((r && !m_invert) || (!r && m_invert)) {
+					this->interval.end = this->interval.start = start;
 					return true;
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -660,11 +662,11 @@ namespace stdex
 			{
 				assert(text || start >= end);
 				bool r = islbreak(text[start]);
-				if (r && !m_invert || !r && m_invert) {
-					interval.end = interval.start = start;
+				if ((r && !m_invert) || (!r && m_invert)) {
+					this->interval.end = this->interval.start = start;
 					return true;
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -738,16 +740,16 @@ namespace stdex
 				if (start < end && text[start]) {
 					const T* set = m_set.c_str();
 					size_t r = (flags & match_case_insensitive) ?
-						stdex::strnichr(set, m_set.size(), text[start], m_locale) :
+						stdex::strnichr(set, m_set.size(), text[start], this->m_locale) :
 						stdex::strnchr(set, m_set.size(), text[start]);
-					if (r != stdex::npos && !m_invert || r == stdex::npos && m_invert) {
-						hit_offset = r;
-						interval.end = (interval.start = start) + 1;
+					if ((r != stdex::npos && !this->m_invert) || (r == stdex::npos && this->m_invert)) {
+						this->hit_offset = r;
+						this->interval.end = (this->interval.start = start) + 1;
 						return true;
 					}
 				}
-				hit_offset = (size_t)-1;
-				interval.start = (interval.end = start) + 1;
+				this->hit_offset = (size_t)-1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -785,19 +787,19 @@ namespace stdex
 				assert(text || start >= end);
 				if (start < end && text[start]) {
 					wchar_t buf[3];
-					const wchar_t* chr = next_sgml_cp(text, start, end, interval.end, buf);
+					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* set = m_set.c_str();
 					size_t r = (flags & match_case_insensitive) ?
 						stdex::strnistr(set, m_set.size(), chr, m_locale) :
 						stdex::strnstr(set, m_set.size(), chr);
-					if (r != stdex::npos && !m_invert || r == stdex::npos && m_invert) {
+					if ((r != stdex::npos && !m_invert) || (r == stdex::npos && m_invert)) {
 						hit_offset = r;
-						interval.start = start;
+						this->interval.start = start;
 						return true;
 					}
 				}
 				hit_offset = (size_t)-1;
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -831,13 +833,13 @@ namespace stdex
 					m = m_str.size(),
 					n = std::min<size_t>(end - start, m);
 				bool r = ((flags & match_case_insensitive) ?
-					stdex::strnicmp(text + start, n, m_str.c_str(), m, m_locale) :
+					stdex::strnicmp(text + start, n, m_str.c_str(), m, this->m_locale) :
 					stdex::strncmp(text + start, n, m_str.c_str(), m)) == 0;
 				if (r) {
-					interval.end = (interval.start = start) + n;
+					this->interval.end = (this->interval.start = start) + n;
 					return true;
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -874,22 +876,22 @@ namespace stdex
 				const wchar_t* str = m_str.c_str();
 				const bool case_insensitive = flags & match_case_insensitive ? true : false;
 				const auto& ctype = std::use_facet<std::ctype<wchar_t>>(m_locale);
-				for (interval.end = start;;) {
+				for (this->interval.end = start;;) {
 					if (!*str) {
-						interval.start = start;
+						this->interval.start = start;
 						return true;
 					}
-					if (interval.end >= end || !text[interval.end]) {
-						interval.start = (interval.end = start) + 1;
+					if (this->interval.end >= end || !text[this->interval.end]) {
+						this->interval.start = (this->interval.end = start) + 1;
 						return false;
 					}
 					wchar_t buf[3];
-					const wchar_t* chr = next_sgml_cp(text, interval.end, end, interval.end, buf);
+					const wchar_t* chr = next_sgml_cp(text, this->interval.end, end, this->interval.end, buf);
 					for (; *chr; ++str, ++chr) {
 						if (!*str ||
 							(case_insensitive ? ctype.tolower(*str) != ctype.tolower(*chr) : *str != *chr))
 						{
-							interval.start = (interval.end = start) + 1;
+							this->interval.start = (this->interval.end = start) + 1;
 							return false;
 						}
 					}
@@ -921,22 +923,22 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.start = interval.end = start;
+				this->interval.start = this->interval.end = start;
 				for (size_t i = 0; ; i++) {
-					if (!m_greedy && i >= m_min_iterations || i >= m_max_iterations)
+					if ((!m_greedy && i >= m_min_iterations) || i >= m_max_iterations)
 						return true;
-					if (!m_el->match(text, interval.end, end, flags)) {
+					if (!m_el->match(text, this->interval.end, end, flags)) {
 						if (i >= m_min_iterations)
 							return true;
 						break;
 					}
-					if (m_el->interval.end == interval.end) {
+					if (m_el->interval.end == this->interval.end) {
 						// Element did match, but the matching interval was empty. Quit instead of spinning.
 						return true;
 					}
-					interval.end = m_el->interval.end;
+					this->interval.end = m_el->interval.end;
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -1023,17 +1025,17 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
-				for (auto i = m_collection.begin(); i != m_collection.end(); ++i) {
-					if (!(*i)->match(text, interval.end, end, flags)) {
-						for (++i; i != m_collection.end(); ++i)
+				this->interval.end = start;
+				for (auto i = this->m_collection.begin(); i != this->m_collection.end(); ++i) {
+					if (!(*i)->match(text, this->interval.end, end, flags)) {
+						for (++i; i != this->m_collection.end(); ++i)
 							(*i)->invalidate();
-						interval.start = (interval.end = start) + 1;
+						this->interval.start = (this->interval.end = start) + 1;
 						return false;
 					}
-					interval.end = (*i)->interval.end;
+					this->interval.end = (*i)->interval.end;
 				}
-				interval.start = start;
+				this->interval.start = start;
 				return true;
 			}
 		};
@@ -1083,16 +1085,16 @@ namespace stdex
 			{
 				assert(text || start >= end);
 				hit_offset = 0;
-				for (auto i = m_collection.begin(); i != m_collection.end(); ++i, ++hit_offset) {
+				for (auto i = this->m_collection.begin(); i != this->m_collection.end(); ++i, ++hit_offset) {
 					if ((*i)->match(text, start, end, flags)) {
-						interval = (*i)->interval;
-						for (++i; i != m_collection.end(); ++i)
+						this->interval = (*i)->interval;
+						for (++i; i != this->m_collection.end(); ++i)
 							(*i)->invalidate();
 						return true;
 					}
 				}
 				hit_offset = (size_t)-1;
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -1159,12 +1161,12 @@ namespace stdex
 						offset = n = 0;
 						offset < count && str_z[offset];
 						offset += stdex::strnlen(str_z + offset, count - offset) + 1, ++n);
-					m_collection.reserve(n);
+					this->m_collection.reserve(n);
 					for (
 						offset = 0;
 						offset < count && str_z[offset];
 						offset += stdex::strnlen(str_z + offset, count - offset) + 1)
-						m_collection.push_back(std::move(std::make_shared<T_parser>(str_z + offset, count - offset, m_locale)));
+						this->m_collection.push_back(std::move(std::make_shared<T_parser>(str_z + offset, count - offset, this->m_locale)));
 				}
 			}
 
@@ -1172,9 +1174,9 @@ namespace stdex
 			{
 				const T* p;
 				for (
-					m_collection.push_back(std::move(std::make_shared<T_parser>(str, (size_t)-1, m_locale)));
+					this->m_collection.push_back(std::move(std::make_shared<T_parser>(str, (size_t)-1, this->m_locale)));
 					(p = va_arg(params, const T*)) != nullptr;
-					m_collection.push_back(std::move(std::make_shared<T_parser>(p, (size_t)-1, m_locale))));
+					this->m_collection.push_back(std::move(std::make_shared<T_parser>(p, (size_t)-1, this->m_locale))));
 			}
 		};
 
@@ -1214,13 +1216,13 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				for (auto& el: m_collection)
+				for (auto& el: this->m_collection)
 					el->invalidate();
 				if (match_recursively(text, start, end, flags)) {
-					interval.start = start;
+					this->interval.start = start;
 					return true;
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -1232,7 +1234,7 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				bool all_matched = true;
-				for (auto& el: m_collection) {
+				for (auto& el: this->m_collection) {
 					if (!el->interval) {
 						// Element was not matched in permutatuion yet.
 						all_matched = false;
@@ -1247,7 +1249,7 @@ namespace stdex
 					}
 				}
 				if (all_matched) {
-					interval.end = start;
+					this->interval.end = start;
 					return true;
 				}
 				return false;
@@ -1324,26 +1326,26 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				for (interval.end = start, value = 0; interval.end < end && text[interval.end];) {
+				for (this->interval.end = start, this->value = 0; this->interval.end < end && text[this->interval.end];) {
 					size_t dig;
-					if (m_digit_0->match(text, interval.end, end, flags)) { dig = 0; interval.end = m_digit_0->interval.end; }
-					else if (m_digit_1->match(text, interval.end, end, flags)) { dig = 1; interval.end = m_digit_1->interval.end; }
-					else if (m_digit_2->match(text, interval.end, end, flags)) { dig = 2; interval.end = m_digit_2->interval.end; }
-					else if (m_digit_3->match(text, interval.end, end, flags)) { dig = 3; interval.end = m_digit_3->interval.end; }
-					else if (m_digit_4->match(text, interval.end, end, flags)) { dig = 4; interval.end = m_digit_4->interval.end; }
-					else if (m_digit_5->match(text, interval.end, end, flags)) { dig = 5; interval.end = m_digit_5->interval.end; }
-					else if (m_digit_6->match(text, interval.end, end, flags)) { dig = 6; interval.end = m_digit_6->interval.end; }
-					else if (m_digit_7->match(text, interval.end, end, flags)) { dig = 7; interval.end = m_digit_7->interval.end; }
-					else if (m_digit_8->match(text, interval.end, end, flags)) { dig = 8; interval.end = m_digit_8->interval.end; }
-					else if (m_digit_9->match(text, interval.end, end, flags)) { dig = 9; interval.end = m_digit_9->interval.end; }
+					if (m_digit_0->match(text, this->interval.end, end, flags)) { dig = 0; this->interval.end = m_digit_0->interval.end; }
+					else if (m_digit_1->match(text, this->interval.end, end, flags)) { dig = 1; this->interval.end = m_digit_1->interval.end; }
+					else if (m_digit_2->match(text, this->interval.end, end, flags)) { dig = 2; this->interval.end = m_digit_2->interval.end; }
+					else if (m_digit_3->match(text, this->interval.end, end, flags)) { dig = 3; this->interval.end = m_digit_3->interval.end; }
+					else if (m_digit_4->match(text, this->interval.end, end, flags)) { dig = 4; this->interval.end = m_digit_4->interval.end; }
+					else if (m_digit_5->match(text, this->interval.end, end, flags)) { dig = 5; this->interval.end = m_digit_5->interval.end; }
+					else if (m_digit_6->match(text, this->interval.end, end, flags)) { dig = 6; this->interval.end = m_digit_6->interval.end; }
+					else if (m_digit_7->match(text, this->interval.end, end, flags)) { dig = 7; this->interval.end = m_digit_7->interval.end; }
+					else if (m_digit_8->match(text, this->interval.end, end, flags)) { dig = 8; this->interval.end = m_digit_8->interval.end; }
+					else if (m_digit_9->match(text, this->interval.end, end, flags)) { dig = 9; this->interval.end = m_digit_9->interval.end; }
 					else break;
-					value = value * 10 + dig;
+					this->value = this->value * 10 + dig;
 				}
-				if (start < interval.end) {
-					interval.start = start;
+				if (start < this->interval.end) {
+					this->interval.start = start;
 					return true;
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -1397,32 +1399,32 @@ namespace stdex
 				assert(text || start >= end);
 				if (m_digits->match(text, start, end, flags)) {
 					// Leading part match.
-					value = m_digits->value;
+					this->value = m_digits->value;
 					digit_count = m_digits->interval.size();
 					has_separators = false;
-					interval.start = start;
-					interval.end = m_digits->interval.end;
+					this->interval.start = start;
+					this->interval.end = m_digits->interval.end;
 					if (m_digits->interval.size() <= 3) {
 						// Maybe separated with thousand separators?
 						size_t hit_offset = (size_t)-1;
-						while (m_separator->match(text, interval.end, end, flags) &&
+						while (m_separator->match(text, this->interval.end, end, flags) &&
 							(hit_offset == (size_t)-1 || hit_offset == m_separator->hit_offset) && // All separators must be the same, no mixing.
 							m_digits->match(text, m_separator->interval.end, end, flags) &&
 							m_digits->interval.size() == 3)
 						{
 							// Thousand separator and three-digit integer followed.
-							value = value * 1000 + m_digits->value;
+							this->value = this->value * 1000 + m_digits->value;
 							digit_count += 3;
 							has_separators = true;
-							interval.end = m_digits->interval.end;
+							this->interval.end = m_digits->interval.end;
 							hit_offset = m_separator->hit_offset;
 						}
 					}
 
 					return true;
 				}
-				value = 0;
-				interval.start = (interval.end = start) + 1;
+				this->value = 0;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -1502,32 +1504,32 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				for (interval.end = start, value = 0; interval.end < end && text[interval.end];) {
+				for (this->interval.end = start, this->value = 0; this->interval.end < end && text[this->interval.end];) {
 					size_t dig;
-					if (m_digit_0->match(text, interval.end, end, flags)) { dig = 0; interval.end = m_digit_0->interval.end; }
-					else if (m_digit_1->match(text, interval.end, end, flags)) { dig = 1; interval.end = m_digit_1->interval.end; }
-					else if (m_digit_2->match(text, interval.end, end, flags)) { dig = 2; interval.end = m_digit_2->interval.end; }
-					else if (m_digit_3->match(text, interval.end, end, flags)) { dig = 3; interval.end = m_digit_3->interval.end; }
-					else if (m_digit_4->match(text, interval.end, end, flags)) { dig = 4; interval.end = m_digit_4->interval.end; }
-					else if (m_digit_5->match(text, interval.end, end, flags)) { dig = 5; interval.end = m_digit_5->interval.end; }
-					else if (m_digit_6->match(text, interval.end, end, flags)) { dig = 6; interval.end = m_digit_6->interval.end; }
-					else if (m_digit_7->match(text, interval.end, end, flags)) { dig = 7; interval.end = m_digit_7->interval.end; }
-					else if (m_digit_8->match(text, interval.end, end, flags)) { dig = 8; interval.end = m_digit_8->interval.end; }
-					else if (m_digit_9->match(text, interval.end, end, flags)) { dig = 9; interval.end = m_digit_9->interval.end; }
-					else if (m_digit_10->match(text, interval.end, end, flags)) { dig = 10; interval.end = m_digit_10->interval.end; }
-					else if (m_digit_11->match(text, interval.end, end, flags)) { dig = 11; interval.end = m_digit_11->interval.end; }
-					else if (m_digit_12->match(text, interval.end, end, flags)) { dig = 12; interval.end = m_digit_12->interval.end; }
-					else if (m_digit_13->match(text, interval.end, end, flags)) { dig = 13; interval.end = m_digit_13->interval.end; }
-					else if (m_digit_14->match(text, interval.end, end, flags)) { dig = 14; interval.end = m_digit_14->interval.end; }
-					else if (m_digit_15->match(text, interval.end, end, flags)) { dig = 15; interval.end = m_digit_15->interval.end; }
+					if (m_digit_0->match(text, this->interval.end, end, flags)) { dig = 0; this->interval.end = m_digit_0->interval.end; }
+					else if (m_digit_1->match(text, this->interval.end, end, flags)) { dig = 1; this->interval.end = m_digit_1->interval.end; }
+					else if (m_digit_2->match(text, this->interval.end, end, flags)) { dig = 2; this->interval.end = m_digit_2->interval.end; }
+					else if (m_digit_3->match(text, this->interval.end, end, flags)) { dig = 3; this->interval.end = m_digit_3->interval.end; }
+					else if (m_digit_4->match(text, this->interval.end, end, flags)) { dig = 4; this->interval.end = m_digit_4->interval.end; }
+					else if (m_digit_5->match(text, this->interval.end, end, flags)) { dig = 5; this->interval.end = m_digit_5->interval.end; }
+					else if (m_digit_6->match(text, this->interval.end, end, flags)) { dig = 6; this->interval.end = m_digit_6->interval.end; }
+					else if (m_digit_7->match(text, this->interval.end, end, flags)) { dig = 7; this->interval.end = m_digit_7->interval.end; }
+					else if (m_digit_8->match(text, this->interval.end, end, flags)) { dig = 8; this->interval.end = m_digit_8->interval.end; }
+					else if (m_digit_9->match(text, this->interval.end, end, flags)) { dig = 9; this->interval.end = m_digit_9->interval.end; }
+					else if (m_digit_10->match(text, this->interval.end, end, flags)) { dig = 10; this->interval.end = m_digit_10->interval.end; }
+					else if (m_digit_11->match(text, this->interval.end, end, flags)) { dig = 11; this->interval.end = m_digit_11->interval.end; }
+					else if (m_digit_12->match(text, this->interval.end, end, flags)) { dig = 12; this->interval.end = m_digit_12->interval.end; }
+					else if (m_digit_13->match(text, this->interval.end, end, flags)) { dig = 13; this->interval.end = m_digit_13->interval.end; }
+					else if (m_digit_14->match(text, this->interval.end, end, flags)) { dig = 14; this->interval.end = m_digit_14->interval.end; }
+					else if (m_digit_15->match(text, this->interval.end, end, flags)) { dig = 15; this->interval.end = m_digit_15->interval.end; }
 					else break;
-					value = value * 16 + dig;
+					this->value = this->value * 16 + dig;
 				}
-				if (start < interval.end) {
-					interval.start = start;
+				if (start < this->interval.end) {
+					this->interval.start = start;
 					return true;
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -1601,16 +1603,16 @@ namespace stdex
 					dig[5] = { (size_t)-1, (size_t)-1, (size_t)-1, (size_t)-1, (size_t)-1 },
 					end2;
 
-				for (interval.end = start, value = 0; interval.end < end && text[interval.end]; dig[3] = dig[2], dig[2] = dig[1], dig[1] = dig[0], interval.end = end2) {
-					if (m_digit_1 && m_digit_1->match(text, interval.end, end, flags)) { dig[0] = 1; end2 = m_digit_1->interval.end; }
-					else if (m_digit_5 && m_digit_5->match(text, interval.end, end, flags)) { dig[0] = 5; end2 = m_digit_5->interval.end; }
-					else if (m_digit_10 && m_digit_10->match(text, interval.end, end, flags)) { dig[0] = 10; end2 = m_digit_10->interval.end; }
-					else if (m_digit_50 && m_digit_50->match(text, interval.end, end, flags)) { dig[0] = 50; end2 = m_digit_50->interval.end; }
-					else if (m_digit_100 && m_digit_100->match(text, interval.end, end, flags)) { dig[0] = 100; end2 = m_digit_100->interval.end; }
-					else if (m_digit_500 && m_digit_500->match(text, interval.end, end, flags)) { dig[0] = 500; end2 = m_digit_500->interval.end; }
-					else if (m_digit_1000 && m_digit_1000->match(text, interval.end, end, flags)) { dig[0] = 1000; end2 = m_digit_1000->interval.end; }
-					else if (m_digit_5000 && m_digit_5000->match(text, interval.end, end, flags)) { dig[0] = 5000; end2 = m_digit_5000->interval.end; }
-					else if (m_digit_10000 && m_digit_10000->match(text, interval.end, end, flags)) { dig[0] = 10000; end2 = m_digit_10000->interval.end; }
+				for (this->interval.end = start, this->value = 0; this->interval.end < end && text[this->interval.end]; dig[3] = dig[2], dig[2] = dig[1], dig[1] = dig[0], this->interval.end = end2) {
+					if (m_digit_1 && m_digit_1->match(text, this->interval.end, end, flags)) { dig[0] = 1; end2 = m_digit_1->interval.end; }
+					else if (m_digit_5 && m_digit_5->match(text, this->interval.end, end, flags)) { dig[0] = 5; end2 = m_digit_5->interval.end; }
+					else if (m_digit_10 && m_digit_10->match(text, this->interval.end, end, flags)) { dig[0] = 10; end2 = m_digit_10->interval.end; }
+					else if (m_digit_50 && m_digit_50->match(text, this->interval.end, end, flags)) { dig[0] = 50; end2 = m_digit_50->interval.end; }
+					else if (m_digit_100 && m_digit_100->match(text, this->interval.end, end, flags)) { dig[0] = 100; end2 = m_digit_100->interval.end; }
+					else if (m_digit_500 && m_digit_500->match(text, this->interval.end, end, flags)) { dig[0] = 500; end2 = m_digit_500->interval.end; }
+					else if (m_digit_1000 && m_digit_1000->match(text, this->interval.end, end, flags)) { dig[0] = 1000; end2 = m_digit_1000->interval.end; }
+					else if (m_digit_5000 && m_digit_5000->match(text, this->interval.end, end, flags)) { dig[0] = 5000; end2 = m_digit_5000->interval.end; }
+					else if (m_digit_10000 && m_digit_10000->match(text, this->interval.end, end, flags)) { dig[0] = 10000; end2 = m_digit_10000->interval.end; }
 					else break;
 
 					// Store first digit.
@@ -1622,35 +1624,35 @@ namespace stdex
 					}
 					if (dig[0] <= dig[1]) {
 						// Digit is less or equal previous one: add.
-						value += dig[0];
+						this->value += dig[0];
 					}
 					else if (
-						dig[1] == 1 && (dig[0] == 5 || dig[0] == 10) ||
-						dig[1] == 10 && (dig[0] == 50 || dig[0] == 100) ||
-						dig[1] == 100 && (dig[0] == 500 || dig[0] == 1000) ||
-						dig[1] == 1000 && (dig[0] == 5000 || dig[0] == 10000))
+						(dig[1] == 1 && (dig[0] == 5 || dig[0] == 10)) ||
+						(dig[1] == 10 && (dig[0] == 50 || dig[0] == 100)) ||
+						(dig[1] == 100 && (dig[0] == 500 || dig[0] == 1000)) ||
+						(dig[1] == 1000 && (dig[0] == 5000 || dig[0] == 10000)))
 					{
 						// Digit is up to two orders bigger than previous one: subtract. But...
 						if (dig[2] < dig[0]) {
 							// Digit is also bigger than pre-previous one. E.g. VIX (V < X => invalid)
 							break;
 						}
-						value -= dig[1]; // Cancel addition in the previous step.
+						this->value -= dig[1]; // Cancel addition in the previous step.
 						dig[0] -= dig[1]; // Combine last two digits.
 						dig[1] = dig[2]; // The true previous digit is now pre-previous one. :)
 						dig[2] = dig[3]; // The true pre-previous digit is now pre-pre-previous one. :)
-						value += dig[0]; // Add combined value.
+						this->value += dig[0]; // Add combined value.
 					}
 					else {
 						// New digit is too big than the previous one. E.g. VX (V < X => invalid)
 						break;
 					}
 				}
-				if (value) {
-					interval.start = start;
+				if (this->value) {
+					this->interval.start = start;
 					return true;
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -1705,14 +1707,14 @@ namespace stdex
 					fraction_line->match(text, numerator->interval.end, end, flags) &&
 					denominator->match(text, fraction_line->interval.end, end, flags))
 				{
-					interval.start = start;
-					interval.end = denominator->interval.end;
+					this->interval.start = start;
+					this->interval.end = denominator->interval.end;
 					return true;
 				}
 				numerator->invalidate();
 				fraction_line->invalidate();
 				denominator->invalidate();
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -1766,36 +1768,37 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
-
-				if (home->match(text, interval.end, end, flags))
-					interval.end = home->interval.end;
-				else
-					goto end;
+				this->interval.end = start;
 
 				const int space_match_flags = flags & ~match_multiline; // Spaces in score must never be broken in new line.
-				for (; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
 
-				if (separator->match(text, interval.end, end, flags))
-					interval.end = separator->interval.end;
+				if (home->match(text, this->interval.end, end, flags))
+					this->interval.end = home->interval.end;
 				else
 					goto end;
 
-				for (; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
+				for (; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
 
-				if (guest->match(text, interval.end, end, flags))
-					interval.end = guest->interval.end;
+				if (separator->match(text, this->interval.end, end, flags))
+					this->interval.end = separator->interval.end;
 				else
 					goto end;
 
-				interval.start = start;
+				for (; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+
+				if (guest->match(text, this->interval.end, end, flags))
+					this->interval.end = guest->interval.end;
+				else
+					goto end;
+
+				this->interval.start = start;
 				return true;
 
 			end:
 				home->invalidate();
 				separator->invalidate();
 				guest->invalidate();
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -1852,19 +1855,19 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
-				if (positive_sign && positive_sign->match(text, interval.end, end, flags)) {
-					interval.end = positive_sign->interval.end;
+				this->interval.end = start;
+				if (positive_sign && positive_sign->match(text, this->interval.end, end, flags)) {
+					this->interval.end = positive_sign->interval.end;
 					if (negative_sign) negative_sign->invalidate();
 					if (special_sign) special_sign->invalidate();
 				}
-				else if (negative_sign && negative_sign->match(text, interval.end, end, flags)) {
-					interval.end = negative_sign->interval.end;
+				else if (negative_sign && negative_sign->match(text, this->interval.end, end, flags)) {
+					this->interval.end = negative_sign->interval.end;
 					if (positive_sign) positive_sign->invalidate();
 					if (special_sign) special_sign->invalidate();
 				}
-				else if (special_sign && special_sign->match(text, interval.end, end, flags)) {
-					interval.end = special_sign->interval.end;
+				else if (special_sign && special_sign->match(text, this->interval.end, end, flags)) {
+					this->interval.end = special_sign->interval.end;
 					if (positive_sign) positive_sign->invalidate();
 					if (negative_sign) negative_sign->invalidate();
 				}
@@ -1873,16 +1876,16 @@ namespace stdex
 					if (negative_sign) negative_sign->invalidate();
 					if (special_sign) special_sign->invalidate();
 				}
-				if (number->match(text, interval.end, end, flags)) {
-					interval.start = start;
-					interval.end = number->interval.end;
+				if (number->match(text, this->interval.end, end, flags)) {
+					this->interval.start = start;
+					this->interval.end = number->interval.end;
 					return true;
 				}
 				if (positive_sign) positive_sign->invalidate();
 				if (negative_sign) negative_sign->invalidate();
 				if (special_sign) special_sign->invalidate();
 				number->invalidate();
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -1942,20 +1945,20 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
+				this->interval.end = start;
 
-				if (positive_sign && positive_sign->match(text, interval.end, end, flags)) {
-					interval.end = positive_sign->interval.end;
+				if (positive_sign && positive_sign->match(text, this->interval.end, end, flags)) {
+					this->interval.end = positive_sign->interval.end;
 					if (negative_sign) negative_sign->invalidate();
 					if (special_sign) special_sign->invalidate();
 				}
-				else if (negative_sign && negative_sign->match(text, interval.end, end, flags)) {
-					interval.end = negative_sign->interval.end;
+				else if (negative_sign && negative_sign->match(text, this->interval.end, end, flags)) {
+					this->interval.end = negative_sign->interval.end;
 					if (positive_sign) positive_sign->invalidate();
 					if (special_sign) special_sign->invalidate();
 				}
-				else if (special_sign && special_sign->match(text, interval.end, end, flags)) {
-					interval.end = special_sign->interval.end;
+				else if (special_sign && special_sign->match(text, this->interval.end, end, flags)) {
+					this->interval.end = special_sign->interval.end;
 					if (positive_sign) positive_sign->invalidate();
 					if (negative_sign) negative_sign->invalidate();
 				}
@@ -1967,34 +1970,34 @@ namespace stdex
 
 				// Check for <integer> <fraction>
 				const int space_match_flags = flags & ~match_multiline; // Spaces in fractions must never be broken in new line.
-				if (integer->match(text, interval.end, end, flags) &&
+				if (integer->match(text, this->interval.end, end, flags) &&
 					m_space->match(text, integer->interval.end, end, space_match_flags))
 				{
-					for (interval.end = m_space->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-					if (fraction->match(text, interval.end, end, flags)) {
-						interval.start = start;
-						interval.end = fraction->interval.end;
+					for (this->interval.end = m_space->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+					if (fraction->match(text, this->interval.end, end, flags)) {
+						this->interval.start = start;
+						this->interval.end = fraction->interval.end;
 						return true;
 					}
 					fraction->invalidate();
-					interval.start = start;
-					interval.end = integer->interval.end;
+					this->interval.start = start;
+					this->interval.end = integer->interval.end;
 					return true;
 				}
 
 				// Check for <fraction>
-				if (fraction->match(text, interval.end, end, flags)) {
+				if (fraction->match(text, this->interval.end, end, flags)) {
 					integer->invalidate();
-					interval.start = start;
-					interval.end = fraction->interval.end;
+					this->interval.start = start;
+					this->interval.end = fraction->interval.end;
 					return true;
 				}
 
 				// Check for <integer>
-				if (integer->match(text, interval.end, end, flags)) {
+				if (integer->match(text, this->interval.end, end, flags)) {
 					fraction->invalidate();
-					interval.start = start;
-					interval.end = integer->interval.end;
+					this->interval.start = start;
+					this->interval.end = integer->interval.end;
 					return true;
 				}
 
@@ -2003,7 +2006,7 @@ namespace stdex
 				if (special_sign) special_sign->invalidate();
 				integer->invalidate();
 				fraction->invalidate();
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -2077,20 +2080,20 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
+				this->interval.end = start;
 
-				if (positive_sign && positive_sign->match(text, interval.end, end, flags)) {
-					interval.end = positive_sign->interval.end;
+				if (positive_sign && positive_sign->match(text, this->interval.end, end, flags)) {
+					this->interval.end = positive_sign->interval.end;
 					if (negative_sign) negative_sign->invalidate();
 					if (special_sign) special_sign->invalidate();
 				}
-				else if (negative_sign && negative_sign->match(text, interval.end, end, flags)) {
-					interval.end = negative_sign->interval.end;
+				else if (negative_sign && negative_sign->match(text, this->interval.end, end, flags)) {
+					this->interval.end = negative_sign->interval.end;
 					if (positive_sign) positive_sign->invalidate();
 					if (special_sign) special_sign->invalidate();
 				}
-				else if (special_sign && special_sign->match(text, interval.end, end, flags)) {
-					interval.end = special_sign->interval.end;
+				else if (special_sign && special_sign->match(text, this->interval.end, end, flags)) {
+					this->interval.end = special_sign->interval.end;
 					if (positive_sign) positive_sign->invalidate();
 					if (negative_sign) negative_sign->invalidate();
 				}
@@ -2100,12 +2103,12 @@ namespace stdex
 					if (special_sign) special_sign->invalidate();
 				}
 
-				if (integer->match(text, interval.end, end, flags))
-					interval.end = integer->interval.end;
+				if (integer->match(text, this->interval.end, end, flags))
+					this->interval.end = integer->interval.end;
 
-				if (decimal_separator->match(text, interval.end, end, flags) &&
+				if (decimal_separator->match(text, this->interval.end, end, flags) &&
 					decimal->match(text, decimal_separator->interval.end, end, flags))
-					interval.end = decimal->interval.end;
+					this->interval.end = decimal->interval.end;
 				else {
 					decimal_separator->invalidate();
 					decimal->invalidate();
@@ -2125,23 +2128,23 @@ namespace stdex
 					if (positive_exp_sign) positive_exp_sign->invalidate();
 					if (negative_exp_sign) negative_exp_sign->invalidate();
 					if (exponent) exponent->invalidate();
-					interval.start = (interval.end = start) + 1;
+					this->interval.start = (this->interval.end = start) + 1;
 					return false;
 				}
 
-				if (exponent_symbol && exponent_symbol->match(text, interval.end, end, flags) &&
-					(positive_exp_sign && positive_exp_sign->match(text, exponent_symbol->interval.end, end, flags) &&
-						exponent && exponent->match(text, positive_exp_sign->interval.end, end, flags) ||
-						exponent && exponent->match(text, exponent_symbol->interval.end, end, flags)))
+				if (exponent_symbol && exponent_symbol->match(text, this->interval.end, end, flags) &&
+					((positive_exp_sign && positive_exp_sign->match(text, exponent_symbol->interval.end, end, flags) &&
+						exponent && exponent->match(text, positive_exp_sign->interval.end, end, flags)) ||
+						(exponent && exponent->match(text, exponent_symbol->interval.end, end, flags))))
 				{
-					interval.end = exponent->interval.end;
+					this->interval.end = exponent->interval.end;
 					if (negative_exp_sign) negative_exp_sign->invalidate();
 				}
-				else if (exponent_symbol && exponent_symbol->match(text, interval.end, end, flags) &&
+				else if (exponent_symbol && exponent_symbol->match(text, this->interval.end, end, flags) &&
 					negative_exp_sign && negative_exp_sign->match(text, exponent_symbol->interval.end, end, flags) &&
 					exponent && exponent->match(text, negative_exp_sign->interval.end, end, flags))
 				{
-					interval.end = exponent->interval.end;
+					this->interval.end = exponent->interval.end;
 					if (positive_exp_sign) positive_exp_sign->invalidate();
 				}
 				else {
@@ -2163,7 +2166,7 @@ namespace stdex
 					value *= pow(10.0, e);
 				}
 
-				interval.start = start;
+				this->interval.start = start;
 				return true;
 			}
 
@@ -2239,20 +2242,20 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
+				this->interval.end = start;
 
-				if (positive_sign->match(text, interval.end, end, flags)) {
-					interval.end = positive_sign->interval.end;
+				if (positive_sign->match(text, this->interval.end, end, flags)) {
+					this->interval.end = positive_sign->interval.end;
 					if (negative_sign) negative_sign->invalidate();
 					if (special_sign) special_sign->invalidate();
 				}
-				else if (negative_sign->match(text, interval.end, end, flags)) {
-					interval.end = negative_sign->interval.end;
+				else if (negative_sign->match(text, this->interval.end, end, flags)) {
+					this->interval.end = negative_sign->interval.end;
 					if (positive_sign) positive_sign->invalidate();
 					if (special_sign) special_sign->invalidate();
 				}
-				else if (special_sign->match(text, interval.end, end, flags)) {
-					interval.end = special_sign->interval.end;
+				else if (special_sign->match(text, this->interval.end, end, flags)) {
+					this->interval.end = special_sign->interval.end;
 					if (positive_sign) positive_sign->invalidate();
 					if (negative_sign) negative_sign->invalidate();
 				}
@@ -2262,8 +2265,8 @@ namespace stdex
 					if (special_sign) special_sign->invalidate();
 				}
 
-				if (currency->match(text, interval.end, end, flags))
-					interval.end = currency->interval.end;
+				if (currency->match(text, this->interval.end, end, flags))
+					this->interval.end = currency->interval.end;
 				else {
 					if (positive_sign) positive_sign->invalidate();
 					if (negative_sign) negative_sign->invalidate();
@@ -2271,15 +2274,15 @@ namespace stdex
 					integer->invalidate();
 					decimal_separator->invalidate();
 					decimal->invalidate();
-					interval.start = (interval.end = start) + 1;
+					this->interval.start = (this->interval.end = start) + 1;
 					return false;
 				}
 
-				if (integer->match(text, interval.end, end, flags))
-					interval.end = integer->interval.end;
-				if (decimal_separator->match(text, interval.end, end, flags) &&
+				if (integer->match(text, this->interval.end, end, flags))
+					this->interval.end = integer->interval.end;
+				if (decimal_separator->match(text, this->interval.end, end, flags) &&
 					decimal->match(text, decimal_separator->interval.end, end, flags))
-					interval.end = decimal->interval.end;
+					this->interval.end = decimal->interval.end;
 				else {
 					decimal_separator->invalidate();
 					decimal->invalidate();
@@ -2296,11 +2299,11 @@ namespace stdex
 					integer->invalidate();
 					decimal_separator->invalidate();
 					decimal->invalidate();
-					interval.start = (interval.end = start) + 1;
+					this->interval.start = (this->interval.end = start) + 1;
 					return false;
 				}
 
-				interval.start = start;
+				this->interval.start = start;
 				return true;
 			}
 
@@ -2378,38 +2381,38 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
+				this->interval.end = start;
 				value.s_addr = 0;
 
 				size_t i;
 				for (i = 0; i < 4; i++) {
 					if (i) {
-						if (m_separator->match(text, interval.end, end, flags))
-							interval.end = m_separator->interval.end;
+						if (m_separator->match(text, this->interval.end, end, flags))
+							this->interval.end = m_separator->interval.end;
 						else
 							goto error;
 					}
 
-					components[i].start = interval.end;
+					components[i].start = this->interval.end;
 					bool is_empty = true;
 					size_t x;
-					for (x = 0; interval.end < end && text[interval.end];) {
+					for (x = 0; this->interval.end < end && text[this->interval.end];) {
 						size_t dig, digit_end;
-						if (m_digit_0->match(text, interval.end, end, flags)) { dig = 0; digit_end = m_digit_0->interval.end; }
-						else if (m_digit_1->match(text, interval.end, end, flags)) { dig = 1; digit_end = m_digit_1->interval.end; }
-						else if (m_digit_2->match(text, interval.end, end, flags)) { dig = 2; digit_end = m_digit_2->interval.end; }
-						else if (m_digit_3->match(text, interval.end, end, flags)) { dig = 3; digit_end = m_digit_3->interval.end; }
-						else if (m_digit_4->match(text, interval.end, end, flags)) { dig = 4; digit_end = m_digit_4->interval.end; }
-						else if (m_digit_5->match(text, interval.end, end, flags)) { dig = 5; digit_end = m_digit_5->interval.end; }
-						else if (m_digit_6->match(text, interval.end, end, flags)) { dig = 6; digit_end = m_digit_6->interval.end; }
-						else if (m_digit_7->match(text, interval.end, end, flags)) { dig = 7; digit_end = m_digit_7->interval.end; }
-						else if (m_digit_8->match(text, interval.end, end, flags)) { dig = 8; digit_end = m_digit_8->interval.end; }
-						else if (m_digit_9->match(text, interval.end, end, flags)) { dig = 9; digit_end = m_digit_9->interval.end; }
+						if (m_digit_0->match(text, this->interval.end, end, flags)) { dig = 0; digit_end = m_digit_0->interval.end; }
+						else if (m_digit_1->match(text, this->interval.end, end, flags)) { dig = 1; digit_end = m_digit_1->interval.end; }
+						else if (m_digit_2->match(text, this->interval.end, end, flags)) { dig = 2; digit_end = m_digit_2->interval.end; }
+						else if (m_digit_3->match(text, this->interval.end, end, flags)) { dig = 3; digit_end = m_digit_3->interval.end; }
+						else if (m_digit_4->match(text, this->interval.end, end, flags)) { dig = 4; digit_end = m_digit_4->interval.end; }
+						else if (m_digit_5->match(text, this->interval.end, end, flags)) { dig = 5; digit_end = m_digit_5->interval.end; }
+						else if (m_digit_6->match(text, this->interval.end, end, flags)) { dig = 6; digit_end = m_digit_6->interval.end; }
+						else if (m_digit_7->match(text, this->interval.end, end, flags)) { dig = 7; digit_end = m_digit_7->interval.end; }
+						else if (m_digit_8->match(text, this->interval.end, end, flags)) { dig = 8; digit_end = m_digit_8->interval.end; }
+						else if (m_digit_9->match(text, this->interval.end, end, flags)) { dig = 9; digit_end = m_digit_9->interval.end; }
 						else break;
 						size_t x_n = x * 10 + dig;
 						if (x_n <= 255) {
 							x = x_n;
-							interval.end = digit_end;
+							this->interval.end = digit_end;
 							is_empty = false;
 						}
 						else
@@ -2417,13 +2420,13 @@ namespace stdex
 					}
 					if (is_empty)
 						goto error;
-					components[i].end = interval.end;
+					components[i].end = this->interval.end;
 					value.s_addr = (value.s_addr << 8) | (uint8_t)x;
 				}
 				if (i < 4)
 					goto error;
 
-				interval.start = start;
+				this->interval.start = start;
 				return true;
 
 			error:
@@ -2436,7 +2439,7 @@ namespace stdex
 				components[3].start = 1;
 				components[3].end = 0;
 				value.s_addr = 0;
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -2502,13 +2505,13 @@ namespace stdex
 					if (text[start] == '-' ||
 						text[start] == '_' ||
 						text[start] == ':' ||
-						std::use_facet<std::ctype<T>>(m_locale).is(std::ctype_base::alnum, text[start]))
+						std::use_facet<std::ctype<T>>(this->m_locale).is(std::ctype_base::alnum, text[start]))
 					{
-						interval.end = (interval.start = start) + 1;
+						this->interval.end = (this->interval.start = start) + 1;
 						return true;
 					}
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 		};
@@ -2538,18 +2541,18 @@ namespace stdex
 				assert(text || start >= end);
 				if (start < end && text[start]) {
 					wchar_t buf[3];
-					const wchar_t* chr = next_sgml_cp(text, start, end, interval.end, buf);
+					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* chr_end = chr + stdex::strlen(chr);
-					if ((chr[0] == L'-' ||
+					if (((chr[0] == L'-' ||
 						chr[0] == L'_' ||
-						chr[0] == L':') && chr[1] == 0 ||
+						chr[0] == L':') && chr[1] == 0) ||
 						std::use_facet<std::ctype<wchar_t>>(m_locale).scan_not(std::ctype_base::alnum, chr, chr_end) == chr_end)
 					{
-						interval.start = start;
+						this->interval.start = start;
 						return true;
 					}
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 		};
@@ -2613,21 +2616,21 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
+				this->interval.end = start;
 				memset(&value, 0, sizeof(value));
 
 				size_t i, compaction_i = (size_t)-1, compaction_start = start;
 				for (i = 0; i < 8; i++) {
 					bool is_empty = true;
 
-					if (m_separator->match(text, interval.end, end, flags)) {
+					if (m_separator->match(text, this->interval.end, end, flags)) {
 						if (m_separator->match(text, m_separator->interval.end, end, flags)) {
 							// :: found
 							if (compaction_i == (size_t)-1) {
 								// Zero compaction start
 								compaction_i = i;
 								compaction_start = m_separator->interval.start;
-								interval.end = m_separator->interval.end;
+								this->interval.end = m_separator->interval.end;
 							}
 							else {
 								// More than one zero compaction
@@ -2636,7 +2639,7 @@ namespace stdex
 						}
 						else if (i) {
 							// Inner : found
-							interval.end = m_separator->interval.end;
+							this->interval.end = m_separator->interval.end;
 						}
 						else {
 							// Leading : found
@@ -2648,31 +2651,31 @@ namespace stdex
 						break;
 					}
 
-					components[i].start = interval.end;
+					components[i].start = this->interval.end;
 					size_t x;
-					for (x = 0; interval.end < end && text[interval.end];) {
+					for (x = 0; this->interval.end < end && text[this->interval.end];) {
 						size_t dig, digit_end;
-						if (m_digit_0->match(text, interval.end, end, flags)) { dig = 0; digit_end = m_digit_0->interval.end; }
-						else if (m_digit_1->match(text, interval.end, end, flags)) { dig = 1; digit_end = m_digit_1->interval.end; }
-						else if (m_digit_2->match(text, interval.end, end, flags)) { dig = 2; digit_end = m_digit_2->interval.end; }
-						else if (m_digit_3->match(text, interval.end, end, flags)) { dig = 3; digit_end = m_digit_3->interval.end; }
-						else if (m_digit_4->match(text, interval.end, end, flags)) { dig = 4; digit_end = m_digit_4->interval.end; }
-						else if (m_digit_5->match(text, interval.end, end, flags)) { dig = 5; digit_end = m_digit_5->interval.end; }
-						else if (m_digit_6->match(text, interval.end, end, flags)) { dig = 6; digit_end = m_digit_6->interval.end; }
-						else if (m_digit_7->match(text, interval.end, end, flags)) { dig = 7; digit_end = m_digit_7->interval.end; }
-						else if (m_digit_8->match(text, interval.end, end, flags)) { dig = 8; digit_end = m_digit_8->interval.end; }
-						else if (m_digit_9->match(text, interval.end, end, flags)) { dig = 9; digit_end = m_digit_9->interval.end; }
-						else if (m_digit_10->match(text, interval.end, end, flags)) { dig = 10; digit_end = m_digit_10->interval.end; }
-						else if (m_digit_11->match(text, interval.end, end, flags)) { dig = 11; digit_end = m_digit_11->interval.end; }
-						else if (m_digit_12->match(text, interval.end, end, flags)) { dig = 12; digit_end = m_digit_12->interval.end; }
-						else if (m_digit_13->match(text, interval.end, end, flags)) { dig = 13; digit_end = m_digit_13->interval.end; }
-						else if (m_digit_14->match(text, interval.end, end, flags)) { dig = 14; digit_end = m_digit_14->interval.end; }
-						else if (m_digit_15->match(text, interval.end, end, flags)) { dig = 15; digit_end = m_digit_15->interval.end; }
+						if (m_digit_0->match(text, this->interval.end, end, flags)) { dig = 0; digit_end = m_digit_0->interval.end; }
+						else if (m_digit_1->match(text, this->interval.end, end, flags)) { dig = 1; digit_end = m_digit_1->interval.end; }
+						else if (m_digit_2->match(text, this->interval.end, end, flags)) { dig = 2; digit_end = m_digit_2->interval.end; }
+						else if (m_digit_3->match(text, this->interval.end, end, flags)) { dig = 3; digit_end = m_digit_3->interval.end; }
+						else if (m_digit_4->match(text, this->interval.end, end, flags)) { dig = 4; digit_end = m_digit_4->interval.end; }
+						else if (m_digit_5->match(text, this->interval.end, end, flags)) { dig = 5; digit_end = m_digit_5->interval.end; }
+						else if (m_digit_6->match(text, this->interval.end, end, flags)) { dig = 6; digit_end = m_digit_6->interval.end; }
+						else if (m_digit_7->match(text, this->interval.end, end, flags)) { dig = 7; digit_end = m_digit_7->interval.end; }
+						else if (m_digit_8->match(text, this->interval.end, end, flags)) { dig = 8; digit_end = m_digit_8->interval.end; }
+						else if (m_digit_9->match(text, this->interval.end, end, flags)) { dig = 9; digit_end = m_digit_9->interval.end; }
+						else if (m_digit_10->match(text, this->interval.end, end, flags)) { dig = 10; digit_end = m_digit_10->interval.end; }
+						else if (m_digit_11->match(text, this->interval.end, end, flags)) { dig = 11; digit_end = m_digit_11->interval.end; }
+						else if (m_digit_12->match(text, this->interval.end, end, flags)) { dig = 12; digit_end = m_digit_12->interval.end; }
+						else if (m_digit_13->match(text, this->interval.end, end, flags)) { dig = 13; digit_end = m_digit_13->interval.end; }
+						else if (m_digit_14->match(text, this->interval.end, end, flags)) { dig = 14; digit_end = m_digit_14->interval.end; }
+						else if (m_digit_15->match(text, this->interval.end, end, flags)) { dig = 15; digit_end = m_digit_15->interval.end; }
 						else break;
 						size_t x_n = x * 16 + dig;
 						if (x_n <= 0xffff) {
 							x = x_n;
-							interval.end = digit_end;
+							this->interval.end = digit_end;
 							is_empty = false;
 						}
 						else
@@ -2685,19 +2688,19 @@ namespace stdex
 						}
 						goto error;
 					}
-					components[i].end = interval.end;
-					value.s6_words[i] = (uint16_t)x;
+					components[i].end = this->interval.end;
+					this->value.s6_words[i] = (uint16_t)x;
 				}
 
 				if (compaction_i != (size_t)-1) {
 					// Align components right due to zero compaction.
 					size_t j, k;
 					for (j = 8, k = i; k > compaction_i;) {
-						value.s6_words[--j] = value.s6_words[--k];
+						this->value.s6_words[--j] = this->value.s6_words[--k];
 						components[j] = components[k];
 					}
 					for (; j > compaction_i;) {
-						value.s6_words[--j] = 0;
+						this->value.s6_words[--j] = 0;
 						components[j].start =
 							components[j].end = compaction_start;
 					}
@@ -2705,13 +2708,13 @@ namespace stdex
 				else if (i < 8)
 					goto error;
 
-				if (m_scope_id_separator && m_scope_id_separator->match(text, interval.end, end, flags) &&
+				if (m_scope_id_separator && m_scope_id_separator->match(text, this->interval.end, end, flags) &&
 					scope_id && scope_id->match(text, m_scope_id_separator->interval.end, end, flags))
-					interval.end = scope_id->interval.end;
+					this->interval.end = scope_id->interval.end;
 				else if (scope_id)
 					scope_id->invalidate();
 
-				interval.start = start;
+				this->interval.start = start;
 				return true;
 
 			error:
@@ -2733,7 +2736,7 @@ namespace stdex
 				components[7].end = 0;
 				memset(&value, 0, sizeof(value));
 				if (scope_id) scope_id->invalidate();
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -2824,16 +2827,16 @@ namespace stdex
 						allow_on_edge = true;
 					else if (text[start] == '-')
 						allow_on_edge = false;
-					else if (m_allow_idn && std::use_facet<std::ctype<T>>(m_locale).is(std::ctype_base::alnum, text[start]))
+					else if (m_allow_idn && std::use_facet<std::ctype<T>>(this->m_locale).is(std::ctype_base::alnum, text[start]))
 						allow_on_edge = true;
 					else {
-						interval.start = (interval.end = start) + 1;
+						this->interval.start = (this->interval.end = start) + 1;
 						return false;
 					}
-					interval.end = (interval.start = start) + 1;
+					this->interval.end = (this->interval.start = start) + 1;
 					return true;
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -2873,7 +2876,7 @@ namespace stdex
 				assert(text || start >= end);
 				if (start < end && text[start]) {
 					wchar_t buf[3];
-					const wchar_t* chr = next_sgml_cp(text, start, end, interval.end, buf);
+					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* chr_end = chr + stdex::strlen(chr);
 					if ((('A' <= chr[0] && chr[0] <= 'Z') ||
 						('a' <= chr[0] && chr[0] <= 'z') ||
@@ -2884,13 +2887,13 @@ namespace stdex
 					else if (m_allow_idn && std::use_facet<std::ctype<wchar_t>>(m_locale).scan_not(std::ctype_base::alnum, chr, chr_end) == chr_end)
 						allow_on_edge = true;
 					else {
-						interval.start = (interval.end = start) + 1;
+						this->interval.start = (this->interval.end = start) + 1;
 						return false;
 					}
-					interval.start = start;
+					this->interval.start = start;
 					return true;
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 		};
@@ -2926,28 +2929,28 @@ namespace stdex
 						m_domain_char->allow_on_edge)
 					{
 						// Domain start
-						interval.end = i = m_domain_char->interval.end;
+						this->interval.end = i = m_domain_char->interval.end;
 						while (i < end && text[i]) {
 							if (m_domain_char->allow_on_edge &&
 								m_separator->match(text, i, end, flags))
 							{
 								// Domain end
 								if (m_allow_absolute)
-									interval.end = i = m_separator->interval.end;
+									this->interval.end = i = m_separator->interval.end;
 								else {
-									interval.end = i;
+									this->interval.end = i;
 									i = m_separator->interval.end;
 								}
 								break;
 							}
 							if (m_domain_char->match(text, i, end, flags)) {
 								if (m_domain_char->allow_on_edge)
-									interval.end = i = m_domain_char->interval.end;
+									this->interval.end = i = m_domain_char->interval.end;
 								else
 									i = m_domain_char->interval.end;
 							}
 							else {
-								interval.start = start;
+								this->interval.start = start;
 								return true;
 							}
 						}
@@ -2956,10 +2959,10 @@ namespace stdex
 						break;
 				}
 				if (count) {
-					interval.start = start;
+					this->interval.start = start;
 					return true;
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -3011,13 +3014,13 @@ namespace stdex
 						text[start] == ',' ||
 						text[start] == ';' ||
 						text[start] == '=' ||
-						std::use_facet<std::ctype<T>>(m_locale).is(std::ctype_base::alnum, text[start]))
+						std::use_facet<std::ctype<T>>(this->m_locale).is(std::ctype_base::alnum, text[start]))
 					{
-						interval.end = (interval.start = start) + 1;
+						this->interval.end = (this->interval.start = start) + 1;
 						return true;
 					}
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 		};
@@ -3047,9 +3050,9 @@ namespace stdex
 				assert(text || start >= end);
 				if (start < end && text[start]) {
 					wchar_t buf[3];
-					const wchar_t* chr = next_sgml_cp(text, start, end, interval.end, buf);
+					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* chr_end = chr + stdex::strlen(chr);
-					if ((chr[0] == L'-' ||
+					if (((chr[0] == L'-' ||
 						chr[0] == L'.' ||
 						chr[0] == L'_' ||
 						chr[0] == L'~' ||
@@ -3064,15 +3067,15 @@ namespace stdex
 						chr[0] == L'+' ||
 						chr[0] == L',' ||
 						chr[0] == L';' ||
-						chr[0] == L'=') && chr[1] == 0 ||
+						chr[0] == L'=') && chr[1] == 0) ||
 						std::use_facet<std::ctype<wchar_t>>(m_locale).scan_not(std::ctype_base::alnum, chr, chr_end) == chr_end)
 					{
-						interval.start = start;
+						this->interval.start = start;
 						return true;
 					}
 				}
 
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 		};
@@ -3111,13 +3114,13 @@ namespace stdex
 						text[start] == ';' ||
 						text[start] == '=' ||
 						text[start] == ':' ||
-						std::use_facet<std::ctype<T>>(m_locale).is(std::ctype_base::alnum, text[start]))
+						std::use_facet<std::ctype<T>>(this->m_locale).is(std::ctype_base::alnum, text[start]))
 					{
-						interval.end = (interval.start = start) + 1;
+						this->interval.end = (this->interval.start = start) + 1;
 						return true;
 					}
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 		};
@@ -3147,9 +3150,9 @@ namespace stdex
 				assert(text || start >= end);
 				if (start < end && text[start]) {
 					wchar_t buf[3];
-					const wchar_t* chr = next_sgml_cp(text, start, end, interval.end, buf);
+					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* chr_end = chr + stdex::strlen(chr);
-					if ((chr[0] == L'-' ||
+					if (((chr[0] == L'-' ||
 						chr[0] == L'.' ||
 						chr[0] == L'_' ||
 						chr[0] == L'~' ||
@@ -3165,14 +3168,14 @@ namespace stdex
 						chr[0] == L',' ||
 						chr[0] == L';' ||
 						chr[0] == L'=' ||
-						chr[0] == L':') && chr[1] == 0 ||
+						chr[0] == L':') && chr[1] == 0) ||
 						std::use_facet<std::ctype<wchar_t>>(m_locale).scan_not(std::ctype_base::alnum, chr, chr_end) == chr_end)
 					{
-						interval.start = start;
+						this->interval.start = start;
 						return true;
 					}
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 		};
@@ -3215,13 +3218,13 @@ namespace stdex
 						text[start] == '@' ||
 						text[start] == '?' ||
 						text[start] == '#' ||
-						std::use_facet<std::ctype<T>>(m_locale).is(std::ctype_base::alnum, text[start]))
+						std::use_facet<std::ctype<T>>(this->m_locale).is(std::ctype_base::alnum, text[start]))
 					{
-						interval.end = (interval.start = start) + 1;
+						this->interval.end = (this->interval.start = start) + 1;
 						return true;
 					}
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 		};
@@ -3251,9 +3254,9 @@ namespace stdex
 				assert(text || start >= end);
 				if (start < end && text[start]) {
 					wchar_t buf[3];
-					const wchar_t* chr = next_sgml_cp(text, start, end, interval.end, buf);
+					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* chr_end = chr + stdex::strlen(chr);
-					if ((chr[0] == L'/' ||
+					if (((chr[0] == L'/' ||
 						chr[0] == L'-' ||
 						chr[0] == L'.' ||
 						chr[0] == L'_' ||
@@ -3273,14 +3276,14 @@ namespace stdex
 						chr[0] == L':' ||
 						chr[0] == L'@' ||
 						chr[0] == L'?' ||
-						chr[0] == L'#') && chr[1] == 0 ||
+						chr[0] == L'#') && chr[1] == 0) ||
 						std::use_facet<std::ctype<wchar_t>>(m_locale).scan_not(std::ctype_base::alnum, chr, chr_end) == chr_end)
 					{
-						interval.start = start;
+						this->interval.start = start;
 						return true;
 					}
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 		};
@@ -3311,7 +3314,7 @@ namespace stdex
 			{
 				assert(text || start >= end);
 
-				interval.end = start;
+				this->interval.end = start;
 				path.start = start;
 				query.start = 1;
 				query.end = 0;
@@ -3319,71 +3322,71 @@ namespace stdex
 				bookmark.end = 0;
 
 				for (;;) {
-					if (interval.end >= end || !text[interval.end])
+					if (this->interval.end >= end || !text[this->interval.end])
 						break;
-					if (m_query_start->match(text, interval.end, end, flags)) {
-						path.end = interval.end;
-						query.start = interval.end = m_query_start->interval.end;
+					if (m_query_start->match(text, this->interval.end, end, flags)) {
+						path.end = this->interval.end;
+						query.start = this->interval.end = m_query_start->interval.end;
 						for (;;) {
-							if (interval.end >= end || !text[interval.end]) {
-								query.end = interval.end;
+							if (this->interval.end >= end || !text[this->interval.end]) {
+								query.end = this->interval.end;
 								break;
 							}
-							if (m_bookmark_start->match(text, interval.end, end, flags)) {
-								query.end = interval.end;
-								bookmark.start = interval.end = m_bookmark_start->interval.end;
+							if (m_bookmark_start->match(text, this->interval.end, end, flags)) {
+								query.end = this->interval.end;
+								bookmark.start = this->interval.end = m_bookmark_start->interval.end;
 								for (;;) {
-									if (interval.end >= end || !text[interval.end]) {
-										bookmark.end = interval.end;
+									if (this->interval.end >= end || !text[this->interval.end]) {
+										bookmark.end = this->interval.end;
 										break;
 									}
-									if (m_path_char->match(text, interval.end, end, flags))
-										interval.end = m_path_char->interval.end;
+									if (m_path_char->match(text, this->interval.end, end, flags))
+										this->interval.end = m_path_char->interval.end;
 									else {
-										bookmark.end = interval.end;
+										bookmark.end = this->interval.end;
 										break;
 									}
 								}
-								interval.start = start;
+								this->interval.start = start;
 								return true;
 							}
-							if (m_path_char->match(text, interval.end, end, flags))
-								interval.end = m_path_char->interval.end;
+							if (m_path_char->match(text, this->interval.end, end, flags))
+								this->interval.end = m_path_char->interval.end;
 							else {
-								query.end = interval.end;
+								query.end = this->interval.end;
 								break;
 							}
 						}
-						interval.start = start;
+						this->interval.start = start;
 						return true;
 					}
-					if (m_bookmark_start->match(text, interval.end, end, flags)) {
-						path.end = interval.end;
-						bookmark.start = interval.end = m_bookmark_start->interval.end;
+					if (m_bookmark_start->match(text, this->interval.end, end, flags)) {
+						path.end = this->interval.end;
+						bookmark.start = this->interval.end = m_bookmark_start->interval.end;
 						for (;;) {
-							if (interval.end >= end || !text[interval.end]) {
-								bookmark.end = interval.end;
+							if (this->interval.end >= end || !text[this->interval.end]) {
+								bookmark.end = this->interval.end;
 								break;
 							}
-							if (m_path_char->match(text, interval.end, end, flags))
-								interval.end = m_path_char->interval.end;
+							if (m_path_char->match(text, this->interval.end, end, flags))
+								this->interval.end = m_path_char->interval.end;
 							else {
-								bookmark.end = interval.end;
+								bookmark.end = this->interval.end;
 								break;
 							}
 						}
-						interval.start = start;
+						this->interval.start = start;
 						return true;
 					}
-					if (m_path_char->match(text, interval.end, end, flags))
-						interval.end = m_path_char->interval.end;
+					if (m_path_char->match(text, this->interval.end, end, flags))
+						this->interval.end = m_path_char->interval.end;
 					else
 						break;
 				}
 
-				if (start < interval.end) {
-					path.end = interval.end;
-					interval.start = start;
+				if (start < this->interval.end) {
+					path.end = this->interval.end;
+					this->interval.start = start;
 					return true;
 				}
 
@@ -3391,7 +3394,7 @@ namespace stdex
 				path.end = 0;
 				bookmark.start = 1;
 				bookmark.end = 0;
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -3478,46 +3481,46 @@ namespace stdex
 			{
 				assert(text || start >= end);
 
-				interval.end = start;
+				this->interval.end = start;
 
-				if (http_scheme->match(text, interval.end, end, flags) &&
+				if (http_scheme->match(text, this->interval.end, end, flags) &&
 					m_colon->match(text, http_scheme->interval.end, end, flags) &&
 					m_slash->match(text, m_colon->interval.end, end, flags) &&
 					m_slash->match(text, m_slash->interval.end, end, flags))
 				{
 					// http://
-					interval.end = m_slash->interval.end;
+					this->interval.end = m_slash->interval.end;
 					ftp_scheme->invalidate();
 					mailto_scheme->invalidate();
 					file_scheme->invalidate();
 				}
-				else if (ftp_scheme->match(text, interval.end, end, flags) &&
+				else if (ftp_scheme->match(text, this->interval.end, end, flags) &&
 					m_colon->match(text, ftp_scheme->interval.end, end, flags) &&
 					m_slash->match(text, m_colon->interval.end, end, flags) &&
 					m_slash->match(text, m_slash->interval.end, end, flags))
 				{
 					// ftp://
-					interval.end = m_slash->interval.end;
+					this->interval.end = m_slash->interval.end;
 					http_scheme->invalidate();
 					mailto_scheme->invalidate();
 					file_scheme->invalidate();
 				}
-				else if (mailto_scheme->match(text, interval.end, end, flags) &&
+				else if (mailto_scheme->match(text, this->interval.end, end, flags) &&
 					m_colon->match(text, mailto_scheme->interval.end, end, flags))
 				{
 					// mailto:
-					interval.end = m_colon->interval.end;
+					this->interval.end = m_colon->interval.end;
 					http_scheme->invalidate();
 					ftp_scheme->invalidate();
 					file_scheme->invalidate();
 				}
-				else if (file_scheme->match(text, interval.end, end, flags) &&
+				else if (file_scheme->match(text, this->interval.end, end, flags) &&
 					m_colon->match(text, file_scheme->interval.end, end, flags) &&
 					m_slash->match(text, m_colon->interval.end, end, flags) &&
 					m_slash->match(text, m_slash->interval.end, end, flags))
 				{
 					// file://
-					interval.end = m_slash->interval.end;
+					this->interval.end = m_slash->interval.end;
 					http_scheme->invalidate();
 					ftp_scheme->invalidate();
 					mailto_scheme->invalidate();
@@ -3531,17 +3534,17 @@ namespace stdex
 				}
 
 				if (ftp_scheme->interval) {
-					if (username->match(text, interval.end, end, flags)) {
+					if (username->match(text, this->interval.end, end, flags)) {
 						if (m_colon->match(text, username->interval.end, end, flags) &&
 							password->match(text, m_colon->interval.end, end, flags) &&
 							m_at->match(text, password->interval.end, end, flags))
 						{
 							// Username and password
-							interval.end = m_at->interval.end;
+							this->interval.end = m_at->interval.end;
 						}
-						else if (m_at->match(text, interval.end, end, flags)) {
+						else if (m_at->match(text, this->interval.end, end, flags)) {
 							// Username only
-							interval.end = m_at->interval.end;
+							this->interval.end = m_at->interval.end;
 							password->invalidate();
 						}
 						else {
@@ -3554,25 +3557,25 @@ namespace stdex
 						password->invalidate();
 					}
 
-					if (ipv4_host->match(text, interval.end, end, flags)) {
+					if (ipv4_host->match(text, this->interval.end, end, flags)) {
 						// Host is IPv4
-						interval.end = ipv4_host->interval.end;
+						this->interval.end = ipv4_host->interval.end;
 						ipv6_host->invalidate();
 						dns_host->invalidate();
 					}
 					else if (
-						m_ip_lbracket->match(text, interval.end, end, flags) &&
+						m_ip_lbracket->match(text, this->interval.end, end, flags) &&
 						ipv6_host->match(text, m_ip_lbracket->interval.end, end, flags) &&
 						m_ip_rbracket->match(text, ipv6_host->interval.end, end, flags))
 					{
 						// Host is IPv6
-						interval.end = m_ip_rbracket->interval.end;
+						this->interval.end = m_ip_rbracket->interval.end;
 						ipv4_host->invalidate();
 						dns_host->invalidate();
 					}
-					else if (dns_host->match(text, interval.end, end, flags)) {
+					else if (dns_host->match(text, this->interval.end, end, flags)) {
 						// Host is hostname
-						interval.end = dns_host->interval.end;
+						this->interval.end = dns_host->interval.end;
 						ipv4_host->invalidate();
 						ipv6_host->invalidate();
 					}
@@ -3581,58 +3584,58 @@ namespace stdex
 						return false;
 					}
 
-					if (m_colon->match(text, interval.end, end, flags) &&
+					if (m_colon->match(text, this->interval.end, end, flags) &&
 						port->match(text, m_colon->interval.end, end, flags))
 					{
 						// Port
-						interval.end = port->interval.end;
+						this->interval.end = port->interval.end;
 					}
 					else
 						port->invalidate();
 
-					if (path->match(text, interval.end, end, flags)) {
+					if (path->match(text, this->interval.end, end, flags)) {
 						// Path
-						interval.end = path->interval.end;
+						this->interval.end = path->interval.end;
 					}
 
-					interval.start = start;
+					this->interval.start = start;
 					return true;
 				}
 
 				if (mailto_scheme->interval) {
-					if (username->match(text, interval.end, end, flags) &&
+					if (username->match(text, this->interval.end, end, flags) &&
 						m_at->match(text, username->interval.end, end, flags))
 					{
 						// Username
-						interval.end = m_at->interval.end;
+						this->interval.end = m_at->interval.end;
 					}
 					else {
 						invalidate();
 						return false;
 					}
 
-					if (m_ip_lbracket->match(text, interval.end, end, flags) &&
+					if (m_ip_lbracket->match(text, this->interval.end, end, flags) &&
 						ipv4_host->match(text, m_ip_lbracket->interval.end, end, flags) &&
 						m_ip_rbracket->match(text, ipv4_host->interval.end, end, flags))
 					{
 						// Host is IPv4
-						interval.end = m_ip_rbracket->interval.end;
+						this->interval.end = m_ip_rbracket->interval.end;
 						ipv6_host->invalidate();
 						dns_host->invalidate();
 					}
 					else if (
-						m_ip_lbracket->match(text, interval.end, end, flags) &&
+						m_ip_lbracket->match(text, this->interval.end, end, flags) &&
 						ipv6_host->match(text, m_ip_lbracket->interval.end, end, flags) &&
 						m_ip_rbracket->match(text, ipv6_host->interval.end, end, flags))
 					{
 						// Host is IPv6
-						interval.end = m_ip_rbracket->interval.end;
+						this->interval.end = m_ip_rbracket->interval.end;
 						ipv4_host->invalidate();
 						dns_host->invalidate();
 					}
-					else if (dns_host->match(text, interval.end, end, flags)) {
+					else if (dns_host->match(text, this->interval.end, end, flags)) {
 						// Host is hostname
-						interval.end = dns_host->interval.end;
+						this->interval.end = dns_host->interval.end;
 						ipv4_host->invalidate();
 						ipv6_host->invalidate();
 					}
@@ -3644,14 +3647,14 @@ namespace stdex
 					password->invalidate();
 					port->invalidate();
 					path->invalidate();
-					interval.start = start;
+					this->interval.start = start;
 					return true;
 				}
 
 				if (file_scheme->interval) {
-					if (path->match(text, interval.end, end, flags)) {
+					if (path->match(text, this->interval.end, end, flags)) {
 						// Path
-						interval.end = path->interval.end;
+						this->interval.end = path->interval.end;
 					}
 
 					username->invalidate();
@@ -3660,7 +3663,7 @@ namespace stdex
 					ipv6_host->invalidate();
 					dns_host->invalidate();
 					port->invalidate();
-					interval.start = start;
+					this->interval.start = start;
 					return true;
 				}
 
@@ -3668,18 +3671,18 @@ namespace stdex
 
 				// If "http://" explicit, test for username&password.
 				if (http_scheme->interval &&
-					username->match(text, interval.end, end, flags))
+					username->match(text, this->interval.end, end, flags))
 				{
 					if (m_colon->match(text, username->interval.end, end, flags) &&
 						password->match(text, m_colon->interval.end, end, flags) &&
 						m_at->match(text, password->interval.end, end, flags))
 					{
 						// Username and password
-						interval.end = m_at->interval.end;
+						this->interval.end = m_at->interval.end;
 					}
 					else if (m_at->match(text, username->interval.end, end, flags)) {
 						// Username only
-						interval.end = m_at->interval.end;
+						this->interval.end = m_at->interval.end;
 						password->invalidate();
 					}
 					else {
@@ -3692,25 +3695,25 @@ namespace stdex
 					password->invalidate();
 				}
 
-				if (ipv4_host->match(text, interval.end, end, flags)) {
+				if (ipv4_host->match(text, this->interval.end, end, flags)) {
 					// Host is IPv4
-					interval.end = ipv4_host->interval.end;
+					this->interval.end = ipv4_host->interval.end;
 					ipv6_host->invalidate();
 					dns_host->invalidate();
 				}
 				else if (
-					m_ip_lbracket->match(text, interval.end, end, flags) &&
+					m_ip_lbracket->match(text, this->interval.end, end, flags) &&
 					ipv6_host->match(text, m_ip_lbracket->interval.end, end, flags) &&
 					m_ip_rbracket->match(text, ipv6_host->interval.end, end, flags))
 				{
 					// Host is IPv6
-					interval.end = m_ip_rbracket->interval.end;
+					this->interval.end = m_ip_rbracket->interval.end;
 					ipv4_host->invalidate();
 					dns_host->invalidate();
 				}
-				else if (dns_host->match(text, interval.end, end, flags)) {
+				else if (dns_host->match(text, this->interval.end, end, flags)) {
 					// Host is hostname
-					interval.end = dns_host->interval.end;
+					this->interval.end = dns_host->interval.end;
 					ipv4_host->invalidate();
 					ipv6_host->invalidate();
 				}
@@ -3719,21 +3722,21 @@ namespace stdex
 					return false;
 				}
 
-				if (m_colon->match(text, interval.end, end, flags) &&
+				if (m_colon->match(text, this->interval.end, end, flags) &&
 					port->match(text, m_colon->interval.end, end, flags))
 				{
 					// Port
-					interval.end = port->interval.end;
+					this->interval.end = port->interval.end;
 				}
 				else
 					port->invalidate();
 
-				if (path->match(text, interval.end, end, flags)) {
+				if (path->match(text, this->interval.end, end, flags)) {
 					// Path
-					interval.end = path->interval.end;
+					this->interval.end = path->interval.end;
 				}
 
-				interval.start = start;
+				this->interval.start = start;
 				return true;
 			}
 
@@ -3826,7 +3829,7 @@ namespace stdex
 						m_ip_rbracket->match(text, ipv4_host->interval.end, end, flags))
 					{
 						// Host is IPv4
-						interval.end = m_ip_rbracket->interval.end;
+						this->interval.end = m_ip_rbracket->interval.end;
 						ipv6_host->invalidate();
 						dns_host->invalidate();
 					}
@@ -3836,19 +3839,19 @@ namespace stdex
 						m_ip_rbracket->match(text, ipv6_host->interval.end, end, flags))
 					{
 						// Host is IPv6
-						interval.end = m_ip_rbracket->interval.end;
+						this->interval.end = m_ip_rbracket->interval.end;
 						ipv4_host->invalidate();
 						dns_host->invalidate();
 					}
 					else if (dns_host->match(text, m_at->interval.end, end, flags)) {
 						// Host is hostname
-						interval.end = dns_host->interval.end;
+						this->interval.end = dns_host->interval.end;
 						ipv4_host->invalidate();
 						ipv6_host->invalidate();
 					}
 					else
 						goto error;
-					interval.start = start;
+					this->interval.start = start;
 					return true;
 				}
 
@@ -3857,7 +3860,7 @@ namespace stdex
 				ipv4_host->invalidate();
 				ipv6_host->invalidate();
 				dns_host->invalidate();
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -3926,17 +3929,17 @@ namespace stdex
 					eyes->invalidate();
 					if (nose) nose->invalidate();
 					mouth->invalidate();
-					interval.start = start;
-					interval.end = emoticon->interval.end;
+					this->interval.start = start;
+					this->interval.end = emoticon->interval.end;
 					return true;
 				}
 
-				interval.end = start;
+				this->interval.end = start;
 
-				if (apex && apex->match(text, interval.end, end, flags))
-					interval.end = apex->interval.end;
+				if (apex && apex->match(text, this->interval.end, end, flags))
+					this->interval.end = apex->interval.end;
 
-				if (eyes->match(text, interval.end, end, flags)) {
+				if (eyes->match(text, this->interval.end, end, flags)) {
 					if (nose && nose->match(text, eyes->interval.end, end, flags) &&
 						mouth->match(text, nose->interval.end, end, flags))
 					{
@@ -3944,10 +3947,10 @@ namespace stdex
 							start_mouth = mouth->interval.start,
 							hit_offset = mouth->hit_offset;
 						// Mouth may repeat :-)))))))
-						for (interval.end = mouth->interval.end; mouth->match(text, interval.end, end, flags) && mouth->hit_offset == hit_offset; interval.end = mouth->interval.end);
+						for (this->interval.end = mouth->interval.end; mouth->match(text, this->interval.end, end, flags) && mouth->hit_offset == hit_offset; this->interval.end = mouth->interval.end);
 						mouth->interval.start = start_mouth;
-						mouth->interval.end = interval.end;
-						interval.start = start;
+						mouth->interval.end = this->interval.end;
+						this->interval.start = start;
 						return true;
 					}
 					if (mouth->match(text, eyes->interval.end, end, flags)) {
@@ -3955,11 +3958,11 @@ namespace stdex
 							start_mouth = mouth->interval.start,
 							hit_offset = mouth->hit_offset;
 						// Mouth may repeat :-)))))))
-						for (interval.end = mouth->interval.end; mouth->match(text, interval.end, end, flags) && mouth->hit_offset == hit_offset; interval.end = mouth->interval.end);
+						for (this->interval.end = mouth->interval.end; mouth->match(text, this->interval.end, end, flags) && mouth->hit_offset == hit_offset; this->interval.end = mouth->interval.end);
 						if (nose) nose->invalidate();
 						mouth->interval.start = start_mouth;
-						mouth->interval.end = interval.end;
-						interval.start = start;
+						mouth->interval.end = this->interval.end;
+						this->interval.start = start;
 						return true;
 					}
 				}
@@ -3969,7 +3972,7 @@ namespace stdex
 				eyes->invalidate();
 				if (nose) nose->invalidate();
 				mouth->invalidate();
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -4050,21 +4053,21 @@ namespace stdex
 				const int space_match_flags = flags & ~match_multiline; // Spaces in dates must never be broken in new line.
 				if ((m_format_mask & date_format_dmy) == date_format_dmy) {
 					if (day->match(text, start, end, flags)) {
-						for (interval.end = day->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-						if (m_separator->match(text, interval.end, end, flags)) {
+						for (this->interval.end = day->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+						if (m_separator->match(text, this->interval.end, end, flags)) {
 							size_t hit_offset = m_separator->hit_offset;
-							for (interval.end = m_separator->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-							if (month->match(text, interval.end, end, flags)) {
-								for (interval.end = month->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-								if (m_separator->match(text, interval.end, end, flags) &&
+							for (this->interval.end = m_separator->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+							if (month->match(text, this->interval.end, end, flags)) {
+								for (this->interval.end = month->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+								if (m_separator->match(text, this->interval.end, end, flags) &&
 									m_separator->hit_offset == hit_offset) // Both separators must match.
 								{
-									for (interval.end = m_separator->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-									if (year->match(text, interval.end, end, flags) &&
+									for (this->interval.end = m_separator->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+									if (year->match(text, this->interval.end, end, flags) &&
 										is_valid(day->value, month->value))
 									{
-										interval.start = start;
-										interval.end = year->interval.end;
+										this->interval.start = start;
+										this->interval.end = year->interval.end;
 										format = date_format_dmy;
 										return true;
 									}
@@ -4076,21 +4079,21 @@ namespace stdex
 
 				if ((m_format_mask & date_format_mdy) == date_format_mdy) {
 					if (month->match(text, start, end, flags)) {
-						for (interval.end = month->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-						if (m_separator->match(text, interval.end, end, flags)) {
+						for (this->interval.end = month->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+						if (m_separator->match(text, this->interval.end, end, flags)) {
 							size_t hit_offset = m_separator->hit_offset;
-							for (interval.end = m_separator->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-							if (day->match(text, interval.end, end, flags)) {
-								for (interval.end = day->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-								if (m_separator->match(text, interval.end, end, flags) &&
+							for (this->interval.end = m_separator->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+							if (day->match(text, this->interval.end, end, flags)) {
+								for (this->interval.end = day->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+								if (m_separator->match(text, this->interval.end, end, flags) &&
 									m_separator->hit_offset == hit_offset) // Both separators must match.
 								{
-									for (interval.end = m_separator->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-									if (year->match(text, interval.end, end, flags) &&
+									for (this->interval.end = m_separator->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+									if (year->match(text, this->interval.end, end, flags) &&
 										is_valid(day->value, month->value))
 									{
-										interval.start = start;
-										interval.end = year->interval.end;
+										this->interval.start = start;
+										this->interval.end = year->interval.end;
 										format = date_format_mdy;
 										return true;
 									}
@@ -4102,21 +4105,21 @@ namespace stdex
 
 				if ((m_format_mask & date_format_ymd) == date_format_ymd) {
 					if (year->match(text, start, end, flags)) {
-						for (interval.end = year->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-						if (m_separator->match(text, interval.end, end, flags)) {
+						for (this->interval.end = year->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+						if (m_separator->match(text, this->interval.end, end, flags)) {
 							size_t hit_offset = m_separator->hit_offset;
-							for (interval.end = m_separator->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-							if (month->match(text, interval.end, end, flags)) {
-								for (interval.end = month->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-								if (m_separator->match(text, interval.end, end, flags) &&
+							for (this->interval.end = m_separator->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+							if (month->match(text, this->interval.end, end, flags)) {
+								for (this->interval.end = month->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+								if (m_separator->match(text, this->interval.end, end, flags) &&
 									m_separator->hit_offset == hit_offset) // Both separators must match.
 								{
-									for (interval.end = m_separator->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-									if (day->match(text, interval.end, end, flags) &&
+									for (this->interval.end = m_separator->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+									if (day->match(text, this->interval.end, end, flags) &&
 										is_valid(day->value, month->value))
 									{
-										interval.start = start;
-										interval.end = day->interval.end;
+										this->interval.start = start;
+										this->interval.end = day->interval.end;
 										format = date_format_ymd;
 										return true;
 									}
@@ -4128,15 +4131,15 @@ namespace stdex
 
 				if ((m_format_mask & date_format_ym) == date_format_ym) {
 					if (year->match(text, start, end, flags)) {
-						for (interval.end = year->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-						if (m_separator->match(text, interval.end, end, flags)) {
-							for (interval.end = m_separator->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-							if (month->match(text, interval.end, end, flags) &&
+						for (this->interval.end = year->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+						if (m_separator->match(text, this->interval.end, end, flags)) {
+							for (this->interval.end = m_separator->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+							if (month->match(text, this->interval.end, end, flags) &&
 								is_valid((size_t)-1, month->value))
 							{
 								if (day) day->invalidate();
-								interval.start = start;
-								interval.end = month->interval.end;
+								this->interval.start = start;
+								this->interval.end = month->interval.end;
 								format = date_format_ym;
 								return true;
 							}
@@ -4146,15 +4149,15 @@ namespace stdex
 
 				if ((m_format_mask & date_format_my) == date_format_my) {
 					if (month->match(text, start, end, flags)) {
-						for (interval.end = month->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-						if (m_separator->match(text, interval.end, end, flags)) {
-							for (interval.end = m_separator->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-							if (year->match(text, interval.end, end, flags) &&
+						for (this->interval.end = month->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+						if (m_separator->match(text, this->interval.end, end, flags)) {
+							for (this->interval.end = m_separator->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+							if (year->match(text, this->interval.end, end, flags) &&
 								is_valid((size_t)-1, month->value))
 							{
 								if (day) day->invalidate();
-								interval.start = start;
-								interval.end = year->interval.end;
+								this->interval.start = start;
+								this->interval.end = year->interval.end;
 								format = date_format_my;
 								return true;
 							}
@@ -4164,21 +4167,21 @@ namespace stdex
 
 				if ((m_format_mask & date_format_dm) == date_format_dm) {
 					if (day->match(text, start, end, flags)) {
-						for (interval.end = day->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-						if (m_separator->match(text, interval.end, end, flags)) {
+						for (this->interval.end = day->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+						if (m_separator->match(text, this->interval.end, end, flags)) {
 							size_t hit_offset = m_separator->hit_offset;
-							for (interval.end = m_separator->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-							if (month->match(text, interval.end, end, flags) &&
+							for (this->interval.end = m_separator->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+							if (month->match(text, this->interval.end, end, flags) &&
 								is_valid(day->value, month->value))
 							{
 								if (year) year->invalidate();
-								interval.start = start;
-								for (interval.end = month->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-								if (m_separator->match(text, interval.end, end, flags) &&
+								this->interval.start = start;
+								for (this->interval.end = month->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+								if (m_separator->match(text, this->interval.end, end, flags) &&
 									m_separator->hit_offset == hit_offset) // Both separators must match.
-									interval.end = m_separator->interval.end;
+									this->interval.end = m_separator->interval.end;
 								else
-									interval.end = month->interval.end;
+									this->interval.end = month->interval.end;
 								format = date_format_dm;
 								return true;
 							}
@@ -4188,21 +4191,21 @@ namespace stdex
 
 				if ((m_format_mask & date_format_md) == date_format_md) {
 					if (month->match(text, start, end, flags)) {
-						for (interval.end = month->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-						if (m_separator->match(text, interval.end, end, flags)) {
+						for (this->interval.end = month->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+						if (m_separator->match(text, this->interval.end, end, flags)) {
 							size_t hit_offset = m_separator->hit_offset;
-							for (interval.end = m_separator->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-							if (day->match(text, interval.end, end, flags) &&
+							for (this->interval.end = m_separator->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+							if (day->match(text, this->interval.end, end, flags) &&
 								is_valid(day->value, month->value))
 							{
 								if (year) year->invalidate();
-								interval.start = start;
-								for (interval.end = day->interval.end; m_space->match(text, interval.end, end, space_match_flags); interval.end = m_space->interval.end);
-								if (m_separator->match(text, interval.end, end, flags) &&
+								this->interval.start = start;
+								for (this->interval.end = day->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
+								if (m_separator->match(text, this->interval.end, end, flags) &&
 									m_separator->hit_offset == hit_offset) // Both separators must match.
-									interval.end = m_separator->interval.end;
+									this->interval.end = m_separator->interval.end;
 								else
-									interval.end = day->interval.end;
+									this->interval.end = day->interval.end;
 								format = date_format_md;
 								return true;
 							}
@@ -4214,7 +4217,7 @@ namespace stdex
 				if (month) month->invalidate();
 				if (year) year->invalidate();
 				format = date_format_none;
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -4331,19 +4334,19 @@ namespace stdex
 							millisecond->value < 1000)
 						{
 							// hh::mm:ss.mmmm
-							interval.end = millisecond->interval.end;
+							this->interval.end = millisecond->interval.end;
 						}
 						else {
 							if (millisecond) millisecond->invalidate();
-							interval.end = second->interval.end;
+							this->interval.end = second->interval.end;
 						}
 					}
 					else {
 						if (second) second->invalidate();
 						if (millisecond) millisecond->invalidate();
-						interval.end = minute->interval.end;
+						this->interval.end = minute->interval.end;
 					}
-					interval.start = start;
+					this->interval.start = start;
 					return true;
 				}
 
@@ -4351,7 +4354,7 @@ namespace stdex
 				minute->invalidate();
 				if (second) second->invalidate();
 				if (millisecond) millisecond->invalidate();
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -4418,38 +4421,38 @@ namespace stdex
 			{
 				assert(text || start >= end);
 
-				interval.end = start;
+				this->interval.end = start;
 
-				if (degree->match(text, interval.end, end, flags) &&
+				if (degree->match(text, this->interval.end, end, flags) &&
 					degree_separator->match(text, degree->interval.end, end, flags))
 				{
 					// Degrees
-					interval.end = degree_separator->interval.end;
+					this->interval.end = degree_separator->interval.end;
 				}
 				else {
 					degree->invalidate();
 					degree_separator->invalidate();
 				}
 
-				if (minute->match(text, interval.end, end, flags) &&
+				if (minute->match(text, this->interval.end, end, flags) &&
 					minute->value < 60 &&
 					minute_separator->match(text, minute->interval.end, end, flags))
 				{
 					// Minutes
-					interval.end = minute_separator->interval.end;
+					this->interval.end = minute_separator->interval.end;
 				}
 				else {
 					minute->invalidate();
 					minute_separator->invalidate();
 				}
 
-				if (second && second->match(text, interval.end, end, flags) &&
+				if (second && second->match(text, this->interval.end, end, flags) &&
 					second->value < 60)
 				{
 					// Seconds
-					interval.end = second->interval.end;
-					if (second_separator && second_separator->match(text, interval.end, end, flags))
-						interval.end = second_separator->interval.end;
+					this->interval.end = second->interval.end;
+					if (second_separator && second_separator->match(text, this->interval.end, end, flags))
+						this->interval.end = second_separator->interval.end;
 					else
 						if (second_separator) second_separator->invalidate();
 				}
@@ -4460,19 +4463,19 @@ namespace stdex
 
 				if (degree->interval.start < degree->interval.end ||
 					minute->interval.start < minute->interval.end ||
-					second && second->interval.start < second->interval.end)
+					(second && second->interval.start < second->interval.end))
 				{
-					if (decimal && decimal->match(text, interval.end, end, flags)) {
+					if (decimal && decimal->match(text, this->interval.end, end, flags)) {
 						// Decimals
-						interval.end = decimal->interval.end;
+						this->interval.end = decimal->interval.end;
 					}
 					else if (decimal)
 						decimal->invalidate();
-					interval.start = start;
+					this->interval.start = start;
 					return true;
 				}
 				if (decimal) decimal->invalidate();
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -4543,27 +4546,27 @@ namespace stdex
 				bool has_digits = false, after_digit = false, in_parentheses = false, after_parentheses = false;
 				const int space_match_flags = flags & ~match_multiline; // Spaces in phone numbers must never be broken in new line.
 
-				interval.end = start;
+				this->interval.end = start;
 				value.clear();
 				m_lparenthesis->invalidate();
 				m_rparenthesis->invalidate();
 
-				if (m_plus_sign && m_plus_sign->match(text, interval.end, end, flags)) {
+				if (m_plus_sign && m_plus_sign->match(text, this->interval.end, end, flags)) {
 					value.append(text + m_plus_sign->interval.start, text + m_plus_sign->interval.end);
 					safe_value_size = value.size();
-					interval.end = m_plus_sign->interval.end;
+					this->interval.end = m_plus_sign->interval.end;
 				}
 
 				for (;;) {
-					assert(text || interval.end >= end);
-					if (interval.end >= end || !text[interval.end])
+					assert(text || this->interval.end >= end);
+					if (this->interval.end >= end || !text[this->interval.end])
 						break;
-					if (m_digit->match(text, interval.end, end, flags)) {
+					if (m_digit->match(text, this->interval.end, end, flags)) {
 						// Digit
 						value.append(text + m_digit->interval.start, text + m_digit->interval.end);
-						interval.end = m_digit->interval.end;
+						this->interval.end = m_digit->interval.end;
 						if (!in_parentheses) {
-							safe_digit_end = interval.end;
+							safe_digit_end = this->interval.end;
 							safe_value_size = value.size();
 							has_digits = true;
 						}
@@ -4573,11 +4576,11 @@ namespace stdex
 					else if (
 						m_lparenthesis && !m_lparenthesis->interval && // No left parenthesis yet
 						m_rparenthesis && !m_rparenthesis->interval && // Right parenthesis after left
-						m_lparenthesis->match(text, interval.end, end, flags))
+						m_lparenthesis->match(text, this->interval.end, end, flags))
 					{
 						// Left parenthesis
 						value.append(text + m_lparenthesis->interval.start, m_lparenthesis->interval.size());
-						interval.end = m_lparenthesis->interval.end;
+						this->interval.end = m_lparenthesis->interval.end;
 						in_parentheses = true;
 						after_digit = false;
 						after_parentheses = false;
@@ -4585,13 +4588,13 @@ namespace stdex
 					else if (
 						in_parentheses && // After left parenthesis
 						m_rparenthesis && !m_rparenthesis->interval && // No right parenthesis yet
-						m_rparenthesis->match(text, interval.end, end, flags) &&
+						m_rparenthesis->match(text, this->interval.end, end, flags) &&
 						m_lparenthesis->hit_offset == m_rparenthesis->hit_offset) // Left and right parentheses must match
 					{
 						// Right parenthesis
 						value.append(text + m_rparenthesis->interval.start, text + m_rparenthesis->interval.end);
-						interval.end = m_rparenthesis->interval.end;
-						safe_digit_end = interval.end;
+						this->interval.end = m_rparenthesis->interval.end;
+						safe_digit_end = this->interval.end;
 						safe_value_size = value.size();
 						in_parentheses = false;
 						after_digit = false;
@@ -4601,19 +4604,19 @@ namespace stdex
 						after_digit &&
 						!in_parentheses && // No separators inside parentheses
 						!after_parentheses && // No separators following right parenthesis
-						m_separator && m_separator->match(text, interval.end, end, flags))
+						m_separator && m_separator->match(text, this->interval.end, end, flags))
 					{
 						// Separator
-						interval.end = m_separator->interval.end;
+						this->interval.end = m_separator->interval.end;
 						after_digit = false;
 						after_parentheses = false;
 					}
 					else if (
 						(after_digit || after_parentheses) &&
-						m_space && m_space->match(text, interval.end, end, space_match_flags))
+						m_space && m_space->match(text, this->interval.end, end, space_match_flags))
 					{
 						// Space
-						interval.end = m_space->interval.end;
+						this->interval.end = m_space->interval.end;
 						after_digit = false;
 						after_parentheses = false;
 					}
@@ -4622,12 +4625,12 @@ namespace stdex
 				}
 				if (has_digits) {
 					value.erase(safe_value_size);
-					interval.start = start;
-					interval.end = safe_digit_end;
+					this->interval.start = start;
+					this->interval.end = safe_digit_end;
 					return true;
 				}
 				value.clear();
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -4688,27 +4691,27 @@ namespace stdex
 
 				has_digits = false;
 				has_charge = false;
-				interval.end = start;
+				this->interval.end = start;
 
 				const int element_match_flags = flags & ~match_case_insensitive; // Chemical elements are always case-sensitive.
 				for (;;) {
-					if (m_element->match(text, interval.end, end, element_match_flags)) {
-						interval.end = m_element->interval.end;
-						while (m_digit->match(text, interval.end, end, flags)) {
-							interval.end = m_digit->interval.end;
+					if (m_element->match(text, this->interval.end, end, element_match_flags)) {
+						this->interval.end = m_element->interval.end;
+						while (m_digit->match(text, this->interval.end, end, flags)) {
+							this->interval.end = m_digit->interval.end;
 							has_digits = true;
 						}
 					}
-					else if (start < interval.end) {
-						if (m_sign->match(text, interval.end, end, flags)) {
-							interval.end = m_sign->interval.end;
+					else if (start < this->interval.end) {
+						if (m_sign->match(text, this->interval.end, end, flags)) {
+							this->interval.end = m_sign->interval.end;
 							has_charge = true;
 						}
-						interval.start = start;
+						this->interval.start = start;
 						return true;
 					}
 					else {
-						interval.start = (interval.end = start) + 1;
+						this->interval.start = (this->interval.end = start) + 1;
 						return false;
 					}
 				}
@@ -4753,25 +4756,25 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
+				this->interval.end = start;
 
-				assert(text || interval.end >= end);
-				if (interval.end < end && text[interval.end]) {
-					if (text[interval.end] == '\r') {
-						interval.end++;
-						if (interval.end < end && text[interval.end] == '\n') {
-							interval.start = start;
-							interval.end++;
+				assert(text || this->interval.end >= end);
+				if (this->interval.end < end && text[this->interval.end]) {
+					if (text[this->interval.end] == '\r') {
+						this->interval.end++;
+						if (this->interval.end < end && text[this->interval.end] == '\n') {
+							this->interval.start = start;
+							this->interval.end++;
 							return true;
 						}
 					}
-					else if (text[interval.end] == '\n') {
-						interval.start = start;
-						interval.end++;
+					else if (text[this->interval.end] == '\n') {
+						this->interval.start = start;
+						this->interval.end++;
 						return true;
 					}
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 		};
@@ -4789,23 +4792,23 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
-				if (m_line_break.match(text, interval.end, end, flags)) {
-					interval.end = m_line_break.interval.end;
-					if (interval.end < end && text[interval.end] && isspace(text[interval.end])) {
-						interval.start = start;
-						interval.end++;
-						while (interval.end < end && text[interval.end] && isspace(text[interval.end])) interval.end++;
+				this->interval.end = start;
+				if (m_line_break.match(text, this->interval.end, end, flags)) {
+					this->interval.end = m_line_break.interval.end;
+					if (this->interval.end < end && text[this->interval.end] && isspace(text[this->interval.end])) {
+						this->interval.start = start;
+						this->interval.end++;
+						while (this->interval.end < end && text[this->interval.end] && isspace(text[this->interval.end])) this->interval.end++;
 						return true;
 					}
 				}
-				else if (interval.end < end && text[interval.end] && isspace(text[interval.end])) {
-					interval.start = start;
-					interval.end++;
-					while (interval.end < end && text[interval.end] && isspace(text[interval.end])) interval.end++;
+				else if (this->interval.end < end && text[this->interval.end] && isspace(text[this->interval.end])) {
+					this->interval.start = start;
+					this->interval.end++;
+					while (this->interval.end < end && text[this->interval.end] && isspace(text[this->interval.end])) this->interval.end++;
 					return true;
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -4826,20 +4829,20 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
+				this->interval.end = start;
 
-				assert(text || interval.end >= end);
-				if (m_space.match(text, interval.end, end, flags)) {
-					interval.start = start;
-					interval.end = m_space.interval.end;
+				assert(text || this->interval.end >= end);
+				if (m_space.match(text, this->interval.end, end, flags)) {
+					this->interval.start = start;
+					this->interval.end = m_space.interval.end;
 					return true;
 				}
-				else if (interval.end < end && text[interval.end] && text[interval.end] >= 0x20) {
-					interval.start = start;
-					interval.end++;
+				else if (this->interval.end < end && text[this->interval.end] && text[this->interval.end] >= 0x20) {
+					this->interval.start = start;
+					this->interval.end++;
 					return true;
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -4860,42 +4863,42 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
+				this->interval.end = start;
 				for (;;) {
-					if (interval.end < end && text[interval.end]) {
-						if ((unsigned int)text[interval.end] < 0x20 ||
-							(unsigned int)text[interval.end] == 0x7f ||
-							text[interval.end] == '(' ||
-							text[interval.end] == ')' ||
-							text[interval.end] == '<' ||
-							text[interval.end] == '>' ||
-							text[interval.end] == '@' ||
-							text[interval.end] == ',' ||
-							text[interval.end] == ';' ||
-							text[interval.end] == ':' ||
-							text[interval.end] == '\\' ||
-							text[interval.end] == '\"' ||
-							text[interval.end] == '/' ||
-							text[interval.end] == '[' ||
-							text[interval.end] == ']' ||
-							text[interval.end] == '?' ||
-							text[interval.end] == '=' ||
-							text[interval.end] == '{' ||
-							text[interval.end] == '}' ||
-							isspace(text[interval.end]))
+					if (this->interval.end < end && text[this->interval.end]) {
+						if ((unsigned int)text[this->interval.end] < 0x20 ||
+							(unsigned int)text[this->interval.end] == 0x7f ||
+							text[this->interval.end] == '(' ||
+							text[this->interval.end] == ')' ||
+							text[this->interval.end] == '<' ||
+							text[this->interval.end] == '>' ||
+							text[this->interval.end] == '@' ||
+							text[this->interval.end] == ',' ||
+							text[this->interval.end] == ';' ||
+							text[this->interval.end] == ':' ||
+							text[this->interval.end] == '\\' ||
+							text[this->interval.end] == '\"' ||
+							text[this->interval.end] == '/' ||
+							text[this->interval.end] == '[' ||
+							text[this->interval.end] == ']' ||
+							text[this->interval.end] == '?' ||
+							text[this->interval.end] == '=' ||
+							text[this->interval.end] == '{' ||
+							text[this->interval.end] == '}' ||
+							isspace(text[this->interval.end]))
 							break;
 						else
-							interval.end++;
+							this->interval.end++;
 					}
 					else
 						break;
 				}
-				if (start < interval.end) {
-					interval.start = start;
+				if (start < this->interval.end) {
+					this->interval.start = start;
 					return true;
 				}
 				else {
-					interval.start = (interval.end = start) + 1;
+					this->interval.start = (this->interval.end = start) + 1;
 					return false;
 				}
 			}
@@ -4914,42 +4917,42 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
-				if (interval.end < end && text[interval.end] != '"')
+				this->interval.end = start;
+				if (this->interval.end < end && text[this->interval.end] != '"')
 					goto error;
-				interval.end++;
-				content.start = interval.end;
+				this->interval.end++;
+				content.start = this->interval.end;
 				for (;;) {
-					assert(text || interval.end >= end);
-					if (interval.end < end && text[interval.end]) {
-						if (text[interval.end] == '"') {
-							content.end = interval.end;
-							interval.end++;
+					assert(text || this->interval.end >= end);
+					if (this->interval.end < end && text[this->interval.end]) {
+						if (text[this->interval.end] == '"') {
+							content.end = this->interval.end;
+							this->interval.end++;
 							break;
 						}
-						else if (text[interval.end] == '\\') {
-							interval.end++;
-							if (interval.end < end && text[interval.end]) {
-								interval.end++;
+						else if (text[this->interval.end] == '\\') {
+							this->interval.end++;
+							if (this->interval.end < end && text[this->interval.end]) {
+								this->interval.end++;
 							}
 							else
 								goto error;
 						}
-						else if (m_chr.match(text, interval.end, end, flags))
-							interval.end++;
+						else if (m_chr.match(text, this->interval.end, end, flags))
+							this->interval.end++;
 						else
 							goto error;
 					}
 					else
 						goto error;
 				}
-				interval.start = start;
+				this->interval.start = start;
 				return true;
 
 			error:
 				content.start = 1;
 				content.end = 0;
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -4980,21 +4983,21 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
-				if (string.match(text, interval.end, end, flags)) {
+				this->interval.end = start;
+				if (string.match(text, this->interval.end, end, flags)) {
 					token.invalidate();
-					interval.end = string.interval.end;
-					interval.start = start;
+					this->interval.end = string.interval.end;
+					this->interval.start = start;
 					return true;
 				}
-				else if (token.match(text, interval.end, end, flags)) {
+				else if (token.match(text, this->interval.end, end, flags)) {
 					string.invalidate();
-					interval.end = token.interval.end;
-					interval.start = start;
+					this->interval.end = token.interval.end;
+					this->interval.start = start;
 					return true;
 				}
 				else {
-					interval.start = (interval.end = start) + 1;
+					this->interval.start = (this->interval.end = start) + 1;
 					return false;
 				}
 			}
@@ -5024,30 +5027,30 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
-				if (name.match(text, interval.end, end, flags))
-					interval.end = name.interval.end;
+				this->interval.end = start;
+				if (name.match(text, this->interval.end, end, flags))
+					this->interval.end = name.interval.end;
 				else
 					goto error;
-				while (m_space.match(text, interval.end, end, flags))
-					interval.end = m_space.interval.end;
-				assert(text || interval.end >= end);
-				if (interval.end < end && text[interval.end] == '=')
-					interval.end++;
+				while (m_space.match(text, this->interval.end, end, flags))
+					this->interval.end = m_space.interval.end;
+				assert(text || this->interval.end >= end);
+				if (this->interval.end < end && text[this->interval.end] == '=')
+					this->interval.end++;
 				else
-					while (m_space.match(text, interval.end, end, flags))
-						interval.end = m_space.interval.end;
-				if (value.match(text, interval.end, end, flags))
-					interval.end = value.interval.end;
+					while (m_space.match(text, this->interval.end, end, flags))
+						this->interval.end = m_space.interval.end;
+				if (value.match(text, this->interval.end, end, flags))
+					this->interval.end = value.interval.end;
 				else
 					goto error;
-				interval.start = start;
+				this->interval.start = start;
 				return true;
 
 			error:
 				name.invalidate();
 				value.invalidate();
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -5084,15 +5087,15 @@ namespace stdex
 					text[start + 1] == '/' &&
 					text[start + 2] == '*')
 				{
-					interval.end = (interval.start = start) + 3;
+					this->interval.end = (this->interval.start = start) + 3;
 					return true;
 				}
 				else if (start < end && text[start] == '*') {
-					interval.end = (interval.start = start) + 1;
+					this->interval.end = (this->interval.start = start) + 1;
 					return true;
 				}
 				else {
-					interval.start = (interval.end = start) + 1;
+					this->interval.start = (this->interval.end = start) + 1;
 					return false;
 				}
 			}
@@ -5111,30 +5114,30 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
-				if (type.match(text, interval.end, end, flags))
-					interval.end = type.interval.end;
+				this->interval.end = start;
+				if (type.match(text, this->interval.end, end, flags))
+					this->interval.end = type.interval.end;
 				else
 					goto error;
-				while (m_space.match(text, interval.end, end, flags))
-					interval.end = m_space.interval.end;
-				if (interval.end < end && text[interval.end] == '/')
-					interval.end++;
+				while (m_space.match(text, this->interval.end, end, flags))
+					this->interval.end = m_space.interval.end;
+				if (this->interval.end < end && text[this->interval.end] == '/')
+					this->interval.end++;
 				else
 					goto error;
-				while (m_space.match(text, interval.end, end, flags))
-					interval.end = m_space.interval.end;
-				if (subtype.match(text, interval.end, end, flags))
-					interval.end = subtype.interval.end;
+				while (m_space.match(text, this->interval.end, end, flags))
+					this->interval.end = m_space.interval.end;
+				if (subtype.match(text, this->interval.end, end, flags))
+					this->interval.end = subtype.interval.end;
 				else
 					goto error;
-				interval.start = start;
+				this->interval.start = start;
 				return true;
 
 			error:
 				type.invalidate();
 				subtype.invalidate();
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -5170,16 +5173,16 @@ namespace stdex
 					goto error;
 				params.clear();
 				for (;;) {
-					if (interval.end < end && text[interval.end]) {
-						if (m_space.match(text, interval.end, end, flags))
-							interval.end = m_space.interval.end;
-						else if (text[interval.end] == ';') {
-							interval.end++;
-							while (m_space.match(text, interval.end, end, flags))
-								interval.end = m_space.interval.end;
+					if (this->interval.end < end && text[this->interval.end]) {
+						if (m_space.match(text, this->interval.end, end, flags))
+							this->interval.end = m_space.interval.end;
+						else if (text[this->interval.end] == ';') {
+							this->interval.end++;
+							while (m_space.match(text, this->interval.end, end, flags))
+								this->interval.end = m_space.interval.end;
 							http_parameter param;
-							if (param.match(text, interval.end, end, flags)) {
-								interval.end = param.interval.end;
+							if (param.match(text, this->interval.end, end, flags)) {
+								this->interval.end = param.interval.end;
 								params.push_back(std::move(param));
 							}
 							else
@@ -5191,13 +5194,13 @@ namespace stdex
 					else
 						break;
 				}
-				interval.end = params.empty() ? subtype.interval.end : params.back().interval.end;
+				this->interval.end = params.empty() ? subtype.interval.end : params.back().interval.end;
 				return true;
 
 			error:
 				http_media_range::invalidate();
 				params.clear();
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -5224,26 +5227,26 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
+				this->interval.end = start;
 				for (;;) {
-					if (interval.end < end && text[interval.end]) {
-						if ((unsigned int)text[interval.end] < 0x20 ||
-							(unsigned int)text[interval.end] == 0x7f ||
-							text[interval.end] == ':' ||
-							text[interval.end] == '/' ||
-							isspace(text[interval.end]))
+					if (this->interval.end < end && text[this->interval.end]) {
+						if ((unsigned int)text[this->interval.end] < 0x20 ||
+							(unsigned int)text[this->interval.end] == 0x7f ||
+							text[this->interval.end] == ':' ||
+							text[this->interval.end] == '/' ||
+							isspace(text[this->interval.end]))
 							break;
 						else
-							interval.end++;
+							this->interval.end++;
 					}
 					else
 						break;
 				}
-				if (start < interval.end) {
-					interval.start = start;
+				if (start < this->interval.end) {
+					this->interval.start = start;
 					return true;
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 		};
@@ -5267,18 +5270,18 @@ namespace stdex
 			{
 				assert(text || start >= end);
 				value = 0;
-				interval.end = start;
+				this->interval.end = start;
 				for (;;) {
-					if (interval.end < end && text[interval.end]) {
-						if ('0' <= text[interval.end] && text[interval.end] <= '9') {
-							size_t _value = (size_t)value * 10 + text[interval.end] - '0';
+					if (this->interval.end < end && text[this->interval.end]) {
+						if ('0' <= text[this->interval.end] && text[this->interval.end] <= '9') {
+							size_t _value = (size_t)value * 10 + text[this->interval.end] - '0';
 							if (_value > (uint16_t)-1) {
 								value = 0;
-								interval.start = (interval.end = start) + 1;
+								this->interval.start = (this->interval.end = start) + 1;
 								return false;
 							}
 							value = (uint16_t)_value;
-							interval.end++;
+							this->interval.end++;
 						}
 						else
 							break;
@@ -5286,11 +5289,11 @@ namespace stdex
 					else
 						break;
 				}
-				if (start < interval.end) {
-					interval.start = start;
+				if (start < this->interval.end) {
+					this->interval.start = start;
 					return true;
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -5317,22 +5320,22 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
+				this->interval.end = start;
 				for (;;) {
-					if (interval.end < end && text[interval.end]) {
-						if ((unsigned int)text[interval.end] < 0x20 ||
-							(unsigned int)text[interval.end] == 0x7f ||
-							text[interval.end] == '?' ||
-							text[interval.end] == '/' ||
-							isspace(text[interval.end]))
+					if (this->interval.end < end && text[this->interval.end]) {
+						if ((unsigned int)text[this->interval.end] < 0x20 ||
+							(unsigned int)text[this->interval.end] == 0x7f ||
+							text[this->interval.end] == '?' ||
+							text[this->interval.end] == '/' ||
+							isspace(text[this->interval.end]))
 							break;
 						else
-							interval.end++;
+							this->interval.end++;
 					}
 					else
 						break;
 				}
-				interval.start = start;
+				this->interval.start = start;
 				return true;
 			}
 		};
@@ -5351,22 +5354,22 @@ namespace stdex
 			{
 				assert(text || start >= end);
 				http_url_path_segment s;
-				interval.end = start;
+				this->interval.end = start;
 				segments.clear();
-				assert(text || interval.end >= end);
-				if (interval.end < end && text[interval.end] != '/')
+				assert(text || this->interval.end >= end);
+				if (this->interval.end < end && text[this->interval.end] != '/')
 					goto error;
-				interval.end++;
-				s.match(text, interval.end, end, flags);
+				this->interval.end++;
+				s.match(text, this->interval.end, end, flags);
 				segments.push_back(s);
-				interval.end = s.interval.end;
+				this->interval.end = s.interval.end;
 				for (;;) {
-					if (interval.end < end && text[interval.end]) {
-						if (text[interval.end] == '/') {
-							interval.end++;
-							s.match(text, interval.end, end, flags);
+					if (this->interval.end < end && text[this->interval.end]) {
+						if (text[this->interval.end] == '/') {
+							this->interval.end++;
+							s.match(text, this->interval.end, end, flags);
 							segments.push_back(s);
-							interval.end = s.interval.end;
+							this->interval.end = s.interval.end;
 						}
 						else
 							break;
@@ -5374,12 +5377,12 @@ namespace stdex
 					else
 						break;
 				}
-				interval.start = start;
+				this->interval.start = start;
 				return true;
 
 			error:
 				segments.clear();
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -5406,49 +5409,49 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
-				name.start = interval.end;
+				this->interval.end = start;
+				name.start = this->interval.end;
 				for (;;) {
-					if (interval.end < end && text[interval.end]) {
-						if ((unsigned int)text[interval.end] < 0x20 ||
-							(unsigned int)text[interval.end] == 0x7f ||
-							text[interval.end] == '&' ||
-							text[interval.end] == '=' ||
-							isspace(text[interval.end]))
+					if (this->interval.end < end && text[this->interval.end]) {
+						if ((unsigned int)text[this->interval.end] < 0x20 ||
+							(unsigned int)text[this->interval.end] == 0x7f ||
+							text[this->interval.end] == '&' ||
+							text[this->interval.end] == '=' ||
+							isspace(text[this->interval.end]))
 							break;
 						else
-							interval.end++;
+							this->interval.end++;
 					}
 					else
 						break;
 				}
-				if (start < interval.end)
-					name.end = interval.end;
+				if (start < this->interval.end)
+					name.end = this->interval.end;
 				else
 					goto error;
-				if (text[interval.end] == '=') {
-					interval.end++;
-					value.start = interval.end;
+				if (text[this->interval.end] == '=') {
+					this->interval.end++;
+					value.start = this->interval.end;
 					for (;;) {
-						if (interval.end < end && text[interval.end]) {
-							if ((unsigned int)text[interval.end] < 0x20 ||
-								(unsigned int)text[interval.end] == 0x7f ||
-								text[interval.end] == '&' ||
-								isspace(text[interval.end]))
+						if (this->interval.end < end && text[this->interval.end]) {
+							if ((unsigned int)text[this->interval.end] < 0x20 ||
+								(unsigned int)text[this->interval.end] == 0x7f ||
+								text[this->interval.end] == '&' ||
+								isspace(text[this->interval.end]))
 								break;
 							else
-								interval.end++;
+								this->interval.end++;
 						}
 						else
 							break;
 					}
-					value.end = interval.end;
+					value.end = this->interval.end;
 				}
 				else {
 					value.start = 1;
 					value.end = 0;
 				}
-				interval.start = start;
+				this->interval.start = start;
 				return true;
 
 			error:
@@ -5456,7 +5459,7 @@ namespace stdex
 				name.end = 0;
 				value.start = 1;
 				value.end = 0;
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -5492,18 +5495,18 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
+				this->interval.end = start;
 
-				if (interval.end + 7 <= end && stdex::strnicmp(text + interval.end, 7, "http://", (size_t)-1, m_locale) == 0) {
-					interval.end += 7;
-					if (server.match(text, interval.end, end, flags))
-						interval.end = server.interval.end;
+				if (this->interval.end + 7 <= end && stdex::strnicmp(text + this->interval.end, 7, "http://", (size_t)-1, m_locale) == 0) {
+					this->interval.end += 7;
+					if (server.match(text, this->interval.end, end, flags))
+						this->interval.end = server.interval.end;
 					else
 						goto error;
-					if (interval.end < end && text[interval.end] == ':') {
-						interval.end++;
-						if (port.match(text, interval.end, end, flags))
-							interval.end = port.interval.end;
+					if (this->interval.end < end && text[this->interval.end] == ':') {
+						this->interval.end++;
+						if (port.match(text, this->interval.end, end, flags))
+							this->interval.end = port.interval.end;
 					}
 					else {
 						port.invalidate();
@@ -5516,27 +5519,27 @@ namespace stdex
 					port.value = 80;
 				}
 
-				if (path.match(text, interval.end, end, flags))
-					interval.end = path.interval.end;
+				if (path.match(text, this->interval.end, end, flags))
+					this->interval.end = path.interval.end;
 				else
 					goto error;
 
 				params.clear();
 
-				if (interval.end < end && text[interval.end] == '?') {
-					interval.end++;
+				if (this->interval.end < end && text[this->interval.end] == '?') {
+					this->interval.end++;
 					for (;;) {
-						if (interval.end < end && text[interval.end]) {
-							if ((unsigned int)text[interval.end] < 0x20 ||
-								(unsigned int)text[interval.end] == 0x7f ||
-								isspace(text[interval.end]))
+						if (this->interval.end < end && text[this->interval.end]) {
+							if ((unsigned int)text[this->interval.end] < 0x20 ||
+								(unsigned int)text[this->interval.end] == 0x7f ||
+								isspace(text[this->interval.end]))
 								break;
-							else if (text[interval.end] == '&')
-								interval.end++;
+							else if (text[this->interval.end] == '&')
+								this->interval.end++;
 							else {
 								http_url_parameter param;
-								if (param.match(text, interval.end, end, flags)) {
-									interval.end = param.interval.end;
+								if (param.match(text, this->interval.end, end, flags)) {
+									this->interval.end = param.interval.end;
 									params.push_back(std::move(param));
 								}
 								else
@@ -5548,7 +5551,7 @@ namespace stdex
 					}
 				}
 
-				interval.start = start;
+				this->interval.start = start;
 				return true;
 
 			error:
@@ -5556,7 +5559,7 @@ namespace stdex
 				port.invalidate();
 				path.invalidate();
 				params.clear();
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -5589,12 +5592,12 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
+				this->interval.end = start;
 				components.clear();
 				for (;;) {
-					if (interval.end < end && text[interval.end]) {
+					if (this->interval.end < end && text[this->interval.end]) {
 						stdex::interval<size_t> k;
-						k.end = interval.end;
+						k.end = this->interval.end;
 						for (;;) {
 							if (k.end < end && text[k.end]) {
 								if (isalpha(text[k.end]))
@@ -5605,15 +5608,15 @@ namespace stdex
 							else
 								break;
 						}
-						if (interval.end < k.end) {
-							k.start = interval.end;
-							interval.end = k.end;
+						if (this->interval.end < k.end) {
+							k.start = this->interval.end;
+							this->interval.end = k.end;
 							components.push_back(k);
 						}
 						else
 							break;
-						if (interval.end < end && text[interval.end] == '-')
-							interval.end++;
+						if (this->interval.end < end && text[this->interval.end] == '-')
+							this->interval.end++;
 						else
 							break;
 					}
@@ -5621,11 +5624,11 @@ namespace stdex
 						break;
 				}
 				if (!components.empty()) {
-					interval.start = start;
-					interval.end = components.back().end;
+					this->interval.start = start;
+					this->interval.end = components.back().end;
 					return true;
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -5658,21 +5661,21 @@ namespace stdex
 			{
 				assert(text || start >= end);
 				size_t celi_del = 0, decimalni_del = 0, decimalni_del_n = 1;
-				interval.end = start;
+				this->interval.end = start;
 				for (;;) {
-					if (interval.end < end && text[interval.end]) {
-						if ('0' <= text[interval.end] && text[interval.end] <= '9') {
-							celi_del = celi_del * 10 + text[interval.end] - '0';
-							interval.end++;
+					if (this->interval.end < end && text[this->interval.end]) {
+						if ('0' <= text[this->interval.end] && text[this->interval.end] <= '9') {
+							celi_del = celi_del * 10 + text[this->interval.end] - '0';
+							this->interval.end++;
 						}
-						else if (text[interval.end] == '.') {
-							interval.end++;
+						else if (text[this->interval.end] == '.') {
+							this->interval.end++;
 							for (;;) {
-								if (interval.end < end && text[interval.end]) {
-									if ('0' <= text[interval.end] && text[interval.end] <= '9') {
-										decimalni_del = decimalni_del * 10 + text[interval.end] - '0';
+								if (this->interval.end < end && text[this->interval.end]) {
+									if ('0' <= text[this->interval.end] && text[this->interval.end] <= '9') {
+										decimalni_del = decimalni_del * 10 + text[this->interval.end] - '0';
 										decimalni_del_n *= 10;
-										interval.end++;
+										this->interval.end++;
 									}
 									else
 										break;
@@ -5688,13 +5691,13 @@ namespace stdex
 					else
 						break;
 				}
-				if (start < interval.end) {
+				if (start < this->interval.end) {
 					value = (float)((double)celi_del + (double)decimalni_del / decimalni_del_n);
-					interval.start = start;
+					this->interval.start = start;
 					return true;
 				}
 				value = 1.0f;
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -5722,10 +5725,10 @@ namespace stdex
 			{
 				assert(text || end <= start);
 				if (start < end && text[start] == '*') {
-					interval.end = (interval.start = start) + 1;
+					this->interval.end = (this->interval.start = start) + 1;
 					return true;
 				}
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 		};
@@ -5750,42 +5753,42 @@ namespace stdex
 			{
 				assert(text || start >= end);
 				size_t konec_vrednosti;
-				interval.end = start;
-				if (asterisk.match(text, interval.end, end, flags)) {
-					interval.end = konec_vrednosti = asterisk.interval.end;
+				this->interval.end = start;
+				if (asterisk.match(text, this->interval.end, end, flags)) {
+					this->interval.end = konec_vrednosti = asterisk.interval.end;
 					value.invalidate();
 				}
-				else if (value.match(text, interval.end, end, flags)) {
-					interval.end = konec_vrednosti = value.interval.end;
+				else if (value.match(text, this->interval.end, end, flags)) {
+					this->interval.end = konec_vrednosti = value.interval.end;
 					asterisk.invalidate();
 				}
 				else {
 					asterisk.invalidate();
 					value.invalidate();
-					interval.start = (interval.end = start) + 1;
+					this->interval.start = (this->interval.end = start) + 1;
 					return false;
 				}
 
-				while (interval.end < end && text[interval.end] && isspace(text[interval.end])) interval.end++;
-				if (interval.end < end && text[interval.end] == ';') {
-					interval.end++;
-					while (interval.end < end && text[interval.end] && isspace(text[interval.end])) interval.end++;
-					if (interval.end < end && (text[interval.end] == 'q' || text[interval.end] == 'Q')) {
-						interval.end++;
-						while (interval.end < end && text[interval.end] && isspace(text[interval.end])) interval.end++;
-						if (interval.end < end && text[interval.end] == '=') {
-							interval.end++;
-							while (interval.end < end && text[interval.end] && isspace(text[interval.end])) interval.end++;
-							if (factor.match(text, interval.end, end, flags))
-								interval.end = factor.interval.end;
+				while (this->interval.end < end && text[this->interval.end] && isspace(text[this->interval.end])) this->interval.end++;
+				if (this->interval.end < end && text[this->interval.end] == ';') {
+					this->interval.end++;
+					while (this->interval.end < end && text[this->interval.end] && isspace(text[this->interval.end])) this->interval.end++;
+					if (this->interval.end < end && (text[this->interval.end] == 'q' || text[this->interval.end] == 'Q')) {
+						this->interval.end++;
+						while (this->interval.end < end && text[this->interval.end] && isspace(text[this->interval.end])) this->interval.end++;
+						if (this->interval.end < end && text[this->interval.end] == '=') {
+							this->interval.end++;
+							while (this->interval.end < end && text[this->interval.end] && isspace(text[this->interval.end])) this->interval.end++;
+							if (factor.match(text, this->interval.end, end, flags))
+								this->interval.end = factor.interval.end;
 						}
 					}
 				}
 				if (!factor.interval) {
 					factor.invalidate();
-					interval.end = konec_vrednosti;
+					this->interval.end = konec_vrednosti;
 				}
-				interval.start = start;
+				this->interval.start = start;
 				return true;
 			}
 
@@ -5816,34 +5819,34 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
-				if (interval.end < end && text[interval.end] == '$')
-					interval.end++;
+				this->interval.end = start;
+				if (this->interval.end < end && text[this->interval.end] == '$')
+					this->interval.end++;
 				else
 					goto error;
-				if (name.match(text, interval.end, end, flags))
-					interval.end = name.interval.end;
+				if (name.match(text, this->interval.end, end, flags))
+					this->interval.end = name.interval.end;
 				else
 					goto error;
-				while (m_space.match(text, interval.end, end, flags))
-					interval.end = m_space.interval.end;
-				if (interval.end < end && text[interval.end] == '=')
-					interval.end++;
+				while (m_space.match(text, this->interval.end, end, flags))
+					this->interval.end = m_space.interval.end;
+				if (this->interval.end < end && text[this->interval.end] == '=')
+					this->interval.end++;
 				else
 					goto error;
-				while (m_space.match(text, interval.end, end, flags))
-					interval.end = m_space.interval.end;
-				if (value.match(text, interval.end, end, flags))
-					interval.end = value.interval.end;
+				while (m_space.match(text, this->interval.end, end, flags))
+					this->interval.end = m_space.interval.end;
+				if (value.match(text, this->interval.end, end, flags))
+					this->interval.end = value.interval.end;
 				else
 					goto error;
-				interval.start = start;
+				this->interval.start = start;
 				return true;
 
 			error:
 				name.invalidate();
 				value.invalidate();
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -5875,35 +5878,35 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
-				if (name.match(text, interval.end, end, flags))
-					interval.end = name.interval.end;
+				this->interval.end = start;
+				if (name.match(text, this->interval.end, end, flags))
+					this->interval.end = name.interval.end;
 				else
 					goto error;
-				while (m_space.match(text, interval.end, end, flags))
-					interval.end = m_space.interval.end;
-				if (interval.end < end && text[interval.end] == '=')
-					interval.end++;
+				while (m_space.match(text, this->interval.end, end, flags))
+					this->interval.end = m_space.interval.end;
+				if (this->interval.end < end && text[this->interval.end] == '=')
+					this->interval.end++;
 				else
 					goto error;
-				while (m_space.match(text, interval.end, end, flags))
-					interval.end = m_space.interval.end;
-				if (value.match(text, interval.end, end, flags))
-					interval.end = value.interval.end;
+				while (m_space.match(text, this->interval.end, end, flags))
+					this->interval.end = m_space.interval.end;
+				if (value.match(text, this->interval.end, end, flags))
+					this->interval.end = value.interval.end;
 				else
 					goto error;
 				params.clear();
 				for (;;) {
-					if (interval.end < end && text[interval.end]) {
-						if (m_space.match(text, interval.end, end, flags))
-							interval.end = m_space.interval.end;
-						else if (text[interval.end] == ';') {
-							interval.end++;
-							while (m_space.match(text, interval.end, end, flags))
-								interval.end = m_space.interval.end;
+					if (this->interval.end < end && text[this->interval.end]) {
+						if (m_space.match(text, this->interval.end, end, flags))
+							this->interval.end = m_space.interval.end;
+						else if (text[this->interval.end] == ';') {
+							this->interval.end++;
+							while (m_space.match(text, this->interval.end, end, flags))
+								this->interval.end = m_space.interval.end;
 							http_cookie_parameter param;
-							if (param.match(text, interval.end, end, flags)) {
-								interval.end = param.interval.end;
+							if (param.match(text, this->interval.end, end, flags)) {
+								this->interval.end = param.interval.end;
 								params.push_back(std::move(param));
 							}
 							else
@@ -5915,15 +5918,15 @@ namespace stdex
 					else
 						break;
 				}
-				interval.start = start;
-				interval.end = params.empty() ? value.interval.end : params.back().interval.end;
+				this->interval.start = start;
+				this->interval.end = params.empty() ? value.interval.end : params.back().interval.end;
 				return true;
 
 			error:
 				name.invalidate();
 				value.invalidate();
 				params.clear();
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 
@@ -5957,52 +5960,52 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
-				type.start = interval.end;
+				this->interval.end = start;
+				type.start = this->interval.end;
 				for (;;) {
-					if (interval.end < end && text[interval.end]) {
-						if (text[interval.end] == '/') {
-							type.end = interval.end;
-							interval.end++;
-							version.start = interval.end;
+					if (this->interval.end < end && text[this->interval.end]) {
+						if (text[this->interval.end] == '/') {
+							type.end = this->interval.end;
+							this->interval.end++;
+							version.start = this->interval.end;
 							for (;;) {
-								if (interval.end < end && text[interval.end]) {
-									if (isspace(text[interval.end])) {
-										version.end = interval.end;
+								if (this->interval.end < end && text[this->interval.end]) {
+									if (isspace(text[this->interval.end])) {
+										version.end = this->interval.end;
 										break;
 									}
 									else
-										interval.end++;
+										this->interval.end++;
 								}
 								else {
-									version.end = interval.end;
+									version.end = this->interval.end;
 									break;
 								}
 							}
 							break;
 						}
-						else if (isspace(text[interval.end])) {
-							type.end = interval.end;
+						else if (isspace(text[this->interval.end])) {
+							type.end = this->interval.end;
 							break;
 						}
 						else
-							interval.end++;
+							this->interval.end++;
 					}
 					else {
-						type.end = interval.end;
+						type.end = this->interval.end;
 						break;
 					}
 				}
-				if (start < interval.end) {
-					interval.start = start;
+				if (start < this->interval.end) {
+					this->interval.start = start;
 					return true;
 				}
 				type.start = 1;
 				type.end = 0;
 				version.start = 1;
 				version.end = 0;
-				interval.start = 1;
-				interval.end = 0;
+				this->interval.start = 1;
+				this->interval.end = 0;
 				return false;
 			}
 
@@ -6038,63 +6041,63 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
-				type.start = interval.end;
+				this->interval.end = start;
+				type.start = this->interval.end;
 				for (;;) {
-					if (interval.end < end && text[interval.end]) {
-						if (text[interval.end] == '/') {
-							type.end = interval.end;
-							interval.end++;
+					if (this->interval.end < end && text[this->interval.end]) {
+						if (text[this->interval.end] == '/') {
+							type.end = this->interval.end;
+							this->interval.end++;
 							break;
 						}
-						else if (isspace(text[interval.end]))
+						else if (isspace(text[this->interval.end]))
 							goto error;
 						else
-							interval.end++;
+							this->interval.end++;
 					}
 					else {
-						type.end = interval.end;
+						type.end = this->interval.end;
 						goto error;
 					}
 				}
-				version_maj.start = interval.end;
+				version_maj.start = this->interval.end;
 				for (;;) {
-					if (interval.end < end && text[interval.end]) {
-						if (text[interval.end] == '.') {
-							version_maj.end = interval.end;
-							interval.end++;
-							version_min.start = interval.end;
+					if (this->interval.end < end && text[this->interval.end]) {
+						if (text[this->interval.end] == '.') {
+							version_maj.end = this->interval.end;
+							this->interval.end++;
+							version_min.start = this->interval.end;
 							for (;;) {
-								if (interval.end < end && text[interval.end]) {
-									if (isspace(text[interval.end])) {
-										version_min.end = interval.end;
+								if (this->interval.end < end && text[this->interval.end]) {
+									if (isspace(text[this->interval.end])) {
+										version_min.end = this->interval.end;
 										version =
 											(uint16_t)strtoui(text + version_maj.start, version_maj.size(), nullptr, 10) * 0x100 +
 											(uint16_t)strtoui(text + version_min.start, version_min.size(), nullptr, 10);
 										break;
 									}
 									else
-										interval.end++;
+										this->interval.end++;
 								}
 								else
 									goto error;
 							}
 							break;
 						}
-						else if (isspace(text[interval.end])) {
-							version_maj.end = interval.end;
+						else if (isspace(text[this->interval.end])) {
+							version_maj.end = this->interval.end;
 							version_min.start = 1;
 							version_min.end = 0;
 							version = (uint16_t)strtoui(text + version_maj.start, version_maj.size(), nullptr, 10) * 0x100;
 							break;
 						}
 						else
-							interval.end++;
+							this->interval.end++;
 					}
 					else
 						goto error;
 				}
-				interval.start = start;
+				this->interval.start = start;
 				return true;
 
 			error:
@@ -6105,8 +6108,8 @@ namespace stdex
 				version_min.start = 1;
 				version_min.end = 0;
 				version = 0x009;
-				interval.start = 1;
-				interval.end = 0;
+				this->interval.start = 1;
+				this->interval.end = 0;
 				return false;
 			}
 
@@ -6148,63 +6151,63 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
+				this->interval.end = start;
 
 				for (;;) {
-					if (m_line_break.match(text, interval.end, end, flags))
+					if (m_line_break.match(text, this->interval.end, end, flags))
 						goto error;
-					else if (interval.end < end && text[interval.end]) {
-						if (isspace(text[interval.end]))
-							interval.end++;
+					else if (this->interval.end < end && text[this->interval.end]) {
+						if (isspace(text[this->interval.end]))
+							this->interval.end++;
 						else
 							break;
 					}
 					else
 						goto error;
 				}
-				verb.start = interval.end;
+				verb.start = this->interval.end;
 				for (;;) {
-					if (m_line_break.match(text, interval.end, end, flags))
+					if (m_line_break.match(text, this->interval.end, end, flags))
 						goto error;
-					else if (interval.end < end && text[interval.end]) {
-						if (isspace(text[interval.end])) {
-							verb.end = interval.end;
-							interval.end++;
+					else if (this->interval.end < end && text[this->interval.end]) {
+						if (isspace(text[this->interval.end])) {
+							verb.end = this->interval.end;
+							this->interval.end++;
 							break;
 						}
 						else
-							interval.end++;
+							this->interval.end++;
 					}
 					else
 						goto error;
 				}
 
 				for (;;) {
-					if (m_line_break.match(text, interval.end, end, flags))
+					if (m_line_break.match(text, this->interval.end, end, flags))
 						goto error;
-					else if (interval.end < end && text[interval.end]) {
-						if (isspace(text[interval.end]))
-							interval.end++;
+					else if (this->interval.end < end && text[this->interval.end]) {
+						if (isspace(text[this->interval.end]))
+							this->interval.end++;
 						else
 							break;
 					}
 					else
 						goto error;
 				}
-				if (url.match(text, interval.end, end, flags))
-					interval.end = url.interval.end;
+				if (url.match(text, this->interval.end, end, flags))
+					this->interval.end = url.interval.end;
 				else
 					goto error;
 
 				protocol.invalidate();
 				for (;;) {
-					if (m_line_break.match(text, interval.end, end, flags)) {
-						interval.end = m_line_break.interval.end;
+					if (m_line_break.match(text, this->interval.end, end, flags)) {
+						this->interval.end = m_line_break.interval.end;
 						goto end;
 					}
-					else if (interval.end < end && text[interval.end]) {
-						if (isspace(text[interval.end]))
-							interval.end++;
+					else if (this->interval.end < end && text[this->interval.end]) {
+						if (isspace(text[this->interval.end]))
+							this->interval.end++;
 						else
 							break;
 					}
@@ -6212,12 +6215,12 @@ namespace stdex
 						goto end;
 				}
 				for (;;) {
-					if (m_line_break.match(text, interval.end, end, flags)) {
-						interval.end = m_line_break.interval.end;
+					if (m_line_break.match(text, this->interval.end, end, flags)) {
+						this->interval.end = m_line_break.interval.end;
 						goto end;
 					}
-					else if (protocol.match(text, interval.end, end, flags)) {
-						interval.end = protocol.interval.end;
+					else if (protocol.match(text, this->interval.end, end, flags)) {
+						this->interval.end = protocol.interval.end;
 						break;
 					}
 					else
@@ -6225,18 +6228,18 @@ namespace stdex
 				}
 
 				for (;;) {
-					if (m_line_break.match(text, interval.end, end, flags)) {
-						interval.end = m_line_break.interval.end;
+					if (m_line_break.match(text, this->interval.end, end, flags)) {
+						this->interval.end = m_line_break.interval.end;
 						break;
 					}
-					else if (interval.end < end && text[interval.end])
-						interval.end++;
+					else if (this->interval.end < end && text[this->interval.end])
+						this->interval.end++;
 					else
 						goto end;
 				}
 
 			end:
-				interval.start = start;
+				this->interval.start = start;
 				return true;
 
 			error:
@@ -6244,8 +6247,8 @@ namespace stdex
 				verb.end = 0;
 				url.invalidate();
 				protocol.invalidate();
-				interval.start = 1;
-				interval.end = 0;
+				this->interval.start = 1;
+				this->interval.end = 0;
 				return false;
 			}
 
@@ -6280,46 +6283,46 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
+				this->interval.end = start;
 
-				if (m_line_break.match(text, interval.end, end, flags) ||
-					interval.end < end && text[interval.end] && isspace(text[interval.end]))
+				if (m_line_break.match(text, this->interval.end, end, flags) ||
+					(this->interval.end < end && text[this->interval.end] && isspace(text[this->interval.end])))
 					goto error;
-				name.start = interval.end;
+				name.start = this->interval.end;
 				for (;;) {
-					if (m_line_break.match(text, interval.end, end, flags))
+					if (m_line_break.match(text, this->interval.end, end, flags))
 						goto error;
-					else if (interval.end < end && text[interval.end]) {
-						if (isspace(text[interval.end])) {
-							name.end = interval.end;
-							interval.end++;
+					else if (this->interval.end < end && text[this->interval.end]) {
+						if (isspace(text[this->interval.end])) {
+							name.end = this->interval.end;
+							this->interval.end++;
 							for (;;) {
-								if (m_line_break.match(text, interval.end, end, flags))
+								if (m_line_break.match(text, this->interval.end, end, flags))
 									goto error;
-								else if (interval.end < end && text[interval.end]) {
-									if (isspace(text[interval.end]))
-										interval.end++;
+								else if (this->interval.end < end && text[this->interval.end]) {
+									if (isspace(text[this->interval.end]))
+										this->interval.end++;
 									else
 										break;
 								}
 								else
 									goto error;
 							}
-							if (interval.end < end && text[interval.end] == ':') {
-								interval.end++;
+							if (this->interval.end < end && text[this->interval.end] == ':') {
+								this->interval.end++;
 								break;
 							}
 							else
 								goto error;
 							break;
 						}
-						else if (text[interval.end] == ':') {
-							name.end = interval.end;
-							interval.end++;
+						else if (text[this->interval.end] == ':') {
+							name.end = this->interval.end;
+							this->interval.end++;
 							break;
 						}
 						else
-							interval.end++;
+							this->interval.end++;
 					}
 					else
 						goto error;
@@ -6327,26 +6330,26 @@ namespace stdex
 				value.start = (size_t)-1;
 				value.end = 0;
 				for (;;) {
-					if (m_line_break.match(text, interval.end, end, flags)) {
-						interval.end = m_line_break.interval.end;
-						if (!m_line_break.match(text, interval.end, end, flags) &&
-							interval.end < end && text[interval.end] && isspace(text[interval.end]))
-							interval.end++;
+					if (m_line_break.match(text, this->interval.end, end, flags)) {
+						this->interval.end = m_line_break.interval.end;
+						if (!m_line_break.match(text, this->interval.end, end, flags) &&
+							this->interval.end < end && text[this->interval.end] && isspace(text[this->interval.end]))
+							this->interval.end++;
 						else
 							break;
 					}
-					else if (interval.end < end && text[interval.end]) {
-						if (isspace(text[interval.end]))
-							interval.end++;
+					else if (this->interval.end < end && text[this->interval.end]) {
+						if (isspace(text[this->interval.end]))
+							this->interval.end++;
 						else {
-							if (value.start == (size_t)-1) value.start = interval.end;
-							value.end = ++interval.end;
+							if (value.start == (size_t)-1) value.start = this->interval.end;
+							value.end = ++this->interval.end;
 						}
 					}
 					else
 						break;
 				}
-				interval.start = start;
+				this->interval.start = start;
 				return true;
 
 			error:
@@ -6354,8 +6357,8 @@ namespace stdex
 				name.end = 0;
 				value.start = 1;
 				value.end = 0;
-				interval.start = 1;
-				interval.end = 0;
+				this->interval.start = 1;
+				this->interval.end = 0;
 				return false;
 			}
 
@@ -6379,7 +6382,7 @@ namespace stdex
 		///
 		/// Collection of HTTP values
 		///
-		template <class T>
+		template <class _Key, class T>
 		class http_value_collection : public T
 		{
 		public:
@@ -6395,7 +6398,7 @@ namespace stdex
 						start++;
 						while (start < end&& text[start] && isspace(text[start])) start++;
 					}
-					T::key_type el;
+					_Key el;
 					if (el.match(text, start, end, flags)) {
 						start = el.interval.end;
 						T::insert(std::move(el));
@@ -6418,7 +6421,7 @@ namespace stdex
 		/// Collection of weighted HTTP values
 		///
 		template <class T, class _Alloc = std::allocator<T>>
-		using http_weighted_collection = http_value_collection<std::multiset<T, http_factor_more<T>, _Alloc>>;
+		using http_weighted_collection = http_value_collection<T, std::multiset<T, http_factor_more<T>, _Alloc>>;
 
 		///
 		/// Test for JSON string
@@ -6461,43 +6464,43 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				assert(text || start >= end);
-				interval.end = start;
-				if (m_quote->match(text, interval.end, end, flags)) {
-					interval.end = m_quote->interval.end;
+				this->interval.end = start;
+				if (m_quote->match(text, this->interval.end, end, flags)) {
+					this->interval.end = m_quote->interval.end;
 					value.clear();
 					for (;;) {
-						if (m_quote->match(text, interval.end, end, flags)) {
-							interval.start = start;
-							interval.end = m_quote->interval.end;
+						if (m_quote->match(text, this->interval.end, end, flags)) {
+							this->interval.start = start;
+							this->interval.end = m_quote->interval.end;
 							return true;
 						}
-						if (m_escape->match(text, interval.end, end, flags)) {
+						if (m_escape->match(text, this->interval.end, end, flags)) {
 							if (m_quote->match(text, m_escape->interval.end, end, flags)) {
-								value += '"'; interval.end = m_quote->interval.end;
+								value += '"'; this->interval.end = m_quote->interval.end;
 								continue;
 							}
 							if (m_sol->match(text, m_escape->interval.end, end, flags)) {
-								value += '/'; interval.end = m_sol->interval.end;
+								value += '/'; this->interval.end = m_sol->interval.end;
 								continue;
 							}
 							if (m_bs->match(text, m_escape->interval.end, end, flags)) {
-								value += '\b'; interval.end = m_bs->interval.end;
+								value += '\b'; this->interval.end = m_bs->interval.end;
 								continue;
 							}
 							if (m_ff->match(text, m_escape->interval.end, end, flags)) {
-								value += '\f'; interval.end = m_ff->interval.end;
+								value += '\f'; this->interval.end = m_ff->interval.end;
 								continue;
 							}
 							if (m_lf->match(text, m_escape->interval.end, end, flags)) {
-								value += '\n'; interval.end = m_lf->interval.end;
+								value += '\n'; this->interval.end = m_lf->interval.end;
 								continue;
 							}
 							if (m_cr->match(text, m_escape->interval.end, end, flags)) {
-								value += '\r'; interval.end = m_cr->interval.end;
+								value += '\r'; this->interval.end = m_cr->interval.end;
 								continue;
 							}
 							if (m_htab->match(text, m_escape->interval.end, end, flags)) {
-								value += '\t'; interval.end = m_htab->interval.end;
+								value += '\t'; this->interval.end = m_htab->interval.end;
 								continue;
 							}
 							if (
@@ -6508,37 +6511,37 @@ namespace stdex
 								assert(m_hex->value <= 0xffff);
 								if (sizeof(T) == 1) {
 									if (m_hex->value > 0x7ff) {
-										value += (T)(0xe0 | (m_hex->value >> 12) & 0x0f);
-										value += (T)(0x80 | (m_hex->value >> 6) & 0x3f);
-										value += (T)(0x80 | m_hex->value & 0x3f);
+										value += (T)(0xe0 | ((m_hex->value >> 12) & 0x0f));
+										value += (T)(0x80 | ((m_hex->value >> 6) & 0x3f));
+										value += (T)(0x80 | (m_hex->value & 0x3f));
 									}
 									else if (m_hex->value > 0x7f) {
-										value += (T)(0xc0 | (m_hex->value >> 6) & 0x1f);
-										value += (T)(0x80 | m_hex->value & 0x3f);
+										value += (T)(0xc0 | ((m_hex->value >> 6) & 0x1f));
+										value += (T)(0x80 | (m_hex->value & 0x3f));
 									}
 									else
 										value += (T)(m_hex->value & 0x7f);
 								}
 								else
 									value += (T)m_hex->value;
-								interval.end = m_hex->interval.end;
+								this->interval.end = m_hex->interval.end;
 								continue;
 							}
 							if (m_escape->match(text, m_escape->interval.end, end, flags)) {
-								value += '\\'; interval.end = m_escape->interval.end;
+								value += '\\'; this->interval.end = m_escape->interval.end;
 								continue;
 							}
 						}
-						if (m_chr->match(text, interval.end, end, flags)) {
+						if (m_chr->match(text, this->interval.end, end, flags)) {
 							value.Prilepi(text + m_chr->interval.start, m_chr->interval.size());
-							interval.end = m_chr->interval.end;
+							this->interval.end = m_chr->interval.end;
 							continue;
 						}
 						break;
 					}
 				}
 				value.clear();
-				interval.start = (interval.end = start) + 1;
+				this->interval.start = (this->interval.end = start) + 1;
 				return false;
 			}
 

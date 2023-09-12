@@ -12,9 +12,11 @@
 #include <oaidl.h>
 #include <tchar.h>
 #else
+#define _LARGEFILE64_SOURCE
+#include <sys/types.h>
 #include <unistd.h>
 #endif
-#include "sal.hpp"
+#include "compat.hpp"
 #include <assert.h>
 #include <stdexcept>
 #include <string>

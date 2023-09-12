@@ -1,15 +1,15 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023 Amebis
 */
 
 #pragma once
 
+#include "compat.hpp"
 #include "endian.hpp"
 #include "interval.hpp"
 #include "math.hpp"
 #include "ring.hpp"
-#include "sal.hpp"
 #include "string.hpp"
 #include "system.hpp"
 #include "unicode.hpp"
@@ -19,6 +19,10 @@
 #if defined(_WIN32)
 #include <asptlb.h>
 #include <objidl.h>
+#else
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
 #endif
 #include <chrono>
 #include <condition_variable>
@@ -254,7 +258,7 @@ namespace stdex
 					return *this;
 				}
 				if (read_array(&data, sizeof(T), 1) == 1)
-					LE2HE(&data);
+					(void)LE2HE(&data);
 				else {
 					data = 0;
 					if (ok())
@@ -279,7 +283,7 @@ namespace stdex
 			{
 				if (!ok()) _Unlikely_
 					return *this;
-#ifdef BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
 				T data_le = HE2LE(data);
 				write(&data_le, sizeof(T));
 #else
@@ -630,10 +634,6 @@ namespace stdex
 			inline basic& operator <<(_In_ const uint32_t data) { return write_data(data); }
 			inline basic& operator >>(_Out_ uint64_t& data) { return read_data(data); }
 			inline basic& operator <<(_In_ const uint64_t data) { return write_data(data); }
-#if defined(_WIN64) && defined(_NATIVE_SIZE_T_DEFINED)
-			inline basic& operator >>(_Out_ size_t& data) { return read_data(data); }
-			inline basic& operator <<(_In_ const size_t data) { return write_data(data); }
-#endif
 			inline basic& operator >>(_Out_ float& data) { return read_data(data); }
 			inline basic& operator <<(_In_ const float data) { return write_data(data); }
 			inline basic& operator >>(_Out_ double& data) { return read_data(data); }
@@ -683,10 +683,11 @@ namespace stdex
 		};
 
 #if _HAS_CXX20
-		using time_point = std::chrono::time_point<std::chrono::file_clock>;
+		using clock = std::chrono::file_clock;
 #else
-		using time_point = std::chrono::time_point<std::chrono::system_clock>;
+		using clock = std::chrono::system_clock;
 #endif
+		using time_point = std::chrono::time_point<clock>;
 
 		///
 		/// Basic seekable stream operations
@@ -755,7 +756,7 @@ namespace stdex
 			{
 				_Unreferenced_(offset);
 				_Unreferenced_(length);
-				throw std::exception("not implemented");
+				throw std::domain_error("not implemented");
 			}
 
 			///
@@ -765,7 +766,7 @@ namespace stdex
 			{
 				_Unreferenced_(offset);
 				_Unreferenced_(length);
-				throw std::exception("not implemented");
+				throw std::domain_error("not implemented");
 			}
 
 			///
@@ -809,7 +810,7 @@ namespace stdex
 			virtual void set_ctime(time_point date)
 			{
 				_Unreferenced_(date);
-				throw std::exception("not implemented");
+				throw std::domain_error("not implemented");
 			}
 
 			///
@@ -818,7 +819,7 @@ namespace stdex
 			virtual void set_atime(time_point date)
 			{
 				_Unreferenced_(date);
-				throw std::exception("not implemented");
+				throw std::domain_error("not implemented");
 			}
 
 			///
@@ -827,7 +828,7 @@ namespace stdex
 			virtual void set_mtime(time_point date)
 			{
 				_Unreferenced_(date);
-				throw std::exception("not implemented");
+				throw std::domain_error("not implemented");
 			}
 
 #ifdef _WIN32
@@ -855,7 +856,7 @@ namespace stdex
 			///
 			/// \param[in] default_charset  Fallback charset to return when no BOM detected.
 			///
-			charset_id read_charset(_In_ charset_id default_charset = charset_id::default)
+			charset_id read_charset(_In_ charset_id default_charset = charset_id::system)
 			{
 				if (seek(0) != 0)
 					throw std::runtime_error("failed to seek");
@@ -1057,6 +1058,7 @@ namespace stdex
 						case op_t::flush:
 							w.source->flush();
 							break;
+						case op_t::noop:;
 						}
 						w.op = op_t::noop;
 						lk.unlock();
@@ -2096,8 +2098,7 @@ namespace stdex
 					}
 					if (!succeeded) _Unlikely_
 #else
-					ssize_t num_read = static_cast<ssize_t>(std::min<size_t>(to_read, block_size));
-					num_read = read(m_h, data, num_read);
+					ssize_t num_read = ::read(m_h, data, static_cast<ssize_t>(std::min<size_t>(to_read, block_size)));
 					if (num_read < 0) _Unlikely_
 #endif
 					{
@@ -2149,7 +2150,7 @@ namespace stdex
 						return length - to_write;
 					}
 #else
-					ssize_t num_written = write(m_h, data, static_cast<ssize_t>(std::min<size_t>(to_write, block_size)));
+					ssize_t num_written = ::write(m_h, data, static_cast<ssize_t>(std::min<size_t>(to_write, block_size)));
 					if (num_written < 0) _Unlikely_ {
 						m_state = state_t::fail;
 						return length - to_write;
@@ -2487,13 +2488,18 @@ namespace stdex
 				m_h = CreateFile(filename, dwDesiredAccess, dwShareMode, &sa, dwCreationDisposition, dwFlagsAndAttributes, nullptr);
 #else
 				int flags = 0;
-				if (mode & mode_for_reading) flags |= O_RDONLY;
-				if (mode & mode_for_writing) flags |= O_WRONLY;
+				switch (mode & (mode_for_reading | mode_for_writing)) {
+				case mode_for_reading: flags |= O_RDONLY; break;
+				case mode_for_writing: flags |= O_WRONLY; break;
+				case mode_for_reading | mode_for_writing: flags |= O_RDWR; break;
+				}
 				if (mode & mode_create) flags |= mode & mode_preserve_existing ? O_CREAT : (O_CREAT | O_EXCL);
 				if (mode & hint_write_thru) flags |= O_DSYNC;
+#ifndef __APPLE__
 				if (mode & hint_no_buffering) flags |= O_RSYNC;
+#endif
 
-				m_h = open(filename, flags, DEFFILEMODE);
+				m_h = ::open(filename, flags, DEFFILEMODE);
 #endif
 				if (m_h != invalid_handle) {
 					m_state = state_t::ok;
@@ -2515,7 +2521,7 @@ namespace stdex
 					return li.QuadPart;
 				}
 #else
-				off64_t result = lseek64(m_h, offset, how);
+				off64_t result = lseek64(m_h, offset, static_cast<int>(how));
 				if (result >= 0) {
 					m_state = state_t::ok;
 					return result;
@@ -2667,8 +2673,8 @@ namespace stdex
 					return ft2tp(ft);
 #else
 				struct stat buf;
-				if (fstat(m_h, &buf) >= 0);
-				return time_point::from_time_t(buf.st_atim);
+				if (fstat(m_h, &buf) >= 0)
+					return clock::from_time_t(buf.st_atime);
 #endif
 				return time_point::min();
 			}
@@ -2682,7 +2688,7 @@ namespace stdex
 #else
 				struct stat buf;
 				if (fstat(m_h, &buf) >= 0)
-					return time_point::from_time_t(buf.st_mtim);
+					return clock::from_time_t(buf.st_mtime);
 #endif
 				return time_point::min();
 			}
@@ -2708,9 +2714,10 @@ namespace stdex
 				if (SetFileTime(m_h, nullptr, &ft, nullptr))
 					return;
 #else
-				struct timespec ts[2];
-				ts[0].tv_sec = date;
-				ts[1].tv_nsec = UTIME_OMIT;
+				struct timespec ts[2] = {
+					{ date.time_since_epoch().count(), 0 },
+					{ 0, UTIME_OMIT },
+				};
 				if (futimens(m_h, ts) >= 0)
 					return;
 #endif
@@ -2725,9 +2732,10 @@ namespace stdex
 				if (SetFileTime(m_h, nullptr, nullptr, &ft))
 					return;
 #else
-				struct timespec ts[2];
-				ts[0].tv_nsec = UTIME_OMIT;
-				ts[1].tv_sec = date;
+				struct timespec ts[2] = {
+					{ 0, UTIME_OMIT },
+					{ date.time_since_epoch().count(), 0 },
+				};
 				if (futimens(m_h, ts) >= 0)
 					return;
 #endif
@@ -2773,7 +2781,6 @@ namespace stdex
 			///
 			/// \param[in] filename    Filename
 			/// \param[in] mode        Bitwise combination of mode_t flags
-			/// \param[in] cache_size  Size of the cache block
 			///
 			void open(_In_z_ const schar_t* filename, _In_ int mode)
 			{
@@ -3077,7 +3084,7 @@ namespace stdex
 				if (end_offset <= m_size) {
 					uint32_t num_chars = LE2HE(*reinterpret_cast<uint32_t*>(m_data + m_offset));
 					m_offset = end_offset;
-					end_offset = stdex::add(m_offset + stdex::mul(num_chars, sizeof(_Elem)));
+					end_offset = stdex::add(m_offset, stdex::mul(num_chars, sizeof(_Elem)));
 					_Elem* start = reinterpret_cast<_Elem*>(m_data + m_offset);
 					if (end_offset <= m_size) {
 						data.assign(start, start + num_chars);
@@ -3208,7 +3215,7 @@ namespace stdex
 					if (!ok()) _Unlikely_
 						return *this;
 				}
-				auto p = tok.m_podatki + m_offset;
+				auto p = m_data + m_offset;
 				*reinterpret_cast<uint32_t*>(p) = HE2LE((uint32_t)num_chars);
 				memcpy(p + sizeof(uint32_t), data, size_chars);
 				m_offset = end_offset;
@@ -3384,9 +3391,6 @@ namespace stdex
 			inline void set(_In_ fpos_t offset, _In_ const uint16_t data) { set<uint16_t>(offset, data); }
 			inline void set(_In_ fpos_t offset, _In_ const uint32_t data) { set<uint32_t>(offset, data); }
 			inline void set(_In_ fpos_t offset, _In_ const uint64_t data) { set<uint64_t>(offset, data); }
-#if defined(_WIN64) && defined(_NATIVE_SIZE_T_DEFINED)
-			inline void set(_In_ fpos_t offset, _In_ const size_t data) { set<size_t>(offset, data); }
-#endif
 			inline void set(_In_ fpos_t offset, _In_ const float data) { set<float>(offset, data); }
 			inline void set(_In_ fpos_t offset, _In_ const double data) { set<double>(offset, data); }
 			inline void set(_In_ fpos_t offset, _In_ const char data) { set<char>(offset, data); }
@@ -3421,9 +3425,6 @@ namespace stdex
 			inline void get(_In_ fpos_t offset, _Out_ uint16_t & data) { get<uint16_t>(offset, data); }
 			inline void get(_In_ fpos_t offset, _Out_ uint32_t & data) { get<uint32_t>(offset, data); }
 			inline void get(_In_ fpos_t offset, _Out_ uint64_t & data) { get<uint64_t>(offset, data); }
-#if defined(_WIN64) && defined(_NATIVE_SIZE_T_DEFINED)
-			inline void get(_In_ fpos_t offset, _Out_ size_t & data) { get<size_t>(offset, data); }
-#endif
 			inline void get(_In_ fpos_t offset, _Out_ float& data) { get<float>(offset, data); }
 			inline void get(_In_ fpos_t offset, _Out_ double& data) { get<double>(offset, data); }
 			inline void get(_In_ fpos_t offset, _Out_ char& data) { get<char>(offset, data); }
@@ -3447,10 +3448,6 @@ namespace stdex
 			inline memory_file& operator >>(_Out_ uint32_t & data) { return read_data(data); }
 			inline memory_file& operator <<(_In_ const uint64_t data) { return write_data(data); }
 			inline memory_file& operator >>(_Out_ uint64_t & data) { return read_data(data); }
-#if defined(_WIN64) && defined(_NATIVE_SIZE_T_DEFINED)
-			inline memory_file& operator <<(_In_ const size_t data) { return write_data(data); }
-			inline memory_file& operator >>(_Out_ size_t & data) { return read_data(data); }
-#endif
 			inline memory_file& operator <<(_In_ const float data) { return write_data(data); }
 			inline memory_file& operator >>(_Out_ float& data) { return read_data(data); }
 			inline memory_file& operator <<(_In_ const double data) { return write_data(data); }

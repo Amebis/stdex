@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "sal.hpp"
+#include "compat.hpp"
 #include "stream.hpp"
 #include <ios>
 #include <istream>

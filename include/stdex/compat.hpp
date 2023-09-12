@@ -1,13 +1,15 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2022-2023 Amebis
 */
 
 #pragma once
 
+#include <stddef.h>
 #ifdef _WIN32
 #include <sal.h>
 #endif
+#include <type_traits>
 
 #ifndef _In_
 #define _In_
@@ -30,8 +32,14 @@
 #ifndef _In_z_
 #define _In_z_
 #endif
+#ifndef _In_opt_z_
+#define _In_opt_z_
+#endif
 #ifndef _In_z_count_
 #define _In_z_count_(p)
+#endif
+#ifndef _In_reads_
+#define _In_reads_(p)
 #endif
 #ifndef _In_reads_or_z_
 #define _In_reads_or_z_(p)
@@ -39,12 +47,21 @@
 #ifndef _In_reads_or_z_opt_
 #define _In_reads_or_z_opt_(p)
 #endif
+#ifndef _In_reads_bytes_opt_
+#define _In_reads_bytes_opt_(p)
+#endif
 #ifndef _Printf_format_string_params_
 #define _Printf_format_string_params_(n)
 #endif
 
 #ifndef _Inout_
 #define _Inout_
+#endif
+#ifndef _Inout_opt_
+#define _Inout_opt_
+#endif
+#ifndef _Inout_cap_
+#define _Inout_cap_(p)
 #endif
 
 #ifndef _Use_decl_annotations_
@@ -57,18 +74,46 @@
 #ifndef _Out_opt_
 #define _Out_opt_
 #endif
+#ifndef _Out_z_cap_
+#define _Out_z_cap_(p)
+#endif
+#ifndef _Out_writes_
+#define _Out_writes_(p)
+#endif
+#ifndef _Out_writes_bytes_
+#define _Out_writes_bytes_(p)
+#endif
 #ifndef _Out_writes_z_
 #define _Out_writes_z_(p)
+#endif
+#ifndef _Out_writes_bytes_to_opt_
+#define _Out_writes_bytes_to_opt_(p, q)
 #endif
 
 #ifndef _Success_
 #define _Success_(p)
 #endif
+#ifndef _Ret_maybenull_z_
+#define _Ret_maybenull_z_
+#endif
 #ifndef _Ret_notnull_
 #define _Ret_notnull_
 #endif
+#ifndef _Ret_z_
+#define _Ret_z_
+#endif
 #ifndef _Must_inspect_result_
 #define _Must_inspect_result_
+#endif
+#ifndef _Check_return_
+#define _Check_return_
+#endif
+#ifndef _Post_maybez_
+#define _Post_maybez_
+#endif
+
+#ifndef _Analysis_assume_
+#define _Analysis_assume_(p)
 #endif
 
 #ifndef _Likely_
@@ -98,3 +143,19 @@
 #else
 #define _Unreferenced_(x)
 #endif
+
+#ifndef _WIN32
+template <typename T, size_t N>
+size_t _countof(T (&arr)[N])
+{
+	return std::extent<T[N]>::value;
+}
+#endif
+
+#ifdef __APPLE__
+#define off64_t off_t
+#define lseek64 lseek
+#define lockf64 lockf
+#define ftruncate64 ftruncate
+#endif
+
