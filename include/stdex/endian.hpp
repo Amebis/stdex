@@ -101,8 +101,18 @@ namespace stdex
 	inline int16_t byteswap(_In_ const int16_t value) { return byteswap(static_cast<uint16_t>(value)); }
 	inline int32_t byteswap(_In_ const int32_t value) { return byteswap(static_cast<uint32_t>(value)); }
 	inline int64_t byteswap(_In_ const int64_t value) { return byteswap(static_cast<uint64_t>(value)); }
-	inline float byteswap(_In_ const float value) { return byteswap(*reinterpret_cast<const uint32_t*>(&value)); }
-	inline double byteswap(_In_ const double value) { return byteswap(*reinterpret_cast<const uint64_t*>(&value)); }
+
+	inline float byteswap(_In_ const float value)
+	{
+		uint32_t r = byteswap(*reinterpret_cast<const uint32_t*>(&value));
+		return *reinterpret_cast<float*>(&r);
+	}
+
+	inline double byteswap(_In_ const double value)
+	{
+		uint64_t r = byteswap(*reinterpret_cast<const uint64_t*>(&value));
+		return *reinterpret_cast<double*>(&r);
+	}
 
 	inline void byteswap(_Inout_ uint8_t* value) { assert(value); *value = byteswap(*value); }
 	inline void byteswap(_Inout_ uint16_t* value) { assert(value); *value = byteswap(*value); }

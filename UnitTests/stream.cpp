@@ -112,7 +112,7 @@ namespace UnitTests
 			sstring filename[count];
 			stdex::stream::fpos_t start[count];
 			for (uint32_t i = 0; i < count; ++i) {
-				filename[i] = filepath + sprintf(_T("stdex-stream-open_close%zu.tmp"), NULL, i);
+				filename[i] = filepath + sprintf(_T("stdex-stream-open_close%u.tmp"), NULL, i);
 				dat.open(filename[i].c_str(), mode_for_reading | mode_for_writing | share_none | mode_preserve_existing | mode_binary);
 				Assert::IsTrue(dat.ok());
 				start[i] = dat.tell();
