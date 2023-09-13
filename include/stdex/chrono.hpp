@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023 Amebis
 */
@@ -6,10 +6,12 @@
 #pragma once
 
 #include "compat.hpp"
+#include "math.hpp"
 #include "system.hpp"
 #include "string.hpp"
 #include <stdint.h>
 #include <chrono>
+#include <ctime>
 #include <memory>
 #include <stdexcept>
 
@@ -46,15 +48,15 @@ namespace stdex {
 			///
 			/// Returns time_t from time point
 			///
-			static __time64_t to_time_t(_In_ const time_point tp) noexcept
+			static std::time_t to_time_t(_In_ const time_point tp) noexcept
 			{
-				return static_cast<__time64_t>(tp.time_since_epoch().count()) * 86400 - 210866803200;
+				return static_cast<std::time_t>(tp.time_since_epoch().count()) * 86400 - 210866803200;
 			}
 
 			///
 			/// Returns time point from time_t
 			///
-			static time_point from_time_t(_In_ __time64_t t) noexcept
+			static time_point from_time_t(_In_ std::time_t t) noexcept
 			{
 				return time_point(duration(static_cast<rep>((t + 210866803200) / 86400)));
 			}
@@ -205,7 +207,7 @@ namespace stdex {
 			///
 			/// Returns time_t from time point
 			///
-			static __time64_t to_time_t(_In_ const time_point tp) noexcept
+			static std::time_t to_time_t(_In_ const time_point tp) noexcept
 			{
 				return tp.time_since_epoch().count() / p_second - 210866803200;
 			}
@@ -213,7 +215,7 @@ namespace stdex {
 			///
 			/// Returns time point from time_t
 			///
-			static time_point from_time_t(_In_ __time64_t t) noexcept
+			static time_point from_time_t(_In_ std::time_t t) noexcept
 			{
 				return time_point(duration((static_cast<rep>(t) + 210866803200) * p_second));
 			}
@@ -254,7 +256,7 @@ namespace stdex {
 			///
 			static time_point from_system(_In_ const struct timespec& t) noexcept
 			{
-				return from_time_t(t.tv_sec) + t.tv_nsec / 1000;
+				return time_point(duration(static_cast<rep>(from_time_t(t.tv_sec).time_since_epoch().count() + t.tv_nsec / 1000)));
 			}
 #endif
 
