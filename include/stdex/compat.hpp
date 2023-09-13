@@ -102,7 +102,7 @@
 #define _Out_writes_bytes_(p)
 #endif
 #ifndef _Out_writes_to_
-#define _Out_writes_to_(p)
+#define _Out_writes_to_(p, q)
 #endif
 #ifndef _Out_writes_all_
 #define _Out_writes_all_(p)
