@@ -41,6 +41,15 @@
 #ifndef _In_reads_
 #define _In_reads_(p)
 #endif
+#ifndef _In_reads_z_
+#define _In_reads_z_(p)
+#endif
+#ifndef _In_reads_opt_
+#define _In_reads_opt_(p)
+#endif
+#ifndef _In_reads_opt_z_
+#define _In_reads_opt_z_(p)
+#endif
 #ifndef _In_reads_or_z_
 #define _In_reads_or_z_(p)
 #endif
@@ -63,6 +72,9 @@
 #ifndef _Inout_cap_
 #define _Inout_cap_(p)
 #endif
+#ifndef _Inout_count_
+#define _Inout_count_(p)
+#endif
 
 #ifndef _Use_decl_annotations_
 #define _Use_decl_annotations_
@@ -80,8 +92,20 @@
 #ifndef _Out_writes_
 #define _Out_writes_(p)
 #endif
+#ifndef _Out_writes_opt_
+#define _Out_writes_opt_(p)
+#endif
+#ifndef _Out_writes_opt_z_
+#define _Out_writes_opt_z_(p)
+#endif
 #ifndef _Out_writes_bytes_
 #define _Out_writes_bytes_(p)
+#endif
+#ifndef _Out_writes_to_
+#define _Out_writes_to_(p)
+#endif
+#ifndef _Out_writes_all_
+#define _Out_writes_all_(p)
 #endif
 #ifndef _Out_writes_z_
 #define _Out_writes_z_(p)
@@ -92,6 +116,9 @@
 
 #ifndef _Success_
 #define _Success_(p)
+#endif
+#ifndef _Ret_maybenull_
+#define _Ret_maybenull_
 #endif
 #ifndef _Ret_maybenull_z_
 #define _Ret_maybenull_z_
@@ -110,6 +137,9 @@
 #endif
 #ifndef _Post_maybez_
 #define _Post_maybez_
+#endif
+#ifndef _Null_terminated_
+#define _Null_terminated_
 #endif
 
 #ifndef _Analysis_assume_
