@@ -31,6 +31,14 @@
 #endif
 #endif
 
+#if defined(_WIN32)
+#define PATH_SEPARATOR '\\'
+#define PATH_SEPARATOR_STR "\\"
+#else
+#define PATH_SEPARATOR '/'
+#define PATH_SEPARATOR_STR "/"
+#endif
+
 namespace stdex
 {
 	///
