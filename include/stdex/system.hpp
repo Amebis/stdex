@@ -6,7 +6,9 @@
 #pragma once
 
 #ifdef _WIN32
+#ifndef NOMINMAX
 #define NOMINMAX // Collides with std::min/max
+#endif
 #include <windows.h>
 #include <intsafe.h>
 #include <oaidl.h>
