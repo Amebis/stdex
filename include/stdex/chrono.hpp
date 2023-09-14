@@ -76,7 +76,7 @@ namespace stdex {
 			static time_point from_system(_In_ const FILETIME& t) noexcept
 			{
 				uint64_t x = ((static_cast<uint64_t>(t.dwHighDateTime)) << 32) | t.dwLowDateTime;
-				return time_point(duration(static_cast<rep>(x / 86400000 + 2305814))); // Convert from 100 ns to 1-day interval and adjust epoch
+				return time_point(duration(static_cast<rep>(x / 864000000000 + 2305814))); // Convert from 100 ns to 1-day interval and adjust epoch
 			}
 
 			///
@@ -236,8 +236,8 @@ namespace stdex {
 			///
 			static time_point from_system(_In_ const FILETIME& t) noexcept
 			{
-				rep x = ((static_cast<rep>(t.dwHighDateTime)) << 32) | t.dwLowDateTime;
-				return time_point(duration(x / 10000 + 199222329600000)); // Convert from 100 ns to 1 ms interval and adjust epoch
+				uint64_t x = ((static_cast<uint64_t>(t.dwHighDateTime)) << 32) | t.dwLowDateTime;
+				return time_point(duration(static_cast<rep>(x / 10000 + 199222329600000))); // Convert from 100 ns to 1 ms interval and adjust epoch
 			}
 
 			///
