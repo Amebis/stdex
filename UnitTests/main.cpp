@@ -28,6 +28,7 @@ int main(int argc, const char * argv[])
 		UnitTests::stream::open_close();
 		UnitTests::unicode::str2wstr();
 		UnitTests::unicode::wstr2str();
+		UnitTests::unicode::charset_encoder();
 		std::cout << "PASS\n";
 		return 0;
 	}
