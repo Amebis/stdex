@@ -107,8 +107,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>            Assert::AreEqual(</div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>                L<span class="stringliteral">&quot;Th\u00ed\u0161 i\u22c5 a te\u0073\u0304t. 😀😅&quot;</span>,</div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>                stdex::str2wstr(<span class="stringliteral">&quot;Thíš i⋅ a tes̄t. 😀😅&quot;</span>, stdex::charset_id::utf8).c_str());</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>            <span class="keywordtype">string</span> src;</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>            wstring dst;</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>            std::string src;</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>            std::wstring dst;</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>            <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; 2000; i++) {</div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>                src += <span class="stringliteral">&quot;🐔Test🐮\r\n&quot;</span>;</div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>                dst += L<span class="stringliteral">&quot;🐔Test🐮\r\n&quot;</span>;</div>
@@ -130,8 +130,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>            Assert::AreEqual(</div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>                <span class="stringliteral">&quot;Th\xc3\xad\xc5\xa1 i\xe2\x8b\x85 a tes\xcc\x84t. \xf0\x9f\x98\x80\xf0\x9f\x98\x85&quot;</span>,</div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>                stdex::wstr2str(L<span class="stringliteral">&quot;Thíš i⋅ a tes̄t. 😀😅&quot;</span>, stdex::charset_id::utf8).c_str());</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>            wstring src;</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>            <span class="keywordtype">string</span> dst;</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>            std::wstring src;</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>            std::string dst;</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>            <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; 2000; i++) {</div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>                src += L<span class="stringliteral">&quot;🐔Test🐮\r\n&quot;</span>;</div>
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>                dst += <span class="stringliteral">&quot;🐔Test🐮\r\n&quot;</span>;</div>
@@ -155,7 +155,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>            Assert::AreEqual(</div>
 <div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>                <span class="stringliteral">&quot;Thíš i· a teşt.&quot;</span>,</div>
 <div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>                win1250_to_utf8.convert(<span class="stringliteral">&quot;Th\xed\x9a i\xb7 a te\xbat.&quot;</span>).c_str());</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>            <span class="keywordtype">string</span> src, dst;</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>            std::string src, dst;</div>
 <div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>            <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; 1000; i++) {</div>
 <div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>                src += <span class="stringliteral">&quot;V ko\x9eu\x9a\xe8ku zlobnega mizarja stopiclja fant in kli\xe8&quot;</span> <span class="stringliteral">&quot;e 0123456789.\r\n&quot;</span>;</div>
 <div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>                dst += <span class="stringliteral">&quot;V kožuščku zlobnega mizarja stopiclja fant in kliče 0123456789.\r\n&quot;</span>;</div>
@@ -174,7 +174,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Sep 14 2023 11:01:37 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Thu Sep 14 2023 13:43:29 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
