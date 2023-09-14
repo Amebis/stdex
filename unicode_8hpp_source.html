@@ -177,7 +177,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>                <span class="keywordflow">return</span>;</div>
 <div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>            }</div>
 <div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>            <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<span class="keyword">sizeof</span>(T_from) == <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>) &amp;&amp; <span class="keyword">sizeof</span>(T_to) == <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>)) {</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>            <span class="keywordflow">if</span> _Constexpr_ (<span class="keyword">sizeof</span>(T_from) == <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>) &amp;&amp; <span class="keyword">sizeof</span>(T_to) == <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>)) {</div>
 <div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>                assert(count_src &lt; INT_MAX || count_src == SIZE_MAX);</div>
 <div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span> </div>
 <div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>                <span class="comment">// Try to convert to stack buffer first.</span></div>
@@ -200,7 +200,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>                <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;MultiByteToWideChar failed&quot;</span>);</div>
 <div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>            }</div>
 <div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span> </div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>            <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<span class="keyword">sizeof</span>(T_from) == <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>) &amp;&amp; <span class="keyword">sizeof</span>(T_to) == <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>)) {</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>            <span class="keywordflow">if</span> _Constexpr_ (<span class="keyword">sizeof</span>(T_from) == <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>) &amp;&amp; <span class="keyword">sizeof</span>(T_to) == <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>)) {</div>
 <div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>                assert(count_src &lt; INT_MAX || count_src == SIZE_MAX);</div>
 <div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span> </div>
 <div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>                <span class="comment">// Try to convert to stack buffer first.</span></div>
@@ -223,7 +223,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>                <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;WideCharToMultiByte failed&quot;</span>);</div>
 <div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>            }</div>
 <div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span> </div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>            <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<span class="keyword">sizeof</span>(T_from) == <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>) &amp;&amp; <span class="keyword">sizeof</span>(T_to) == <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>)) {</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>            <span class="keywordflow">if</span> _Constexpr_ (<span class="keyword">sizeof</span>(T_from) == <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>) &amp;&amp; <span class="keyword">sizeof</span>(T_to) == <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>)) {</div>
 <div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>                assert(count_src &lt; INT_MAX || count_src == SIZE_MAX);</div>
 <div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span> </div>
 <div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>                <span class="comment">// Try to convert to stack buffer first.</span></div>
@@ -576,7 +576,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Sep 14 2023 10:28:30 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Thu Sep 14 2023 11:01:37 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
