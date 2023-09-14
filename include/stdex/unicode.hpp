@@ -101,7 +101,7 @@ namespace stdex
 				return;
 			}
 
-			if constexpr (sizeof(T_from) == sizeof(char) && sizeof(T_to) == sizeof(wchar_t)) {
+			if _Constexpr_ (sizeof(T_from) == sizeof(char) && sizeof(T_to) == sizeof(wchar_t)) {
 				assert(count_src < INT_MAX || count_src == SIZE_MAX);
 
 				// Try to convert to stack buffer first.
@@ -124,7 +124,7 @@ namespace stdex
 				throw std::runtime_error("MultiByteToWideChar failed");
 			}
 
-			if constexpr (sizeof(T_from) == sizeof(wchar_t) && sizeof(T_to) == sizeof(char)) {
+			if _Constexpr_ (sizeof(T_from) == sizeof(wchar_t) && sizeof(T_to) == sizeof(char)) {
 				assert(count_src < INT_MAX || count_src == SIZE_MAX);
 
 				// Try to convert to stack buffer first.
@@ -147,7 +147,7 @@ namespace stdex
 				throw std::runtime_error("WideCharToMultiByte failed");
 			}
 
-			if constexpr (sizeof(T_from) == sizeof(char) && sizeof(T_to) == sizeof(char)) {
+			if _Constexpr_ (sizeof(T_from) == sizeof(char) && sizeof(T_to) == sizeof(char)) {
 				assert(count_src < INT_MAX || count_src == SIZE_MAX);
 
 				// Try to convert to stack buffer first.
