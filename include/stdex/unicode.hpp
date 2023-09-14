@@ -86,15 +86,16 @@ namespace stdex
 			_Inout_ std::basic_string<T_to, _Traits_to, _Alloc_to> &dst,
 			_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src)
 		{
-			constexpr DWORD dwFlagsMBWC = MB_PRECOMPOSED;
-			constexpr DWORD dwFlagsWCMB = 0;
-			constexpr LPCCH lpDefaultChar = NULL;
-
 			assert(src || !count_src);
 			count_src = stdex::strnlen(src, count_src);
 			if (!count_src) _Unlikely_
 				return;
+
 #ifdef _WIN32
+			constexpr DWORD dwFlagsMBWC = MB_PRECOMPOSED;
+			constexpr DWORD dwFlagsWCMB = 0;
+			constexpr LPCCH lpDefaultChar = NULL;
+
 			_Analysis_assume_(src);
 			if (m_from == m_to) _Unlikely_{
 				dst.append(reinterpret_cast<const T_to*>(src), count_src);
@@ -195,17 +196,21 @@ namespace stdex
 				throw std::runtime_error("MultiByteToWideChar failed");
 			}
 #else
+			dst.reserve(dst.size() + count_src);
 			T_to buf[1024 / sizeof(T_to)];
 			size_t src_size = stdex::mul(sizeof(T_from), count_src);
-			do {
+			for (;;) {
 				T_to* output = &buf[0];
 				size_t output_size = sizeof(buf);
 				errno = 0;
-				iconv(m_handle, (char**)&src, &src_size, (char**)&output, &output_size);
-				if (errno)
-					throw std::runtime_error("iconv failed");
+				iconv(m_handle, const_cast<char**>(reinterpret_cast<const char**>(&src)), &src_size, reinterpret_cast<char**>(&output), &output_size);
 				dst.append(buf, reinterpret_cast<T_to*>(reinterpret_cast<char*>(buf) + sizeof(buf) - output_size));
-			} while (src_size);
+				if (!errno)
+					break;
+				if (errno == E2BIG)
+					continue;
+				throw std::runtime_error("iconv failed");
+			}
 #endif
 		}
 
@@ -353,10 +358,10 @@ namespace stdex
 				"CP1250",   // windows1250
 				"CP1251",   // windows1251
 				"CP1252",   // windows1252
-			}
+			};
 			return
 				charset == charset_id::system ? nl_langinfo(LC_CTYPE) :
-				encodings[static_cast<std::underlying_type_t<charset_id>>(charset))];
+				encodings[static_cast<std::underlying_type_t<charset_id>>(charset)];
 		}
 
 	protected:

@@ -14,6 +14,7 @@
 #include <assert.h>
 #include <stdarg.h>
 #include <stdint.h>
+#include <math.h>
 #if defined(_WIN32)
 #ifndef _WINSOCKAPI_
 #include <winsock2.h>

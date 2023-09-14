@@ -23,8 +23,8 @@ namespace UnitTests
 			Assert::AreEqual(
 				L"Th\u00ed\u0161 i\u22c5 a te\u0073\u0304t. 😀😅",
 				stdex::str2wstr("Thíš i⋅ a tes̄t. 😀😅", stdex::charset_id::utf8).c_str());
-			string src;
-			wstring dst;
+			std::string src;
+			std::wstring dst;
 			for (size_t i = 0; i < 2000; i++) {
 				src += "🐔Test🐮\r\n";
 				dst += L"🐔Test🐮\r\n";
@@ -46,8 +46,8 @@ namespace UnitTests
 			Assert::AreEqual(
 				"Th\xc3\xad\xc5\xa1 i\xe2\x8b\x85 a tes\xcc\x84t. \xf0\x9f\x98\x80\xf0\x9f\x98\x85",
 				stdex::wstr2str(L"Thíš i⋅ a tes̄t. 😀😅", stdex::charset_id::utf8).c_str());
-			wstring src;
-			string dst;
+			std::wstring src;
+			std::string dst;
 			for (size_t i = 0; i < 2000; i++) {
 				src += L"🐔Test🐮\r\n";
 				dst += "🐔Test🐮\r\n";
@@ -71,7 +71,7 @@ namespace UnitTests
 			Assert::AreEqual(
 				"Thíš i· a teşt.",
 				win1250_to_utf8.convert("Th\xed\x9a i\xb7 a te\xbat.").c_str());
-			string src, dst;
+			std::string src, dst;
 			for (size_t i = 0; i < 1000; i++) {
 				src += "V ko\x9eu\x9a\xe8ku zlobnega mizarja stopiclja fant in kli\xe8" "e 0123456789.\r\n";
 				dst += "V kožuščku zlobnega mizarja stopiclja fant in kliče 0123456789.\r\n";
