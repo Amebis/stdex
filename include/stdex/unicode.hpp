@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023 Amebis
 */
@@ -326,6 +326,32 @@ namespace stdex
 		{
 #ifndef _WIN32
 			iconv(m_handle, NULL, NULL, NULL, NULL);
+#endif
+		}
+
+		static charset_id system_charset()
+		{
+#ifdef _WIN32
+			return static_cast<charset_id>(GetACP());
+#else
+			const char* lctype = nl_langinfo(LC_CTYPE);
+			if (strcmp(lctype, "UTF-8") == 0) return charset_id::utf8;
+			if (strcmp(lctype, "UTF-16") == 0) return charset_id::utf16;
+#if BYTE_ORDER == BIG_ENDIAN
+			if (strcmp(lctype, "UTF-16BE") == 0) return charset_id::utf16;
+#else
+			if (strcmp(lctype, "UTF-16LE") == 0) return charset_id::utf16;
+#endif
+			if (strcmp(lctype, "UTF-32") == 0) return charset_id::utf32;
+#if BYTE_ORDER == BIG_ENDIAN
+			if (strcmp(lctype, "UTF-32BE") == 0) return charset_id::utf32;
+#else
+			if (strcmp(lctype, "UTF-32LE") == 0) return charset_id::utf32;
+#endif
+			if (strcmp(lctype, "CP1250") == 0) return charset_id::windows1250;
+			if (strcmp(lctype, "CP1251") == 0) return charset_id::windows1251;
+			if (strcmp(lctype, "CP1252") == 0) return charset_id::windows1252;
+			return charset_id::system;
 #endif
 		}
 
