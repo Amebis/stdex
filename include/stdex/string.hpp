@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2016-2023 Amebis
 */
@@ -27,9 +27,26 @@ namespace stdex
 
 	inline locale_t create_locale(_In_ int category, _In_z_ const char* locale) { return _create_locale(category, locale); }
 	inline locale_t create_locale(_In_ int category, _In_z_ const wchar_t* locale) { return _wcreate_locale(category, locale); }
-	inline void free_locale(_In_opt_ _locale_t locale) { _free_locale(locale); }
+	inline void free_locale(_In_opt_ locale_t locale) { _free_locale(locale); }
 #else
 	using locale_t = ::locale_t;
+
+	inline locale_t create_locale(_In_ int category, _In_z_ const char* locale)
+	{
+		int mask = 0;
+		switch (category) {
+		case LC_ALL     : mask = LC_ALL_MASK     ; break;
+		case LC_COLLATE : mask = LC_COLLATE_MASK ; break;
+		case LC_CTYPE   : mask = LC_CTYPE_MASK   ; break;
+		case LC_MESSAGES: mask = LC_MESSAGES_MASK; break;
+		case LC_MONETARY: mask = LC_MONETARY_MASK; break;
+		case LC_NUMERIC : mask = LC_NUMERIC_MASK ; break;
+		case LC_TIME    : mask = LC_TIME_MASK    ; break;
+		}
+		return newlocale(mask, locale, LC_GLOBAL_LOCALE);
+	}
+
+	inline void free_locale(_In_opt_ locale_t locale) { freelocale(locale); }
 #endif
 
 	///
@@ -42,11 +59,7 @@ namespace stdex
 		///
 		void operator()(_In_ locale_t locale) const
 		{
-#ifdef _WIN32
 			free_locale(locale);
-#else
-			freelocale(locale);
-#endif
 		}
 	};
 
@@ -64,13 +77,7 @@ namespace stdex
 	///
 	/// Reusable C locale
 	///
-#if defined(_WIN32)
-	static locale locale_C(_create_locale(LC_ALL, "C"));
-#elif defined(__APPLE__)
-	static locale locale_C(newlocale(LC_ALL_MASK, "C", LC_GLOBAL_LOCALE));
-#else
-#error TODO
-#endif
+	static locale locale_C(create_locale(LC_ALL, "C"));
 
 	///
 	/// UTF-16 code unit
