@@ -334,7 +334,7 @@ namespace stdex
 #ifdef _WIN32
 			return static_cast<charset_id>(GetACP());
 #else
-			const char* lctype = nl_langinfo(LC_CTYPE);
+			const char* lctype = nl_langinfo(CODESET);
 			if (strcmp(lctype, "UTF-8") == 0) return charset_id::utf8;
 			if (strcmp(lctype, "UTF-16") == 0) return charset_id::utf16;
 #if BYTE_ORDER == BIG_ENDIAN
@@ -386,7 +386,7 @@ namespace stdex
 				"CP1252",   // windows1252
 			};
 			return
-				charset == charset_id::system ? nl_langinfo(LC_CTYPE) :
+				charset == charset_id::system ? nl_langinfo(CODESET) :
 				encodings[static_cast<std::underlying_type_t<charset_id>>(charset)];
 		}
 
