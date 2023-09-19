@@ -187,8 +187,9 @@ namespace UnitTests
 			}
 
 			{
-				wspace_cu space;
-				wiban p(make_shared_no_delete(&space));
+				std::locale locale_slSI("sl_SI");
+				wspace_cu space(false, locale_slSI);
+				wiban p(make_shared_no_delete(&space), locale_slSI);
 				Assert::IsTrue(p.match(L"SI56023120015226972", 0, SIZE_MAX));
 				Assert::IsTrue(p.is_valid);
 				Assert::AreEqual(L"SI", p.country);
@@ -212,8 +213,9 @@ namespace UnitTests
 			}
 
 			{
-				wspace_cu space;
-				wcreditor_reference p(make_shared_no_delete(&space));
+				std::locale locale_slSI("sl_SI");
+				wspace_cu space(false, locale_slSI);
+				wcreditor_reference p(make_shared_no_delete(&space), locale_slSI);
 				Assert::IsTrue(p.match(L"RF18539007547034", 0, SIZE_MAX));
 				Assert::IsTrue(p.is_valid);
 				Assert::AreEqual(L"18", p.check_digits);
@@ -235,8 +237,9 @@ namespace UnitTests
 			}
 
 			{
-				wspace_cu space;
-				wsi_reference p(make_shared_no_delete(&space));
+				std::locale locale_slSI("sl_SI");
+				wspace_cu space(false, locale_slSI);
+				wsi_reference p(make_shared_no_delete(&space), locale_slSI);
 				Assert::IsTrue(p.match(L"SI121234567890120", 0, SIZE_MAX));
 				Assert::IsTrue(p.is_valid);
 				Assert::AreEqual(L"12", p.model);
@@ -301,8 +304,9 @@ namespace UnitTests
 			}
 
 			{
-				sgml_space_cp space;
-				sgml_iban p(make_shared_no_delete(&space));
+				std::locale locale_slSI("sl_SI");
+				sgml_space_cp space(false, locale_slSI);
+				sgml_iban p(make_shared_no_delete(&space), locale_slSI);
 				Assert::IsTrue(p.match("SI56023120015226972", 0, SIZE_MAX));
 				Assert::IsTrue(p.is_valid);
 				Assert::AreEqual("SI", p.country);
@@ -326,8 +330,9 @@ namespace UnitTests
 			}
 
 			{
-				sgml_space_cp space;
-				sgml_creditor_reference p(make_shared_no_delete(&space));
+				std::locale locale_slSI("sl_SI");
+				sgml_space_cp space(false, locale_slSI);
+				sgml_creditor_reference p(make_shared_no_delete(&space), locale_slSI);
 				Assert::IsTrue(p.match("RF18539007547034", 0, SIZE_MAX));
 				Assert::IsTrue(p.is_valid);
 				Assert::AreEqual("18", p.check_digits);
@@ -349,8 +354,9 @@ namespace UnitTests
 			}
 
 			{
-				sgml_space_cp space;
-				sgml_si_reference p(make_shared_no_delete(&space));
+				std::locale locale_slSI("sl_SI");
+				sgml_space_cp space(false, locale_slSI);
+				sgml_si_reference p(make_shared_no_delete(&space), locale_slSI);
 				Assert::IsTrue(p.match("SI121234567890120", 0, SIZE_MAX));
 				Assert::IsTrue(p.is_valid);
 				Assert::AreEqual("12", p.model);

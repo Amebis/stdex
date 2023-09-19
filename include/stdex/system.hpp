@@ -117,7 +117,7 @@ namespace stdex
 			return *this;
 		}
 
-		virtual ~sys_object()
+		virtual ~sys_object() noexcept(false)
 		{
 			if (m_h != invalid_handle)
 				close(m_h);

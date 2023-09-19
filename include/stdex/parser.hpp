@@ -414,7 +414,7 @@ namespace stdex
 		};
 
 		using space_cu = basic_space_cu<char>;
-		using wspace_cu = basic_space_cu<wchar_t>;
+			using wspace_cu = basic_space_cu<wchar_t>;
 #ifdef _UNICODE
 		using tspace_cu = wspace_cu;
 #else
@@ -4692,18 +4692,6 @@ namespace stdex
 				assert(text || start >= end);
 				const auto& ctype = std::use_facet<std::ctype<T>>(this->m_locale);
 				const bool case_insensitive = flags & match_case_insensitive ? true : false;
-
-				this->interval.end = start;
-				for (size_t i = 0; i < 2; ++i, ++this->interval.end) {
-					if (this->interval.end >= end || !text[this->interval.end])
-						goto error; // incomplete country code
-					T chr = case_insensitive ? ctype.toupper(text[this->interval.end]) : text[this->interval.end];
-					if (chr < 'A' || 'Z' < chr)
-						goto error; // invalid country code
-					this->country[i] = chr;
-				}
-				this->country[2] = 0;
-
 				struct country_t {
 					T country[2];
 					T check_digits[2];
@@ -4818,6 +4806,17 @@ namespace stdex
 					{ { 'X', 'K' }, {}, 20 }, // Kosovo
 				};
 				const country_t* country_desc = nullptr;
+				size_t n;
+
+				this->interval.end = start;
+				for (size_t i = 0; i < 2; ++i, ++this->interval.end) {
+					if (this->interval.end >= end || !text[this->interval.end])
+						goto error; // incomplete country code
+					T chr = case_insensitive ? ctype.toupper(text[this->interval.end]) : text[this->interval.end];
+					if (chr < 'A' || 'Z' < chr)
+						goto error; // invalid country code
+					this->country[i] = chr;
+				}
 				for (size_t l = 0, r = _countof(s_countries);;) {
 					if (l >= r)
 						goto error; // unknown country
@@ -4832,6 +4831,7 @@ namespace stdex
 						break;
 					}
 				}
+				this->country[2] = 0;
 
 				for (size_t i = 0; i < 2; ++i, ++this->interval.end) {
 					if (this->interval.end >= end || text[this->interval.end] < '0' || '9' < text[this->interval.end])
@@ -4844,8 +4844,7 @@ namespace stdex
 					(country_desc->check_digits[1] && this->check_digits[1] != country_desc->check_digits[1]))
 					goto error; // unexpected check digits
 
-				size_t n = 0;
-				for (; ;) {
+				for (n = 0; ;) {
 					if (m_space && m_space->match(text, this->interval.end, end, flags))
 						this->interval.end = m_space->interval.end;
 					for (size_t j = 0; j < 4; ++j) {
@@ -4994,6 +4993,8 @@ namespace stdex
 				assert(text || start >= end);
 				const auto& ctype = std::use_facet<std::ctype<T>>(this->m_locale);
 				const bool case_insensitive = flags & match_case_insensitive ? true : false;
+				size_t n, available, next;
+				uint32_t nominator;
 
 				this->interval.end = start;
 				if (this->interval.end + 1 >= end ||
@@ -5009,8 +5010,7 @@ namespace stdex
 				}
 				this->check_digits[2] = 0;
 
-				size_t n = 0;
-				for (;;) {
+				for (n = 0;;) {
 					if (m_space && m_space->match(text, this->interval.end, end, flags))
 						this->interval.end = m_space->interval.end;
 					for (size_t j = 0; j < 4; ++j) {
@@ -5038,7 +5038,7 @@ namespace stdex
 
 				// Normalize creditor reference.
 				T normalized[47];
-				size_t available = 0;
+				available = 0;
 				for (size_t i = 0; ; ++i) {
 					if (!this->reference[i]) {
 						normalized[available++] = '2'; // R
@@ -5067,8 +5067,7 @@ namespace stdex
 				}
 
 				// Calculate modulo 97.
-				size_t next;
-				uint32_t nominator = stdex::strtou32(normalized, 9, &next, 10);
+				nominator = stdex::strtou32(normalized, 9, &next, 10);
 				for (;;) {
 					nominator %= 97;
 					if (!normalized[next]) {

@@ -1,4 +1,4 @@
-/*
+﻿/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2016-2023 Amebis
 */
@@ -399,6 +399,57 @@ namespace stdex
 		assert(str2 || !count2);
 		auto& collate = std::use_facet<std::collate<T>>(locale);
 		return collate.compare(str1, str1 + count1, str2, str2 + count2);
+	}
+
+	///
+	/// Binary compare two strings case-insensitive
+	///
+	/// \param[in] str1    String 1
+	/// \param[in] str2    String 2
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T1, class T2>
+	inline int stricmp(_In_z_ const T1* str1, _In_z_ const T2* str2, _In_ const std::locale& locale)
+	{
+		assert(str1);
+		assert(str2);
+		size_t i; T1 a; T2 b;
+		const auto& ctype1 = std::use_facet<std::ctype<T1>>(locale);
+		const auto& ctype2 = std::use_facet<std::ctype<T2>>(locale);
+		for (i = 0; (a = ctype1.tolower(str1[i])) | (b = ctype2.tolower(str2[i])); i++) {
+			if (a > b) return +1;
+			if (a < b) return -1;
+		}
+		if (str1[i]) return +1;
+		if (str2[i]) return -1;
+		return 0;
+	}
+
+	///
+	/// Binary compare two strings case-insensitive
+	///
+	/// \param[in] str1    String 1
+	/// \param[in] str2    String 2
+	/// \param[in] count   Code unit count limit
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T1, class T2>
+	inline int strnicmp(_In_reads_or_z_opt_(count) const T1* str1, _In_reads_or_z_opt_(count) const T2* str2, _In_ size_t count, _In_ const std::locale& locale)
+	{
+		assert(str1 || !count);
+		assert(str2 || !count);
+		size_t i; T1 a; T2 b;
+		const auto& ctype1 = std::use_facet<std::ctype<T1>>(locale);
+		const auto& ctype2 = std::use_facet<std::ctype<T2>>(locale);
+		for (i = 0; i < count && ((a = ctype1.tolower(str1[i])) | (b = ctype2.tolower(str2[i]))); i++) {
+			if (a > b) return +1;
+			if (a < b) return -1;
+		}
+		if (i < count && str1[i]) return +1;
+		if (i < count && str2[i]) return -1;
+		return 0;
 	}
 
 	///

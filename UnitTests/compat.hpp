@@ -34,6 +34,14 @@ namespace Assert
 			throw std::runtime_error("not equal");
 	}
 
+	template <class T, size_t N>
+	inline void AreEqual(const T (&a)[N], const T (&b)[N])
+	{
+		for (size_t i = 0; i < N; ++i)
+			if (!(a[i] == b[i]))
+				throw std::runtime_error("not equal");
+	}
+
 	inline void AreEqual(const char* a, const char* b)
 	{
 		if (strcmp(a, b) != 0)

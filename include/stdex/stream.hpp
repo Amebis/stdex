@@ -77,6 +77,8 @@ namespace stdex
 		public:
 			basic(_In_ state_t state = state_t::ok) : m_state(state) {}
 
+			virtual ~basic() noexcept(false) {}
+
 			///
 			/// Reads block of data from the stream
 			///
