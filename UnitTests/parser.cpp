@@ -10,6 +10,17 @@ using namespace stdex;
 using namespace stdex::parser;
 #ifdef _WIN32
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+namespace Microsoft {
+	namespace VisualStudio {
+		namespace CppUnitTestFramework {
+			static std::wstring ToString(const stdex::interval<size_t>& q)
+			{
+				return stdex::sprintf(L"<%zu, %zu>", nullptr, q.start, q.end);
+			}
+		}
+	}
+}
 #endif
 
 namespace UnitTests
@@ -174,6 +185,71 @@ namespace UnitTests
 				Assert::AreEqual((size_t)0, p.interval.start);
 				Assert::AreEqual((size_t)4, p.interval.end);
 			}
+
+			{
+				wspace_cu space;
+				wiban p(make_shared_no_delete(&space));
+				Assert::IsTrue(p.match(L"SI56023120015226972", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::AreEqual(L"SI", p.country);
+				Assert::AreEqual(L"56", p.check_digits);
+				Assert::AreEqual(L"023120015226972", p.bban);
+				Assert::IsTrue(p.match(L"SI56 0231 2001 5226 972", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::AreEqual(L"SI", p.country);
+				Assert::AreEqual(L"56", p.check_digits);
+				Assert::AreEqual(L"023120015226972", p.bban);
+				Assert::IsFalse(p.match(L"si56 0231 2001 5226 972", 0, SIZE_MAX));
+				Assert::IsFalse(p.is_valid);
+				Assert::IsTrue(p.match(L"si56 0231 2001 5226 972", 0, SIZE_MAX, match_case_insensitive));
+				Assert::IsTrue(p.is_valid);
+				Assert::IsTrue(p.match(L"SI56 0231 2001 5226 9720", 0, SIZE_MAX));
+				Assert::IsFalse(p.is_valid);
+				Assert::IsTrue(p.match(L"...SI56 0231 2001 5226 972...", 3, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::IsTrue(p.match(L"SI56 0231 2001 5226 972", 0, SIZE_MAX)); // no-break space
+				Assert::IsTrue(p.is_valid);
+			}
+
+			{
+				wspace_cu space;
+				wcreditor_reference p(make_shared_no_delete(&space));
+				Assert::IsTrue(p.match(L"RF18539007547034", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::AreEqual(L"18", p.check_digits);
+				Assert::AreEqual(L"000000000539007547034", p.reference);
+				Assert::IsTrue(p.match(L"RF18 5390 0754 7034", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::AreEqual(L"18", p.check_digits);
+				Assert::AreEqual(L"000000000539007547034", p.reference);
+				Assert::IsFalse(p.match(L"rf18 5390 0754 7034", 0, SIZE_MAX));
+				Assert::IsFalse(p.is_valid);
+				Assert::IsTrue(p.match(L"rf18 5390 0754 7034", 0, SIZE_MAX, match_case_insensitive));
+				Assert::IsTrue(p.is_valid);
+				Assert::IsTrue(p.match(L"RF18 5390 0754 70340", 0, SIZE_MAX));
+				Assert::IsFalse(p.is_valid);
+				Assert::IsTrue(p.match(L"...RF18 5390 0754 7034...", 3, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::IsTrue(p.match(L"RF18 5390 0754 7034", 0, SIZE_MAX)); // no-break space
+				Assert::IsTrue(p.is_valid);
+			}
+
+			{
+				wspace_cu space;
+				wsi_reference p(make_shared_no_delete(&space));
+				Assert::IsTrue(p.match(L"SI121234567890120", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::AreEqual(L"12", p.model);
+				Assert::AreEqual(stdex::interval<size_t>(4, 17), p.part1.interval);
+				Assert::IsTrue(p.match(L"SI12 1234567890120", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::AreEqual(L"12", p.model);
+				Assert::AreEqual(stdex::interval<size_t>(5, 18), p.part1.interval);
+				Assert::IsFalse(p.match(L"si12 1234567890120", 0, SIZE_MAX));
+				Assert::IsTrue(p.match(L"si12 1234567890120", 0, SIZE_MAX, match_case_insensitive));
+				Assert::IsTrue(p.match(L"...SI12 1234567890120...", 3, SIZE_MAX));
+				Assert::IsTrue(p.match(L"SI12 1234567890120", 0, SIZE_MAX)); // no-break space
+			}
 		}
 
 		TEST_METHOD(sgml_test)
@@ -222,6 +298,71 @@ namespace UnitTests
 				Assert::AreEqual((size_t)2, p.hit_offset);
 				Assert::AreEqual((size_t)2, p.interval.start);
 				Assert::AreEqual((size_t)31, p.interval.end);
+			}
+
+			{
+				sgml_space_cp space;
+				sgml_iban p(make_shared_no_delete(&space));
+				Assert::IsTrue(p.match("SI56023120015226972", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::AreEqual("SI", p.country);
+				Assert::AreEqual("56", p.check_digits);
+				Assert::AreEqual("023120015226972", p.bban);
+				Assert::IsTrue(p.match("SI56 0231 2001 5226 972", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::AreEqual("SI", p.country);
+				Assert::AreEqual("56", p.check_digits);
+				Assert::AreEqual("023120015226972", p.bban);
+				Assert::IsFalse(p.match("si56 0231 2001 5226 972", 0, SIZE_MAX));
+				Assert::IsFalse(p.is_valid);
+				Assert::IsTrue(p.match("si56 0231 2001 5226 972", 0, SIZE_MAX, match_case_insensitive));
+				Assert::IsTrue(p.is_valid);
+				Assert::IsTrue(p.match("SI56 0231 2001 5226 9720", 0, SIZE_MAX));
+				Assert::IsFalse(p.is_valid);
+				Assert::IsTrue(p.match("...SI56 0231 2001 5226 972...", 3, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::IsTrue(p.match("SI56&nbsp;0231&nbsp;2001&nbsp;5226&nbsp;972", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+			}
+
+			{
+				sgml_space_cp space;
+				sgml_creditor_reference p(make_shared_no_delete(&space));
+				Assert::IsTrue(p.match("RF18539007547034", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::AreEqual("18", p.check_digits);
+				Assert::AreEqual("000000000539007547034", p.reference);
+				Assert::IsTrue(p.match("RF18 5390 0754 7034", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::AreEqual("18", p.check_digits);
+				Assert::AreEqual("000000000539007547034", p.reference);
+				Assert::IsFalse(p.match("rf18 5390 0754 7034", 0, SIZE_MAX));
+				Assert::IsFalse(p.is_valid);
+				Assert::IsTrue(p.match("rf18 5390 0754 7034", 0, SIZE_MAX, match_case_insensitive));
+				Assert::IsTrue(p.is_valid);
+				Assert::IsTrue(p.match("RF18 5390 0754 70340", 0, SIZE_MAX));
+				Assert::IsFalse(p.is_valid);
+				Assert::IsTrue(p.match("...RF18 5390 0754 7034...", 3, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::IsTrue(p.match("RF18&nbsp;5390&nbsp;0754&nbsp;7034", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+			}
+
+			{
+				sgml_space_cp space;
+				sgml_si_reference p(make_shared_no_delete(&space));
+				Assert::IsTrue(p.match("SI121234567890120", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::AreEqual("12", p.model);
+				Assert::AreEqual(stdex::interval<size_t>(4, 17), p.part1.interval);
+				Assert::IsTrue(p.match("SI12 1234567890120", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::AreEqual("12", p.model);
+				Assert::AreEqual(stdex::interval<size_t>(5, 18), p.part1.interval);
+				Assert::IsFalse(p.match("si12 1234567890120", 0, SIZE_MAX));
+				Assert::IsTrue(p.match("si12 1234567890120", 0, SIZE_MAX, match_case_insensitive));
+				Assert::IsTrue(p.match("...SI12 1234567890120...", 3, SIZE_MAX));
+				Assert::IsTrue(p.match("SI12&nbsp;1234567890120", 0, SIZE_MAX));
 			}
 		}
 

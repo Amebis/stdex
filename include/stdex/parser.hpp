@@ -4663,6 +4663,885 @@ namespace stdex
 		using sgml_phone_number = basic_phone_number<char>;
 
 		///
+		/// Test for International Bank Account Number
+		///
+		/// \sa [International Bank Account Number](https://en.wikipedia.org/wiki/International_Bank_Account_Number)
+		///
+		template <class T>
+		class basic_iban : public basic_parser<T>
+		{
+		public:
+			basic_iban(
+				_In_ const std::shared_ptr<basic_parser<T>>& space,
+				_In_ const std::locale& locale = std::locale()) :
+				basic_parser<T>(locale),
+				m_space(space)
+			{
+				this->country[0] = 0;
+				this->check_digits[0] = 0;
+				this->bban[0] = 0;
+				this->is_valid = false;
+			}
+
+			virtual bool match(
+				_In_reads_or_z_(end) const T* text,
+				_In_ size_t start = 0,
+				_In_ size_t end = (size_t)-1,
+				_In_ int flags = match_default)
+			{
+				assert(text || start >= end);
+				const auto& ctype = std::use_facet<std::ctype<T>>(this->m_locale);
+				const bool case_insensitive = flags & match_case_insensitive ? true : false;
+
+				this->interval.end = start;
+				for (size_t i = 0; i < 2; ++i, ++this->interval.end) {
+					if (this->interval.end >= end || !text[this->interval.end])
+						goto error; // incomplete country code
+					T chr = case_insensitive ? ctype.toupper(text[this->interval.end]) : text[this->interval.end];
+					if (chr < 'A' || 'Z' < chr)
+						goto error; // invalid country code
+					this->country[i] = chr;
+				}
+				this->country[2] = 0;
+
+				struct country_t {
+					T country[2];
+					T check_digits[2];
+					size_t length;
+				};
+				static const country_t s_countries[] = {
+					{ { 'A', 'D' }, {}, 24 }, // Andorra
+					{ { 'A', 'E' }, {}, 23 }, // United Arab Emirates
+					{ { 'A', 'L' }, {}, 28 }, // Albania
+					{ { 'A', 'O' }, {}, 25 }, // Angola
+					{ { 'A', 'T' }, {}, 20 }, // Austria
+					{ { 'A', 'Z' }, {}, 28 }, // Azerbaijan
+					{ { 'B', 'A' }, { '3', '9' }, 20}, // Bosnia and Herzegovina
+					{ { 'B', 'E' }, {}, 16 }, // Belgium
+					{ { 'B', 'F' }, {}, 28 }, // Burkina Faso
+					{ { 'B', 'G' }, {}, 22 }, // Bulgaria
+					{ { 'B', 'H' }, {}, 22 }, // Bahrain
+					{ { 'B', 'I' }, {}, 27 }, // Burundi
+					{ { 'B', 'J' }, {}, 28 }, // Benin
+					{ { 'B', 'R' }, {}, 29 }, // Brazil
+					{ { 'B', 'Y' }, {}, 28 }, // Belarus
+					{ { 'C', 'F' }, {}, 27 }, // Central African Republic
+					{ { 'C', 'G' }, {}, 27 }, // Congo, Republic of the
+					{ { 'C', 'H' }, {}, 21 }, // Switzerland
+					{ { 'C', 'I' }, {}, 28 }, // Côte d'Ivoire
+					{ { 'C', 'M' }, {}, 27 }, // Cameroon
+					{ { 'C', 'R' }, {}, 22 }, // Costa Rica
+					{ { 'C', 'V' }, {}, 25 }, // Cabo Verde
+					{ { 'C', 'Y' }, {}, 28 }, // Cyprus
+					{ { 'C', 'Z' }, {}, 24 }, // Czech Republic
+					{ { 'D', 'E' }, {}, 22 }, // Germany
+					{ { 'D', 'J' }, {}, 27 }, // Djibouti
+					{ { 'D', 'K' }, {}, 18 }, // Denmark
+					{ { 'D', 'O' }, {}, 28 }, // Dominican Republic
+					{ { 'D', 'Z' }, {}, 26 }, // Algeria
+					{ { 'E', 'E' }, {}, 20 }, // Estonia
+					{ { 'E', 'G' }, {}, 29 }, // Egypt
+					{ { 'E', 'S' }, {}, 24 }, // Spain
+					{ { 'F', 'I' }, {}, 18 }, // Finland
+					{ { 'F', 'O' }, {}, 18 }, // Faroe Islands
+					{ { 'F', 'R' }, {}, 27 }, // France
+					{ { 'G', 'A' }, {}, 27 }, // Gabon
+					{ { 'G', 'B' }, {}, 22 }, // United Kingdom
+					{ { 'G', 'E' }, {}, 22 }, // Georgia
+					{ { 'G', 'I' }, {}, 23 }, // Gibraltar
+					{ { 'G', 'L' }, {}, 18 }, // Greenland
+					{ { 'G', 'Q' }, {}, 27 }, // Equatorial Guinea
+					{ { 'G', 'R' }, {}, 27 }, // Greece
+					{ { 'G', 'T' }, {}, 28 }, // Guatemala
+					{ { 'G', 'W' }, {}, 25 }, // Guinea-Bissau
+					{ { 'H', 'N' }, {}, 28 }, // Honduras
+					{ { 'H', 'R' }, {}, 21 }, // Croatia
+					{ { 'H', 'U' }, {}, 28 }, // Hungary
+					{ { 'I', 'E' }, {}, 22 }, // Ireland
+					{ { 'I', 'L' }, {}, 23 }, // Israel
+					{ { 'I', 'Q' }, {}, 23 }, // Iraq
+					{ { 'I', 'R' }, {}, 26 }, // Iran
+					{ { 'I', 'S' }, {}, 26 }, // Iceland
+					{ { 'I', 'T' }, {}, 27 }, // Italy
+					{ { 'J', 'O' }, {}, 30 }, // Jordan
+					{ { 'K', 'M' }, {}, 27 }, // Comoros
+					{ { 'K', 'W' }, {}, 30 }, // Kuwait
+					{ { 'K', 'Z' }, {}, 20 }, // Kazakhstan
+					{ { 'L', 'B' }, {}, 28 }, // Lebanon
+					{ { 'L', 'C' }, {}, 32 }, // Saint Lucia
+					{ { 'L', 'I' }, {}, 21 }, // Liechtenstein
+					{ { 'L', 'T' }, {}, 20 }, // Lithuania
+					{ { 'L', 'U' }, {}, 20 }, // Luxembourg
+					{ { 'L', 'V' }, {}, 21 }, // Latvia
+					{ { 'L', 'Y' }, {}, 25 }, // Libya
+					{ { 'M', 'A' }, {}, 28 }, // Morocco
+					{ { 'M', 'C' }, {}, 27 }, // Monaco
+					{ { 'M', 'D' }, {}, 24 }, // Moldova
+					{ { 'M', 'E' }, { '2', '5' }, 22 }, // Montenegro
+					{ { 'M', 'G' }, {}, 27 }, // Madagascar
+					{ { 'M', 'K' }, { '0', '7' }, 19 }, // North Macedonia
+					{ { 'M', 'L' }, {}, 28 }, // Mali
+					{ { 'M', 'R' }, { '1', '3' }, 27}, // Mauritania
+					{ { 'M', 'T' }, {}, 31 }, // Malta
+					{ { 'M', 'U' }, {}, 30 }, // Mauritius
+					{ { 'M', 'Z' }, {}, 25 }, // Mozambique
+					{ { 'N', 'E' }, {}, 28 }, // Niger
+					{ { 'N', 'I' }, {}, 32 }, // Nicaragua
+					{ { 'N', 'L' }, {}, 18 }, // Netherlands
+					{ { 'N', 'O' }, {}, 15 }, // Norway
+					{ { 'P', 'K' }, {}, 24 }, // Pakistan
+					{ { 'P', 'L' }, {}, 28 }, // Poland
+					{ { 'P', 'S' }, {}, 29 }, // Palestinian territories
+					{ { 'P', 'T' }, { '5', '0' }, 25 }, // Portugal
+					{ { 'Q', 'A' }, {}, 29 }, // Qatar
+					{ { 'R', 'O' }, {}, 24 }, // Romania
+					{ { 'R', 'S' }, { '3', '5' }, 22 }, // Serbia
+					{ { 'R', 'U' }, {}, 33 }, // Russia
+					{ { 'S', 'A' }, {}, 24 }, // Saudi Arabia
+					{ { 'S', 'C' }, {}, 31 }, // Seychelles
+					{ { 'S', 'D' }, {}, 18 }, // Sudan
+					{ { 'S', 'E' }, {}, 24 }, // Sweden
+					{ { 'S', 'I' }, { '5', '6' }, 19 }, // Slovenia
+					{ { 'S', 'K' }, {}, 24 }, // Slovakia
+					{ { 'S', 'M' }, {}, 27 }, // San Marino
+					{ { 'S', 'N' }, {}, 28 }, // Senegal
+					{ { 'S', 'T' }, {}, 25 }, // São Tomé and Príncipe
+					{ { 'S', 'V' }, {}, 28 }, // El Salvador
+					{ { 'T', 'D' }, {}, 27 }, // Chad
+					{ { 'T', 'G' }, {}, 28 }, // Togo
+					{ { 'T', 'L' }, { '3', '8' }, 23}, // East Timor
+					{ { 'T', 'N' }, { '5', '9' }, 24 }, // Tunisia
+					{ { 'T', 'R' }, {}, 26 }, // Turkey
+					{ { 'U', 'A' }, {}, 29 }, // Ukraine
+					{ { 'V', 'A' }, {}, 22 }, // Vatican City
+					{ { 'V', 'G' }, {}, 24 }, // Virgin Islands, British
+					{ { 'X', 'K' }, {}, 20 }, // Kosovo
+				};
+				const country_t* country_desc = nullptr;
+				for (size_t l = 0, r = _countof(s_countries);;) {
+					if (l >= r)
+						goto error; // unknown country
+					size_t m = (l + r) / 2;
+					const country_t& c = s_countries[m];
+					if (c.country[0] < this->country[0] || (c.country[0] == this->country[0] && c.country[1] < this->country[1]))
+						l = m + 1;
+					else if (this->country[0] < c.country[0] || (this->country[0] == c.country[0] && this->country[1] < c.country[1]))
+						r = m;
+					else {
+						country_desc = &c;
+						break;
+					}
+				}
+
+				for (size_t i = 0; i < 2; ++i, ++this->interval.end) {
+					if (this->interval.end >= end || text[this->interval.end] < '0' || '9' < text[this->interval.end])
+						goto error; // incomplete or invalid check digits
+					this->check_digits[i] = text[this->interval.end];
+				}
+				this->check_digits[2] = 0;
+
+				if ((country_desc->check_digits[0] && this->check_digits[0] != country_desc->check_digits[0]) ||
+					(country_desc->check_digits[1] && this->check_digits[1] != country_desc->check_digits[1]))
+					goto error; // unexpected check digits
+
+				size_t n = 0;
+				for (; ;) {
+					if (m_space && m_space->match(text, this->interval.end, end, flags))
+						this->interval.end = m_space->interval.end;
+					for (size_t j = 0; j < 4; ++j) {
+						if (this->interval.end >= end || !text[this->interval.end])
+							goto out;
+						T chr = case_insensitive ? ctype.toupper(text[this->interval.end]) : text[this->interval.end];
+						if (('0' <= chr && chr <= '9') || ('A' <= chr && chr <= 'Z')) {
+							if (n >= _countof(this->bban) - 1)
+								goto error; // bban overflow
+							this->bban[n++] = chr;
+							this->interval.end++;
+						}
+						else
+							goto out;
+					}
+				}
+			out:
+				if (n < 11)
+					goto error; // bban too short (shorter than Norwegian)
+				this->bban[n] = 0;
+
+				if (n + 4 == country_desc->length) {
+					// Normalize IBAN.
+					T normalized[69];
+					size_t available = 0;
+					for (size_t i = 0; ; ++i) {
+						if (!this->bban[i]) {
+							for (i = 0; i < 2; ++i) {
+								if ('A' <= this->country[i] && this->country[i] <= 'J') {
+									normalized[available++] = '1';
+									normalized[available++] = '0' + this->country[i] - 'A';
+								}
+								else if ('K' <= this->country[i] && this->country[i] <= 'T') {
+									normalized[available++] = '2';
+									normalized[available++] = '0' + this->country[i] - 'K';
+								}
+								else if ('U' <= this->country[i] && this->country[i] <= 'Z') {
+									normalized[available++] = '3';
+									normalized[available++] = '0' + this->country[i] - 'U';
+								}
+							}
+							normalized[available++] = this->check_digits[0];
+							normalized[available++] = this->check_digits[1];
+							normalized[available] = 0;
+							break;
+						}
+						if ('0' <= this->bban[i] && this->bban[i] <= '9')
+							normalized[available++] = this->bban[i];
+						else if ('A' <= this->bban[i] && this->bban[i] <= 'J') {
+							normalized[available++] = '1';
+							normalized[available++] = '0' + this->bban[i] - 'A';
+						}
+						else if ('K' <= this->bban[i] && this->bban[i] <= 'T') {
+							normalized[available++] = '2';
+							normalized[available++] = '0' + this->bban[i] - 'K';
+						}
+						else if ('U' <= this->bban[i] && this->bban[i] <= 'Z') {
+							normalized[available++] = '3';
+							normalized[available++] = '0' + this->bban[i] - 'U';
+						}
+					}
+
+					// Calculate modulo 97.
+					size_t next;
+					uint32_t nominator = stdex::strtou32(normalized, 9, &next, 10);
+					for (;;) {
+						nominator %= 97;
+						if (!normalized[next]) {
+							this->is_valid = nominator == 1;
+							break;
+						}
+						size_t digit_count = nominator < 10 ? 1 : 2;
+						for (; digit_count < 9 && normalized[next]; ++next, ++digit_count)
+							nominator = nominator * 10 + (normalized[next] - '0');
+					}
+				}
+				else
+					this->is_valid = false;
+
+				this->interval.start = start;
+				return true;
+
+			error:
+				this->country[0] = 0;
+				this->check_digits[0] = 0;
+				this->bban[0] = 0;
+				this->is_valid = false;
+				this->interval.start = (this->interval.end = start) + 1;
+				return false;
+			}
+
+			virtual void invalidate()
+			{
+				this->country[0] = 0;
+				this->check_digits[0] = 0;
+				this->bban[0] = 0;
+				this->is_valid = false;
+				basic_parser<T>::invalidate();
+			}
+
+		public:
+			T country[3];      ///< ISO 3166-1 alpha-2 country code
+			T check_digits[3]; ///< Two check digits
+			T bban[31];        ///< Normalized Basic Bank Account Number
+			bool is_valid;     ///< Is IBAN valid per ISO 7064
+
+		protected:
+			std::shared_ptr<basic_parser<T>> m_space;
+		};
+
+		using iban = basic_iban<char>;
+		using wiban = basic_iban<wchar_t>;
+#ifdef _UNICODE
+		using tiban = wiban;
+#else
+		using tiban = iban;
+#endif
+		using sgml_iban = basic_iban<char>;
+
+		///
+		/// Test for Creditor Reference
+		///
+		/// \sa [Creditor Reference](https://en.wikipedia.org/wiki/Creditor_Reference)
+		///
+		template <class T>
+		class basic_creditor_reference : public basic_parser<T>
+		{
+		public:
+			basic_creditor_reference(
+				_In_ const std::shared_ptr<basic_parser<T>>& space,
+				_In_ const std::locale& locale = std::locale()) :
+				basic_parser<T>(locale),
+				m_space(space)
+			{
+				this->check_digits[0] = 0;
+				this->reference[0] = 0;
+				this->is_valid = false;
+			}
+
+			virtual bool match(
+				_In_reads_or_z_(end) const T* text,
+				_In_ size_t start = 0,
+				_In_ size_t end = (size_t)-1,
+				_In_ int flags = match_default)
+			{
+				assert(text || start >= end);
+				const auto& ctype = std::use_facet<std::ctype<T>>(this->m_locale);
+				const bool case_insensitive = flags & match_case_insensitive ? true : false;
+
+				this->interval.end = start;
+				if (this->interval.end + 1 >= end ||
+					(case_insensitive ? ctype.toupper(text[this->interval.end]) : text[this->interval.end]) != 'R' ||
+					(case_insensitive ? ctype.toupper(text[this->interval.end + 1]) : text[this->interval.end + 1]) != 'F')
+					goto error; // incomplete or wrong reference ID
+				this->interval.end += 2;
+
+				for (size_t i = 0; i < 2; ++i, ++this->interval.end) {
+					if (this->interval.end >= end || text[this->interval.end] < '0' || '9' < text[this->interval.end])
+						goto error; // incomplete or invalid check digits
+					this->check_digits[i] = text[this->interval.end];
+				}
+				this->check_digits[2] = 0;
+
+				size_t n = 0;
+				for (;;) {
+					if (m_space && m_space->match(text, this->interval.end, end, flags))
+						this->interval.end = m_space->interval.end;
+					for (size_t j = 0; j < 4; ++j) {
+						if (this->interval.end >= end || !text[this->interval.end])
+							goto out;
+						T chr = case_insensitive ? ctype.toupper(text[this->interval.end]) : text[this->interval.end];
+						if (('0' <= chr && chr <= '9') || ('A' <= chr && chr <= 'Z')) {
+							if (n >= _countof(reference) - 1)
+								goto error; // reference overflow
+							this->reference[n++] = chr;
+							this->interval.end++;
+						}
+						else
+							goto out;
+					}
+				}
+			out:
+				if (!n)
+					goto error; // reference too short
+				this->reference[_countof(this->reference) - 1] = 0;
+				for (size_t i = n, j = _countof(this->reference) - 1; i;)
+					this->reference[--j] = this->reference[--i];
+				for (size_t j = _countof(this->reference) - 1 - n; j;)
+					this->reference[--j] = '0';
+
+				// Normalize creditor reference.
+				T normalized[47];
+				size_t available = 0;
+				for (size_t i = 0; ; ++i) {
+					if (!this->reference[i]) {
+						normalized[available++] = '2'; // R
+						normalized[available++] = '7';
+						normalized[available++] = '1'; // F
+						normalized[available++] = '5';
+						normalized[available++] = this->check_digits[0];
+						normalized[available++] = this->check_digits[1];
+						normalized[available] = 0;
+						break;
+					}
+					if ('0' <= this->reference[i] && this->reference[i] <= '9')
+						normalized[available++] = this->reference[i];
+					else if ('A' <= this->reference[i] && this->reference[i] <= 'J') {
+						normalized[available++] = '1';
+						normalized[available++] = '0' + this->reference[i] - 'A';
+					}
+					else if ('K' <= this->reference[i] && this->reference[i] <= 'T') {
+						normalized[available++] = '2';
+						normalized[available++] = '0' + this->reference[i] - 'K';
+					}
+					else if ('U' <= this->reference[i] && this->reference[i] <= 'Z') {
+						normalized[available++] = '3';
+						normalized[available++] = '0' + this->reference[i] - 'U';
+					}
+				}
+
+				// Calculate modulo 97.
+				size_t next;
+				uint32_t nominator = stdex::strtou32(normalized, 9, &next, 10);
+				for (;;) {
+					nominator %= 97;
+					if (!normalized[next]) {
+						this->is_valid = nominator == 1;
+						break;
+					}
+					size_t digit_count = nominator < 10 ? 1 : 2;
+					for (; digit_count < 9 && normalized[next]; ++next, ++digit_count)
+						nominator = nominator * 10 + (normalized[next] - '0');
+				}
+
+				this->interval.start = start;
+				return true;
+
+			error:
+				this->check_digits[0] = 0;
+				this->reference[0] = 0;
+				this->is_valid = false;
+				this->interval.start = (this->interval.end = start) + 1;
+				return false;
+			}
+
+			virtual void invalidate()
+			{
+				this->check_digits[0] = 0;
+				this->reference[0] = 0;
+				this->is_valid = false;
+				basic_parser<T>::invalidate();
+			}
+
+		public:
+			T check_digits[3]; ///< Two check digits
+			T reference[22];   ///< Normalized national reference number
+			bool is_valid;     ///< Is reference valid per ISO 7064
+
+		protected:
+			std::shared_ptr<basic_parser<T>> m_space;
+		};
+
+		using creditor_reference = basic_creditor_reference<char>;
+		using wcreditor_reference = basic_creditor_reference<wchar_t>;
+#ifdef _UNICODE
+		using tcreditor_reference = wcreditor_reference;
+#else
+		using tcreditor_reference = creditor_reference;
+#endif
+		using sgml_creditor_reference = basic_creditor_reference<char>;
+
+		///
+		/// Test for SI Reference part
+		///
+		/// \sa [Navodila za izpolnjevanje obrazca UPN – Univerzalni plačilni nalog](https://www.nlb.si/navodila-upn)
+		///
+		template <class T>
+		class basic_si_reference_part : public basic_parser<T>
+		{
+		public:
+			basic_si_reference_part(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale) {}
+
+			virtual bool match(
+				_In_reads_or_z_(end) const T* text,
+				_In_ size_t start = 0,
+				_In_ size_t end = (size_t)-1,
+				_In_ int flags = match_default)
+			{
+				assert(text || start >= end);
+				this->interval.end = start;
+				for (;;) {
+					if (this->interval.end >= end || !text[this->interval.end])
+						break;
+					if ('0' <= text[this->interval.end] && text[this->interval.end] <= '9')
+						this->interval.end++;
+					else
+						break;
+				}
+				if (start < this->interval.end) {
+					this->interval.start = start;
+					return true;
+				}
+				this->interval.start = (this->interval.end = start) + 1;
+				return false;
+			}
+		};
+
+		using si_reference_part = basic_si_reference_part<char>;
+		using wsi_reference_part = basic_si_reference_part<wchar_t>;
+#ifdef _UNICODE
+		using tsi_reference_part = wsi_reference_part;
+#else
+		using tsi_reference_part = si_reference_part;
+#endif
+		using sgml_si_reference_part = basic_si_reference_part<char>;
+
+		///
+		/// Test for SI Reference delimiter
+		///
+		/// \sa [Navodila za izpolnjevanje obrazca UPN – Univerzalni plačilni nalog](https://www.nlb.si/navodila-upn)
+		///
+		template <class T>
+		class basic_si_reference_delimiter : public basic_parser<T>
+		{
+		public:
+			basic_si_reference_delimiter(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale) {}
+
+			virtual bool match(
+				_In_reads_or_z_(end) const T* text,
+				_In_ size_t start = 0,
+				_In_ size_t end = (size_t)-1,
+				_In_ int flags = match_default)
+			{
+				assert(text || start >= end);
+				if (start < end && text[start] == '-') {
+					this->interval.end = (this->interval.start = start) + 1;
+					return true;
+				}
+				this->interval.start = (this->interval.end = start) + 1;
+				return false;
+			}
+		};
+
+		using si_reference_delimiter = basic_si_reference_delimiter<char>;
+		using wsi_reference_delimiter = basic_si_reference_delimiter<wchar_t>;
+#ifdef _UNICODE
+		using tsi_reference_delimiter = wsi_reference_delimiter;
+#else
+		using tsi_reference_delimiter = si_reference_delimiter;
+#endif
+		using sgml_si_reference_delimiter = basic_si_reference_delimiter<char>;
+
+		///
+		/// Test for SI Reference
+		///
+		/// This is one utterly convoluted reference scheme used by Slovenian banks providing only poor integrity detection. 🤦‍
+		///
+		/// \sa [Navodila za izpolnjevanje obrazca UPN – Univerzalni plačilni nalog](https://www.nlb.si/navodila-upn)
+		///
+		template <class T>
+		class basic_si_reference : public basic_parser<T>
+		{
+		public:
+			basic_si_reference(
+				_In_ const std::shared_ptr<basic_parser<T>>& space,
+				_In_ const std::locale& locale = std::locale()) :
+				basic_parser<T>(locale),
+				part1(locale),
+				part2(locale),
+				part3(locale),
+				is_valid(false),
+				m_space(space),
+				m_delimiter(locale)
+			{
+				this->model[0] = 0;
+			}
+
+			virtual bool match(
+				_In_reads_or_z_(end) const T* text,
+				_In_ size_t start = 0,
+				_In_ size_t end = (size_t)-1,
+				_In_ int flags = match_default)
+			{
+				assert(text || start >= end);
+				const auto& ctype = std::use_facet<std::ctype<T>>(this->m_locale);
+				const bool case_insensitive = flags & match_case_insensitive ? true : false;
+
+				this->interval.end = start;
+				if (this->interval.end + 1 >= end ||
+					(case_insensitive ? ctype.toupper(text[this->interval.end]) : text[this->interval.end]) != 'S' ||
+					(case_insensitive ? ctype.toupper(text[this->interval.end + 1]) : text[this->interval.end + 1]) != 'I')
+					goto error; // incomplete or wrong reference ID
+				this->interval.end += 2;
+
+				for (size_t i = 0; i < 2; ++i, ++this->interval.end) {
+					if (this->interval.end >= end || text[this->interval.end] < '0' || '9' < text[this->interval.end])
+						goto error; // incomplete or invalid model
+					this->model[i] = text[this->interval.end];
+				}
+				this->model[2] = 0;
+
+				this->part1.invalidate();
+				this->part2.invalidate();
+				this->part3.invalidate();
+				if (this->model[0] == '9' && this->model[1] == '9') {
+					is_valid = true;
+					this->interval.start = start;
+					return true;
+				}
+
+				if (m_space && m_space->match(text, this->interval.end, end, flags))
+					this->interval.end = m_space->interval.end;
+
+				this->part1.match(text, this->interval.end, end, flags) &&
+				this->m_delimiter.match(text, this->part1.interval.end, end, flags) &&
+				this->part2.match(text, this->m_delimiter.interval.end, end, flags) &&
+				this->m_delimiter.match(text, this->part2.interval.end, end, flags) &&
+				this->part3.match(text, this->m_delimiter.interval.end, end, flags);
+
+				this->interval.start = start;
+				if (this->part3.interval)
+					this->interval.end = this->part3.interval.end;
+				else if (this->part2.interval)
+					this->interval.end = this->part2.interval.end;
+				else if (this->part1.interval)
+					this->interval.end = this->part1.interval.end;
+				else
+					this->interval.end = start + 4;
+
+				if (this->model[0] == '0' && this->model[1] == '0')
+					is_valid =
+						this->part3.interval ?
+							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 :
+						this->part2.interval ?
+							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
+							this->part1.interval.size() + this->part2.interval.size() <= 20 :
+						this->part1.interval ?
+							this->part1.interval.size() <= 12 :
+							false;
+				else if (this->model[0] == '0' && this->model[1] == '1')
+					is_valid =
+						this->part3.interval ?
+							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+							check11(
+								text + this->part1.interval.start, this->part1.interval.size(),
+								text + this->part2.interval.start, this->part2.interval.size(),
+								text + this->part3.interval.start, this->part3.interval.size()) :
+						this->part2.interval ?
+							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
+							this->part1.interval.size() + this->part2.interval.size() <= 20 &&
+							check11(
+								text + this->part1.interval.start, this->part1.interval.size(),
+								text + this->part2.interval.start, this->part2.interval.size()) :
+						this->part1.interval ?
+							this->part1.interval.size() <= 12 &&
+							check11(text + this->part1.interval.start, this->part1.interval.size()) :
+							false;
+				else if (this->model[0] == '0' && this->model[1] == '2')
+					is_valid =
+						this->part3.interval ?
+							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+							check11(text + this->part2.interval.start, this->part2.interval.size()) &&
+							check11(text + this->part3.interval.start, this->part3.interval.size()) :
+							false;
+				else if (this->model[0] == '0' && this->model[1] == '3')
+					is_valid =
+						this->part3.interval ?
+							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+							check11(text + this->part1.interval.start, this->part1.interval.size()) &&
+							check11(text + this->part2.interval.start, this->part2.interval.size()) &&
+							check11(text + this->part3.interval.start, this->part3.interval.size()) :
+							false;
+				else if (this->model[0] == '0' && this->model[1] == '4')
+					is_valid =
+						this->part3.interval ?
+							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+							check11(text + this->part1.interval.start, this->part1.interval.size()) &&
+							check11(text + this->part3.interval.start, this->part3.interval.size()) :
+							false;
+				else if ((this->model[0] == '0' || this->model[0] == '5') && this->model[1] == '5')
+					is_valid =
+						this->part3.interval ?
+							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+							check11(text + this->part1.interval.start, this->part1.interval.size()) :
+						this->part2.interval ?
+							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
+							this->part1.interval.size() + this->part2.interval.size() <= 20 &&
+							check11(text + this->part1.interval.start, this->part1.interval.size()) :
+						this->part1.interval ?
+							this->part1.interval.size() <= 12 &&
+							check11(text + this->part1.interval.start, this->part1.interval.size()) :
+							false;
+				else if (this->model[0] == '0' && this->model[1] == '6')
+					is_valid =
+						this->part3.interval ?
+							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+							check11(
+								text + this->part2.interval.start, this->part2.interval.size(),
+								text + this->part3.interval.start, this->part3.interval.size()) :
+						this->part2.interval ?
+							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
+							this->part1.interval.size() + this->part2.interval.size() <= 20 &&
+							check11(text + this->part2.interval.start, this->part2.interval.size()) :
+							false;
+				else if (this->model[0] == '0' && this->model[1] == '7')
+					is_valid =
+						this->part3.interval ?
+							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+							check11(text + this->part2.interval.start, this->part2.interval.size()) :
+						this->part2.interval ?
+							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
+							this->part1.interval.size() + this->part2.interval.size() <= 20 &&
+							check11(text + this->part2.interval.start, this->part2.interval.size()) :
+						false;
+				else if (this->model[0] == '0' && this->model[1] == '8')
+					is_valid =
+						this->part3.interval ?
+							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+							check11(
+								text + this->part1.interval.start, this->part1.interval.size(),
+								text + this->part2.interval.start, this->part2.interval.size()) &&
+							check11(text + this->part3.interval.start, this->part3.interval.size()) :
+						false;
+				else if (this->model[0] == '0' && this->model[1] == '9')
+					is_valid =
+						this->part3.interval ?
+							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+							check11(
+								text + this->part1.interval.start, this->part1.interval.size(),
+								text + this->part2.interval.start, this->part2.interval.size()) :
+						this->part2.interval ?
+							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
+							this->part1.interval.size() + this->part2.interval.size() <= 20 &&
+							check11(
+								text + this->part1.interval.start, this->part1.interval.size(),
+								text + this->part2.interval.start, this->part2.interval.size()) :
+						this->part1.interval ?
+							this->part1.interval.size() <= 12 &&
+							check11(text + this->part1.interval.start, this->part1.interval.size()) :
+							false;
+				else if (this->model[0] == '1' && this->model[1] == '0')
+					is_valid =
+						this->part3.interval ?
+							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+							check11(text + this->part1.interval.start, this->part1.interval.size()) &&
+							check11(
+								text + this->part2.interval.start, this->part2.interval.size(),
+								text + this->part3.interval.start, this->part3.interval.size()) :
+						this->part2.interval ?
+							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
+							this->part1.interval.size() + this->part2.interval.size() <= 20 &&
+							check11(text + this->part1.interval.start, this->part1.interval.size()) &&
+							check11(text + this->part2.interval.start, this->part2.interval.size()) :
+							false;
+				else if (
+					(this->model[0] == '1' && (this->model[1] == '1' || this->model[1] == '8' || this->model[1] == '9')) ||
+					((this->model[0] == '2' || this->model[0] == '3') && this->model[1] == '8') ||
+					(this->model[0] == '4' && (this->model[1] == '0' || this->model[1] == '1' || this->model[1] == '8' || this->model[1] == '9')) ||
+					(this->model[0] == '5' && (this->model[1] == '1' || this->model[1] == '8')))
+					is_valid =
+						this->part3.interval ?
+							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+							check11(text + this->part1.interval.start, this->part1.interval.size()) &&
+							check11(text + this->part2.interval.start, this->part2.interval.size()) :
+						this->part2.interval ?
+							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
+							this->part1.interval.size() + this->part2.interval.size() <= 20 &&
+							check11(text + this->part1.interval.start, this->part1.interval.size()) &&
+							check11(text + this->part2.interval.start, this->part2.interval.size()) :
+							false;
+				else if (this->model[0] == '1' && this->model[1] == '2')
+					is_valid =
+						this->part3.interval ? false :
+						this->part2.interval ? false :
+						this->part1.interval ?
+							this->part1.interval.size() <= 13 &&
+							check11(text + this->part1.interval.start, this->part1.interval.size()) :
+						false;
+				else if ((this->model[0] == '2' || this->model[0] == '3') && this->model[1] == '1')
+					is_valid =
+						this->part3.interval ? false :
+						this->part2.interval ?
+							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
+							this->part1.interval.size() + this->part2.interval.size() <= 20 &&
+							check11(text + this->part1.interval.start, this->part1.interval.size()) :
+							false;
+				else
+					is_valid = true; // Assume models we don't handle as valid
+				return true;
+
+			error:
+				this->model[0] = 0;
+				this->part1.interval.start = (this->part1.interval.end = start) + 1;
+				this->part2.interval.start = (this->part2.interval.end = start) + 1;
+				this->part3.interval.start = (this->part3.interval.end = start) + 1;
+				this->is_valid = false;
+				this->interval.start = (this->interval.end = start) + 1;
+				return false;
+			}
+
+			virtual void invalidate()
+			{
+				this->model[0] = 0;
+				this->part1.invalidate();
+				this->part2.invalidate();
+				this->part3.invalidate();
+				this->is_valid = false;
+				basic_parser<T>::invalidate();
+			}
+
+		protected:
+			static bool check11(
+				_In_count_(num_part1) const T* part1, _In_ size_t num_part1)
+			{
+				assert(part1 && num_part1 >= 1);
+				uint32_t nominator = 0, ponder = 2;
+				for (size_t i = num_part1 - 1; i--; ++ponder)
+					nominator += (part1[i] - '0') * ponder;
+				uint8_t control = 11 - static_cast<uint8_t>(nominator % 11);
+				if (control >= 10)
+					control = 0;
+				return control == part1[num_part1 - 1] - '0';
+			}
+
+			static bool check11(
+				_In_count_(num_part1) const T* part1, _In_ size_t num_part1,
+				_In_count_(num_part2) const T* part2, _In_ size_t num_part2)
+			{
+				assert(part1 || !num_part1);
+				assert(part2 && num_part2 >= 1);
+				uint32_t nominator = 0, ponder = 2;
+				for (size_t i = num_part2 - 1; i--; ++ponder)
+					nominator += (part2[i] - '0') * ponder;
+				for (size_t i = num_part1; i--; ++ponder)
+					nominator += (part1[i] - '0') * ponder;
+				uint8_t control = 11 - static_cast<uint8_t>(nominator % 11);
+				if (control == 10)
+					control = 0;
+				return control == part2[num_part2 - 1] - '0';
+			}
+
+			static bool check11(
+				_In_count_(num_part1) const T* part1, _In_ size_t num_part1,
+				_In_count_(num_part2) const T* part2, _In_ size_t num_part2,
+				_In_count_(num_part3) const T* part3, _In_ size_t num_part3)
+			{
+				assert(part1 || !num_part1);
+				assert(part2 || !num_part2);
+				assert(part3 && num_part3 >= 1);
+				uint32_t nominator = 0, ponder = 2;
+				for (size_t i = num_part3 - 1; i--; ++ponder)
+					nominator += (part3[i] - '0') * ponder;
+				for (size_t i = num_part2; i--; ++ponder)
+					nominator += (part2[i] - '0') * ponder;
+				for (size_t i = num_part1; i--; ++ponder)
+					nominator += (part1[i] - '0') * ponder;
+				uint8_t control = 11 - static_cast<uint8_t>(nominator % 11);
+				if (control == 10)
+					control = 0;
+				return control == part2[num_part3 - 1] - '0';
+			}
+
+		public:
+			T model[3];                       ///< Reference model
+			basic_si_reference_part<T> part1; ///< Reference data part 1 (P1)
+			basic_si_reference_part<T> part2; ///< Reference data part 2 (P2)
+			basic_si_reference_part<T> part3; ///< Reference data part 3 (P3)
+			bool is_valid;                    ///< Is reference valid
+
+		protected:
+			std::shared_ptr<basic_parser<T>> m_space;
+			basic_si_reference_delimiter<T> m_delimiter;
+		};
+
+		using si_reference = basic_si_reference<char>;
+		using wsi_reference = basic_si_reference<wchar_t>;
+#ifdef _UNICODE
+		using tsi_reference = wsi_reference;
+#else
+		using tsi_reference = si_reference;
+#endif
+		using sgml_si_reference = basic_si_reference<char>;
+
+		///
 		/// Test for chemical formula
 		///
 		template <class T>
