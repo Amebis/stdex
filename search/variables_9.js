@@ -14,5 +14,6 @@ var searchData=
   ['m_5freserved_11',['m_reserved',['../classstdex_1_1stream_1_1memory__file.html#a6aa8c2deeabc66f065c858ba399d911c',1,'stdex::stream::memory_file']]],
   ['m_5fsize_12',['m_size',['../classstdex_1_1stream_1_1memory__file.html#a41121ff122745e109c1b9851632abce3',1,'stdex::stream::memory_file']]],
   ['m_5fsize_5fmax_13',['m_size_max',['../classstdex_1_1vector__queue.html#a7192dc2991d690b04a2fb24dd6fdc325',1,'stdex::vector_queue']]],
-  ['mouth_14',['mouth',['../classstdex_1_1parser_1_1basic__emoticon.html#a43d0de6a54546e509807c7c888bb8dc8',1,'stdex::parser::basic_emoticon']]]
+  ['model_14',['model',['../classstdex_1_1parser_1_1basic__si__reference.html#a934cc4a41d64ca1aec35a58b8558bf2e',1,'stdex::parser::basic_si_reference']]],
+  ['mouth_15',['mouth',['../classstdex_1_1parser_1_1basic__emoticon.html#a43d0de6a54546e509807c7c888bb8dc8',1,'stdex::parser::basic_emoticon']]]
 ];
