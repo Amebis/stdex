@@ -4806,7 +4806,8 @@ namespace stdex
 					{ { 'X', 'K' }, {}, 20 }, // Kosovo
 				};
 				const country_t* country_desc = nullptr;
-				size_t n;
+				size_t n, available, next, bban_length;
+				uint32_t nominator;
 
 				this->interval.end = start;
 				for (size_t i = 0; i < 2; ++i, ++this->interval.end) {
@@ -4844,85 +4845,77 @@ namespace stdex
 					(country_desc->check_digits[1] && this->check_digits[1] != country_desc->check_digits[1]))
 					goto error; // unexpected check digits
 
-				for (n = 0; ;) {
-					if (m_space && m_space->match(text, this->interval.end, end, flags))
+				bban_length = country_desc->length - 4;
+				for (n = 0; n < bban_length;) {
+					if (this->interval.end >= end || !text[this->interval.end])
+						goto error; // bban too short
+					if (m_space && m_space->match(text, this->interval.end, end, flags)) {
 						this->interval.end = m_space->interval.end;
-					for (size_t j = 0; j < 4; ++j) {
-						if (this->interval.end >= end || !text[this->interval.end])
-							goto out;
-						T chr = case_insensitive ? ctype.toupper(text[this->interval.end]) : text[this->interval.end];
-						if (('0' <= chr && chr <= '9') || ('A' <= chr && chr <= 'Z')) {
-							if (n >= _countof(this->bban) - 1)
-								goto error; // bban overflow
-							this->bban[n++] = chr;
-							this->interval.end++;
-						}
-						else
-							goto out;
+						continue;
 					}
+					T chr = case_insensitive ? ctype.toupper(text[this->interval.end]) : text[this->interval.end];
+					if (('0' <= chr && chr <= '9') || ('A' <= chr && chr <= 'Z')) {
+						this->bban[n++] = chr;
+						this->interval.end++;
+					}
+					else
+						goto error; // invalid bban
 				}
 			out:
-				if (n < 11)
-					goto error; // bban too short (shorter than Norwegian)
 				this->bban[n] = 0;
 
-				if (n + 4 == country_desc->length) {
-					// Normalize IBAN.
-					T normalized[69];
-					size_t available = 0;
-					for (size_t i = 0; ; ++i) {
-						if (!this->bban[i]) {
-							for (i = 0; i < 2; ++i) {
-								if ('A' <= this->country[i] && this->country[i] <= 'J') {
-									normalized[available++] = '1';
-									normalized[available++] = '0' + this->country[i] - 'A';
-								}
-								else if ('K' <= this->country[i] && this->country[i] <= 'T') {
-									normalized[available++] = '2';
-									normalized[available++] = '0' + this->country[i] - 'K';
-								}
-								else if ('U' <= this->country[i] && this->country[i] <= 'Z') {
-									normalized[available++] = '3';
-									normalized[available++] = '0' + this->country[i] - 'U';
-								}
+				// Normalize IBAN.
+				T normalized[69];
+				available = 0;
+				for (size_t i = 0; ; ++i) {
+					if (!this->bban[i]) {
+						for (i = 0; i < 2; ++i) {
+							if ('A' <= this->country[i] && this->country[i] <= 'J') {
+								normalized[available++] = '1';
+								normalized[available++] = '0' + this->country[i] - 'A';
 							}
-							normalized[available++] = this->check_digits[0];
-							normalized[available++] = this->check_digits[1];
-							normalized[available] = 0;
-							break;
+							else if ('K' <= this->country[i] && this->country[i] <= 'T') {
+								normalized[available++] = '2';
+								normalized[available++] = '0' + this->country[i] - 'K';
+							}
+							else if ('U' <= this->country[i] && this->country[i] <= 'Z') {
+								normalized[available++] = '3';
+								normalized[available++] = '0' + this->country[i] - 'U';
+							}
 						}
-						if ('0' <= this->bban[i] && this->bban[i] <= '9')
-							normalized[available++] = this->bban[i];
-						else if ('A' <= this->bban[i] && this->bban[i] <= 'J') {
-							normalized[available++] = '1';
-							normalized[available++] = '0' + this->bban[i] - 'A';
-						}
-						else if ('K' <= this->bban[i] && this->bban[i] <= 'T') {
-							normalized[available++] = '2';
-							normalized[available++] = '0' + this->bban[i] - 'K';
-						}
-						else if ('U' <= this->bban[i] && this->bban[i] <= 'Z') {
-							normalized[available++] = '3';
-							normalized[available++] = '0' + this->bban[i] - 'U';
-						}
+						normalized[available++] = this->check_digits[0];
+						normalized[available++] = this->check_digits[1];
+						normalized[available] = 0;
+						break;
 					}
-
-					// Calculate modulo 97.
-					size_t next;
-					uint32_t nominator = stdex::strtou32(normalized, 9, &next, 10);
-					for (;;) {
-						nominator %= 97;
-						if (!normalized[next]) {
-							this->is_valid = nominator == 1;
-							break;
-						}
-						size_t digit_count = nominator < 10 ? 1 : 2;
-						for (; digit_count < 9 && normalized[next]; ++next, ++digit_count)
-							nominator = nominator * 10 + (normalized[next] - '0');
+					if ('0' <= this->bban[i] && this->bban[i] <= '9')
+						normalized[available++] = this->bban[i];
+					else if ('A' <= this->bban[i] && this->bban[i] <= 'J') {
+						normalized[available++] = '1';
+						normalized[available++] = '0' + this->bban[i] - 'A';
+					}
+					else if ('K' <= this->bban[i] && this->bban[i] <= 'T') {
+						normalized[available++] = '2';
+						normalized[available++] = '0' + this->bban[i] - 'K';
+					}
+					else if ('U' <= this->bban[i] && this->bban[i] <= 'Z') {
+						normalized[available++] = '3';
+						normalized[available++] = '0' + this->bban[i] - 'U';
 					}
 				}
-				else
-					this->is_valid = false;
+
+				// Calculate modulo 97.
+				nominator = stdex::strtou32(normalized, 9, &next, 10);
+				for (;;) {
+					nominator %= 97;
+					if (!normalized[next]) {
+						this->is_valid = nominator == 1;
+						break;
+					}
+					size_t digit_count = nominator == 0 ? 0 : nominator < 10 ? 1 : 2;
+					for (; digit_count < 9 && normalized[next]; ++next, ++digit_count)
+						nominator = nominator * 10 + (normalized[next] - '0');
+				}
 
 				this->interval.start = start;
 				return true;
@@ -5074,7 +5067,7 @@ namespace stdex
 						this->is_valid = nominator == 1;
 						break;
 					}
-					size_t digit_count = nominator < 10 ? 1 : 2;
+					size_t digit_count = nominator == 0 ? 0 : nominator < 10 ? 1 : 2;
 					for (; digit_count < 9 && normalized[next]; ++next, ++digit_count)
 						nominator = nominator * 10 + (normalized[next] - '0');
 				}

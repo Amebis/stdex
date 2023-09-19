@@ -205,10 +205,46 @@ namespace UnitTests
 				Assert::IsTrue(p.match(L"si56 0231 2001 5226 972", 0, SIZE_MAX, match_case_insensitive));
 				Assert::IsTrue(p.is_valid);
 				Assert::IsTrue(p.match(L"SI56 0231 2001 5226 9720", 0, SIZE_MAX));
-				Assert::IsFalse(p.is_valid);
+				Assert::AreEqual(stdex::interval<size_t>(0, 23), p.interval);
+				Assert::IsTrue(p.is_valid);
 				Assert::IsTrue(p.match(L"...SI56 0231 2001 5226 972...", 3, SIZE_MAX));
 				Assert::IsTrue(p.is_valid);
 				Assert::IsTrue(p.match(L"SI56 0231 2001 5226 972", 0, SIZE_MAX)); // no-break space
+				Assert::IsTrue(p.is_valid);
+
+				Assert::IsTrue(p.match(L"BE71 0961 2345 6769", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::IsTrue(p.match(L"BR15 0000 0000 0000 1093 2840 814 P2", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::IsTrue(p.match(L"CR99 0000 0000 0000 8888 88", 0, SIZE_MAX));
+				Assert::IsFalse(p.is_valid);
+				Assert::IsTrue(p.match(L"FR76 3000 6000 0112 3456 7890 189", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::IsTrue(p.match(L"IE12 BOFI 9000 0112 3456 78", 0, SIZE_MAX));
+				Assert::IsFalse(p.is_valid);
+				Assert::IsTrue(p.match(L"DE91 1000 0000 0123 4567 89", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::IsTrue(p.match(L"GR96 0810 0010 0000 0123 4567 890", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::IsTrue(p.match(L"MU43 BOMM 0101 1234 5678 9101 000 MUR", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::IsTrue(p.match(L"PK70 BANK 0000 1234 5678 9000", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::IsTrue(p.match(L"PL10 1050 0099 7603 1234 5678 9123", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::IsTrue(p.match(L"RO09 BCYP 0000 0012 3456 7890", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::IsTrue(p.match(L"LC14 BOSL 1234 5678 9012 3456 7890 1234", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::IsTrue(p.match(L"SA44 2000 0001 2345 6789 1234", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::IsTrue(p.match(L"ES79 2100 0813 6101 2345 6789", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::IsTrue(p.match(L"SE87 3000 0000 0101 2345 6789", 0, SIZE_MAX));
+				Assert::IsFalse(p.is_valid);
+				Assert::IsTrue(p.match(L"CH56 0483 5012 3456 7800 9", 0, SIZE_MAX));
+				Assert::IsTrue(p.is_valid);
+				Assert::IsTrue(p.match(L"GB98 MIDL 0700 9312 3456 78", 0, SIZE_MAX));
 				Assert::IsTrue(p.is_valid);
 			}
 
@@ -322,7 +358,8 @@ namespace UnitTests
 				Assert::IsTrue(p.match("si56 0231 2001 5226 972", 0, SIZE_MAX, match_case_insensitive));
 				Assert::IsTrue(p.is_valid);
 				Assert::IsTrue(p.match("SI56 0231 2001 5226 9720", 0, SIZE_MAX));
-				Assert::IsFalse(p.is_valid);
+				Assert::AreEqual(stdex::interval<size_t>(0, 23), p.interval);
+				Assert::IsTrue(p.is_valid);
 				Assert::IsTrue(p.match("...SI56 0231 2001 5226 972...", 3, SIZE_MAX));
 				Assert::IsTrue(p.is_valid);
 				Assert::IsTrue(p.match("SI56&nbsp;0231&nbsp;2001&nbsp;5226&nbsp;972", 0, SIZE_MAX));
