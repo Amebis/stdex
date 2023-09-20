@@ -4861,7 +4861,6 @@ namespace stdex
 					else
 						goto error; // invalid bban
 				}
-			out:
 				this->bban[n] = 0;
 
 				// Normalize IBAN.
