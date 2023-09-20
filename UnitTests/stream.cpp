@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023 Amebis
 */
@@ -124,7 +124,7 @@ namespace UnitTests
 				dat.close();
 			}
 			for (uint32_t i = 0; i < count; ++i) {
-				dat.open(filename[i].c_str(), mode_for_reading | share_none | mode_binary);
+				dat.open(filename[i].c_str(), mode_for_reading | mode_open_existing | share_none | mode_binary);
 				Assert::IsTrue(dat.ok());
 				for (;;) {
 					uint32_t x;

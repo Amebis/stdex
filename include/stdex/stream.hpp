@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023 Amebis
 */
@@ -2404,27 +2404,33 @@ namespace stdex
 		///
 		enum mode_t
 		{
-			mode_for_reading = 1 << 0, ///< Open for reading
-			mode_for_writing = 1 << 1, ///< Open for writing
-			mode_for_chmod = 1 << 2,   ///< Open for changing file attributes
-			mode_create = 1 << 3,      ///< Create file
-			mode_preserve_existing = mode_create | (1 << 4), ///< If file already exists, open existing; otherwise, create a new one.
-			mode_append = 1 << 5,      ///< Seek to the end of file after opening
-			mode_text = 0,             ///< Open as text file
-			mode_binary = 1 << 6,      ///< Open as binary file
+			mode_for_reading = 1 << 0,        ///< Open for reading
+			mode_for_writing = 1 << 1,        ///< Open for writing
+			mode_for_chmod = 1 << 2,          ///< Open for changing file attributes
 
-			share_none = 0,            ///< Open for exclusive access (default)
-			share_reading = 1 << 7,    ///< Allow others to read our file
-			share_writing = 1 << 8,    ///< Allow others to write to our file
-			share_deleting = 1 << 9,   ///< Allow others to mark our file for deletion
+			mode_open_existing = 0 << 3,      ///< Open file, fail if not exists
+			mode_truncate_existing = 1 << 3,  ///< Truncate file, fail if not exists
+			mode_preserve_existing = 2 << 3,  ///< Open file if exists; create file if not exists
+			mode_create_new = 3 << 3,         ///< Create file, fail if exists
+			mode_create = 4 << 3,             ///< Create file if not exists; open and truncate if exists
+			mode_disposition_mask = 7 << 3,   ///< Bitwise mask for creation disposition
+
+			mode_append = 1 << 6,             ///< Seek to the end of file after opening
+			mode_text = 0,                    ///< Open as text file
+			mode_binary = 1 << 7,             ///< Open as binary file
+
+			share_none = 0,                   ///< Open for exclusive access (default)
+			share_reading = 1 << 8,           ///< Allow others to read our file
+			share_writing = 1 << 9,           ///< Allow others to write to our file
+			share_deleting = 1 << 10,         ///< Allow others to mark our file for deletion
 			share_all = share_reading | share_writing | share_deleting, // Allow others all operations on our file
 
-			inherit_handle = 1 << 10,  ///< Inherit handle in child processes (Windows-specific)
+			inherit_handle = 1 << 11,         ///< Inherit handle in child processes (Windows-specific)
 
-			hint_write_thru = 1 << 11,        ///< Write operations will not go through any intermediate cache, they will go directly to disk. (Windows-specific)
-			hint_no_buffering = 1 << 12,      ///< The file or device is being opened with no system caching for data reads and writes. (Windows-specific)
-			hint_random_access = 1 << 13,     ///< Access is intended to be random. (Windows-specific)
-			hint_sequential_access = 1 << 14, ///< Access is intended to be sequential from beginning to end. (Windows-specific)
+			hint_write_thru = 1 << 12,        ///< Write operations will not go through any intermediate cache, they will go directly to disk. (Windows-specific)
+			hint_no_buffering = 1 << 13,      ///< The file or device is being opened with no system caching for data reads and writes. (Windows-specific)
+			hint_random_access = 1 << 14,     ///< Access is intended to be random. (Windows-specific)
+			hint_sequential_access = 1 << 15, ///< Access is intended to be sequential from beginning to end. (Windows-specific)
 		};
 
 #pragma warning(push)
@@ -2474,10 +2480,12 @@ namespace stdex
 				sa.bInheritHandle = mode & inherit_handle ? true : false;
 
 				DWORD dwCreationDisposition;
-				switch (mode & mode_preserve_existing) {
-				case mode_create: dwCreationDisposition = CREATE_ALWAYS; break;
+				switch (mode & mode_disposition_mask) {
+				case mode_open_existing: dwCreationDisposition = OPEN_EXISTING; break;
+				case mode_truncate_existing: dwCreationDisposition = TRUNCATE_EXISTING; break;
 				case mode_preserve_existing: dwCreationDisposition = OPEN_ALWAYS; break;
-				case 0: dwCreationDisposition = OPEN_EXISTING; break;
+				case mode_create_new: dwCreationDisposition = CREATE_NEW; break;
+				case mode_create: dwCreationDisposition = CREATE_ALWAYS; break;
 				default: throw std::invalid_argument("invalid mode");
 				}
 
@@ -2495,7 +2503,14 @@ namespace stdex
 				case mode_for_writing: flags |= O_WRONLY; break;
 				case mode_for_reading | mode_for_writing: flags |= O_RDWR; break;
 				}
-				if (mode & mode_create) flags |= mode & mode_preserve_existing ? O_CREAT : (O_CREAT | O_EXCL);
+				switch (mode & mode_disposition_mask) {
+				case mode_open_existing: break;
+				case mode_truncate_existing: flags |= O_TRUNC; break;
+				case mode_preserve_existing: flags |= O_CREAT; break;
+				case mode_create_new: flags |= O_CREAT | O_EXCL; break;
+				case mode_create: flags |= O_CREAT | O_TRUNC; break;
+				default: throw std::invalid_argument("invalid mode");
+				}
 				if (mode & hint_write_thru) flags |= O_DSYNC;
 #ifndef __APPLE__
 				if (mode & hint_no_buffering) flags |= O_RSYNC;
