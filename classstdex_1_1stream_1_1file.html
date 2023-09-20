@@ -76,6 +76,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="classstdex_1_1stream_1_1file-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">stdex::stream::file Class Reference</div></div>
 </div><!--header-->
@@ -107,9 +108,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a31e46e58ec40db989b36c3553b09084f" id="r_a31e46e58ec40db989b36c3553b09084f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1file.html#a31e46e58ec40db989b36c3553b09084f">file</a> (const schar_t *filename, int mode)</td></tr>
 <tr class="memdesc:a31e46e58ec40db989b36c3553b09084f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens file.  <br /></td></tr>
 <tr class="separator:a31e46e58ec40db989b36c3553b09084f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b923e8b3d01987973d4e2a9ea05a1e1" id="r_a0b923e8b3d01987973d4e2a9ea05a1e1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1file.html#a0b923e8b3d01987973d4e2a9ea05a1e1">file</a> (const stdex::sstring &amp;filename, int mode)</td></tr>
+<tr class="memdesc:a0b923e8b3d01987973d4e2a9ea05a1e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens file.  <br /></td></tr>
+<tr class="separator:a0b923e8b3d01987973d4e2a9ea05a1e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a556c4cff7086d5f258dcdf914556084a" id="r_a556c4cff7086d5f258dcdf914556084a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1file.html#a556c4cff7086d5f258dcdf914556084a">open</a> (const schar_t *filename, int mode)</td></tr>
 <tr class="memdesc:a556c4cff7086d5f258dcdf914556084a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens file.  <br /></td></tr>
 <tr class="separator:a556c4cff7086d5f258dcdf914556084a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac00f351491cc50626286119cfdd428fa" id="r_ac00f351491cc50626286119cfdd428fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1file.html#ac00f351491cc50626286119cfdd428fa">open</a> (const stdex::sstring &amp;filename, int mode)</td></tr>
+<tr class="memdesc:ac00f351491cc50626286119cfdd428fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens file.  <br /></td></tr>
+<tr class="separator:ac00f351491cc50626286119cfdd428fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acdfc1dc079ebeaeb05312e03925485ff" id="r_acdfc1dc079ebeaeb05312e03925485ff"><td class="memItemLeft" align="right" valign="top">virtual fpos_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1file.html#acdfc1dc079ebeaeb05312e03925485ff">seek</a> (foff_t offset, seek_t how=seek_t::beg)</td></tr>
 <tr class="memdesc:acdfc1dc079ebeaeb05312e03925485ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seeks to specified relative file position.  <br /></td></tr>
 <tr class="separator:acdfc1dc079ebeaeb05312e03925485ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -371,6 +378,21 @@ sys_handle&#160;</td><td class="memItemRight" valign="bottom"><b>get</b> () cons
 <tr class="memdesc:a68edd83d50aee1dd85645aa0506c8769 inherit pub_methods_classstdex_1_1sys__object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns object handle. <br /></td></tr>
 <tr class="separator:a68edd83d50aee1dd85645aa0506c8769 inherit pub_methods_classstdex_1_1sys__object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:afb21712a5d43ecfe18dbe6aea2785e7f" id="r_afb21712a5d43ecfe18dbe6aea2785e7f"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1file.html#afb21712a5d43ecfe18dbe6aea2785e7f">exists</a> (const stdex::schar_t *filename)</td></tr>
+<tr class="memdesc:afb21712a5d43ecfe18dbe6aea2785e7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if file/folder/symlink likely exists.  <br /></td></tr>
+<tr class="separator:afb21712a5d43ecfe18dbe6aea2785e7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b483f3051aa3d9f47da64ea0eb981d3" id="r_a4b483f3051aa3d9f47da64ea0eb981d3"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1file.html#a4b483f3051aa3d9f47da64ea0eb981d3">exists</a> (const stdex::sstring &amp;filename)</td></tr>
+<tr class="memdesc:a4b483f3051aa3d9f47da64ea0eb981d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if file/folder/symlink likely exists.  <br /></td></tr>
+<tr class="separator:a4b483f3051aa3d9f47da64ea0eb981d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40e59814b5a52d659cc568285b9b39b3" id="r_a40e59814b5a52d659cc568285b9b39b3"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1file.html#a40e59814b5a52d659cc568285b9b39b3">readonly</a> (const stdex::schar_t *filename)</td></tr>
+<tr class="memdesc:a40e59814b5a52d659cc568285b9b39b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if file/folder/symlink is read-only.  <br /></td></tr>
+<tr class="separator:a40e59814b5a52d659cc568285b9b39b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b4cdda97e50c9590ac85acba6f49467" id="r_a1b4cdda97e50c9590ac85acba6f49467"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1file.html#a1b4cdda97e50c9590ac85acba6f49467">readonly</a> (const stdex::sstring &amp;filename)</td></tr>
+<tr class="memdesc:a1b4cdda97e50c9590ac85acba6f49467"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if file/folder/symlink is read-only.  <br /></td></tr>
+<tr class="separator:a1b4cdda97e50c9590ac85acba6f49467"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_static_methods_classstdex_1_1sys__object"><td colspan="2" onclick="javascript:toggleInherit('pro_static_methods_classstdex_1_1sys__object')"><img src="closed.png" alt="-"/>&#160;Static Protected Member Functions inherited from <a class="el" href="classstdex_1_1sys__object.html">stdex::sys_object</a></td></tr>
@@ -395,7 +417,7 @@ sys_handle&#160;</td><td class="memItemRight" valign="bottom"><b>m_h</b></td></t
 <div class="textblock"><p>File-system file. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a31e46e58ec40db989b36c3553b09084f" name="a31e46e58ec40db989b36c3553b09084f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a31e46e58ec40db989b36c3553b09084f">&#9670;&#160;</a></span>file()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a31e46e58ec40db989b36c3553b09084f">&#9670;&#160;</a></span>file() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -407,6 +429,51 @@ sys_handle&#160;</td><td class="memItemRight" valign="bottom"><b>m_h</b></td></t
           <td class="memname">stdex::stream::file::file </td>
           <td>(</td>
           <td class="paramtype">const schar_t *&#160;</td>
+          <td class="paramname"><em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>mode</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Opens file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">filename</td><td>Filename </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">mode</td><td>Bitwise combination of mode_t flags </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0b923e8b3d01987973d4e2a9ea05a1e1" name="a0b923e8b3d01987973d4e2a9ea05a1e1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b923e8b3d01987973d4e2a9ea05a1e1">&#9670;&#160;</a></span>file() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">stdex::stream::file::file </td>
+          <td>(</td>
+          <td class="paramtype">const stdex::sstring &amp;&#160;</td>
           <td class="paramname"><em>filename</em>, </td>
         </tr>
         <tr>
@@ -498,6 +565,74 @@ sys_handle&#160;</td><td class="memItemRight" valign="bottom"><b>m_h</b></td></t
 
 </div>
 </div>
+<a id="afb21712a5d43ecfe18dbe6aea2785e7f" name="afb21712a5d43ecfe18dbe6aea2785e7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb21712a5d43ecfe18dbe6aea2785e7f">&#9670;&#160;</a></span>exists() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool stdex::stream::file::exists </td>
+          <td>(</td>
+          <td class="paramtype">const stdex::schar_t *&#160;</td>
+          <td class="paramname"><em>filename</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Checks if file/folder/symlink likely exists. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">filename</td><td>Filename </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a4b483f3051aa3d9f47da64ea0eb981d3" name="a4b483f3051aa3d9f47da64ea0eb981d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b483f3051aa3d9f47da64ea0eb981d3">&#9670;&#160;</a></span>exists() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool stdex::stream::file::exists </td>
+          <td>(</td>
+          <td class="paramtype">const stdex::sstring &amp;&#160;</td>
+          <td class="paramname"><em>filename</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Checks if file/folder/symlink likely exists. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">filename</td><td>Filename </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a74fdb70cb8ce4d0ee73f6db9d7051d86" name="a74fdb70cb8ce4d0ee73f6db9d7051d86"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a74fdb70cb8ce4d0ee73f6db9d7051d86">&#9670;&#160;</a></span>lock()</h2>
 
@@ -568,7 +703,7 @@ sys_handle&#160;</td><td class="memItemRight" valign="bottom"><b>m_h</b></td></t
 </div>
 </div>
 <a id="a556c4cff7086d5f258dcdf914556084a" name="a556c4cff7086d5f258dcdf914556084a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a556c4cff7086d5f258dcdf914556084a">&#9670;&#160;</a></span>open()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a556c4cff7086d5f258dcdf914556084a">&#9670;&#160;</a></span>open() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -606,6 +741,121 @@ sys_handle&#160;</td><td class="memItemRight" valign="bottom"><b>m_h</b></td></t
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">filename</td><td>Filename </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">mode</td><td>Bitwise combination of mode_t flags </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac00f351491cc50626286119cfdd428fa" name="ac00f351491cc50626286119cfdd428fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac00f351491cc50626286119cfdd428fa">&#9670;&#160;</a></span>open() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void stdex::stream::file::open </td>
+          <td>(</td>
+          <td class="paramtype">const stdex::sstring &amp;&#160;</td>
+          <td class="paramname"><em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>mode</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Opens file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">filename</td><td>Filename </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">mode</td><td>Bitwise combination of mode_t flags </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a40e59814b5a52d659cc568285b9b39b3" name="a40e59814b5a52d659cc568285b9b39b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40e59814b5a52d659cc568285b9b39b3">&#9670;&#160;</a></span>readonly() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool stdex::stream::file::readonly </td>
+          <td>(</td>
+          <td class="paramtype">const stdex::schar_t *&#160;</td>
+          <td class="paramname"><em>filename</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Checks if file/folder/symlink is read-only. </p>
+<p>For inexisting or inaccessible paths, writeability is assumed.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">filename</td><td>Filename </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1b4cdda97e50c9590ac85acba6f49467" name="a1b4cdda97e50c9590ac85acba6f49467"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b4cdda97e50c9590ac85acba6f49467">&#9670;&#160;</a></span>readonly() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool stdex::stream::file::readonly </td>
+          <td>(</td>
+          <td class="paramtype">const stdex::sstring &amp;&#160;</td>
+          <td class="paramname"><em>filename</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Checks if file/folder/symlink is read-only. </p>
+<p>For inexisting or inaccessible paths, writeability is assumed.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">filename</td><td>Filename </td></tr>
   </table>
   </dd>
 </dl>
@@ -877,7 +1127,7 @@ sys_handle&#160;</td><td class="memItemRight" valign="bottom"><b>m_h</b></td></t
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Sep 20 2023 06:08:17 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Wed Sep 20 2023 11:02:20 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

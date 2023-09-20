@@ -955,13 +955,50 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l01286" name="l01286"></a><span class="lineno"> 1286</span>        va_end(arg);</div>
 <div class="line"><a id="l01287" name="l01287"></a><span class="lineno"> 1287</span>        <span class="keywordflow">return</span> str;</div>
 <div class="line"><a id="l01288" name="l01288"></a><span class="lineno"> 1288</span>    }</div>
-<div class="line"><a id="l01289" name="l01289"></a><span class="lineno"> 1289</span>}</div>
+<div class="line"><a id="l01289" name="l01289"></a><span class="lineno"> 1289</span> </div>
+<div class="line"><a id="l01297" name="l01297"></a><span class="lineno"> 1297</span>    <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
+<div class="line"><a id="l01298" name="l01298"></a><span class="lineno"> 1298</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> strlwr(_Inout_z_ T* str, _In_ <span class="keyword">const</span> std::locale&amp; locale)</div>
+<div class="line"><a id="l01299" name="l01299"></a><span class="lineno"> 1299</span>    {</div>
+<div class="line"><a id="l01300" name="l01300"></a><span class="lineno"> 1300</span>        assert(str);</div>
+<div class="line"><a id="l01301" name="l01301"></a><span class="lineno"> 1301</span>        <span class="keyword">const</span> <span class="keyword">auto</span>&amp; ctype = std::use_facet&lt;std::ctype&lt;T&gt;&gt;(locale);</div>
+<div class="line"><a id="l01302" name="l01302"></a><span class="lineno"> 1302</span>        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; str[i]; ++i)</div>
+<div class="line"><a id="l01303" name="l01303"></a><span class="lineno"> 1303</span>            str[i] = ctype.tolower(str[i]);</div>
+<div class="line"><a id="l01304" name="l01304"></a><span class="lineno"> 1304</span>    }</div>
+<div class="line"><a id="l01305" name="l01305"></a><span class="lineno"> 1305</span> </div>
+<div class="line"><a id="l01314" name="l01314"></a><span class="lineno"> 1314</span>    <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
+<div class="line"><a id="l01315" name="l01315"></a><span class="lineno"> 1315</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> strlwr(_Inout_updates_z_(count) T* str, _In_ <span class="keywordtype">size_t</span> count, _In_ <span class="keyword">const</span> std::locale&amp; locale)</div>
+<div class="line"><a id="l01316" name="l01316"></a><span class="lineno"> 1316</span>    {</div>
+<div class="line"><a id="l01317" name="l01317"></a><span class="lineno"> 1317</span>        assert(str || !count);</div>
+<div class="line"><a id="l01318" name="l01318"></a><span class="lineno"> 1318</span>        <span class="keyword">const</span> <span class="keyword">auto</span>&amp; ctype = std::use_facet&lt;std::ctype&lt;T&gt;&gt;(locale);</div>
+<div class="line"><a id="l01319" name="l01319"></a><span class="lineno"> 1319</span>        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; count &amp;&amp; str[i]; ++i)</div>
+<div class="line"><a id="l01320" name="l01320"></a><span class="lineno"> 1320</span>            str[i] = ctype.tolower(str[i]);</div>
+<div class="line"><a id="l01321" name="l01321"></a><span class="lineno"> 1321</span>    }</div>
+<div class="line"><a id="l01322" name="l01322"></a><span class="lineno"> 1322</span> </div>
+<div class="line"><a id="l01330" name="l01330"></a><span class="lineno"> 1330</span>    <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
+<div class="line"><a id="l01331" name="l01331"></a><span class="lineno"> 1331</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> strupr(_Inout_z_ T* str, _In_ <span class="keyword">const</span> std::locale&amp; locale)</div>
+<div class="line"><a id="l01332" name="l01332"></a><span class="lineno"> 1332</span>    {</div>
+<div class="line"><a id="l01333" name="l01333"></a><span class="lineno"> 1333</span>        assert(str);</div>
+<div class="line"><a id="l01334" name="l01334"></a><span class="lineno"> 1334</span>        <span class="keyword">const</span> <span class="keyword">auto</span>&amp; ctype = std::use_facet&lt;std::ctype&lt;T&gt;&gt;(locale);</div>
+<div class="line"><a id="l01335" name="l01335"></a><span class="lineno"> 1335</span>        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; str[i]; ++i)</div>
+<div class="line"><a id="l01336" name="l01336"></a><span class="lineno"> 1336</span>            str[i] = ctype.toupper(str[i]);</div>
+<div class="line"><a id="l01337" name="l01337"></a><span class="lineno"> 1337</span>    }</div>
+<div class="line"><a id="l01338" name="l01338"></a><span class="lineno"> 1338</span> </div>
+<div class="line"><a id="l01347" name="l01347"></a><span class="lineno"> 1347</span>    <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
+<div class="line"><a id="l01348" name="l01348"></a><span class="lineno"> 1348</span>    <span class="keyword">inline</span> <span class="keywordtype">void</span> strupr</div>
+<div class="line"><a id="l01349" name="l01349"></a><span class="lineno"> 1349</span>    (_Inout_updates_z_(count) T* str, _In_ <span class="keywordtype">size_t</span> count, _In_ <span class="keyword">const</span> std::locale&amp; locale)</div>
+<div class="line"><a id="l01350" name="l01350"></a><span class="lineno"> 1350</span>    {</div>
+<div class="line"><a id="l01351" name="l01351"></a><span class="lineno"> 1351</span>        assert(str || !count);</div>
+<div class="line"><a id="l01352" name="l01352"></a><span class="lineno"> 1352</span>        <span class="keyword">const</span> <span class="keyword">auto</span>&amp; ctype = std::use_facet&lt;std::ctype&lt;T&gt;&gt;(locale);</div>
+<div class="line"><a id="l01353" name="l01353"></a><span class="lineno"> 1353</span>        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; count &amp;&amp; str[i]; ++i)</div>
+<div class="line"><a id="l01354" name="l01354"></a><span class="lineno"> 1354</span>            str[i] = ctype.toupper(str[i]);</div>
+<div class="line"><a id="l01355" name="l01355"></a><span class="lineno"> 1355</span>    }</div>
+<div class="line"><a id="l01356" name="l01356"></a><span class="lineno"> 1356</span>}</div>
 <div class="ttc" id="astructstdex_1_1free__locale__delete_html"><div class="ttname"><a href="structstdex_1_1free__locale__delete.html">stdex::free_locale_delete</a></div><div class="ttdoc">Deleter for unique_ptr using free_locale.</div><div class="ttdef"><b>Definition</b> string.hpp:56</div></div>
 <div class="ttc" id="astructstdex_1_1free__locale__delete_html_ab7a2cd4be45534b436a871e09805b36f"><div class="ttname"><a href="structstdex_1_1free__locale__delete.html#ab7a2cd4be45534b436a871e09805b36f">stdex::free_locale_delete::operator()</a></div><div class="ttdeci">void operator()(locale_t locale) const</div><div class="ttdoc">Delete a pointer.</div><div class="ttdef"><b>Definition</b> string.hpp:60</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Sep 20 2023 06:08:16 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Wed Sep 20 2023 11:02:19 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
