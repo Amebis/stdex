@@ -2777,6 +2777,61 @@ namespace stdex
 #endif
 				throw std::runtime_error("failed to set file mtime");
 			}
+
+			///
+			/// Checks if file/folder/symlink likely exists
+			///
+			/// \param[in] filename  Filename
+			///
+			static bool exists(_In_z_ const stdex::schar_t* filename)
+			{
+#ifdef _WIN32
+				return GetFileAttributes(filename) != INVALID_FILE_ATTRIBUTES;
+#else
+				struct stat s;
+				return stat(filename, &s) == 0;
+#endif
+			}
+
+			///
+			/// Checks if file/folder/symlink likely exists
+			///
+			/// \param[in] filename  Filename
+			///
+			static inline bool exists(_In_ const stdex::sstring& filename)
+			{
+				return exists(filename.c_str());
+			}
+
+			///
+			/// Checks if file/folder/symlink is read-only
+			///
+			/// For inexisting or inaccessible paths, writeability is assumed.
+			///
+			/// \param[in] filename  Filename
+			///
+			static bool readonly(_In_z_ const stdex::schar_t* filename)
+			{
+#ifdef _WIN32
+				DWORD dwAttr = GetFileAttributes(filename);
+				return dwAttr != INVALID_FILE_ATTRIBUTES && (dwAttr & FILE_ATTRIBUTE_READONLY) != 0;
+#else
+				struct stat s;
+				return stat(filename, &s) == 0 && (s.st_mode & (S_IWUSR|S_IWGRP|S_IWOTH)) == 0;
+#endif
+			}
+
+			///
+			/// Checks if file/folder/symlink is read-only
+			///
+			/// For inexisting or inaccessible paths, writeability is assumed.
+			///
+			/// \param[in] filename  Filename
+			///
+			static inline bool readonly(_In_ const stdex::sstring& filename)
+			{
+				return readonly(filename.c_str());
+			}
 		};
 #pragma warning(pop)
 

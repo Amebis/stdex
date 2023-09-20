@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023 Amebis
 */
@@ -26,6 +26,7 @@ int main(int argc, const char * argv[])
 		UnitTests::stream::async();
 		UnitTests::stream::replicator();
 		UnitTests::stream::open_close();
+		UnitTests::stream::file_stat();
 		UnitTests::unicode::str2wstr();
 		UnitTests::unicode::wstr2str();
 		UnitTests::unicode::charset_encoder();

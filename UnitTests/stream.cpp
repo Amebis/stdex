@@ -139,6 +139,13 @@ namespace UnitTests
 				std::filesystem::remove(filename[i]);
 		}
 
+		TEST_METHOD(file_stat)
+		{
+			sstring path(temp_path());
+			Assert::IsTrue(stdex::stream::file::exists(path));
+			Assert::IsFalse(stdex::stream::file::readonly(path));
+		}
+
 	protected:
 		static sstring temp_path()
 		{
