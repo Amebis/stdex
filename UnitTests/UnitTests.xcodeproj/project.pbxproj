@@ -24,6 +24,28 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F4213D172ABB14C600F72674 /* vector_queue.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = vector_queue.hpp; path = ../include/stdex/vector_queue.hpp; sourceTree = "<group>"; };
+		F4213D182ABB14C600F72674 /* base64.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = base64.hpp; path = ../include/stdex/base64.hpp; sourceTree = "<group>"; };
+		F4213D192ABB14C600F72674 /* chrono.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = chrono.hpp; path = ../include/stdex/chrono.hpp; sourceTree = "<group>"; };
+		F4213D1A2ABB14C600F72674 /* exception.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = exception.hpp; path = ../include/stdex/exception.hpp; sourceTree = "<group>"; };
+		F4213D1B2ABB14C600F72674 /* idrec.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = idrec.hpp; path = ../include/stdex/idrec.hpp; sourceTree = "<group>"; };
+		F4213D1C2ABB14C600F72674 /* compat.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = compat.hpp; path = ../include/stdex/compat.hpp; sourceTree = "<group>"; };
+		F4213D1D2ABB14C600F72674 /* errno.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = errno.hpp; path = ../include/stdex/errno.hpp; sourceTree = "<group>"; };
+		F4213D1E2ABB14C600F72674 /* progress.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = progress.hpp; path = ../include/stdex/progress.hpp; sourceTree = "<group>"; };
+		F4213D1F2ABB14C600F72674 /* stream.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = stream.hpp; path = ../include/stdex/stream.hpp; sourceTree = "<group>"; };
+		F4213D202ABB14C600F72674 /* memory.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = memory.hpp; path = ../include/stdex/memory.hpp; sourceTree = "<group>"; };
+		F4213D212ABB14C600F72674 /* interval.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = interval.hpp; path = ../include/stdex/interval.hpp; sourceTree = "<group>"; };
+		F4213D222ABB14C600F72674 /* ring.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ring.hpp; path = ../include/stdex/ring.hpp; sourceTree = "<group>"; };
+		F4213D232ABB14C600F72674 /* unicode.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = unicode.hpp; path = ../include/stdex/unicode.hpp; sourceTree = "<group>"; };
+		F4213D242ABB14C600F72674 /* string.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = string.hpp; path = ../include/stdex/string.hpp; sourceTree = "<group>"; };
+		F4213D252ABB14C600F72674 /* mapping.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = mapping.hpp; path = ../include/stdex/mapping.hpp; sourceTree = "<group>"; };
+		F4213D262ABB14C600F72674 /* hex.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = hex.hpp; path = ../include/stdex/hex.hpp; sourceTree = "<group>"; };
+		F4213D272ABB14C600F72674 /* endian.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = endian.hpp; path = ../include/stdex/endian.hpp; sourceTree = "<group>"; };
+		F4213D282ABB14C600F72674 /* math.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = math.hpp; path = ../include/stdex/math.hpp; sourceTree = "<group>"; };
+		F4213D292ABB14C600F72674 /* parser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = parser.hpp; path = ../include/stdex/parser.hpp; sourceTree = "<group>"; };
+		F4213D2A2ABB14C600F72674 /* sgml_unicode.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = sgml_unicode.hpp; path = ../include/stdex/sgml_unicode.hpp; sourceTree = "<group>"; };
+		F4213D2B2ABB14C600F72674 /* sgml.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = sgml.hpp; path = ../include/stdex/sgml.hpp; sourceTree = "<group>"; };
+		F4213D2C2ABB14C600F72674 /* system.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = system.hpp; path = ../include/stdex/system.hpp; sourceTree = "<group>"; };
 		F4B7FBDC2AAF49BC00C6BE9F /* UnitTests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = UnitTests; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4C07F4E2AB059300044EDC0 /* math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = math.cpp; sourceTree = "<group>"; };
 		F4C07F502AB059580044EDC0 /* pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pch.h; sourceTree = "<group>"; };
@@ -48,20 +70,50 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F4213D162ABB14AA00F72674 /* stdex */ = {
+			isa = PBXGroup;
+			children = (
+				F4213D182ABB14C600F72674 /* base64.hpp */,
+				F4213D192ABB14C600F72674 /* chrono.hpp */,
+				F4213D1C2ABB14C600F72674 /* compat.hpp */,
+				F4213D272ABB14C600F72674 /* endian.hpp */,
+				F4213D1D2ABB14C600F72674 /* errno.hpp */,
+				F4213D1A2ABB14C600F72674 /* exception.hpp */,
+				F4213D262ABB14C600F72674 /* hex.hpp */,
+				F4213D1B2ABB14C600F72674 /* idrec.hpp */,
+				F4213D212ABB14C600F72674 /* interval.hpp */,
+				F4213D252ABB14C600F72674 /* mapping.hpp */,
+				F4213D282ABB14C600F72674 /* math.hpp */,
+				F4213D202ABB14C600F72674 /* memory.hpp */,
+				F4213D292ABB14C600F72674 /* parser.hpp */,
+				F4213D1E2ABB14C600F72674 /* progress.hpp */,
+				F4213D222ABB14C600F72674 /* ring.hpp */,
+				F4213D2A2ABB14C600F72674 /* sgml_unicode.hpp */,
+				F4213D2B2ABB14C600F72674 /* sgml.hpp */,
+				F4213D1F2ABB14C600F72674 /* stream.hpp */,
+				F4213D242ABB14C600F72674 /* string.hpp */,
+				F4213D2C2ABB14C600F72674 /* system.hpp */,
+				F4213D232ABB14C600F72674 /* unicode.hpp */,
+				F4213D172ABB14C600F72674 /* vector_queue.hpp */,
+			);
+			name = stdex;
+			sourceTree = "<group>";
+		};
 		F4B7FBD32AAF49BC00C6BE9F = {
 			isa = PBXGroup;
 			children = (
+				F4C07F532AB05A240044EDC0 /* compat.hpp */,
 				F4C07F542AB05B5B0044EDC0 /* main.cpp */,
 				F4C07F4E2AB059300044EDC0 /* math.cpp */,
 				F4C07F562AB08E690044EDC0 /* parser.cpp */,
 				F4C07F512AB059580044EDC0 /* pch.cpp */,
+				F4C07F502AB059580044EDC0 /* pch.h */,
+				F4B7FBDD2AAF49BC00C6BE9F /* Products */,
 				F4C07F592AB08E690044EDC0 /* ring.cpp */,
 				F4C07F582AB08E690044EDC0 /* sgml.cpp */,
+				F4213D162ABB14AA00F72674 /* stdex */,
 				F4C07F5A2AB08E690044EDC0 /* stream.cpp */,
 				F4C07F572AB08E690044EDC0 /* unicode.cpp */,
-				F4C07F502AB059580044EDC0 /* pch.h */,
-				F4C07F532AB05A240044EDC0 /* compat.hpp */,
-				F4B7FBDD2AAF49BC00C6BE9F /* Products */,
 			);
 			sourceTree = "<group>";
 			usesTabs = 1;
