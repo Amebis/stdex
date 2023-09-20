@@ -1286,4 +1286,71 @@ namespace stdex
 		va_end(arg);
 		return str;
 	}
+
+	///
+	/// Convert string to lower-case character-by-character
+	///
+	/// \note For legacy code support only.
+	///
+	/// \param[in,out] str    String
+	///
+	template<class T>
+	inline void strlwr(_Inout_z_ T* str, _In_ const std::locale& locale)
+	{
+		assert(str);
+		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
+		for (size_t i = 0; str[i]; ++i)
+			str[i] = ctype.tolower(str[i]);
+	}
+
+	///
+	/// Convert string to lower-case character-by-character
+	///
+	/// \note For legacy code support only.
+	///
+	/// \param[in,out] str    String
+	/// \param[in]     count  Code unit limit
+	///
+	template<class T>
+	inline void strlwr(_Inout_updates_z_(count) T* str, _In_ size_t count, _In_ const std::locale& locale)
+	{
+		assert(str || !count);
+		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
+		for (size_t i = 0; i < count && str[i]; ++i)
+			str[i] = ctype.tolower(str[i]);
+	}
+
+	///
+	/// Convert string to upper-case character-by-character
+	///
+	/// \note For legacy code support only.
+	///
+	/// \param[in,out] str    String
+	///
+	template<class T>
+	inline void strupr(_Inout_z_ T* str, _In_ const std::locale& locale)
+	{
+		assert(str);
+		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
+		for (size_t i = 0; str[i]; ++i)
+			str[i] = ctype.toupper(str[i]);
+	}
+
+	///
+	/// Convert string to upper-case character-by-character
+	///
+	/// \note For legacy code support only.
+	///
+	/// \param[in,out] str    String
+	/// \param[in]     count  Code unit limit
+	///
+	template<class T>
+	inline void strupr
+	(_Inout_updates_z_(count) T* str, _In_ size_t count, _In_ const std::locale& locale)
+	{
+		assert(str || !count);
+		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
+		for (size_t i = 0; i < count && str[i]; ++i)
+			str[i] = ctype.toupper(str[i]);
+	}
 }

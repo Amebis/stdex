@@ -2460,6 +2460,14 @@ namespace stdex
 			/// \param[in] filename  Filename
 			/// \param[in] mode      Bitwise combination of mode_t flags
 			///
+			inline file(_In_ const stdex::sstring& filename, _In_ int mode) : file(filename.c_str(), mode) {}
+
+			///
+			/// Opens file
+			///
+			/// \param[in] filename  Filename
+			/// \param[in] mode      Bitwise combination of mode_t flags
+			///
 			void open(_In_z_ const schar_t* filename, _In_ int mode)
 			{
 				if (m_h != invalid_handle)
@@ -2525,6 +2533,17 @@ namespace stdex
 				}
 				else
 					m_state = state_t::fail;
+			}
+
+			///
+			/// Opens file
+			///
+			/// \param[in] filename  Filename
+			/// \param[in] mode      Bitwise combination of mode_t flags
+			///
+			inline void open(_In_ const stdex::sstring& filename, _In_ int mode)
+			{
+				open(filename.c_str(), mode);
 			}
 
 			virtual fpos_t seek(_In_ foff_t offset, _In_ seek_t how = seek_t::beg)
@@ -2788,6 +2807,15 @@ namespace stdex
 				init(m_source);
 			}
 
+			///
+			/// Opens file
+			///
+			/// \param[in] filename    Filename
+			/// \param[in] mode        Bitwise combination of mode_t flags
+			/// \param[in] cache_size  Size of the cache block
+			///
+			inline cached_file(_In_ const stdex::sstring& filename, _In_ int mode, _In_ size_t cache_size = default_cache_size) : cached_file(filename.c_str(), mode, cache_size) {}
+
 			virtual ~cached_file()
 			{
 				done();
@@ -2817,6 +2845,17 @@ namespace stdex
 					return;
 				}
 				m_state = state_t::fail;
+			}
+
+			///
+			/// Opens file
+			///
+			/// \param[in] filename    Filename
+			/// \param[in] mode        Bitwise combination of mode_t flags
+			///
+			inline void open(_In_ const stdex::sstring& filename, _In_ int mode)
+			{
+				open(filename.c_str(), mode);
 			}
 
 		protected:
@@ -2910,6 +2949,14 @@ namespace stdex
 				load(filename, mode);
 			}
 
+			///
+			/// Loads content from file-system file
+			///
+			/// \param[in] filename  Filename
+			/// \param[in] mode      Bitwise combination of mode_t flags
+			///
+			inline memory_file(_In_ const stdex::sstring& filename, _In_ int mode) : memory_file(filename.c_str(), mode) {}
+
 			virtual ~memory_file()
 			{
 				if (m_manage && m_data)
@@ -2979,6 +3026,17 @@ namespace stdex
 			}
 
 			///
+			/// Loads content from a file-system file
+			///
+			/// \param[in] filename  Filename
+			/// \param[in] mode      Bitwise combination of mode_t flags
+			///
+			inline void load(_In_ const stdex::sstring& filename, _In_ int mode)
+			{
+				load(filename.c_str(), mode);
+			}
+
+			///
 			/// Saves content to a file-system file
 			///
 			/// \param[in] filename  Filename
@@ -3002,7 +3060,18 @@ namespace stdex
 				f.set_atime(m_atime);
 				f.set_mtime(m_mtime);
 #endif
-				}
+			}
+
+			///
+			/// Saves content to a file-system file
+			///
+			/// \param[in] filename  Filename
+			/// \param[in] mode      Bitwise combination of mode_t flags
+			///
+			inline void save(_In_ const stdex::sstring& filename, _In_ int mode)
+			{
+				save(filename.c_str(), mode);
+			}
 
 			///
 			/// Returns pointer to data

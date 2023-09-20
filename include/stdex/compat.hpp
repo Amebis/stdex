@@ -69,11 +69,17 @@
 #ifndef _Inout_opt_
 #define _Inout_opt_
 #endif
+#ifndef _Inout_z_
+#define _Inout_z_
+#endif
 #ifndef _Inout_cap_
 #define _Inout_cap_(p)
 #endif
 #ifndef _Inout_count_
 #define _Inout_count_(p)
+#endif
+#ifndef _Inout_updates_z_
+#define _Inout_updates_z_(p)
 #endif
 
 #ifndef _Use_decl_annotations_
