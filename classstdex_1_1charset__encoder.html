@@ -94,6 +94,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2d2352d872c02d96ce6ab3adc1bdd011" id="r_a2d2352d872c02d96ce6ab3adc1bdd011"><td class="memItemLeft" align="right" valign="top"><a id="a2d2352d872c02d96ce6ab3adc1bdd011" name="a2d2352d872c02d96ce6ab3adc1bdd011"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>charset_encoder</b> (charset_id from, charset_id to)</td></tr>
 <tr class="separator:a2d2352d872c02d96ce6ab3adc1bdd011"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab520e41fd0cb5abeace73219a37683f6" id="r_ab520e41fd0cb5abeace73219a37683f6"><td class="memItemLeft" align="right" valign="top"><a id="ab520e41fd0cb5abeace73219a37683f6" name="ab520e41fd0cb5abeace73219a37683f6"></a>
+charset_id&#160;</td><td class="memItemRight" valign="bottom"><b>from_encoding</b> () const</td></tr>
+<tr class="separator:ab520e41fd0cb5abeace73219a37683f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcc25821db1b707a9048448baea1bb57" id="r_adcc25821db1b707a9048448baea1bb57"><td class="memItemLeft" align="right" valign="top"><a id="adcc25821db1b707a9048448baea1bb57" name="adcc25821db1b707a9048448baea1bb57"></a>
+charset_id&#160;</td><td class="memItemRight" valign="bottom"><b>to_encoding</b> () const</td></tr>
+<tr class="separator:adcc25821db1b707a9048448baea1bb57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1561af3ad0711c80a25eda924959504" id="r_aa1561af3ad0711c80a25eda924959504"><td class="memTemplParams" colspan="2">template&lt;class _Traits_to  = std::char_traits&lt;T_to&gt;, class _Alloc_to  = std::allocator&lt;T_to&gt;&gt; </td></tr>
 <tr class="memitem:aa1561af3ad0711c80a25eda924959504"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classstdex_1_1charset__encoder.html#aa1561af3ad0711c80a25eda924959504">strcat</a> (std::basic_string&lt; T_to, _Traits_to, _Alloc_to &gt; &amp;dst, _In_reads_or_z_opt_(count_src) const T_from *src, size_t count_src)</td></tr>
 <tr class="memdesc:aa1561af3ad0711c80a25eda924959504"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert string and append to string.  <br /></td></tr>
@@ -148,6 +154,12 @@ static const char *&#160;</td><td class="memItemRight" valign="bottom"><b>to_enc
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
+<tr class="memitem:a4422edbe45d21b9055d104bdc6537cb4" id="r_a4422edbe45d21b9055d104bdc6537cb4"><td class="memItemLeft" align="right" valign="top"><a id="a4422edbe45d21b9055d104bdc6537cb4" name="a4422edbe45d21b9055d104bdc6537cb4"></a>
+charset_id&#160;</td><td class="memItemRight" valign="bottom"><b>m_from</b></td></tr>
+<tr class="separator:a4422edbe45d21b9055d104bdc6537cb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06e8d3b65f7604cef96ba8846837b288" id="r_a06e8d3b65f7604cef96ba8846837b288"><td class="memItemLeft" align="right" valign="top"><a id="a06e8d3b65f7604cef96ba8846837b288" name="a06e8d3b65f7604cef96ba8846837b288"></a>
+charset_id&#160;</td><td class="memItemRight" valign="bottom"><b>m_to</b></td></tr>
+<tr class="separator:a06e8d3b65f7604cef96ba8846837b288"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a03689f4cdf50cdf783920f76ef5392ed" id="r_a03689f4cdf50cdf783920f76ef5392ed"><td class="memItemLeft" align="right" valign="top"><a id="a03689f4cdf50cdf783920f76ef5392ed" name="a03689f4cdf50cdf783920f76ef5392ed"></a>
 iconv_t&#160;</td><td class="memItemRight" valign="bottom"><b>m_handle</b></td></tr>
 <tr class="separator:a03689f4cdf50cdf783920f76ef5392ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -595,7 +607,7 @@ template&lt;class _Traits_to  = std::char_traits&lt;T_to&gt;, class _Alloc_to  =
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Sep 20 2023 12:03:46 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Sep 22 2023 11:08:31 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
