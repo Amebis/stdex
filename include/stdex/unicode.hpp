@@ -26,6 +26,7 @@ namespace stdex
 		oem = CP_OEMCP,
 		utf8 = CP_UTF8,
 		utf16 = 1200 /*CP_WINUNICODE*/,
+		utf32 = 12000,
 		windows1250 = 1250,
 		windows1251 = 1251,
 		windows1252 = 1252,
