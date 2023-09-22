@@ -1,4 +1,4 @@
-/*
+﻿/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023 Amebis
 */
@@ -66,7 +66,8 @@ namespace stdex
 
 		constexpr size_t iterate_count = 0x10;
 		constexpr size_t default_block_size = 0x10000; ///< Amount of space used by copy or reallocation increments
-		constexpr wchar_t utf16_bom = L'\ufeff'; ///< Byte-order-mark written at each UTF-16 file start
+		constexpr char16_t utf16_bom = u'\ufeff'; ///< Byte-order-mark written at each UTF-16 file start
+		constexpr char32_t utf32_bom = U'\ufeff'; ///< Byte-order-mark written at each UTF-32 file start
 		constexpr const char utf8_bom[3] = { '\xef', '\xbb', '\xbf' }; ///> UTF-8 byte-order-mark
 
 		///
@@ -323,15 +324,14 @@ namespace stdex
 			///
 			/// \return Number of read characters
 			///
-			template<class _Traits = std::char_traits<wchar_t>, class _Ax = std::allocator<wchar_t>>
-			size_t readln(_Inout_ std::basic_string<wchar_t, _Traits, _Ax>& wstr, _In_ charset_id charset)
+			template<class T_from, class T_to, class _Traits = std::char_traits<T_to>, class _Ax = std::allocator<T_to>>
+			size_t readln(_Inout_ std::basic_string<T_to, _Traits, _Ax>& wstr, _In_ charset_encoder<T_from, T_to>& encoder)
 			{
-				if (charset == charset_id::utf16)
+				if (encoder.from_encoding() == encoder.to_encoding())
 					return readln(wstr);
 				std::string str;
 				readln_and_attach(str);
-				wstr.clear();
-				str2wstr(wstr, str, charset);
+				encoder.strcpy(wstr, str);
 				return wstr.size();
 			}
 
@@ -361,14 +361,14 @@ namespace stdex
 			///
 			/// \return Total number of chars in str
 			///
-			template<class _Traits = std::char_traits<wchar_t>, class _Ax = std::allocator<wchar_t>>
-			size_t readln_and_attach(_Inout_ std::basic_string<wchar_t, _Traits, _Ax>& wstr, _In_ charset_id charset)
+			template<class T_from, class T_to, class _Traits = std::char_traits<T_to>, class _Ax = std::allocator<T_to>>
+			size_t readln_and_attach(_Inout_ std::basic_string<T_to, _Traits, _Ax>& wstr, _In_ charset_encoder<T_from, T_to>& encoder)
 			{
-				if (charset == charset_id::utf16)
+				if (encoder.from_encoding() == encoder.to_encoding())
 					return readln_and_attach(wstr);
 				std::string str;
 				readln_and_attach(str);
-				str2wstr(wstr, str, charset);
+				encoder.strcat(wstr, str);
 				return wstr.size();
 			}
 
@@ -404,20 +404,20 @@ namespace stdex
 			/// Writes array of characters to the stream
 			///
 			/// \param[in] wstr       String to write. Must be zero-terminated.
-			/// \param[in] charset    Charset to convert string to
+			/// \param[in] encoder    Encoder for encoding string
 			///
 			/// \return Number of code units written
 			///
-			size_t write_array(_In_z_ const wchar_t* wstr, _In_ charset_id charset)
+			template <class T_from, class T_to>
+			size_t write_array(_In_z_ const T_from* wstr, _In_ charset_encoder<T_from, T_to>& encoder)
 			{
 				if (!ok()) _Unlikely_
 					return 0;
 				size_t num_chars = stdex::strlen(wstr);
-				if (charset != charset_id::utf16) {
-					std::string str(wstr2str(wstr, num_chars, charset));
-					return write_array(str.data(), sizeof(char), str.size());
-				}
-				return write_array(wstr, sizeof(wchar_t), num_chars);
+				if (encoder.from_encoding() == encoder.to_encoding())
+					return write_array(wstr, sizeof(T_from), num_chars);
+				std::basic_string<T_to> str(encoder.convert(wstr, num_chars));
+				return write_array(str.data(), sizeof(T_to), str.size());
 			}
 
 			///
@@ -425,40 +425,39 @@ namespace stdex
 			///
 			/// \param[in] wstr       String to write
 			/// \param[in] num_chars  String code unit count limit
-			/// \param[in] charset    Charset to convert string to
+			/// \param[in] encoder    Encoder for encoding string
 			///
 			/// \return Number of code units written
 			///
-			size_t write_array(_In_reads_or_z_opt_(num_chars) const wchar_t* wstr, _In_ size_t num_chars, _In_ charset_id charset)
+			template <class T_from, class T_to>
+			size_t write_array(_In_reads_or_z_opt_(num_chars) const T_from* wstr, _In_ size_t num_chars, _In_ charset_encoder<T_from, T_to>& encoder)
 			{
 				if (!ok()) _Unlikely_
 					return 0;
 				num_chars = stdex::strnlen(wstr, num_chars);
-				if (charset != charset_id::utf16) {
-					std::string str(wstr2str(wstr, num_chars, charset));
-					return write_array(str.data(), sizeof(char), str.size());
-				}
-				return write_array(wstr, sizeof(wchar_t), num_chars);
+				if (encoder.from_encoding() == encoder.to_encoding())
+					return write_array(wstr, sizeof(T_from), num_chars);
+				std::basic_string<T_to> str(encoder.convert(wstr, num_chars));
+				return write_array(str.data(), sizeof(T_to), str.size());
 			}
 
 			///
 			/// Writes array of characters to the stream
 			///
 			/// \param[in] wstr       String to write
-			/// \param[in] charset    Charset to convert string to
+			/// \param[in] encoder    Encoder for encoding string
 			///
 			/// \return Number of code units written
 			///
-			template<class _Traits = std::char_traits<wchar_t>, class _Ax = std::allocator<wchar_t>>
-			size_t write_array(_In_ const std::basic_string<wchar_t, _Traits, _Ax>& wstr, _In_ charset_id charset)
+			template<class T_from, class T_to, class _Traits = std::char_traits<T_from>, class _Ax = std::allocator<T_from>>
+			size_t write_array(_In_ const std::basic_string<T_from, _Traits, _Ax>& wstr, _In_ charset_encoder<T_from, T_to>& encoder)
 			{
 				if (!ok()) _Unlikely_
 					return 0;
-				if (charset != charset_id::utf16) {
-					std::string str(wstr2str(wstr, charset));
-					return write_array(str.data(), sizeof(char), str.size());
-				}
-				return write_array(wstr.data(), sizeof(wchar_t), wstr.size());
+				if (encoder.from_encoding() == encoder.to_encoding())
+					return write_array(wstr.data(), sizeof(T_from), wstr.size());
+				std::basic_string<T_to> str(encoder.convert(wstr));
+				return write_array(str.data(), sizeof(T_to), str.size());
 			}
 
 			///
@@ -556,11 +555,13 @@ namespace stdex
 			}
 
 			///
-			/// Writes UTF8 or UTF-16 byte-order-mark
+			/// Writes UTF8, UTF-16 or UTF-32 byte-order-mark
 			///
 			void write_charset(_In_ charset_id charset)
 			{
-				if (charset == charset_id::utf16)
+				if (charset == charset_id::utf32)
+					write_data(utf32_bom);
+				else if (charset == charset_id::utf16)
 					write_data(utf16_bom);
 				else if (charset == charset_id::utf8)
 					write_array(utf8_bom, sizeof(utf8_bom), 1);
@@ -854,7 +855,7 @@ namespace stdex
 #endif
 
 			///
-			/// Attempts to detect textfile charset based on UTF16 or UTF8 BOM.
+			/// Attempts to detect textfile charset based on UTF-32, UTF-16 or UTF-8 BOM.
 			///
 			/// \param[in] default_charset  Fallback charset to return when no BOM detected.
 			///
@@ -862,20 +863,23 @@ namespace stdex
 			{
 				if (seek(0) != 0)
 					throw std::runtime_error("failed to seek");
-				wchar_t id_utf16;
-				read_array(&id_utf16, sizeof(wchar_t), 1);
-				if (!ok()) _Unlikely_
-					return default_charset;
-				if (id_utf16 == utf16_bom)
+				char32_t id_utf32;
+				read_array(&id_utf32, sizeof(char32_t), 1);
+				if (ok() && id_utf32 == utf32_bom)
+					return charset_id::utf32;
+
+				if (seek(0) != 0)
+					throw std::runtime_error("failed to seek");
+				char16_t id_utf16;
+				read_array(&id_utf16, sizeof(char16_t), 1);
+				if (ok() && id_utf16 == utf16_bom)
 					return charset_id::utf16;
 
 				if (seek(0) != 0)
 					throw std::runtime_error("failed to seek");
 				char id_utf8[3] = { 0 };
 				read_array(id_utf8, sizeof(id_utf8), 1);
-				if (!ok()) _Unlikely_
-					return default_charset;
-				if (strncmp(id_utf8, _countof(id_utf8), utf8_bom, _countof(utf8_bom)) == 0)
+				if (ok() && strncmp(id_utf8, _countof(id_utf8), utf8_bom, _countof(utf8_bom)) == 0)
 					return charset_id::utf8;
 
 				if (seek(0) != 0)
