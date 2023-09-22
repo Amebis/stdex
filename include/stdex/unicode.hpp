@@ -54,12 +54,17 @@ namespace stdex
 	template <typename T_from, typename T_to>
 	class charset_encoder
 	{
+	protected:
+		charset_id m_from, m_to;
+
 	public:
-		charset_encoder(_In_ charset_id from, _In_ charset_id to)
+		charset_encoder(_In_ charset_id from, _In_ charset_id to) :
+			m_from(from),
+			m_to(to)
 		{
 #ifdef _WIN32
-			m_from = to_encoding(from);
-			m_to = to_encoding(to);
+			m_from_wincp = to_encoding(from);
+			m_to_wincp = to_encoding(to);
 #else
 			m_handle = iconv_open(to_encoding(to), to_encoding(from));
 			if (m_handle == (iconv_t)-1)
@@ -73,6 +78,9 @@ namespace stdex
 			iconv_close(m_handle);
 		}
 #endif
+
+		inline charset_id from_encoding() const { return m_from; }
+		inline charset_id to_encoding() const { return m_to; }
 
 		///
 		/// Convert string and append to string
@@ -97,7 +105,7 @@ namespace stdex
 			constexpr LPCCH lpDefaultChar = NULL;
 
 			_Analysis_assume_(src);
-			if (m_from == m_to) _Unlikely_{
+			if (m_from_wincp == m_to_wincp) _Unlikely_{
 				dst.append(reinterpret_cast<const T_to*>(src), count_src);
 				return;
 			}
@@ -108,7 +116,7 @@ namespace stdex
 				// Try to convert to stack buffer first.
 				WCHAR szStackBuffer[1024 / sizeof(WCHAR)];
 #pragma warning(suppress: 6387) // Testing indicates src may be NULL when count_src is also 0. Is SAL of the lpMultiByteStr parameter wrong?
-				int cch = MultiByteToWideChar(static_cast<UINT>(m_from), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), szStackBuffer, _countof(szStackBuffer));
+				int cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), szStackBuffer, _countof(szStackBuffer));
 				if (cch) {
 					// Append from stack.
 					dst.append(reinterpret_cast<const T_to*>(szStackBuffer), count_src != SIZE_MAX ? wcsnlen(szStackBuffer, cch) : static_cast<size_t>(cch) - 1);
@@ -116,9 +124,9 @@ namespace stdex
 				}
 				if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
 					// Query the required output size. Allocate buffer. Then convert again.
-					cch = MultiByteToWideChar(static_cast<UINT>(m_from), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), NULL, 0);
+					cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), NULL, 0);
 					std::unique_ptr<WCHAR[]> szBuffer(new WCHAR[cch]);
-					cch = MultiByteToWideChar(static_cast<UINT>(m_from), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), szBuffer.get(), cch);
+					cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), szBuffer.get(), cch);
 					dst.append(reinterpret_cast<const T_to*>(szBuffer.get()), count_src != SIZE_MAX ? wcsnlen(szBuffer.get(), cch) : static_cast<size_t>(cch) - 1);
 					return;
 				}
@@ -131,7 +139,7 @@ namespace stdex
 				// Try to convert to stack buffer first.
 				CHAR szStackBuffer[1024 / sizeof(CHAR)];
 #pragma warning(suppress: 6387) // Testing indicates src may be NULL when count_src is also 0. Is SAL of the lpWideCharStr parameter wrong?
-				int cch = WideCharToMultiByte(static_cast<UINT>(m_to), dwFlagsWCMB, reinterpret_cast<LPCWCH>(src), static_cast<int>(count_src), szStackBuffer, _countof(szStackBuffer), lpDefaultChar, NULL);
+				int cch = WideCharToMultiByte(static_cast<UINT>(m_to_wincp), dwFlagsWCMB, reinterpret_cast<LPCWCH>(src), static_cast<int>(count_src), szStackBuffer, _countof(szStackBuffer), lpDefaultChar, NULL);
 				if (cch) {
 					// Copy from stack. Be careful not to include zero terminator.
 					dst.append(reinterpret_cast<const T_to*>(szStackBuffer), count_src != SIZE_MAX ? strnlen(szStackBuffer, cch) : static_cast<size_t>(cch) - 1);
@@ -139,9 +147,9 @@ namespace stdex
 				}
 				if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
 					// Query the required output size. Allocate buffer. Then convert again.
-					cch = WideCharToMultiByte(static_cast<UINT>(m_to), dwFlagsWCMB, reinterpret_cast<LPCWCH>(src), static_cast<int>(count_src), NULL, 0, lpDefaultChar, NULL);
+					cch = WideCharToMultiByte(static_cast<UINT>(m_to_wincp), dwFlagsWCMB, reinterpret_cast<LPCWCH>(src), static_cast<int>(count_src), NULL, 0, lpDefaultChar, NULL);
 					std::unique_ptr<CHAR[]> szBuffer(new CHAR[cch]);
-					cch = WideCharToMultiByte(static_cast<UINT>(m_to), dwFlagsWCMB, reinterpret_cast<LPCWCH>(src), static_cast<int>(count_src), szBuffer.get(), cch, lpDefaultChar, NULL);
+					cch = WideCharToMultiByte(static_cast<UINT>(m_to_wincp), dwFlagsWCMB, reinterpret_cast<LPCWCH>(src), static_cast<int>(count_src), szBuffer.get(), cch, lpDefaultChar, NULL);
 					dst.append(reinterpret_cast<const T_to*>(szBuffer.get()), count_src != SIZE_MAX ? strnlen(szBuffer.get(), cch) : static_cast<size_t>(cch) - 1);
 					return;
 				}
@@ -154,7 +162,7 @@ namespace stdex
 				// Try to convert to stack buffer first.
 				WCHAR szStackBufferMBWC[512 / sizeof(WCHAR)];
 #pragma warning(suppress: 6387) // Testing indicates src may be NULL when count_src is also 0. Is SAL of the lpMultiByteStr parameter wrong?
-				int cch = MultiByteToWideChar(static_cast<UINT>(m_from), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), szStackBufferMBWC, _countof(szStackBufferMBWC));
+				int cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), szStackBufferMBWC, _countof(szStackBufferMBWC));
 				if (cch) {
 					// Append from stack.
 					size_t count_inter = count_src != SIZE_MAX ? wcsnlen(szStackBufferMBWC, cch) : static_cast<size_t>(cch) - 1;
@@ -163,7 +171,7 @@ namespace stdex
 					// Try to convert to stack buffer first.
 					CHAR szStackBufferWCMB[512 / sizeof(CHAR)];
 #pragma warning(suppress: 6387) // Testing indicates szStackBufferMBWC may be NULL when count_inter is also 0. Is SAL of the lpWideCharStr parameter wrong?
-					cch = WideCharToMultiByte(static_cast<UINT>(m_to), dwFlagsWCMB, szStackBufferMBWC, static_cast<int>(count_inter), szStackBufferWCMB, _countof(szStackBufferWCMB), lpDefaultChar, NULL);
+					cch = WideCharToMultiByte(static_cast<UINT>(m_to_wincp), dwFlagsWCMB, szStackBufferMBWC, static_cast<int>(count_inter), szStackBufferWCMB, _countof(szStackBufferWCMB), lpDefaultChar, NULL);
 					if (cch) {
 						// Copy from stack. Be careful not to include zero terminator.
 						dst.append(reinterpret_cast<const T_to*>(szStackBufferWCMB), strnlen(szStackBufferWCMB, cch));
@@ -171,9 +179,9 @@ namespace stdex
 					}
 					if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
 						// Query the required output size. Allocate buffer. Then convert again.
-						cch = WideCharToMultiByte(static_cast<UINT>(m_to), dwFlagsWCMB, szStackBufferMBWC, static_cast<int>(count_inter), NULL, 0, lpDefaultChar, NULL);
+						cch = WideCharToMultiByte(static_cast<UINT>(m_to_wincp), dwFlagsWCMB, szStackBufferMBWC, static_cast<int>(count_inter), NULL, 0, lpDefaultChar, NULL);
 						std::unique_ptr<CHAR[]> szBufferWCMB(new CHAR[cch]);
-						cch = WideCharToMultiByte(static_cast<UINT>(m_to), dwFlagsWCMB, szStackBufferMBWC, static_cast<int>(count_inter), szBufferWCMB.get(), cch, lpDefaultChar, NULL);
+						cch = WideCharToMultiByte(static_cast<UINT>(m_to_wincp), dwFlagsWCMB, szStackBufferMBWC, static_cast<int>(count_inter), szBufferWCMB.get(), cch, lpDefaultChar, NULL);
 						dst.append(reinterpret_cast<const T_to*>(szBufferWCMB.get()), strnlen(szBufferWCMB.get(), cch));
 						return;
 					}
@@ -181,15 +189,15 @@ namespace stdex
 				}
 				if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
 					// Query the required output size. Allocate buffer. Then convert again.
-					cch = MultiByteToWideChar(static_cast<UINT>(m_from), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), NULL, 0);
+					cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), NULL, 0);
 					std::unique_ptr<WCHAR[]> szBufferMBWC(new WCHAR[cch]);
-					cch = MultiByteToWideChar(static_cast<UINT>(m_from), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), szBufferMBWC.get(), cch);
+					cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), szBufferMBWC.get(), cch);
 					size_t count_inter = count_src != SIZE_MAX ? wcsnlen(szBufferMBWC.get(), cch) : static_cast<size_t>(cch) - 1;
 
 					// Query the required output size. Allocate buffer. Then convert again.
-					cch = WideCharToMultiByte(static_cast<UINT>(m_to), dwFlagsWCMB, szBufferMBWC.get(), static_cast<int>(count_inter), NULL, 0, lpDefaultChar, NULL);
+					cch = WideCharToMultiByte(static_cast<UINT>(m_to_wincp), dwFlagsWCMB, szBufferMBWC.get(), static_cast<int>(count_inter), NULL, 0, lpDefaultChar, NULL);
 					std::unique_ptr<CHAR[]> szBufferWCMB(new CHAR[cch]);
-					cch = WideCharToMultiByte(static_cast<UINT>(m_to), dwFlagsWCMB, szBufferMBWC.get(), static_cast<int>(count_inter), szBufferWCMB.get(), cch, lpDefaultChar, NULL);
+					cch = WideCharToMultiByte(static_cast<UINT>(m_to_wincp), dwFlagsWCMB, szBufferMBWC.get(), static_cast<int>(count_inter), szBufferWCMB.get(), cch, lpDefaultChar, NULL);
 					dst.append(reinterpret_cast<const T_to*>(szBufferWCMB.get()), strnlen(szBufferWCMB.get(), cch));
 					return;
 				}
@@ -366,7 +374,7 @@ namespace stdex
 		}
 
 	protected:
-		UINT m_from, m_to;
+		UINT m_from_wincp, m_to_wincp;
 #else
 	protected:
 		static const char* to_encoding(_In_ charset_id charset)
@@ -405,6 +413,9 @@ namespace stdex
 	/// \param[in]     count_src  String character count limit
 	/// \param[in]     charset    Charset (stdex::charset_id::system - system default)
 	///
+#ifndef _WIN32
+	_Deprecated_("For better performance, consider a reusable charset_encoder")
+#endif
 	inline void strcat(
 		_Inout_ std::wstring& dst,
 		_In_reads_or_z_opt_(count_src) const char* src, _In_ size_t count_src,
@@ -431,6 +442,9 @@ namespace stdex
 	/// \param[in]     src        String
 	/// \param[in]     charset    Charset (stdex::charset_id::system - system default)
 	///
+#ifndef _WIN32
+	_Deprecated_("For better performance, consider a reusable charset_encoder")
+#endif
 	inline void strcat(
 		_Inout_ std::wstring& dst,
 		_In_ const std::string& src,
@@ -458,6 +472,9 @@ namespace stdex
 	/// \param[in]     count_src  String character count limit
 	/// \param[in]     charset    Charset (stdex::charset_id::system - system default)
 	///
+#ifndef _WIN32
+	_Deprecated_("For better performance, consider a reusable charset_encoder")
+#endif
 	inline void strcpy(
 		_Inout_ std::wstring& dst,
 		_In_reads_or_z_opt_(count_src) const char* src, _In_ size_t count_src,
@@ -476,6 +493,9 @@ namespace stdex
 	/// \param[in]     src        String
 	/// \param[in]     charset    Charset (stdex::charset_id::system - system default)
 	///
+#ifndef _WIN32
+	_Deprecated_("For better performance, consider a reusable charset_encoder")
+#endif
 	inline void strcpy(
 		_Inout_ std::wstring& dst,
 		_In_ const std::string& src,
@@ -494,6 +514,9 @@ namespace stdex
 	///
 	/// \return Unicode string
 	///
+#ifndef _WIN32
+	_Deprecated_("For better performance, consider a reusable charset_encoder")
+#endif
 	inline std::wstring str2wstr(
 		_In_z_ const char* src,
 		_In_ charset_id charset = charset_id::system)
@@ -514,6 +537,9 @@ namespace stdex
 	///
 	/// \return Unicode string
 	///
+#ifndef _WIN32
+	_Deprecated_("For better performance, consider a reusable charset_encoder")
+#endif
 	inline std::wstring str2wstr(
 		_In_reads_or_z_opt_(count_src) const char* src, _In_ size_t count_src,
 		_In_ charset_id charset = charset_id::system)
@@ -533,6 +559,9 @@ namespace stdex
 	///
 	/// \return Unicode string
 	///
+#ifndef _WIN32
+	_Deprecated_("For better performance, consider a reusable charset_encoder")
+#endif
 	inline std::wstring str2wstr(
 		_In_ const std::string& src,
 		_In_ charset_id charset = charset_id::system)
@@ -550,6 +579,9 @@ namespace stdex
 	/// \param[in]     count_src  Unicode string character count limit
 	/// \param[in]     charset    Charset (stdex::charset_id::system - system default)
 	///
+#ifndef _WIN32
+	_Deprecated_("For better performance, consider a reusable charset_encoder")
+#endif
 	inline void strcat(
 		_Inout_ std::string& dst,
 		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
@@ -576,6 +608,9 @@ namespace stdex
 	/// \param[in]     src        Unicode string
 	/// \param[in]     charset    Charset (stdex::charset_id::system - system default)
 	///
+#ifndef _WIN32
+	_Deprecated_("For better performance, consider a reusable charset_encoder")
+#endif
 	inline void strcat(
 		_Inout_ std::string& dst,
 		_In_ const std::wstring& src,
@@ -603,6 +638,9 @@ namespace stdex
 	/// \param[in]     count_src  Unicode string character count limit
 	/// \param[in]     charset    Charset (stdex::charset_id::system - system default)
 	///
+#ifndef _WIN32
+	_Deprecated_("For better performance, consider a reusable charset_encoder")
+#endif
 	inline void strcpy(
 		_Inout_ std::string& dst,
 		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
@@ -621,6 +659,9 @@ namespace stdex
 	/// \param[in]     src        Unicode string
 	/// \param[in]     charset    Charset (stdex::charset_id::system - system default)
 	///
+#ifndef _WIN32
+	_Deprecated_("For better performance, consider a reusable charset_encoder")
+#endif
 	inline void strcpy(
 		_Inout_ std::string& dst,
 		_In_ const std::wstring& src,
@@ -639,6 +680,9 @@ namespace stdex
 	///
 	/// \return String
 	///
+#ifndef _WIN32
+	_Deprecated_("For better performance, consider a reusable charset_encoder")
+#endif
 	inline std::string wstr2str(
 		_In_z_ const wchar_t* src,
 		_In_ charset_id charset = charset_id::system)
@@ -659,6 +703,9 @@ namespace stdex
 	///
 	/// \return String
 	///
+#ifndef _WIN32
+	_Deprecated_("For better performance, consider a reusable charset_encoder")
+#endif
 	inline std::string wstr2str(
 		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
 		_In_ charset_id charset = charset_id::system)
@@ -678,6 +725,9 @@ namespace stdex
 	///
 	/// \return String
 	///
+#ifndef _WIN32
+	_Deprecated_("For better performance, consider a reusable charset_encoder")
+#endif
 	inline std::string wstr2str(
 		_In_ const std::wstring& src,
 		_In_ charset_id charset = charset_id::system)

@@ -8,6 +8,9 @@
 using namespace std;
 #ifdef _WIN32
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+#else
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
 
 namespace UnitTests
@@ -86,3 +89,7 @@ namespace UnitTests
 		}
 	};
 }
+
+#ifndef _WIN32
+#pragma GCC diagnostic pop
+#endif
