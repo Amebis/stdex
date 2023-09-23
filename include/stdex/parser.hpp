@@ -52,6 +52,14 @@ ENUM_FLAG_OPERATOR(T,^) \
 ENUM_FLAG_OPERATOR(T,&) \
 enum class T : type
 
+#ifndef s6_words
+#ifdef __APPLE__
+#define s6_words __u6_addr.__u6_addr16
+#else
+#error Unsupported platform
+#endif
+#endif
+
 namespace stdex
 {
 	namespace parser
