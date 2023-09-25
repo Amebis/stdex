@@ -11,6 +11,14 @@
 
 namespace stdex
 {
+	///
+	/// Multiplies two numbers and throws on overflow
+	///
+	/// \param[in] a  First operand
+	/// \param[in] b  Second operand
+	///
+	/// \return a * b
+	///
 	inline size_t mul(size_t a, size_t b)
 	{
 #if _MSC_VER >= 1300
@@ -30,6 +38,14 @@ namespace stdex
 		throw std::invalid_argument("multiply overflow");
 	}
 
+	///
+	/// Adds two numbers and throws on overflow
+	///
+	/// \param[in] a  First operand
+	/// \param[in] b  Second operand
+	///
+	/// \return a + b
+	///
 	inline size_t add(size_t a, size_t b)
 	{
 #if _MSC_VER >= 1300
