@@ -340,7 +340,6 @@ namespace UnitTests
 			}
 
 			{
-				std::locale locale_slSI("sl_SI");
 				sgml_space_cp space(false, locale_slSI);
 				sgml_iban p(make_shared_no_delete(&space), locale_slSI);
 				Assert::IsTrue(p.match("SI56023120015226972", 0, SIZE_MAX));
@@ -367,7 +366,6 @@ namespace UnitTests
 			}
 
 			{
-				std::locale locale_slSI("sl_SI");
 				sgml_space_cp space(false, locale_slSI);
 				sgml_creditor_reference p(make_shared_no_delete(&space), locale_slSI);
 				Assert::IsTrue(p.match("RF18539007547034", 0, SIZE_MAX));
@@ -391,7 +389,6 @@ namespace UnitTests
 			}
 
 			{
-				std::locale locale_slSI("sl_SI");
 				sgml_space_cp space(false, locale_slSI);
 				sgml_si_reference p(make_shared_no_delete(&space), locale_slSI);
 				Assert::IsTrue(p.match("SI121234567890120", 0, SIZE_MAX));

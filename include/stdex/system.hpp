@@ -10,6 +10,7 @@
 #define NOMINMAX // Collides with std::min/max
 #endif
 #include <windows.h>
+#include <intrin.h>
 #include <intsafe.h>
 #include <oaidl.h>
 #include <tchar.h>

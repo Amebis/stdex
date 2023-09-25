@@ -118,6 +118,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
   <ItemGroup>
+    <ClCompile Include="hash.cpp" />
     <ClCompile Include="math.cpp" />
     <ClCompile Include="parser.cpp" />
     <ClCompile Include="pch.cpp">

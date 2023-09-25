@@ -62,4 +62,23 @@ namespace stdex
 #endif
 		throw std::invalid_argument("add overflow");
 	}
+
+
+	///
+	/// Bitwise rotates left
+	///
+	/// \param[in] value  Value to rotate
+	/// \param[in] bits   Amount of bits to rotate
+	///
+	/// \return Rotated value
+	///
+	inline uint32_t rol(_In_ uint32_t value, _In_ int bits)
+	{
+#ifdef _WIN32
+		return _rotl(value, bits);
+#else
+		return __rold(value, bits);
+		// return (value << bits) | (value >> (32 - bits));
+#endif
+	}
 }
