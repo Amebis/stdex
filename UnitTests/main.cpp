@@ -3,7 +3,7 @@
 	Copyright © 2023 Amebis
 */
 
-#include "pch.h"
+#include "pch.hpp"
 #include "hash.cpp"
 #include "math.cpp"
 #include "parser.cpp"

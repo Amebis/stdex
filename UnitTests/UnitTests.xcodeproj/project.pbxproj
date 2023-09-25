@@ -49,7 +49,7 @@
 		F437AA902AC1BB64001E2230 /* hash.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = hash.cpp; sourceTree = "<group>"; };
 		F4B7FBDC2AAF49BC00C6BE9F /* UnitTests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = UnitTests; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4C07F4E2AB059300044EDC0 /* math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = math.cpp; sourceTree = "<group>"; };
-		F4C07F502AB059580044EDC0 /* pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pch.h; sourceTree = "<group>"; };
+		F4C07F502AB059580044EDC0 /* pch.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pch.hpp; sourceTree = "<group>"; };
 		F4C07F512AB059580044EDC0 /* pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pch.cpp; sourceTree = "<group>"; };
 		F4C07F532AB05A240044EDC0 /* compat.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = compat.hpp; sourceTree = "<group>"; };
 		F4C07F542AB05B5B0044EDC0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -109,7 +109,7 @@
 				F4C07F4E2AB059300044EDC0 /* math.cpp */,
 				F4C07F562AB08E690044EDC0 /* parser.cpp */,
 				F4C07F512AB059580044EDC0 /* pch.cpp */,
-				F4C07F502AB059580044EDC0 /* pch.h */,
+				F4C07F502AB059580044EDC0 /* pch.hpp */,
 				F4B7FBDD2AAF49BC00C6BE9F /* Products */,
 				F4C07F592AB08E690044EDC0 /* ring.cpp */,
 				F4C07F582AB08E690044EDC0 /* sgml.cpp */,
