@@ -46,6 +46,7 @@
 		F4213D2A2ABB14C600F72674 /* sgml_unicode.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = sgml_unicode.hpp; path = ../include/stdex/sgml_unicode.hpp; sourceTree = "<group>"; };
 		F4213D2B2ABB14C600F72674 /* sgml.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = sgml.hpp; path = ../include/stdex/sgml.hpp; sourceTree = "<group>"; };
 		F4213D2C2ABB14C600F72674 /* system.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = system.hpp; path = ../include/stdex/system.hpp; sourceTree = "<group>"; };
+		F437AA902AC1BB64001E2230 /* hash.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = hash.cpp; sourceTree = "<group>"; };
 		F4B7FBDC2AAF49BC00C6BE9F /* UnitTests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = UnitTests; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4C07F4E2AB059300044EDC0 /* math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = math.cpp; sourceTree = "<group>"; };
 		F4C07F502AB059580044EDC0 /* pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pch.h; sourceTree = "<group>"; };
@@ -103,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				F4C07F532AB05A240044EDC0 /* compat.hpp */,
+				F437AA902AC1BB64001E2230 /* hash.cpp */,
 				F4C07F542AB05B5B0044EDC0 /* main.cpp */,
 				F4C07F4E2AB059300044EDC0 /* math.cpp */,
 				F4C07F562AB08E690044EDC0 /* parser.cpp */,

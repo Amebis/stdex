@@ -4,6 +4,7 @@
 */
 
 #include "pch.h"
+#include "hash.cpp"
 #include "math.cpp"
 #include "parser.cpp"
 #include "ring.cpp"
@@ -15,6 +16,9 @@
 int main(int argc, const char * argv[])
 {
 	try {
+		UnitTests::hash::crc32();
+		UnitTests::hash::md5();
+		UnitTests::hash::sha1();
 		UnitTests::math::mul();
 		UnitTests::math::add();
 		UnitTests::parser::wtest();

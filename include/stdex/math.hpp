@@ -77,8 +77,7 @@ namespace stdex
 #ifdef _WIN32
 		return _rotl(value, bits);
 #else
-		return __rold(value, bits);
-		// return (value << bits) | (value >> (32 - bits));
+		return (value << bits) | (value >> (32 - bits));
 #endif
 	}
 }
