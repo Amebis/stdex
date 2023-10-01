@@ -1475,4 +1475,136 @@ namespace stdex
 		for (size_t i = 0; i < str.size(); ++i)
 			str[i] = ctype.toupper(str[i]);
 	}
+
+	///
+	/// Trim whitespace from string start
+	///
+	/// \param[in] str    String to trim
+	/// \param[in] count  Code unit limit
+	///
+	/// \return Number of code units excluding zero terminator in the string after the operation.
+	///
+	template<class T>
+	inline size_t ltrim(
+		_Inout_z_count_(count) T* str, _In_ size_t count,
+		_In_ const std::locale& locale)
+	{
+		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
+		for (size_t i = 0;; ++i) {
+			if (i >= count) {
+				if (count) str[0] = 0;
+				return 0;
+			}
+			if (!str[i]) {
+				str[0] = 0;
+				return 0;
+			}
+			if (!ctype.is(ctype.space, str[i])) {
+				if (!i)
+					return strnlen(str, count);
+				size_t n = count != SIZE_MAX ? strncpy(str, str + i, count - i) : strcpy(str, str + i);
+				str[n] = 0;
+				return n;
+			}
+		}
+	}
+
+	///
+	/// Trim whitespace from string start
+	///
+	/// \param[in,out] s  String to trim
+	///
+	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
+	inline void ltrim(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &s, _In_ const std::locale& locale)
+	{
+		const auto& ctype = std::use_facet<std::ctype<_Elem>>(locale);
+		s.erase(
+			s.begin(),
+			std::find_if(
+				s.begin(),
+				s.end(),
+				[&](_Elem ch) { return !ctype.is(ctype.space, ch); }));
+	}
+
+	///
+	/// Trim whitespace from string end
+	///
+	/// \param[in] str    String to trim
+	/// \param[in] count  Code unit limit
+	///
+	/// \return Number of code units excluding zero terminator in the string after the operation.
+	///
+	template<class T>
+	inline size_t rtrim(
+		_Inout_z_count_(count) T* str, _In_ size_t count,
+		_In_ const std::locale& locale)
+	{
+		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
+		for (size_t i = 0, j = 0;;) {
+			if (i >= count || !str[i]) {
+				if (j < count) str[j] = 0;
+				return j;
+			}
+			if (!ctype.is(ctype.space, str[i]))
+				j = ++i;
+			else
+				++i;
+		}
+	}
+
+	///
+	/// Trim whitespace from string end
+	///
+	/// \param[in,out] s  String to trim
+	///
+	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
+	static inline void rtrim(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &s, _In_ const std::locale& locale)
+	{
+		const auto& ctype = std::use_facet<std::ctype<_Elem>>(locale);
+		s.erase(
+			std::find_if(
+				s.rbegin(),
+				s.rend(),
+				[&](_Elem ch) { return !ctype.is(ctype.space, ch); }).base(),
+			s.end());
+	}
+
+	///
+	/// Trim whitespace from string start and end
+	///
+	/// \param[in] str    String to trim
+	/// \param[in] count  Code unit limit
+	///
+	/// \return Number of code units excluding zero terminator in the string after the operation.
+	///
+	template<class T>
+	inline size_t trim(
+		_Inout_z_count_(count) T* str, _In_ size_t count,
+		_In_ const std::locale& locale)
+	{
+		return ltrim(str, rtrim(str, count, locale), locale);
+	}
+
+	///
+	/// Trim whitespace from string start and end
+	///
+	/// \param[in,out] s  String to trim
+	///
+	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
+	static inline void trim(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &s, _In_ const std::locale& locale)
+	{
+		const auto& ctype = std::use_facet<std::ctype<_Elem>>(locale);
+		s.erase(
+			s.begin(),
+			std::find_if(
+				s.begin(),
+				s.end(),
+				[&](_Elem ch) { return !ctype.is(ctype.space, ch); }));
+		s.erase(
+			std::find_if(
+				s.rbegin(),
+				s.rend(),
+				[&](_Elem ch) { return !ctype.is(ctype.space, ch); }).base(),
+			s.end());
+	}
 }
