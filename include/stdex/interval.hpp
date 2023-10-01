@@ -22,7 +22,7 @@ namespace stdex
 		///
 		/// Constructs an invalid interval
 		///
-		inline interval() noexcept : start(1), end(0) {}
+		inline interval() noexcept : start(static_cast<T>(1)), end(static_cast<T>(0)) {}
 
 		///
 		/// Constructs a zero-size interval
