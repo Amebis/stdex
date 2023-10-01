@@ -21,6 +21,7 @@
 #endif
 #include "compat.hpp"
 #include <assert.h>
+#include <regex>
 #include <stdexcept>
 #include <string>
 
@@ -90,6 +91,11 @@ namespace stdex
 	/// Use stdex::sstring
 	///
 	using sys_string = sstring;
+
+	///
+	/// Regular expressions for system strings
+	///
+	using sregex = std::basic_regex<stdex::schar_t>;
 
 	///
 	/// Operating system object (file, pipe, anything with an OS handle etc.)
