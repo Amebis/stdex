@@ -15,6 +15,7 @@
 #include <iconv.h>
 #include <langinfo.h>
 #endif
+#include <map>
 #include <memory>
 #include <string>
 
@@ -24,6 +25,7 @@ namespace stdex
 #ifdef _WIN32
 		system = CP_ACP,
 		oem = CP_OEMCP,
+		utf7 = CP_UTF7,
 		utf8 = CP_UTF8,
 		utf16 = 1200 /*CP_WINUNICODE*/,
 		utf32 = 12000,
@@ -32,6 +34,7 @@ namespace stdex
 		windows1252 = 1252,
 #else
 		system = 0,
+		utf7,
 		utf8,
 		utf16,
 		utf32,
@@ -45,8 +48,14 @@ namespace stdex
 
 #ifdef _WIN32
 	constexpr charset_id wchar_t_charset = charset_id::utf16;
+#ifdef _UNICODE
+	constexpr charset_id system_charset = charset_id::utf16;
+#else
+	constexpr charset_id system_charset = charset_id::system;
+#endif
 #else
 	constexpr charset_id wchar_t_charset = charset_id::utf32;
+	constexpr charset_id system_charset = charset_id::system;
 #endif
 
 	///
@@ -346,23 +355,43 @@ namespace stdex
 #ifdef _WIN32
 			return static_cast<charset_id>(GetACP());
 #else
+			static const std::map<const char*, charset_id> charsets = {
+				{ "UNICODE-1-1-UTF-7", charset_id::utf7 },
+				{ "UTF-7", charset_id::utf7 },
+				{ "CSUNICODE11UTF7", charset_id::utf7 },
+				
+				{ "UTF-8", charset_id::utf8 },
+				{ "UTF8", charset_id::utf8 },
+
+				{ "UTF-16", charset_id::utf16 },
+#if BYTE_ORDER == BIG_ENDIAN
+				{ "UTF-16BE", charset_id::utf16 },
+#else
+				{ "UTF-16LE", charset_id::utf16 },
+#endif
+
+				{ "UTF-32", charset_id::utf32 },
+#if BYTE_ORDER == BIG_ENDIAN
+				{ "UTF-32BE", charset_id::utf32 },
+#else
+				{ "UTF-32LE", charset_id::utf32 },
+#endif
+
+				{ "CP1250", charset_id::windows1250 },
+				{ "MS-EE", charset_id::windows1250 },
+				{ "WINDOWS-1250", charset_id::windows1250 },
+
+				{ "CP1251", charset_id::windows1251 },
+				{ "MS-CYRL", charset_id::windows1251 },
+				{ "WINDOWS-1251", charset_id::windows1251 },
+
+				{ "CP1252", charset_id::windows1252 },
+				{ "MS-ANSI", charset_id::windows1252 },
+				{ "WINDOWS-1252", charset_id::windows1252 },
+			};
 			const char* lctype = nl_langinfo(CODESET);
-			if (strcmp(lctype, "UTF-8") == 0) return charset_id::utf8;
-			if (strcmp(lctype, "UTF-16") == 0) return charset_id::utf16;
-#if BYTE_ORDER == BIG_ENDIAN
-			if (strcmp(lctype, "UTF-16BE") == 0) return charset_id::utf16;
-#else
-			if (strcmp(lctype, "UTF-16LE") == 0) return charset_id::utf16;
-#endif
-			if (strcmp(lctype, "UTF-32") == 0) return charset_id::utf32;
-#if BYTE_ORDER == BIG_ENDIAN
-			if (strcmp(lctype, "UTF-32BE") == 0) return charset_id::utf32;
-#else
-			if (strcmp(lctype, "UTF-32LE") == 0) return charset_id::utf32;
-#endif
-			if (strcmp(lctype, "CP1250") == 0) return charset_id::windows1250;
-			if (strcmp(lctype, "CP1251") == 0) return charset_id::windows1251;
-			if (strcmp(lctype, "CP1252") == 0) return charset_id::windows1252;
+			if (auto el = charsets.find(lctype); el != charsets.end())
+				return el->second;
 			return charset_id::system;
 #endif
 		}
@@ -385,6 +414,7 @@ namespace stdex
 		{
 			static const char* const encodings[static_cast<std::underlying_type_t<charset_id>>(charset_id::_max)] = {
 				"",         // system
+				"UTF-7",    // utf7
 				"UTF-8",    // utf8
 #if BYTE_ORDER == BIG_ENDIAN
 				"UTF-16BE", // utf16
