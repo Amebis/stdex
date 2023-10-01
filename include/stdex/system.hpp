@@ -252,4 +252,135 @@ namespace stdex
 		}
 	};
 #endif
+
+	///
+	/// Platform ID
+	///
+#ifdef _WIN32
+	typedef uint16_t platform_id;
+#else
+	typedef const char* platform_id;
+
+	inline bool operator ==(_In_ const platform_id a, _In_ const platform_id b) { return a == b; }
+	inline bool operator !=(_In_ const platform_id a, _In_ const platform_id b) { return a != b; }
+	inline bool operator <(_In_ const platform_id a, _In_ const platform_id b) { return a == IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN || a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) < 0; }
+	inline bool operator <=(_In_ const platform_id a, _In_ const platform_id b) { return a == IMAGE_FILE_MACHINE_UNKNOWN || a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) <= 0; }
+	inline bool operator >(_In_ const platform_id a, _In_ const platform_id b) { return a != IMAGE_FILE_MACHINE_UNKNOWN && b == IMAGE_FILE_MACHINE_UNKNOWN || a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) > 0; }
+	inline bool operator >=(_In_ const platform_id a, _In_ const platform_id b) { return b == IMAGE_FILE_MACHINE_UNKNOWN || a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) >= 0; }
+#endif
+}
+
+#ifndef _WIN32
+static constexpr stdex::platform_id IMAGE_FILE_MACHINE_UNKNOWN = nullptr;
+static constexpr stdex::platform_id IMAGE_FILE_MACHINE_I386 = "i386";
+static constexpr stdex::platform_id IMAGE_FILE_MACHINE_AMD64 = "x86_64";
+static constexpr stdex::platform_id IMAGE_FILE_MACHINE_ARMNT = "arm";
+static constexpr stdex::platform_id IMAGE_FILE_MACHINE_ARM64 = "aarch64";
+#endif
+
+namespace stdex
+{
+	///
+	/// System information
+	///
+	const struct sys_info_t
+	{
+		///
+		/// The platform this process was compiled for
+		///
+#if _M_IX86
+		static constexpr platform_id process_platform = IMAGE_FILE_MACHINE_I386;
+#elif _M_X64 // _M_ARM64EC is introducing as x64
+		static constexpr platform_id process_platform = IMAGE_FILE_MACHINE_AMD64;
+#elif _M_ARM
+		static constexpr platform_id process_platform = IMAGE_FILE_MACHINE_ARMNT;
+#elif _M_ARM64
+		static constexpr platform_id process_platform = IMAGE_FILE_MACHINE_ARM64;
+#elif __i386__
+		static constexpr platform_id process_platform = "i386";
+#elif __x86_64__
+		static constexpr platform_id process_platform = "x86_64";
+#elif __aarch64__
+		static constexpr platform_id process_platform = "aarch64";
+#else
+		#error Unknown platform
+#endif
+
+		///
+		/// The operating system platform
+		///
+		platform_id os_platform;
+
+#ifdef _WIN32
+		///
+		/// Is a Windows-on-Windows64 process?
+		///
+		bool wow64;
+#endif
+
+		///
+		/// Is interactive process?
+		///
+		bool interactive_process;
+
+		sys_info_t() :
+			os_platform(IMAGE_FILE_MACHINE_UNKNOWN),
+			wow64(false),
+			interactive_process(true)
+		{
+#ifdef _WIN32
+			HMODULE kernel32_handle;
+			kernel32_handle = LoadLibrary(_T("kernel32.dll"));
+			_Analysis_assume_(kernel32_handle);
+			BOOL (WINAPI* IsWow64Process2)(HANDLE hProcess, USHORT* pProcessMachine, USHORT* pNativeMachine);
+			*reinterpret_cast<FARPROC*>(&IsWow64Process2) = GetProcAddress(kernel32_handle, "IsWow64Process2");
+			HANDLE process = GetCurrentProcess();
+			USHORT process_machine;
+#ifndef _WIN64
+			BOOL Wow64Process;
+#endif
+			if (IsWow64Process2 && IsWow64Process2(process, &process_machine, &os_platform)) {
+				wow64 = process_machine != IMAGE_FILE_MACHINE_UNKNOWN;
+			}
+#ifdef _WIN64
+			else {
+				os_platform = process_platform;
+				wow64 = false;
+			}
+#else
+			else if (IsWow64Process(process, &Wow64Process)) {
+				if (Wow64Process) {
+					os_platform = IMAGE_FILE_MACHINE_AMD64;
+					wow64 = true;
+				} else {
+					os_platform = process_platform;
+					wow64 = false;
+				}
+			}
+#endif
+			FreeLibrary(kernel32_handle);
+
+			HWINSTA hWinSta = GetProcessWindowStation();
+			if (hWinSta) {
+				TCHAR sName[MAX_PATH];
+				if (GetUserObjectInformation(hWinSta, UOI_NAME, sName, sizeof(sName), NULL)) {
+					sName[_countof(sName) - 1] = 0;
+					// Only "WinSta0" is interactive (Source: KB171890)
+					interactive_process = _tcsicmp(sName,  _T("WinSta0")) == 0;
+				}
+			}
+#else
+			memset(&m_utsn, 0, sizeof(m_utsn));
+			if (uname(&m_utsn) != -1)
+				os_platform = reinterpret_cast<platform_id>(m_utsn.machine);
+
+			// TODO: Research interactive process vs service/agent/daemon on this platform.
+#endif
+		}
+
+	protected:
+#ifndef _WIN32
+		struct utsname m_utsn;
+#endif
+	} sys_info;
 }
