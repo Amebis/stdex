@@ -64,7 +64,7 @@ namespace stdex {
 		/// - \c true when successful
 		/// - \c false otherwise
 		///
-		template <class T_SIZE, unsigned int ALIGN>
+		template <class T_SIZE, T_SIZE ALIGN>
 		bool ignore(_In_ std::istream& stream)
 		{
 			// Read record size.
@@ -89,8 +89,8 @@ namespace stdex {
 		/// - \c true when successful
 		/// - \c false otherwise
 		///
-		template <class T_SIZE, unsigned int ALIGN>
-		bool ignore(_In_ stdex::stream::basic_file& stream)
+		template <class T_SIZE, T_SIZE ALIGN>
+		bool ignore(_In_ stdex::stream::basic& stream)
 		{
 			// Read record size.
 			T_SIZE size;
@@ -116,7 +116,7 @@ namespace stdex {
 		/// - \c true when found
 		/// - \c false otherwise
 		///
-		template <class T_ID, class T_SIZE, unsigned int ALIGN>
+		template <class T_ID, class T_SIZE, T_SIZE ALIGN>
 		bool find(_In_ std::istream& stream, _In_ T_ID id, _In_opt_ std::streamoff end = (std::streamoff)-1)
 		{
 			T_ID _id;
@@ -143,7 +143,7 @@ namespace stdex {
 		/// - \c true when found
 		/// - \c false otherwise
 		///
-		template <class T_ID, class T_SIZE, unsigned int ALIGN>
+		template <class T_ID, class T_SIZE, T_SIZE ALIGN>
 		bool find(_In_ stdex::stream::basic_file& stream, _In_ T_ID id, _In_opt_ stdex::stream::fpos_t end = stdex::stream::fpos_max)
 		{
 			T_ID _id;
@@ -198,11 +198,9 @@ namespace stdex {
 			auto start = stream.tell();
 
 			// Write ID.
-			if (!stream.ok()) _Unlikely_ return stdex::stream::fpos_max;
 			stream << id;
 
 			// Write 0 as a placeholder for data size.
-			if (!stream.ok()) _Unlikely_ return stdex::stream::fpos_max;
 			stream << (T_SIZE)0;
 
 			return start;
@@ -216,7 +214,7 @@ namespace stdex {
 		///
 		/// \returns  Position of the record end in \p stream
 		///
-		template <class T_ID, class T_SIZE, unsigned int ALIGN>
+		template <class T_ID, class T_SIZE, T_SIZE ALIGN>
 		std::streamoff close(_In_ std::ostream& stream, _In_ std::streamoff start)
 		{
 			std::streamoff end = stream.tellp();
@@ -248,7 +246,7 @@ namespace stdex {
 		///
 		/// \returns  Position of the record end in \p stream
 		///
-		template <class T_ID, class T_SIZE, unsigned int ALIGN>
+		template <class T_ID, class T_SIZE, T_SIZE ALIGN>
 		stdex::stream::fpos_t close(_In_ stdex::stream::basic_file& stream, _In_ stdex::stream::fpos_t start)
 		{
 			auto end = stream.tell();
@@ -275,7 +273,7 @@ namespace stdex {
 		///
 		/// Helper class for read/write of records to/from memory
 		///
-		template <class T, class T_ID, const T_ID ID, class T_SIZE, unsigned int ALIGN>
+		template <class T, class T_ID, const T_ID ID, class T_SIZE, T_SIZE ALIGN>
 		class record
 		{
 		public:
@@ -395,109 +393,156 @@ namespace stdex {
 			}
 
 			T &data; ///< Record data reference
+
+			///
+			/// Writes record to a stream
+			///
+			/// \param[in] stream  Output stream
+			/// \param[in] r       Record
+			///
+			/// \returns The stream \p stream
+			///
+			friend std::ostream& operator <<(_In_ std::ostream& stream, _In_ const record<T, T_ID, ID, T_SIZE, ALIGN> r)
+			{
+				// Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already.
+
+				auto start = r.open(stream);
+				if (stream.fail()) _Unlikely_ return stream;
+				stream << r.data;
+				r.close(stream, start);
+
+				return stream;
+			}
+
+			///
+			/// Writes record to a file
+			///
+			/// \param[in] stream  Output file
+			/// \param[in] r       Record
+			///
+			/// \returns The stream \p stream
+			///
+			friend stdex::stream::basic_file& operator <<(_In_ stdex::stream::basic_file& stream, _In_ const record<T, T_ID, ID, T_SIZE, ALIGN> r)
+			{
+				// Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already.
+
+				auto start = r.open(stream);
+				if (!stream.ok()) _Unlikely_ return stream;
+				stream << r.data;
+				r.close(stream, start);
+
+				return stream;
+			}
+
+			///
+			/// Writes record to a stream
+			///
+			/// \param[in] stream  Output stream
+			/// \param[in] r       Record
+			///
+			/// \returns The stream \p stream
+			///
+			friend stdex::stream::basic& operator <<(_In_ stdex::stream::basic& stream, _In_ const record<T, T_ID, ID, T_SIZE, ALIGN> r)
+			{
+				// Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already.
+
+				stdex::stream::memory_file temp;
+				auto start = r.open(temp);
+				if (!temp.ok()) _Unlikely_ return stream;
+				temp << r.data;
+				r.close(temp, start);
+				temp.seek(0);
+				stream.write_stream(temp);
+
+				return stream;
+			}
+
+			///
+			/// Reads record from a stream
+			///
+			/// \param[in]  stream  Input stream
+			/// \param[out] r       Record
+			///
+			/// \returns The stream \p stream
+			///
+			friend std::istream& operator >>(_In_ std::istream& stream, _In_ record<T, T_ID, ID, T_SIZE, ALIGN> r)
+			{
+				// Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already.
+
+				// Read data size.
+				T_SIZE size;
+				stream.read((char*)&size, sizeof(size));
+				if (!stream.good()) _Unlikely_ return stream;
+
+				// Read data.
+				std::streamoff start = stream.tellg();
+				stream >> r.data; // TODO: operator >> should not read past the record data! Make a size limited stream and read from it instead.
+				if (!stream.good()) _Unlikely_ return stream;
+
+				size += static_cast<T_SIZE>((ALIGN - size) % ALIGN);
+				stream.seekg(start + size);
+
+				return stream;
+			}
+
+			///
+			/// Reads record from a file
+			///
+			/// \param[in]  stream  Input file
+			/// \param[out] r       Record
+			///
+			/// \returns The stream \p stream
+			///
+			friend stdex::stream::basic_file& operator >>(_In_ stdex::stream::basic_file& stream, _In_ record<T, T_ID, ID, T_SIZE, ALIGN> r)
+			{
+				// Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already.
+
+				// Read data size.
+				T_SIZE size;
+				stream >> size;
+				if (!stream.ok()) _Unlikely_ return stream;
+
+				// Read data.
+				auto start = stream.tell();
+				{
+					stdex::stream::limiter limiter(stream, size, 0);
+					limiter >> r.data;
+					if (!limiter.ok()) _Unlikely_ return stream;
+				}
+
+				size += static_cast<T_SIZE>((ALIGN - size) % ALIGN);
+				stream.seek(start + size);
+
+				return stream;
+			}
+
+			///
+			/// Reads record from a stream
+			///
+			/// \param[in]  stream  Input stream
+			/// \param[out] r       Record
+			///
+			/// \returns The stream \p stream
+			///
+			friend stdex::stream::basic& operator >>(_In_ stdex::stream::basic& stream, _In_ record<T, T_ID, ID, T_SIZE, ALIGN> r)
+			{
+				// Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already.
+
+				// Read data size.
+				T_SIZE size;
+				stream >> size;
+				if (!stream.ok()) _Unlikely_ return stream;
+
+				{
+					stdex::stream::limiter limiter(stream, size, 0);
+					limiter >> r.data;
+					if (!limiter.ok()) _Unlikely_ return stream;
+					limiter.skip(limiter.read_limit);
+				}
+				stream.skip(static_cast<T_SIZE>((ALIGN - size) % ALIGN));
+
+				return stream;
+			}
 		};
 	};
 };
-
-///
-/// Writes record to a stream
-///
-/// \param[in] stream  Output stream
-/// \param[in] r       Record
-///
-/// \returns The stream \p stream
-///
-template <class T, class T_ID, T_ID ID, class T_SIZE, unsigned int ALIGN>
-std::ostream& operator <<(_In_ std::ostream& stream, _In_ const stdex::idrec::record<T, T_ID, ID, T_SIZE, ALIGN> r)
-{
-	// Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already.
-
-	auto start = r.open(stream);
-	if (stream.fail()) _Unlikely_ return stream;
-	stream << r.data;
-	r.close(stream, start);
-
-	return stream;
-}
-
-///
-/// Writes record to a stream
-///
-/// \param[in] stream  Output stream
-/// \param[in] r       Record
-///
-/// \returns The stream \p stream
-///
-template <class T, class T_ID, T_ID ID, class T_SIZE, unsigned int ALIGN>
-stdex::stream::basic_file& operator <<(_In_ stdex::stream::basic_file& stream, _In_ const stdex::idrec::record<T, T_ID, ID, T_SIZE, ALIGN> r)
-{
-	// Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already.
-
-	auto start = r.open(stream);
-	if (!stream.ok()) _Unlikely_ return stream;
-	stream << r.data;
-	r.close(stream, start);
-
-	return stream;
-}
-
-///
-/// Reads record from a stream
-///
-/// \param[in]  stream  Input stream
-/// \param[out] r       Record
-///
-/// \returns The stream \p stream
-///
-template <class T, class T_ID, T_ID ID, class T_SIZE, unsigned int ALIGN>
-std::istream& operator >>(_In_ std::istream& stream, _In_ stdex::idrec::record<T, T_ID, ID, T_SIZE, ALIGN> r)
-{
-	// Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already.
-
-	// Read data size.
-	T_SIZE size;
-	stream.read((char*)&size, sizeof(size));
-	if (!stream.good()) _Unlikely_ return stream;
-
-	// Read data.
-	std::streamoff start = stream.tellg();
-	stream >> r.data; // TODO: operator >> should not read past the record data! Make a size limited stream and read from it instead.
-	if (!stream.good()) _Unlikely_ return stream;
-
-	size += static_cast<T_SIZE>((ALIGN - size) % ALIGN);
-	stream.seekg(start + size);
-
-	return stream;
-}
-
-///
-/// Reads record from a stream
-///
-/// \param[in]  stream  Input stream
-/// \param[out] r       Record
-///
-/// \returns The stream \p stream
-///
-template <class T, class T_ID, T_ID ID, class T_SIZE, unsigned int ALIGN>
-stdex::stream::basic_file& operator >>(_In_ stdex::stream::basic_file& stream, _In_ stdex::idrec::record<T, T_ID, ID, T_SIZE, ALIGN> r)
-{
-	// Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already.
-
-	// Read data size.
-	T_SIZE size;
-	stream >> size;
-	if (!stream.ok()) _Unlikely_ return stream;
-
-	// Read data.
-	auto start = stream.tell();
-	{
-		stdex::stream::limiter limiter(stream, size, size);
-		limiter >> r.data;
-		if (!limiter.ok()) _Unlikely_ return stream;
-	}
-
-	size += static_cast<T_SIZE>((ALIGN - size) % ALIGN);
-	stream.seek(start + size);
-
-	return stream;
-}
