@@ -19,6 +19,7 @@
 #if defined(_WIN32)
 #include <asptlb.h>
 #include <objidl.h>
+#include <WinSock2.h>
 #else
 #include <fcntl.h>
 #include <unistd.h>
@@ -2336,6 +2337,125 @@ namespace stdex
 
 		protected:
 			basic_sys m_source;
+		};
+
+		///
+		/// Socket stream
+		///
+		class socket : public basic
+		{
+		public:
+			socket(_In_opt_ SOCKET h = INVALID_SOCKET, _In_ state_t state = state_t::ok) :
+				basic(state),
+				m_h(h)
+			{}
+
+		private:
+			socket(_In_ const socket& other);
+			socket& operator =(_In_ const socket& other);
+
+		public:
+			socket(_Inout_ socket&& other) noexcept : m_h(other.m_h)
+			{
+				other.m_h = INVALID_SOCKET;
+			}
+
+			socket& operator =(_Inout_ socket&& other) noexcept
+			{
+				if (this != std::addressof(other)) {
+					if (m_h != INVALID_SOCKET)
+						closesocket(m_h);
+					m_h = other.m_h;
+					other.m_h = INVALID_SOCKET;
+				}
+				return *this;
+			}
+
+			///
+			/// Creates a socket
+			///
+			/// \param[in] af        Address family
+			/// \param[in] type      Socket type
+			/// \param[in] protocol  Socket protocol
+			///
+			socket(_In_ int af, _In_ int type, _In_ int protocol)
+			{
+				m_h = ::socket(af, type, protocol);
+				if (m_h == INVALID_SOCKET) _Unlikely_
+					m_state = state_t::fail;
+			}
+
+			virtual ~socket()
+			{
+				if (m_h != INVALID_SOCKET)
+					closesocket(m_h);
+			}
+
+			///
+			/// Returns true if socket handle is valid
+			///
+			inline operator bool() const noexcept { return m_h != INVALID_SOCKET; }
+
+			///
+			/// Returns socket handle
+			///
+			inline SOCKET get() const noexcept { return m_h; }
+
+			virtual _Success_(return != 0 || length == 0) size_t read(
+				_Out_writes_bytes_to_opt_(length, return) void* data, _In_ size_t length)
+			{
+				assert(data || !length);
+				constexpr int block_size = 0x10000000;
+				for (size_t to_read = length;;) {
+					int num_read = recv(m_h, reinterpret_cast<char*>(data), static_cast<int>(std::min<size_t>(to_read, block_size)), 0);
+					if (num_read == SOCKET_ERROR) _Unlikely_ {
+						m_state = to_read < length ? state_t::ok : state_t::fail;
+						return length - to_read;
+					}
+					if (!num_read) {
+						m_state = to_read < length || !length ? state_t::ok : state_t::eof;
+						return length - to_read;
+					}
+					to_read -= num_read;
+					if (!to_read) {
+						m_state = state_t::ok;
+						return length;
+					}
+					reinterpret_cast<uint8_t*&>(data) += num_read;
+				}
+			}
+
+			virtual _Success_(return != 0) size_t write(
+				_In_reads_bytes_opt_(length) const void* data, _In_ size_t length)
+			{
+				assert(data || !length);
+				constexpr int block_size = 0x10000000;
+				for (size_t to_write = length;;) {
+					int num_written = send(m_h, reinterpret_cast<const char*>(data), static_cast<int>(std::min<size_t>(to_write, block_size)), 0);
+					if (num_written == SOCKET_ERROR) _Unlikely_ {
+						m_state = state_t::fail;
+						return length - to_write;
+					}
+					to_write -= num_written;
+					if (!to_write) {
+						m_state = state_t::ok;
+						return length;
+					}
+					reinterpret_cast<const uint8_t*&>(data) += num_written;
+				}
+			}
+
+			virtual void close()
+			{
+				if (m_h != INVALID_SOCKET) {
+					closesocket(m_h);
+					m_h = INVALID_SOCKET;
+				}
+				m_state = state_t::ok;
+			}
+
+		protected:
+			SOCKET m_h;
 		};
 
 #ifdef _WIN32
