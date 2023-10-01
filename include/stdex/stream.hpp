@@ -1090,7 +1090,7 @@ namespace stdex
 					_w->cv.notify_one();
 				}
 				for (auto w = m_workers.begin(), w_end = m_workers.end(); w != w_end; ++w)
-					w->get()->thread.join();
+					w->get()->join();
 			}
 
 			///
@@ -1114,7 +1114,7 @@ namespace stdex
 							_w->op = worker::op_t::quit;
 						}
 						_w->cv.notify_one();
-						_w->thread.join();
+						_w->join();
 						m_workers.erase(w);
 						return;
 					}
@@ -1159,7 +1159,7 @@ namespace stdex
 			}
 
 		protected:
-			class worker
+			class worker : public std::thread
 			{
 			public:
 				worker(_In_ basic* _source) :
@@ -1167,9 +1167,10 @@ namespace stdex
 					op(op_t::noop),
 					data(nullptr),
 					length(0),
-					num_written(0),
-					thread(process_op, std::ref(*this))
-				{}
+					num_written(0)
+				{
+					*static_cast<std::thread*>(this) = std::thread(process_op, std::ref(*this));
+				}
 
 			protected:
 				static void process_op(_Inout_ worker& w)
@@ -1211,7 +1212,6 @@ namespace stdex
 				size_t num_written; ///< Number of bytes written
 				std::mutex mutex;
 				std::condition_variable cv;
-				std::thread thread;
 			};
 
 			void foreach_worker(_In_ worker::op_t op)
