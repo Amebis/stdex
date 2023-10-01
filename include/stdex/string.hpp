@@ -380,6 +380,29 @@ namespace stdex
 	}
 
 	///
+	/// Binary compare two strings
+	///
+	/// \param[in] str1    String 1
+	/// \param[in] str2    String 2
+	/// \param[in] count   String 1 and 2 code unit count limit
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T1, class T2>
+	inline int strncmp(_In_reads_or_z_opt_(count) const T1* str1, _In_reads_or_z_opt_(count) const T2* str2, _In_ size_t count)
+	{
+		assert((str1 && str2) || !count);
+		size_t i; T1 a; T2 b;
+		for (i = 0; i < count && ((a = str1[i]) | (b = str2[i])); ++i) {
+			if (a > b) return +1;
+			if (a < b) return -1;
+		}
+		if (i < count && str1[i]) return +1;
+		if (i < count && str2[i]) return -1;
+		return 0;
+	}
+
+	///
 	/// Lexigraphically compare two strings
 	///
 	/// \param[in] str1    String 1
