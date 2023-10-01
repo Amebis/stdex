@@ -685,9 +685,9 @@ namespace stdex
 		assert(src || !count_src);
 		for (size_t i = 0; ; ++i)
 		{
-			if (i > count_dst)
+			if (i >= count_dst)
 				return i;
-			if (i > count_src) {
+			if (i >= count_src) {
 				dst[i] = 0;
 				return i;
 			}
@@ -758,9 +758,9 @@ namespace stdex
 		assert(src || !count_src);
 		for (size_t i = 0, j = stdex::strnlen<T1>(dst, count_dst); ; ++i, ++j)
 		{
-			if (j > count_dst)
+			if (j >= count_dst)
 				return j;
-			if (i > count_src) {
+			if (i >= count_src) {
 				dst[j] = 0;
 				return j;
 			}
