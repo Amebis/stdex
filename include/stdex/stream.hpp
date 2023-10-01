@@ -473,17 +473,24 @@ namespace stdex
 			/// \return This stream
 			///
 			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-			inline basic& read_str(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& data)
+			inline basic& read_str(_Out_ std::basic_string<_Elem, _Traits, _Ax>& data)
 			{
+				data.clear();
+				if (!ok()) _Unlikely_
+					return *this;
 				uint32_t num_chars;
 				read_data(num_chars);
-				if (!ok()) _Unlikely_ {
-					data.clear();
+				if (!ok()) _Unlikely_
 					return *this;
+				data.reserve(num_chars);
+				for (;;) {
+					_Elem buf[0x400];
+					uint32_t num_read = static_cast<uint32_t>(read_array(buf, sizeof(_Elem), std::min<uint32_t>(num_chars, _countof(buf))));
+					data.append(buf, buf + num_read);
+					num_chars -= num_read;
+					if (!num_chars || !ok())
+						return *this;
 				}
-				data.resize(num_chars);
-				data.resize(read_array(data.data(), sizeof(_Elem), num_chars));
-				return *this;
 			}
 
 			///
@@ -504,10 +511,35 @@ namespace stdex
 				size_t num_chars = stdex::strlen(data);
 				if (num_chars > UINT32_MAX)
 					throw std::invalid_argument("string too long");
-				write_data((uint32_t)num_chars);
+				write_data(static_cast<uint32_t>(num_chars));
 				if (!ok()) _Unlikely_
 					return *this;
 				write_array(data, sizeof(T), num_chars);
+				return *this;
+			}
+
+			///
+			/// Writes string to the stream length-prefixed
+			///
+			/// This method is intended for chaining: e.g. stream.write_str(a).write_str(b).write_str(c)...
+			/// Since it would make it impossible to detect if any of the write_str(a) or write_str(b) failed should
+			/// write_str(c) succeed, the method skips writing if stream state is not ok.
+			///
+			/// \param[in] data  String to write
+			///
+			/// \return This stream
+			///
+			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
+			inline basic& write_str(_In_ const std::basic_string<_Elem, _Traits, _Ax>& data)
+			{
+				// Stream state will be checked in write_data.
+				size_t num_chars = data.size();
+				if (num_chars > UINT32_MAX)
+					throw std::invalid_argument("string too long");
+				write_data(static_cast<uint32_t>(num_chars));
+				if (!ok()) _Unlikely_
+					return *this;
+				write_array(data.data(), sizeof(_Elem), num_chars);
 				return *this;
 			}
 
@@ -649,9 +681,11 @@ namespace stdex
 			inline basic& operator <<(_In_ const wchar_t data) { return write_data(data); }
 #endif
 			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-			inline basic& operator >>(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& data) { return read_str(data); }
+			inline basic& operator >>(_Out_ std::basic_string<_Elem, _Traits, _Ax>& data) { return read_str(data); }
 			template <class T>
 			inline basic& operator <<(_In_ const T* data) { return write_str(data); }
+			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
+			inline basic& operator <<(_In_ const std::basic_string<_Elem, _Traits, _Ax>& data) { return write_str(data); }
 
 			template <class _Ty, class _Alloc = std::allocator<_Ty>>
 			basic& operator <<(_In_ const std::vector<_Ty, _Alloc>& data)
@@ -3467,6 +3501,51 @@ namespace stdex
 			}
 
 			///
+			/// Writes string to the stream length-prefixed
+			///
+			/// This method is intended for chaining: e.g. stream.write_str(a).write_str(b).write_str(c)...
+			/// Since it would make it impossible to detect if any of the write_str(a) or write_str(b) failed should
+			/// write_str(c) succeed, the method skips writing if stream state is not ok.
+			///
+			/// As memory write rarely fails, a #define CHECK_STREAM_STATE 0 turns this checking off when
+			/// performance is paramount.
+			///
+			/// \param[in] data  String to write
+			///
+			/// \return This stream
+			///
+			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
+			inline memory_file& write_str(_In_ const std::basic_string<_Elem, _Traits, _Ax>& data)
+			{
+#if SET_FILE_OP_TIMES
+				m_atime = m_mtime = time_point::now();
+#endif
+				if (CHECK_STREAM_STATE && !ok()) _Unlikely_
+					return *this;
+				size_t num_chars = data.size();
+				if (num_chars > UINT32_MAX)
+					throw std::invalid_argument("string too long");
+				size_t size_chars = num_chars * sizeof(_Elem);
+				size_t size = sizeof(uint32_t) + size_chars;
+				size_t end_offset = m_offset + size;
+				if (end_offset > m_reserved) {
+					reserve(end_offset);
+					if (!ok()) _Unlikely_
+						return *this;
+				}
+				auto p = m_data + m_offset;
+				*reinterpret_cast<uint32_t*>(p) = HE2LE((uint32_t)num_chars);
+				memcpy(p + sizeof(uint32_t), data.data(), size_chars);
+				m_offset = end_offset;
+				if (m_offset > m_size)
+					m_size = m_offset;
+#if !CHECK_STREAM_STATE
+				m_state = state_t::ok;
+#endif
+				return *this;
+			}
+
+			///
 			/// Writes content of another stream
 			///
 			/// \return Number of bytes written
@@ -3697,10 +3776,12 @@ namespace stdex
 			inline memory_file& operator <<(_In_ const wchar_t data) { return write_data(data); }
 			inline memory_file& operator >>(_Out_ wchar_t& data) { return read_data(data); }
 #endif
+			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
+			inline memory_file& operator >>(_Out_ std::basic_string<_Elem, _Traits, _Ax>&data) { return read_str(data); }
 			template <class T>
 			inline memory_file& operator <<(_In_ const T * data) { return write_str(data); }
 			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-			inline memory_file& operator >>(_Inout_ std::basic_string<_Elem, _Traits, _Ax>&data) { return read_str(data); }
+			inline memory_file& operator <<(_In_ const std::basic_string<_Elem, _Traits, _Ax>& data) { return write_str(data); }
 
 		protected:
 			uint8_t* m_data; ///< file data
