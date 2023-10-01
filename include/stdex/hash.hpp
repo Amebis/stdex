@@ -258,6 +258,37 @@ namespace stdex
 	{
 		uint8_t data8[16];
 		uint32_t data32[4];
+
+		inline bool operator !=(_In_ const stdex::md2_t& other) const
+		{
+			return
+				(data32[0] ^ other.data32[0]) |
+				(data32[1] ^ other.data32[1]) |
+				(data32[2] ^ other.data32[2]) |
+				(data32[3] ^ other.data32[3]);
+		}
+
+		inline bool operator ==(_In_ const stdex::md2_t& other) const
+		{
+			return !operator !=(other);
+		}
+
+		friend inline stdex::stream::basic& operator >>(_Inout_ stdex::stream::basic& stream, _Out_ stdex::md2_t& data)
+		{
+			if (!stream.ok()) _Unlikely_{
+				memset(&data, 0, sizeof(data));
+				return stream;
+			}
+			stream.read_array(&data, sizeof(data), 1);
+			return stream;
+		}
+
+		friend inline stdex::stream::basic& operator <<(_Inout_ stdex::stream::basic& stream, _In_ const stdex::md2_t& data)
+		{
+			if (!stream.ok()) _Unlikely_ return stream;
+			stream.write_array(&data, sizeof(data), 1);
+			return stream;
+		}
 	};
 
 	///
@@ -427,6 +458,38 @@ namespace stdex
 	{
 		uint8_t data8[20];
 		uint32_t data32[5];
+
+		inline bool operator !=(_In_ const stdex::sha_t& other) const
+		{
+			return
+				(data32[0] ^ other.data32[0]) |
+				(data32[1] ^ other.data32[1]) |
+				(data32[2] ^ other.data32[2]) |
+				(data32[3] ^ other.data32[3]) |
+				(data32[4] ^ other.data32[4]);
+		}
+
+		inline bool operator ==(_In_ const stdex::sha_t& other) const
+		{
+			return !operator !=(other);
+		}
+
+		friend inline stdex::stream::basic& operator >>(_Inout_ stdex::stream::basic& stream, _Out_ stdex::sha_t& data)
+		{
+			if (!stream.ok()) _Unlikely_{
+				memset(&data, 0, sizeof(data));
+				return stream;
+			}
+			stream.read_array(&data, sizeof(data), 1);
+			return stream;
+		}
+
+		friend inline stdex::stream::basic& operator <<(_Inout_ stdex::stream::basic& stream, _In_ const stdex::sha_t data)
+		{
+			if (!stream.ok()) _Unlikely_ return stream;
+			stream.write_array(&data, sizeof(data), 1);
+			return stream;
+		}
 	};
 
 	///
@@ -544,106 +607,40 @@ namespace stdex
 	{
 		uint8_t data8[32];
 		uint32_t data32[8];
+
+		inline bool operator !=(_In_ const stdex::sha256_t& other) const
+		{
+			return
+				(data32[0] ^ other.data32[0]) |
+				(data32[1] ^ other.data32[1]) |
+				(data32[2] ^ other.data32[2]) |
+				(data32[3] ^ other.data32[3]) |
+				(data32[4] ^ other.data32[4]) |
+				(data32[5] ^ other.data32[5]) |
+				(data32[6] ^ other.data32[6]) |
+				(data32[7] ^ other.data32[7]);
+		}
+
+		inline bool operator ==(_In_ const stdex::sha256_t& other) const
+		{
+			return !operator !=(other);
+		}
+
+		friend inline stdex::stream::basic& operator >>(_Inout_ stdex::stream::basic& stream, _Out_ stdex::sha256_t& data)
+		{
+			if (!stream.ok()) _Unlikely_{
+				memset(&data, 0, sizeof(data));
+				return stream;
+			}
+			stream.read_array(&data, sizeof(data), 1);
+			return stream;
+		}
+
+		friend inline stdex::stream::basic& operator <<(_Inout_ stdex::stream::basic& stream, _In_ const stdex::sha256_t& data)
+		{
+			if (!stream.ok()) _Unlikely_ return stream;
+			stream.write_array(&data, sizeof(data), 1);
+			return stream;
+		}
 	};
-}
-
-inline bool operator !=(const stdex::md2_t& odtis1, const stdex::md2_t& odtis2)
-{
-	return
-		(odtis1.data32[0] ^ odtis2.data32[0]) |
-		(odtis1.data32[1] ^ odtis2.data32[1]) |
-		(odtis1.data32[2] ^ odtis2.data32[2]) |
-		(odtis1.data32[3] ^ odtis2.data32[3]);
-}
-
-inline bool operator ==(const stdex::md2_t& odtis1, const stdex::md2_t& odtis2)
-{
-	return !operator !=(odtis1, odtis2);
-}
-
-inline bool operator !=(_In_ const stdex::sha_t& odtis1, _In_ const stdex::sha_t& odtis2)
-{
-	return
-		(odtis1.data32[0] ^ odtis2.data32[0]) |
-		(odtis1.data32[1] ^ odtis2.data32[1]) |
-		(odtis1.data32[2] ^ odtis2.data32[2]) |
-		(odtis1.data32[3] ^ odtis2.data32[3]) |
-		(odtis1.data32[4] ^ odtis2.data32[4]);
-}
-
-inline bool operator ==(_In_ const stdex::sha_t& odtis1, _In_ const stdex::sha_t& odtis2)
-{
-	return !operator !=(odtis1, odtis2);
-}
-
-inline bool operator !=(const stdex::sha256_t& odtis1, const stdex::sha256_t& odtis2)
-{
-	return
-		(odtis1.data32[0] ^ odtis2.data32[0]) |
-		(odtis1.data32[1] ^ odtis2.data32[1]) |
-		(odtis1.data32[2] ^ odtis2.data32[2]) |
-		(odtis1.data32[3] ^ odtis2.data32[3]) |
-		(odtis1.data32[4] ^ odtis2.data32[4]) |
-		(odtis1.data32[5] ^ odtis2.data32[5]) |
-		(odtis1.data32[6] ^ odtis2.data32[6]) |
-		(odtis1.data32[7] ^ odtis2.data32[7]);
-}
-
-inline bool operator ==(const stdex::sha256_t& odtis1, const stdex::sha256_t& odtis2)
-{
-	return !(odtis1 != odtis2);
-}
-
-inline stdex::stream::basic& operator >>(_Inout_ stdex::stream::basic& stream, _Out_ stdex::md2_t& data)
-{
-	if (!stream.ok()) _Unlikely_{
-		memset(&data, 0, sizeof(data));
-		return stream;
-	}
-	stream.read_array(&data, sizeof(data), 1);
-	return stream;
-}
-
-inline stdex::stream::basic& operator <<(_Inout_ stdex::stream::basic& stream, _In_ const stdex::md2_t& data)
-{
-	if (!stream.ok()) _Unlikely_
-		return stream;
-	stream.write_array(&data, sizeof(data), 1);
-	return stream;
-}
-
-inline stdex::stream::basic& operator >>(_Inout_ stdex::stream::basic& stream, _Out_ stdex::sha_t& data)
-{
-	if (!stream.ok()) _Unlikely_{
-		memset(&data, 0, sizeof(data));
-		return stream;
-	}
-	stream.read_array(&data, sizeof(data), 1);
-	return stream;
-}
-
-inline stdex::stream::basic& operator <<(_Inout_ stdex::stream::basic& stream, _In_ const stdex::sha_t& data)
-{
-	if (!stream.ok()) _Unlikely_
-		return stream;
-	stream.write_array(&data, sizeof(data), 1);
-	return stream;
-}
-
-inline stdex::stream::basic& operator >>(_Inout_ stdex::stream::basic& stream, _Out_ stdex::sha256_t& data)
-{
-	if (!stream.ok()) _Unlikely_{
-		memset(&data, 0, sizeof(data));
-		return stream;
-	}
-	stream.read_array(&data, sizeof(data), 1);
-	return stream;
-}
-
-inline stdex::stream::basic& operator <<(_Inout_ stdex::stream::basic& stream, _In_ const stdex::sha256_t& data)
-{
-	if (!stream.ok()) _Unlikely_
-		return stream;
-	stream.write_array(&data, sizeof(data), 1);
-	return stream;
 }
