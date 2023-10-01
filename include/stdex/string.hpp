@@ -10,9 +10,10 @@
 #include <ctype.h>
 #include <locale.h>
 #include <stdarg.h>
+#include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <stdarg.h>
+#include <time.h>
 #ifdef __APPLE__
 #include <xlocale.h>
 #endif
@@ -1179,7 +1180,6 @@ namespace stdex
 	inline int vsnprintf(_Out_z_cap_(capacity) wchar_t *str, _In_ size_t capacity, _In_z_ _Printf_format_string_params_(2) const wchar_t *format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
 		int r;
-
 #ifdef _WIN32
 		// Don't use _vsnwprintf_s(). It terminates the string even if we want to print to the edge of the buffer.
 #pragma warning(suppress: 4996)
@@ -1308,6 +1308,90 @@ namespace stdex
 		va_start(arg, locale);
 		auto str = vsprintf(format, locale, arg);
 		va_end(arg);
+		return str;
+	}
+
+	/// \cond internal
+	inline size_t strftime(_Out_z_cap_(capacity) char *str, _In_ size_t capacity, _In_z_ _Printf_format_string_ const char *format, _In_ const struct tm* time, _In_opt_ locale_t locale)
+	{
+#ifdef _WIN32
+		return _strftime_l(str, capacity, format, time, locale);
+#else
+		return strftime_l(str, capacity, format, time, locale);
+#endif
+	}
+
+	inline size_t strftime(_Out_z_cap_(capacity) wchar_t *str, _In_ size_t capacity, _In_z_ _Printf_format_string_ const wchar_t *format, _In_ const struct tm* time, _In_opt_ locale_t locale)
+	{
+#ifdef _WIN32
+		return _wcsftime_l(str, capacity, format, time, locale);
+#else
+		return wcsftime_l(str, capacity, format, time, locale);
+#endif
+	}
+	/// \endcond
+
+	///
+	/// Formats a time string using `strftime()`.
+	///
+	/// \param[out] str     String to append formatted time text
+	/// \param[in ] format  String template using `strftime()` style
+	/// \param[in ] time    Time
+	/// \param[in ] locale  Stdlib locale used to perform formatting. Use `NULL` to use locale globally set by `setlocale()`.
+	///
+	template<class _Elem, class _Traits, class _Ax>
+	inline void strcatftime(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_ const _Elem *format, _In_ const struct tm* time, _In_opt_ locale_t locale)
+	{
+		_Elem buf[1024/sizeof(_Elem)];
+
+		// Try with stack buffer first.
+		size_t count = strftime(buf, _countof(buf), format, time, locale);
+		if (count) {
+			// Copy from stack.
+			str.append(buf, count);
+		} else {
+			for (size_t capacity = 2*1024/sizeof(_Elem);; capacity *= 2) {
+				// Allocate on heap and retry.
+				auto buf_dyn = std::make_unique<_Elem[]>(capacity);
+				count = strftime(buf_dyn.get(), capacity, format, time, locale);
+				if (count) {
+					str.append(buf_dyn.get(), count);
+					break;
+				}
+			}
+		}
+	}
+
+	///
+	/// Formats a time string using `strftime()`.
+	///
+	/// \param[out] str     String to set formatted time text to
+	/// \param[in ] format  String template using `strftime()` style
+	/// \param[in ] time    Time
+	/// \param[in ] locale  Stdlib locale used to perform formatting. Use `NULL` to use locale globally set by `setlocale()`.
+	///
+	template<class _Elem, class _Traits, class _Ax>
+	inline void strftime(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_ const _Elem *format, _In_ const struct tm* time, _In_opt_ locale_t locale)
+	{
+		str.clear();
+		strcatftime(str, format, time, locale);
+	}
+
+	///
+	/// Formats a time string using `strftime()`.
+	///
+	/// \param[out] str     String to append formatted time text
+	/// \param[in ] format  String template using `strftime()` style
+	/// \param[in ] time    Time
+	/// \param[in ] locale  Stdlib locale used to perform formatting. Use `NULL` to use locale globally set by `setlocale()`.
+	///
+	/// \returns Formatted string
+	///
+	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
+	inline std::basic_string<_Elem, _Traits, _Ax> strftime(_In_z_ _Printf_format_string_ const _Elem *format, _In_ const struct tm* time, _In_opt_ locale_t locale)
+	{
+		std::basic_string<_Elem, _Traits, _Ax> str;
+		strcatftime(str, format, time, locale);
 		return str;
 	}
 
