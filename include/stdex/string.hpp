@@ -16,6 +16,7 @@
 #ifdef __APPLE__
 #include <xlocale.h>
 #endif
+#include <algorithm> 
 #include <locale>
 #include <memory>
 #include <stdexcept>
@@ -1368,12 +1369,26 @@ namespace stdex
 	/// \param[in]     count  Code unit limit
 	///
 	template<class T>
-	inline void strupr
-	(_Inout_updates_z_(count) T* str, _In_ size_t count, _In_ const std::locale& locale)
+	inline void strupr(_Inout_updates_z_(count) T* str, _In_ size_t count, _In_ const std::locale& locale)
 	{
 		assert(str || !count);
 		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
 		for (size_t i = 0; i < count && str[i]; ++i)
+			str[i] = ctype.toupper(str[i]);
+	}
+
+	///
+	/// Convert string to upper-case character-by-character
+	///
+	/// \note For legacy code support only.
+	///
+	/// \param[in,out] str    String
+	///
+	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
+	inline void strupr(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& str, _In_ const std::locale& locale)
+	{
+		const auto& ctype = std::use_facet<std::ctype<_Elem>>(locale);
+		for (size_t i = 0; i < str.size(); ++i)
 			str[i] = ctype.toupper(str[i]);
 	}
 }
