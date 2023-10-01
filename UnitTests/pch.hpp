@@ -1,4 +1,4 @@
-/*
+﻿/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023 Amebis
 */
@@ -23,6 +23,7 @@
 #include <stdex/system.hpp>
 #include <stdex/unicode.hpp>
 #include <stdex/vector_queue.hpp>
+#include <stdex/watchdog.hpp>
 
 #include "compat.hpp"
 

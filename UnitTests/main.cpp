@@ -11,6 +11,7 @@
 #include "sgml.cpp"
 #include "stream.cpp"
 #include "unicode.cpp"
+#include "watchdog.cpp"
 #include <iostream>
 
 int main(int argc, const char * argv[])
@@ -34,6 +35,7 @@ int main(int argc, const char * argv[])
 		UnitTests::unicode::str2wstr();
 		UnitTests::unicode::wstr2str();
 		UnitTests::unicode::charset_encoder();
+		UnitTests::watchdog::test();
 		std::cout << "PASS\n";
 		return 0;
 	}
