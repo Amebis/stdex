@@ -68,154 +68,130 @@ namespace stdex
 		/// \returns true if x is in [start, end) or false otherwise
 		///
 		inline bool contains(_In_ T x) const { return start <= x && x < end; }
+
+		///
+		/// Adds two intervals by components
+		///
+		/// \param[in] other  Second interval
+		///
+		/// \returns Resulting interval
+		///
+		inline interval<T> operator+(_In_ const interval<T>& other) const
+		{
+			return interval<T>(start + other.start, end + other.end);i.
+		}
+
+		///
+		/// Moves interval towards the end by a number
+		///
+		/// \param[in] x  Amount to move for
+		///
+		/// \returns Moved interval
+		///
+		inline interval<T> operator+(_In_ const T x) const
+		{
+			return interval<T>(start + x, end + x);
+		}
+
+		///
+		/// Moves interval towards the end by one
+		///
+		/// \returns Moved interval
+		///
+		inline interval<T> operator++()
+		{
+			++start;
+			++end;
+			return *this;
+		}
+
+		///
+		/// Moves interval towards the end by one
+		///
+		/// \returns Original interval
+		///
+		inline interval<T> operator++(int) // Postfix increment operator.
+		{
+			interval<T> r = *this;
+			++start;
+			++end;
+			return r;
+		}
+
+		///
+		/// Subtracts two intervals by components
+		///
+		/// \param[in] other  Second interval
+		///
+		/// \returns Resulting interval
+		///
+		inline interval<T> operator-(_In_ const interval<T>& other) const
+		{
+			return interval<T>(start - other.start, end - other.end);
+		}
+
+		///
+		/// Moves interval towards the beginning by a number
+		///
+		/// \param[in] x  Amount to move for
+		///
+		/// \returns Moved interval
+		///
+		inline interval<T> operator-(_In_ const T x) const
+		{
+			return interval<T>(start - x, end - x);
+		}
+
+		///
+		/// Moves interval towards the begginning by one
+		///
+		/// \returns Moved interval
+		///
+		inline interval<T> operator--()
+		{
+			--start;
+			--end;
+			return *this;
+		}
+
+		///
+		/// Moves interval towards the begginning by one
+		///
+		/// \returns Original interval
+		///
+		inline interval<T> operator--(int) // Postfix decrement operator.
+		{
+			interval<T> r = *this;
+			--start;
+			--end;
+			return r;
+		}
+
+		///
+		/// Are intervals identical?
+		///
+		/// \param[in] other  Second interval to compare
+		///
+		/// \returns true if intervals are identical or false otherwise
+		///
+		inline bool operator==(_In_ const interval<T>& other) const
+		{
+			return start == other.start && end == other.end;
+		}
+
+		///
+		/// Are intervals different?
+		///
+		/// \param[in] other  Second interval to compare
+		///
+		/// \returns true if intervals are different or false otherwise
+		///
+		inline bool operator!=(_In_ const interval<T>& other) const
+		{
+			return !operator ==(other);
+		}
 	};
 
 	template <class T, class _Alloc = std::allocator<interval<T>>>
 	using interval_vector = std::vector<interval<T>, _Alloc>;
-}
-
-///
-/// Adds two intervals by components
-///
-/// \param[in] a  First interval
-/// \param[in] b  Second interval
-///
-/// \returns Resulting interval
-///
-template <class T>
-inline stdex::interval<T> operator+(_In_ const stdex::interval<T>& a, _In_ const stdex::interval<T>& b)
-{
-	return stdex::interval<T>(a.start + b.start, a.end + b.end);
-}
-
-///
-/// Moves interval towards the end by a number
-///
-/// \param[in] i  Interval to move
-/// \param[in] x  Amount to move for
-///
-/// \returns Moved interval
-///
-template <class T>
-inline stdex::interval<T> operator+(_In_ const stdex::interval<T>& i, _In_ const T x)
-{
-	return stdex::interval<T>(i.start + x, i.end + x);
-}
-
-///
-/// Moves interval towards the end by one
-///
-/// \param[in,out] i  Interval to move
-///
-/// \returns Moved interval
-///
-template <class T>
-inline stdex::interval<T> operator++(_Inout_ stdex::interval<T>& i)
-{
-	++i.start;
-	++i.end;
-	return i;
-}
-
-///
-/// Moves interval towards the end by one
-///
-/// \param[in,out] i  Interval to move
-///
-/// \returns Original interval
-///
-template <class T>
-inline stdex::interval<T> operator++(_Inout_ stdex::interval<T>& i, int) // Postfix increment operator.
-{
-	stdex::interval<T> r = i;
-	++i.start;
-	++i.end;
-	return r;
-}
-
-///
-/// Subtracts two intervals by components
-///
-/// \param[in] a  First interval
-/// \param[in] b  Second interval
-///
-/// \returns Resulting interval
-///
-template <class T>
-inline stdex::interval<T> operator-(_In_ const stdex::interval<T>& a, _In_ const stdex::interval<T>& b)
-{
-	return stdex::interval<T>(a.start - b.start, a.end - b.end);
-}
-
-///
-/// Moves interval towards the beginning by a number
-///
-/// \param[in] i  Interval to move
-/// \param[in] x  Amount to move for
-///
-/// \returns Moved interval
-///
-template <class T>
-inline stdex::interval<T> operator-(_In_ const stdex::interval<T>& i, _In_ const T x)
-{
-	return stdex::interval<T>(i.start - x, i.end - x);
-}
-
-///
-/// Moves interval towards the begginning by one
-///
-/// \param[in,out] i  Interval to move
-///
-/// \returns Moved interval
-///
-template <class T>
-inline stdex::interval<T> operator--(_Inout_ stdex::interval<T>& i)
-{
-	--i.start;
-	--i.end;
-	return i;
-}
-
-///
-/// Moves interval towards the begginning by one
-///
-/// \param[in,out] i  Interval to move
-///
-/// \returns Original interval
-///
-template <class T>
-inline stdex::interval<T> operator--(_Inout_ stdex::interval<T>& i, int)
-{
-	stdex::interval<T> r = i;
-	--i.start;
-	--i.end;
-	return r;
-}
-
-///
-/// Are intervals identical?
-///
-/// \param[in] a  First interval to compare
-/// \param[in] b  Second interval to compare
-///
-/// \returns true if intervals are identical or false otherwise
-///
-template <class T>
-inline bool operator==(_In_ const stdex::interval<T>& a, _In_ const stdex::interval<T>& b)
-{
-	return a.start == b.start && a.end == b.end;
-}
-
-///
-/// Are intervals different?
-///
-/// \param[in] a  First interval to compare
-/// \param[in] b  Second interval to compare
-///
-/// \returns true if intervals are different or false otherwise
-///
-template <class T>
-inline bool operator!=(_In_ const stdex::interval<T>& a, _In_ const stdex::interval<T>& b)
-{
-	return a.start != b.start || a.end != b.end;
 }
