@@ -69,7 +69,7 @@ namespace stdex
 #else
 			m_handle = iconv_open(to_encoding(to), to_encoding(from));
 			if (m_handle == (iconv_t)-1)
-				throw std::runtime_error("iconv_open failed");
+				throw std::system_error(errno, std::system_category(), "iconv_open failed");
 #endif
 		}
 
@@ -131,7 +131,7 @@ namespace stdex
 					dst.append(reinterpret_cast<const T_to*>(szBuffer.get()), count_src != SIZE_MAX ? wcsnlen(szBuffer.get(), cch) : static_cast<size_t>(cch) - 1);
 					return;
 				}
-				throw std::runtime_error("MultiByteToWideChar failed");
+				throw std::system_error(GetLastError(), std::system_category(), "MultiByteToWideChar failed");
 			}
 
 			if _Constexpr_ (sizeof(T_from) == sizeof(wchar_t) && sizeof(T_to) == sizeof(char)) {
@@ -154,7 +154,7 @@ namespace stdex
 					dst.append(reinterpret_cast<const T_to*>(szBuffer.get()), count_src != SIZE_MAX ? strnlen(szBuffer.get(), cch) : static_cast<size_t>(cch) - 1);
 					return;
 				}
-				throw std::runtime_error("WideCharToMultiByte failed");
+				throw std::system_error(GetLastError(), std::system_category(), "WideCharToMultiByte failed");
 			}
 
 			if _Constexpr_ (sizeof(T_from) == sizeof(char) && sizeof(T_to) == sizeof(char)) {
@@ -186,7 +186,7 @@ namespace stdex
 						dst.append(reinterpret_cast<const T_to*>(szBufferWCMB.get()), strnlen(szBufferWCMB.get(), cch));
 						return;
 					}
-					throw std::runtime_error("WideCharToMultiByte failed");
+					throw std::system_error(GetLastError(), std::system_category(), "WideCharToMultiByte failed");
 				}
 				if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
 					// Query the required output size. Allocate buffer. Then convert again.
@@ -202,7 +202,7 @@ namespace stdex
 					dst.append(reinterpret_cast<const T_to*>(szBufferWCMB.get()), strnlen(szBufferWCMB.get(), cch));
 					return;
 				}
-				throw std::runtime_error("MultiByteToWideChar failed");
+				throw std::system_error(GetLastError(), std::system_category(), "MultiByteToWideChar failed");
 			}
 #else
 			dst.reserve(dst.size() + count_src);
@@ -218,7 +218,7 @@ namespace stdex
 					break;
 				if (errno == E2BIG)
 					continue;
-				throw std::runtime_error("iconv failed");
+				throw std::system_error(errno, std::system_category(), "iconv failed");
 			}
 #endif
 		}

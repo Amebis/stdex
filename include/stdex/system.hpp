@@ -56,6 +56,15 @@ namespace stdex
 #endif
 
 	///
+	/// Last operation error
+	///
+#if defined(_WIN32)
+	inline DWORD sys_error() { return GetLastError(); }
+#else
+	inline int sys_error() { return errno; }
+#endif
+
+	///
 	/// Character type for system functions
 	///
 #if defined(_WIN32)
@@ -153,11 +162,13 @@ namespace stdex
 		{
 #ifdef _WIN32
 			if (CloseHandle(h) || GetLastError() == ERROR_INVALID_HANDLE)
+				return;
+			throw std::system_error(GetLastError(), std::system_category(), "CloseHandle failed");
 #else
 			if (::close(h) >= 0 || errno == EBADF)
-#endif
 				return;
-			throw std::runtime_error("failed to close handle");
+			throw std::system_error(errno, std::system_category(), "close failed");
+#endif
 		}
 
 		///
@@ -169,12 +180,14 @@ namespace stdex
 #ifdef _WIN32
 			HANDLE process = GetCurrentProcess();
 			if (DuplicateHandle(process, h, process, &h_new, 0, inherit, DUPLICATE_SAME_ACCESS))
+				return h_new;
+			throw std::system_error(GetLastError(), std::system_category(), "DuplicateHandle failed");
 #else
 			_Unreferenced_(inherit);
 			if ((h_new = dup(h)) >= 0)
-#endif
 				return h_new;
-			throw std::runtime_error("failed to duplicate handle");
+			throw std::system_error(errno, std::system_category(), "dup failed");
+#endif
 		}
 
 	protected:
@@ -190,7 +203,7 @@ namespace stdex
 		{
 			HRESULT hr = SafeArrayAccessData(sa, reinterpret_cast<void HUGEP**>(&m_data));
 			if (FAILED(hr))
-				throw std::invalid_argument("SafeArrayAccessData failed");
+				throw std::system_error(hr, std::system_category(), "SafeArrayAccessData failed");
 		}
 
 		~safearray_accessor()

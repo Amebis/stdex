@@ -210,7 +210,7 @@ namespace stdex
 				uint8_t byte;
 				if (read_array(&byte, sizeof(byte), 1) == 1)
 					return byte;
-				throw std::runtime_error("failed to read");
+				throw std::system_error(sys_error(), std::system_category(), "failed to read");
 			}
 
 			///
@@ -846,10 +846,10 @@ namespace stdex
 				if (!sa)
 					throw std::runtime_error("SafeArrayCreateVector failed");
 				safearray_accessor<void> a(sa.get());
-				if (seek(0) != 0)
-					throw std::runtime_error("failed to seek");
+				if (seek(0) != 0) _Unlikely_
+					throw std::system_error(sys_error(), std::system_category(), "failed to seek");
 				if (read_array(a.data(), 1, length) != length)
-					throw std::runtime_error("failed to read");
+					throw std::system_error(sys_error(), std::system_category(), "failed to read");
 				return sa.release();
 			}
 #endif
@@ -861,29 +861,29 @@ namespace stdex
 			///
 			charset_id read_charset(_In_ charset_id default_charset = charset_id::system)
 			{
-				if (seek(0) != 0)
-					throw std::runtime_error("failed to seek");
+				if (seek(0) != 0) _Unlikely_
+					throw std::system_error(sys_error(), std::system_category(), "failed to seek");
 				char32_t id_utf32;
 				read_array(&id_utf32, sizeof(char32_t), 1);
 				if (ok() && id_utf32 == utf32_bom)
 					return charset_id::utf32;
 
-				if (seek(0) != 0)
-					throw std::runtime_error("failed to seek");
+				if (seek(0) != 0) _Unlikely_
+					throw std::system_error(sys_error(), std::system_category(), "failed to seek");
 				char16_t id_utf16;
 				read_array(&id_utf16, sizeof(char16_t), 1);
 				if (ok() && id_utf16 == utf16_bom)
 					return charset_id::utf16;
 
-				if (seek(0) != 0)
-					throw std::runtime_error("failed to seek");
+				if (seek(0) != 0) _Unlikely_
+					throw std::system_error(sys_error(), std::system_category(), "failed to seek");
 				char id_utf8[3] = { 0 };
 				read_array(id_utf8, sizeof(id_utf8), 1);
 				if (ok() && strncmp(id_utf8, _countof(id_utf8), utf8_bom, _countof(utf8_bom)) == 0)
 					return charset_id::utf8;
 
-				if (seek(0) != 0)
-					throw std::runtime_error("failed to seek");
+				if (seek(0) != 0) _Unlikely_
+					throw std::system_error(sys_error(), std::system_category(), "failed to seek");
 				return default_charset;
 			}
 		};
@@ -1716,7 +1716,7 @@ namespace stdex
 				if (m_source) {
 					flush_cache();
 					if (!ok()) _Unlikely_
-						throw std::runtime_error("cache flush failed"); // Data loss occured
+						throw std::system_error(sys_error(), std::system_category(), "failed to flush cache"); // Data loss occured
 					m_source->seek(m_offset);
 					m_source = nullptr;
 				}
@@ -1739,7 +1739,7 @@ namespace stdex
 				if (m_source) {
 					flush_cache();
 					if (!ok()) _Unlikely_
-						throw std::runtime_error("cache flush failed"); // Data loss occured
+						throw std::system_error(sys_error(), std::system_category(), "failed to flush cache"); // Data loss occured
 					m_source->seek(m_offset);
 				}
 			}
@@ -1863,7 +1863,7 @@ namespace stdex
 			{
 				invalidate_cache();
 				if (!ok()) _Unlikely_
-					throw std::runtime_error("cache flush failed"); // Data loss occured
+					throw std::system_error(sys_error(), std::system_category(), "failed to flush cache"); // Data loss occured
 				m_source->close();
 				m_state = m_source->state();
 			}
@@ -2741,8 +2741,10 @@ namespace stdex
 				tp2ft(date, ft);
 				if (SetFileTime(m_h, &ft, nullptr, nullptr))
 					return;
+				throw std::system_error(GetLastError(), std::system_category(), "SetFileTime failed");
+#else
+				throw std::runtime_error("not supported");
 #endif
-				throw std::runtime_error("failed to set file ctime");
 			}
 
 			virtual void set_atime(time_point date)
@@ -2753,6 +2755,7 @@ namespace stdex
 				tp2ft(date, ft);
 				if (SetFileTime(m_h, nullptr, &ft, nullptr))
 					return;
+				throw std::system_error(GetLastError(), std::system_category(), "SetFileTime failed");
 #else
 				struct timespec ts[2] = {
 					{ date.time_since_epoch().count(), 0 },
@@ -2760,8 +2763,8 @@ namespace stdex
 				};
 				if (futimens(m_h, ts) >= 0)
 					return;
+				throw std::system_error(errno, std::system_category(), "futimens failed");
 #endif
-				throw std::runtime_error("failed to set file atime");
 			}
 
 			virtual void set_mtime(time_point date)
@@ -2771,6 +2774,7 @@ namespace stdex
 				tp2ft(date, ft);
 				if (SetFileTime(m_h, nullptr, nullptr, &ft))
 					return;
+				throw std::system_error(GetLastError(), std::system_category(), "SetFileTime failed");
 #else
 				struct timespec ts[2] = {
 					{ 0, UTIME_OMIT },
@@ -2778,8 +2782,8 @@ namespace stdex
 				};
 				if (futimens(m_h, ts) >= 0)
 					return;
+				throw std::system_error(errno, std::system_category(), "futimens failed");
 #endif
-				throw std::runtime_error("failed to set file mtime");
 			}
 
 			///

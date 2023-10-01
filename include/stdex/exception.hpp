@@ -21,7 +21,6 @@ namespace stdex
 		///
 		/// \param[in] msg  Error message
 		///
-		user_cancelled(_In_opt_z_ const char* msg = "operation cancelled") : runtime_error(msg)
-		{}
+		user_cancelled(_In_opt_z_ const char* msg = "operation cancelled") : runtime_error(msg) {}
 	};
 }
