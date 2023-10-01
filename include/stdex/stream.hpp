@@ -28,6 +28,7 @@
 #include <condition_variable>
 #include <list>
 #include <memory>
+#include <set>
 #include <string>
 #include <thread>
 #include <vector>
@@ -651,6 +652,95 @@ namespace stdex
 			inline basic& operator >>(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& data) { return read_str(data); }
 			template <class T>
 			inline basic& operator <<(_In_ const T* data) { return write_str(data); }
+
+			template <class _Ty, class _Alloc = std::allocator<_Ty>>
+			basic& operator <<(_In_ const std::vector<_Ty, _Alloc>& data)
+			{
+				size_t num = data.size();
+				if (num > UINT32_MAX) _Unlikely_
+					throw std::invalid_argument("collection too big");
+				*this << static_cast<uint32_t>(num);
+				for (auto& el : data)
+					*this << el;
+				return *this;
+			}
+
+			template <class _Ty, class _Alloc = std::allocator<_Ty>>
+			basic& operator >>(_Out_ std::vector<_Ty, _Alloc>& data)
+			{
+				data.clear();
+				uint32_t num;
+				*this >> num;
+				if (!ok()) _Unlikely_
+					return *this;
+				data.reserve(num);
+				for (uint32_t i = 0; i < num; ++i) {
+					_Ty el;
+					*this >> el;
+					if (!ok()) _Unlikely_
+						return *this;
+					data.push_back(std::move(el));
+				}
+			}
+
+			template <class _Kty, class _Pr = std::less<_Kty>, class _Alloc = std::allocator<_Kty>>
+			basic& operator <<(_In_ const std::set<_Kty, _Pr, _Alloc>& data)
+			{
+				size_t num = data.size();
+				if (num > UINT32_MAX) _Unlikely_
+					throw std::invalid_argument("collection too big");
+				*this << static_cast<uint32_t>(num);
+				for (auto& el : data)
+					*this << el;
+				return *this;
+			}
+
+			template <class _Kty, class _Pr = std::less<_Kty>, class _Alloc = std::allocator<_Kty>>
+			basic& operator >>(_Out_ std::set<_Kty, _Pr, _Alloc>& data)
+			{
+				data.clear();
+				uint32_t num;
+				*this >> num;
+				if (!ok()) _Unlikely_
+					return *this;
+				for (uint32_t i = 0; i < num; ++i) {
+					_Kty el;
+					*this >> el;
+					if (!ok()) _Unlikely_
+						return *this;
+					data.insert(std::move(el));
+				}
+			}
+
+			template <class _Kty, class _Pr = std::less<_Kty>, class _Alloc = std::allocator<_Kty>>
+			basic& operator <<(_In_ const std::multiset<_Kty, _Pr, _Alloc>& data)
+			{
+				size_t num = data.size();
+				if (num > UINT32_MAX) _Unlikely_
+					throw std::invalid_argument("collection too big");
+				*this << static_cast<uint32_t>(num);
+				for (auto& el : data)
+					*this << el;
+				return *this;
+			}
+
+			template <class _Kty, class _Pr = std::less<_Kty>, class _Alloc = std::allocator<_Kty>>
+			basic& operator >>(_Out_ std::multiset<_Kty, _Pr, _Alloc>& data)
+			{
+				data.clear();
+				uint32_t num;
+				*this >> num;
+				if (!ok()) _Unlikely_
+					return *this;
+				for (uint32_t i = 0; i < num; ++i) {
+					_Kty el;
+					*this >> el;
+					if (!ok()) _Unlikely_
+						return *this;
+					data.insert(std::move(el));
+				}
+				return *this;
+			}
 
 		protected:
 			state_t m_state;
