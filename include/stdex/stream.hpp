@@ -968,7 +968,7 @@ namespace stdex
 				assert(size() <= SIZE_MAX);
 				size_t length = static_cast<size_t>(size());
 				std::unique_ptr<SAFEARRAY, SafeArrayDestroy_delete> sa(SafeArrayCreateVector(VT_UI1, 0, (ULONG)length));
-				if (!sa)
+				if (!sa) _Unlikely_
 					throw std::runtime_error("SafeArrayCreateVector failed");
 				safearray_accessor<void> a(sa.get());
 				if (seek(0) != 0) _Unlikely_
@@ -1268,9 +1268,8 @@ namespace stdex
 					uint8_t* ptr; size_t num_read;
 					std::tie(ptr, num_read) = m_ring.front();
 					if (!ptr) _Unlikely_ {
-						// [1] Code analysis misses length - to_read bytes were written to data in previous loop iterations.
 						m_state = to_read < length || !length ? state_t::ok : m_source->state();
-						return length - to_read;
+						return length - to_read; // [1] Code analysis misses `length - to_read` bytes were written to data in previous loop iterations.
 					}
 					if (to_read < num_read)
 						num_read = to_read;
@@ -2751,7 +2750,7 @@ namespace stdex
 				if (mode & hint_random_access)     dwFlagsAndAttributes |= FILE_FLAG_RANDOM_ACCESS;
 				if (mode & hint_sequential_access) dwFlagsAndAttributes |= FILE_FLAG_SEQUENTIAL_SCAN;
 
-				m_h = CreateFile(filename, dwDesiredAccess, dwShareMode, &sa, dwCreationDisposition, dwFlagsAndAttributes, nullptr);
+				m_h = CreateFile(filename, dwDesiredAccess, dwShareMode, &sa, dwCreationDisposition, dwFlagsAndAttributes, NULL);
 #else
 				int flags = 0;
 				switch (mode & (mode_for_reading | mode_for_writing)) {
@@ -3424,7 +3423,7 @@ namespace stdex
 			/// \returns This stream
 			///
 			template <class T>
-			inline memory_file& read_data(T & data)
+			inline memory_file& read_data(_Out_ T& data)
 			{
 #if SET_FILE_OP_TIMES
 				m_atime = time_point::now();
@@ -3945,9 +3944,8 @@ namespace stdex
 				assert(data || !length);
 				for (size_t to_read = length;;) {
 					if (!m_head) _Unlikely_ {
-						// [1] Code analysis misses length - to_read bytes were written to data in previous loop iterations.
 						m_state = to_read < length || !length ? state_t::ok : state_t::eof;
-						return length - to_read;
+						return length - to_read; // [2] Code analysis misses `length - to_read` bytes were written to data in previous loop iterations.
 					}
 					size_t remaining = m_head->size - m_offset;
 					if (remaining > to_read) {
