@@ -16,10 +16,11 @@
 #include <stdint.h>
 #include <math.h>
 #if defined(_WIN32)
-#ifndef _WINSOCKAPI_
 #include <winsock2.h>
+#if _MSC_VER >= 1300
 #include <ws2ipdef.h>
 #endif
+#include <ws2tcpip.h>
 #elif defined(__APPLE__)
 #include <netinet/in.h>
 #else
@@ -52,12 +53,11 @@ ENUM_FLAG_OPERATOR(T,^) \
 ENUM_FLAG_OPERATOR(T,&) \
 enum class T : type
 
-#ifndef s6_words
-#ifdef __APPLE__
+#if defined(_WIN32)
+#elif defined(__APPLE__)
 #define s6_words __u6_addr.__u6_addr16
 #else
 #error Unsupported platform
-#endif
 #endif
 
 namespace stdex
