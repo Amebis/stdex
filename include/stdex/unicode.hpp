@@ -111,6 +111,7 @@ namespace stdex
 				return;
 			}
 
+#pragma warning(suppress: 4127)
 			if _Constexpr_ (sizeof(T_from) == sizeof(char) && sizeof(T_to) == sizeof(wchar_t)) {
 				assert(count_src < INT_MAX || count_src == SIZE_MAX);
 
@@ -134,6 +135,7 @@ namespace stdex
 				throw std::system_error(GetLastError(), std::system_category(), "MultiByteToWideChar failed");
 			}
 
+#pragma warning(suppress: 4127)
 			if _Constexpr_ (sizeof(T_from) == sizeof(wchar_t) && sizeof(T_to) == sizeof(char)) {
 				assert(count_src < INT_MAX || count_src == SIZE_MAX);
 
@@ -157,6 +159,7 @@ namespace stdex
 				throw std::system_error(GetLastError(), std::system_category(), "WideCharToMultiByte failed");
 			}
 
+#pragma warning(suppress: 4127)
 			if _Constexpr_ (sizeof(T_from) == sizeof(char) && sizeof(T_to) == sizeof(char)) {
 				assert(count_src < INT_MAX || count_src == SIZE_MAX);
 
