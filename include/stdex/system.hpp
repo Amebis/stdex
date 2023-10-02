@@ -271,11 +271,11 @@ namespace stdex
 }
 
 #ifndef _WIN32
-static constexpr stdex::platform_id IMAGE_FILE_MACHINE_UNKNOWN = nullptr;
-static constexpr stdex::platform_id IMAGE_FILE_MACHINE_I386 = "i386";
-static constexpr stdex::platform_id IMAGE_FILE_MACHINE_AMD64 = "x86_64";
-static constexpr stdex::platform_id IMAGE_FILE_MACHINE_ARMNT = "arm";
-static constexpr stdex::platform_id IMAGE_FILE_MACHINE_ARM64 = "aarch64";
+constexpr stdex::platform_id IMAGE_FILE_MACHINE_UNKNOWN = nullptr;
+constexpr stdex::platform_id IMAGE_FILE_MACHINE_I386 = "i386";
+constexpr stdex::platform_id IMAGE_FILE_MACHINE_AMD64 = "x86_64";
+constexpr stdex::platform_id IMAGE_FILE_MACHINE_ARMNT = "arm";
+constexpr stdex::platform_id IMAGE_FILE_MACHINE_ARM64 = "aarch64";
 #endif
 
 namespace stdex

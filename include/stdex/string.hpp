@@ -79,7 +79,7 @@ namespace stdex
 	///
 	/// Reusable C locale
 	///
-	static locale locale_C(create_locale(LC_ALL, "C"));
+	const locale locale_C(create_locale(LC_ALL, "C"));
 
 	///
 	/// UTF-16 code unit
