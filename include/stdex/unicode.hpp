@@ -9,7 +9,6 @@
 #include "endian.hpp"
 #include "math.hpp"
 #include "system.hpp"
-#include <assert.h>
 #include <stdint.h>
 #ifndef _WIN32
 #include <iconv.h>
@@ -104,7 +103,7 @@ namespace stdex
 			_Inout_ std::basic_string<T_to, _Traits_to, _Alloc_to> &dst,
 			_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src)
 		{
-			assert(src || !count_src);
+			_Assume_(src || !count_src);
 			count_src = stdex::strnlen(src, count_src);
 			if (!count_src) _Unlikely_
 				return;
@@ -114,7 +113,7 @@ namespace stdex
 			constexpr DWORD dwFlagsWCMB = 0;
 			constexpr LPCCH lpDefaultChar = NULL;
 
-			_Analysis_assume_(src);
+			_Assume_(src);
 			if (m_from_wincp == m_to_wincp) _Unlikely_{
 				dst.append(reinterpret_cast<const T_to*>(src), count_src);
 				return;
@@ -122,7 +121,7 @@ namespace stdex
 
 #pragma warning(suppress: 4127)
 			if _Constexpr_ (sizeof(T_from) == sizeof(char) && sizeof(T_to) == sizeof(wchar_t)) {
-				assert(count_src < INT_MAX || count_src == SIZE_MAX);
+				_Assume_(count_src < INT_MAX || count_src == SIZE_MAX);
 
 				// Try to convert to stack buffer first.
 				WCHAR szStackBuffer[1024 / sizeof(WCHAR)];
@@ -146,7 +145,7 @@ namespace stdex
 
 #pragma warning(suppress: 4127)
 			if _Constexpr_ (sizeof(T_from) == sizeof(wchar_t) && sizeof(T_to) == sizeof(char)) {
-				assert(count_src < INT_MAX || count_src == SIZE_MAX);
+				_Assume_(count_src < INT_MAX || count_src == SIZE_MAX);
 
 				// Try to convert to stack buffer first.
 				CHAR szStackBuffer[1024 / sizeof(CHAR)];
@@ -170,7 +169,7 @@ namespace stdex
 
 #pragma warning(suppress: 4127)
 			if _Constexpr_ (sizeof(T_from) == sizeof(char) && sizeof(T_to) == sizeof(char)) {
-				assert(count_src < INT_MAX || count_src == SIZE_MAX);
+				_Assume_(count_src < INT_MAX || count_src == SIZE_MAX);
 
 				// Try to convert to stack buffer first.
 				WCHAR szStackBufferMBWC[512 / sizeof(WCHAR)];
@@ -179,7 +178,7 @@ namespace stdex
 				if (cch) {
 					// Append from stack.
 					size_t count_inter = count_src != SIZE_MAX ? wcsnlen(szStackBufferMBWC, cch) : static_cast<size_t>(cch) - 1;
-					assert(count_inter < INT_MAX);
+					_Assume_(count_inter < INT_MAX);
 
 					// Try to convert to stack buffer first.
 					CHAR szStackBufferWCMB[512 / sizeof(CHAR)];

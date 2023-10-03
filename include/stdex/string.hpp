@@ -6,7 +6,6 @@
 #pragma once
 
 #include "compat.hpp"
-#include <assert.h>
 #include <ctype.h>
 #include <locale.h>
 #include <stdarg.h>
@@ -127,7 +126,7 @@ namespace stdex
 	///
 	inline char32_t surrogate_pair_to_ucs4(_In_reads_(2) const utf16_t* str)
 	{
-		assert(is_surrogate_pair(str));
+		_Assume_(is_surrogate_pair(str));
 		return
 			((char32_t)(str[0] - 0xd800) << 10) +
 			(char32_t)(str[1] - 0xdc00) +
@@ -141,7 +140,7 @@ namespace stdex
 	///
 	inline void ucs4_to_surrogate_pair(_Out_writes_(2) utf16_t* str, _In_ char32_t chr)
 	{
-		assert(chr >= 0x10000);
+		_Assume_(chr >= 0x10000);
 		chr -= 0x10000;
 		str[0] = 0xd800 + (char32_t)((chr >> 10) & 0x3ff);
 		str[1] = 0xdc00 + (char32_t)(chr & 0x3ff);
@@ -181,7 +180,7 @@ namespace stdex
 	template <class T>
 	inline size_t islbreak(_In_reads_or_z_opt_(count) const T* chr, _In_ size_t count)
 	{
-		_Analysis_assume_(chr || !count);
+		_Assume_(chr || !count);
 		if (count >= 2 && ((chr[0] == '\r' && chr[1] == '\n') || (chr[0] == '\n' && chr[1] == '\r')))
 			return 2;
 		if (count > 1 && (chr[0] == '\n' || chr[0] == '\r'))
@@ -197,7 +196,7 @@ namespace stdex
 	///
 	inline size_t glyphlen(_In_reads_or_z_opt_(count) const wchar_t* glyph, _In_ size_t count)
 	{
-		_Analysis_assume_(glyph || !count);
+		_Assume_(glyph || !count);
 		if (count) {
 #ifdef _WIN32
 			size_t i = count < 2 || !is_surrogate_pair(glyph) ? 1 : 2;
@@ -220,7 +219,7 @@ namespace stdex
 	template <class T>
 	inline size_t strlen(_In_z_ const T* str)
 	{
-		assert(str);
+		_Assume_(str);
 		size_t i;
 		for (i = 0; str[i]; ++i);
 		return i;
@@ -237,7 +236,7 @@ namespace stdex
 	template <class T>
 	inline size_t strnlen(_In_reads_or_z_opt_(count) const T* str, _In_ size_t count)
 	{
-		assert(str || !count);
+		_Assume_(str || !count);
 		size_t i;
 		for (i = 0; i < count && str[i]; ++i);
 		return i;
@@ -256,7 +255,7 @@ namespace stdex
 	template <class T>
 	inline size_t strchr(_In_z_ const T* str, _In_ T chr)
 	{
-		assert(str);
+		_Assume_(str);
 		for (size_t i = 0; str[i]; ++i)
 			if (str[i] == chr) return i;
 		return npos;
@@ -277,7 +276,7 @@ namespace stdex
 		_In_ size_t count,
 		_In_ T chr)
 	{
-		assert(str || !count);
+		_Assume_(str || !count);
 		for (size_t i = 0; i < count && str[i]; ++i)
 			if (str[i] == chr) return i;
 		return npos;
@@ -298,7 +297,7 @@ namespace stdex
 		_In_ size_t count,
 		_In_ T chr)
 	{
-		assert(str || !count);
+		_Assume_(str || !count);
 		size_t z = npos;
 		for (size_t i = 0; i < count && str[i]; ++i)
 			if (str[i] == chr) z = i;
@@ -321,7 +320,7 @@ namespace stdex
 		_In_ T chr,
 		_In_ const std::locale& locale)
 	{
-		assert(str || !count);
+		_Assume_(str || !count);
 		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
 		chr = ctype.tolower(chr);
 		for (size_t i = 0; i < count && str[i]; ++i)
@@ -345,7 +344,7 @@ namespace stdex
 		_In_ T chr,
 		_In_ const std::locale& locale)
 	{
-		assert(str || !count);
+		_Assume_(str || !count);
 		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
 		chr = ctype.tolower(chr);
 		size_t z = npos;
@@ -369,8 +368,8 @@ namespace stdex
 		_In_reads_or_z_opt_(count1) const T1* str1, _In_ size_t count1,
 		_In_reads_or_z_opt_(count2) const T2* str2, _In_ size_t count2)
 	{
-		assert(str1 || !count1);
-		assert(str2 || !count2);
+		_Assume_(str1 || !count1);
+		_Assume_(str2 || !count2);
 		size_t i; T1 a; T2 b;
 		for (i = 0; i < count1 && i < count2 && ((a = str1[i]) | (b = str2[i])); ++i) {
 			if (a > b) return +1;
@@ -393,7 +392,7 @@ namespace stdex
 	template <class T1, class T2>
 	inline int strncmp(_In_reads_or_z_opt_(count) const T1* str1, _In_reads_or_z_opt_(count) const T2* str2, _In_ size_t count)
 	{
-		assert((str1 && str2) || !count);
+		_Assume_((str1 && str2) || !count);
 		size_t i; T1 a; T2 b;
 		for (i = 0; i < count && ((a = str1[i]) | (b = str2[i])); ++i) {
 			if (a > b) return +1;
@@ -420,8 +419,8 @@ namespace stdex
 		_In_reads_or_z_opt_(count2) const T* str2, _In_ size_t count2,
 		_In_ const std::locale& locale)
 	{
-		assert(str1 || !count1);
-		assert(str2 || !count2);
+		_Assume_(str1 || !count1);
+		_Assume_(str2 || !count2);
 		auto& collate = std::use_facet<std::collate<T>>(locale);
 		return collate.compare(str1, str1 + count1, str2, str2 + count2);
 	}
@@ -437,8 +436,8 @@ namespace stdex
 	template <class T1, class T2>
 	inline int stricmp(_In_z_ const T1* str1, _In_z_ const T2* str2, _In_ const std::locale& locale)
 	{
-		assert(str1);
-		assert(str2);
+		_Assume_(str1);
+		_Assume_(str2);
 		size_t i; T1 a; T2 b;
 		const auto& ctype1 = std::use_facet<std::ctype<T1>>(locale);
 		const auto& ctype2 = std::use_facet<std::ctype<T2>>(locale);
@@ -463,8 +462,8 @@ namespace stdex
 	template <class T1, class T2>
 	inline int strnicmp(_In_reads_or_z_opt_(count) const T1* str1, _In_reads_or_z_opt_(count) const T2* str2, _In_ size_t count, _In_ const std::locale& locale)
 	{
-		assert(str1 || !count);
-		assert(str2 || !count);
+		_Assume_(str1 || !count);
+		_Assume_(str2 || !count);
 		size_t i; T1 a; T2 b;
 		const auto& ctype1 = std::use_facet<std::ctype<T1>>(locale);
 		const auto& ctype2 = std::use_facet<std::ctype<T2>>(locale);
@@ -493,8 +492,8 @@ namespace stdex
 		_In_reads_or_z_opt_(count2) const T2* str2, _In_ size_t count2,
 		_In_ const std::locale& locale)
 	{
-		assert(str1 || !count1);
-		assert(str2 || !count2);
+		_Assume_(str1 || !count1);
+		_Assume_(str2 || !count2);
 		size_t i; T1 a; T2 b;
 		const auto& ctype1 = std::use_facet<std::ctype<T1>>(locale);
 		const auto& ctype2 = std::use_facet<std::ctype<T2>>(locale);
@@ -520,8 +519,8 @@ namespace stdex
 		_In_z_ const T1* str,
 		_In_z_ const T2* sample)
 	{
-		assert(str);
-		assert(sample);
+		_Assume_(str);
+		_Assume_(sample);
 		for (size_t offset = 0;; ++offset) {
 			for (size_t i = offset, j = 0;; ++i, ++j) {
 				if (!sample[j])
@@ -549,8 +548,8 @@ namespace stdex
 		_In_ size_t count,
 		_In_z_ const T2* sample)
 	{
-		assert(str || !count);
-		assert(sample);
+		_Assume_(str || !count);
+		_Assume_(sample);
 		for (size_t offset = 0;; ++offset) {
 			for (size_t i = offset, j = 0;; ++i, ++j) {
 				if (!sample[j])
@@ -577,8 +576,8 @@ namespace stdex
 		_In_z_ const T2* sample,
 		_In_ const std::locale& locale)
 	{
-		assert(str);
-		assert(sample);
+		_Assume_(str);
+		_Assume_(sample);
 		const auto& ctype1 = std::use_facet<std::ctype<T1>>(locale);
 		const auto& ctype2 = std::use_facet<std::ctype<T2>>(locale);
 		for (size_t offset = 0;; ++offset) {
@@ -609,8 +608,8 @@ namespace stdex
 		_In_z_ const T2* sample,
 		_In_ const std::locale& locale)
 	{
-		assert(str || !count);
-		assert(sample);
+		_Assume_(str || !count);
+		_Assume_(sample);
 		const auto& ctype1 = std::use_facet<std::ctype<T1>>(locale);
 		const auto& ctype2 = std::use_facet<std::ctype<T2>>(locale);
 		for (size_t offset = 0;; ++offset) {
@@ -638,7 +637,7 @@ namespace stdex
 		_Out_writes_z_(_String_length_(src) + 1) T1* dst,
 		_In_z_ const T2* src)
 	{
-		assert(dst && src);
+		_Assume_(dst && src);
 		for (size_t i = 0; ; ++i) {
 			if ((dst[i] = src[i]) == 0)
 				return i;
@@ -659,7 +658,7 @@ namespace stdex
 		_Out_writes_(count) _Post_maybez_ T1* dst,
 		_In_reads_or_z_opt_(count) const T2* src, _In_ size_t count)
 	{
-		assert(dst && src || !count);
+		_Assume_(dst && src || !count);
 		for (size_t i = 0; ; ++i) {
 			if (i >= count)
 				return i;
@@ -683,8 +682,8 @@ namespace stdex
 		_Out_writes_(count_dst) _Post_maybez_ T1* dst, _In_ size_t count_dst,
 		_In_reads_or_z_opt_(count_src) const T2* src, _In_ size_t count_src)
 	{
-		assert(dst || !count_dst);
-		assert(src || !count_src);
+		_Assume_(dst || !count_dst);
+		_Assume_(src || !count_src);
 		for (size_t i = 0; ; ++i)
 		{
 			if (i >= count_dst)
@@ -711,7 +710,7 @@ namespace stdex
 		_In_z_ _Out_writes_z_(_String_length_(dst) + _String_length_(src) + 1) T1* dst,
 		_In_z_ const T2* src)
 	{
-		assert(dst && src);
+		_Assume_(dst && src);
 		for (size_t i = 0, j = stdex::strlen<T1>(dst); ; ++i, ++j) {
 			if ((dst[j] = src[i]) == 0)
 				return j;
@@ -732,7 +731,7 @@ namespace stdex
 		_Out_writes_(count) _Post_maybez_ T1* dst,
 		_In_reads_or_z_opt_(count) const T2* src, _In_ size_t count)
 	{
-		assert(dst && src || !count);
+		_Assume_(dst && src || !count);
 		for (size_t i = 0, j = stdex::strlen<T1>(dst); ; ++i, ++j) {
 			if (i >= count)
 				return j;
@@ -756,8 +755,8 @@ namespace stdex
 		_Out_writes_(count_dst) _Post_maybez_ T1* dst, _In_ size_t count_dst,
 		_In_reads_or_z_opt_(count_src) const T2* src, _In_ size_t count_src)
 	{
-		assert(dst || !count_dst);
-		assert(src || !count_src);
+		_Assume_(dst || !count_dst);
+		_Assume_(src || !count_src);
 		for (size_t i = 0, j = stdex::strnlen<T1>(dst, count_dst); ; ++i, ++j)
 		{
 			if (j >= count_dst)
@@ -825,8 +824,8 @@ namespace stdex
 	template <class T>
 	inline size_t crlf2nl(_Out_writes_z_(strlen(src)) T* dst, _In_z_ const T* src)
 	{
-		assert(dst);
-		assert(src);
+		_Assume_(dst);
+		_Assume_(src);
 		size_t i, j;
 		for (i = j = 0; src[j];) {
 			if (src[j] != '\r' || src[j + 1] != '\n')
@@ -848,8 +847,8 @@ namespace stdex
 		_In_ int radix,
 		_Out_ uint8_t& flags)
 	{
-		assert(str || !count);
-		assert(radix == 0 || 2 <= radix && radix <= 36);
+		_Assume_(str || !count);
+		_Assume_(radix == 0 || 2 <= radix && radix <= 36);
 
 		size_t i = 0;
 		T_bin value = 0, digit,
@@ -1405,7 +1404,7 @@ namespace stdex
 	template<class T>
 	inline void strlwr(_Inout_z_ T* str, _In_ const std::locale& locale)
 	{
-		assert(str);
+		_Assume_(str);
 		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
 		for (size_t i = 0; str[i]; ++i)
 			str[i] = ctype.tolower(str[i]);
@@ -1422,7 +1421,7 @@ namespace stdex
 	template<class T>
 	inline void strlwr(_Inout_updates_z_(count) T* str, _In_ size_t count, _In_ const std::locale& locale)
 	{
-		assert(str || !count);
+		_Assume_(str || !count);
 		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
 		for (size_t i = 0; i < count && str[i]; ++i)
 			str[i] = ctype.tolower(str[i]);
@@ -1438,7 +1437,7 @@ namespace stdex
 	template<class T>
 	inline void strupr(_Inout_z_ T* str, _In_ const std::locale& locale)
 	{
-		assert(str);
+		_Assume_(str);
 		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
 		for (size_t i = 0; str[i]; ++i)
 			str[i] = ctype.toupper(str[i]);
@@ -1455,7 +1454,7 @@ namespace stdex
 	template<class T>
 	inline void strupr(_Inout_updates_z_(count) T* str, _In_ size_t count, _In_ const std::locale& locale)
 	{
-		assert(str || !count);
+		_Assume_(str || !count);
 		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
 		for (size_t i = 0; i < count && str[i]; ++i)
 			str[i] = ctype.toupper(str[i]);

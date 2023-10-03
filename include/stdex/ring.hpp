@@ -6,7 +6,6 @@
 #pragma once
 
 #include "compat.hpp"
-#include <assert.h>
 #include <condition_variable>
 #include <mutex>
 #include <tuple>
@@ -58,7 +57,7 @@ namespace stdex
 				const std::lock_guard<std::mutex> lg(m_mutex);
 #ifdef _DEBUG
 				size_t tail = wrap(m_head + m_size);
-				assert(size <= (m_head <= tail ? CAPACITY - tail : m_head - tail));
+				_Assume_(size <= (m_head <= tail ? CAPACITY - tail : m_head - tail));
 #endif
 				m_size += size;
 			}
@@ -93,7 +92,7 @@ namespace stdex
 				const std::lock_guard<std::mutex> lg(m_mutex);
 #ifdef _DEBUG
 				size_t tail = wrap(m_head + m_size);
-				assert(size <= (m_head < tail ? m_size : CAPACITY - m_head));
+				_Assume_(size <= (m_head < tail ? m_size : CAPACITY - m_head));
 #endif
 				m_head = wrap(m_head + size);
 				m_size -= size;

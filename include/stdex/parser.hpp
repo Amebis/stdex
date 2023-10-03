@@ -11,7 +11,6 @@
 #include "sgml.hpp"
 #include "string.hpp"
 #include "system.hpp"
-#include <assert.h>
 #include <stdarg.h>
 #include <stdint.h>
 #include <math.h>
@@ -203,7 +202,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					this->interval.start = this->interval.end = start;
 					return true;
@@ -237,7 +236,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					this->interval.end = (this->interval.start = start) + 1;
 					return true;
@@ -269,7 +268,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					if (text[start] == '&') {
 						// SGML entity
@@ -311,7 +310,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					bool r;
 					if (flags & match_case_insensitive) {
@@ -352,7 +351,7 @@ namespace stdex
 				sgml_parser(locale),
 				m_invert(invert)
 			{
-				assert(chr || !count);
+				_Assume_(chr || !count);
 				wchar_t buf[3];
 				size_t chr_end;
 				m_chr.assign(count ? next_sgml_cp(chr, 0, count, chr_end, buf) : L"");
@@ -364,7 +363,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					wchar_t buf[3];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
@@ -403,7 +402,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					bool r =
 						((flags & match_multiline) || !islbreak(text[start])) &&
@@ -445,7 +444,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					wchar_t buf[3];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
@@ -482,7 +481,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					bool r = std::use_facet<std::ctype<T>>(this->m_locale).is(std::ctype_base::punct, text[start]);
 					if ((r && !m_invert) || (!r && m_invert)) {
@@ -522,7 +521,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					wchar_t buf[3];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
@@ -556,7 +555,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					bool r =
 						((flags & match_multiline) || !islbreak(text[start])) &&
@@ -598,7 +597,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					wchar_t buf[3];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
@@ -631,7 +630,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				bool r = start == 0 || (start <= end && islbreak(text[start - 1]));
 				if ((r && !m_invert) || (!r && m_invert)) {
 					this->interval.end = this->interval.start = start;
@@ -669,7 +668,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				bool r = islbreak(text[start]);
 				if ((r && !m_invert) || (!r && m_invert)) {
 					this->interval.end = this->interval.start = start;
@@ -745,7 +744,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					const T* set = m_set.c_str();
 					size_t r = (flags & match_case_insensitive) ?
@@ -793,7 +792,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					wchar_t buf[3];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
@@ -837,7 +836,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				size_t
 					m = m_str.size(),
 					n = std::min<size_t>(end - start, m);
@@ -881,7 +880,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				const wchar_t* str = m_str.c_str();
 				const bool case_insensitive = flags & match_case_insensitive ? true : false;
 				const auto& ctype = std::use_facet<std::ctype<wchar_t>>(m_locale);
@@ -931,7 +930,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.start = this->interval.end = start;
 				for (size_t i = 0; ; i++) {
 					if ((!m_greedy && i >= m_min_iterations) || i >= m_max_iterations)
@@ -983,7 +982,7 @@ namespace stdex
 				_In_ const std::locale& locale = std::locale()) :
 				basic_parser<T>(locale)
 			{
-				assert(el || !count);
+				_Assume_(el || !count);
 				m_collection.reserve(count);
 				for (size_t i = 0; i < count; i++)
 					m_collection.push_back(el[i]);
@@ -1033,7 +1032,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 				for (auto i = this->m_collection.begin(); i != this->m_collection.end(); ++i) {
 					if (!(*i)->match(text, this->interval.end, end, flags)) {
@@ -1092,7 +1091,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				hit_offset = 0;
 				for (auto i = this->m_collection.begin(); i != this->m_collection.end(); ++i, ++hit_offset) {
 					if ((*i)->match(text, start, end, flags)) {
@@ -1163,7 +1162,7 @@ namespace stdex
 		protected:
 			void build(_In_reads_(count) const T* str_z, _In_ size_t count)
 			{
-				assert(str_z || !count);
+				_Assume_(str_z || !count);
 				if (count) {
 					size_t offset, n;
 					for (
@@ -1224,7 +1223,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				for (auto& el: this->m_collection)
 					el->invalidate();
 				if (match_recursively(text, start, end, flags)) {
@@ -1334,7 +1333,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				for (this->interval.end = start, this->value = 0; this->interval.end < end && text[this->interval.end];) {
 					size_t dig;
 					if (m_digit_0->match(text, this->interval.end, end, flags)) { dig = 0; this->interval.end = m_digit_0->interval.end; }
@@ -1405,7 +1404,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (m_digits->match(text, start, end, flags)) {
 					// Leading part match.
 					this->value = m_digits->value;
@@ -1512,7 +1511,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				for (this->interval.end = start, this->value = 0; this->interval.end < end && text[this->interval.end];) {
 					size_t dig;
 					if (m_digit_0->match(text, this->interval.end, end, flags)) { dig = 0; this->interval.end = m_digit_0->interval.end; }
@@ -1607,7 +1606,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				size_t
 					dig[5] = { (size_t)-1, (size_t)-1, (size_t)-1, (size_t)-1, (size_t)-1 },
 					end2;
@@ -1711,7 +1710,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (numerator->match(text, start, end, flags) &&
 					fraction_line->match(text, numerator->interval.end, end, flags) &&
 					denominator->match(text, fraction_line->interval.end, end, flags))
@@ -1776,7 +1775,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 
 				const int space_match_flags = flags & ~match_multiline; // Spaces in score must never be broken in new line.
@@ -1863,7 +1862,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 				if (positive_sign && positive_sign->match(text, this->interval.end, end, flags)) {
 					this->interval.end = positive_sign->interval.end;
@@ -1953,7 +1952,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 
 				if (positive_sign && positive_sign->match(text, this->interval.end, end, flags)) {
@@ -2088,7 +2087,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 
 				if (positive_sign && positive_sign->match(text, this->interval.end, end, flags)) {
@@ -2250,7 +2249,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 
 				if (positive_sign->match(text, this->interval.end, end, flags)) {
@@ -2389,7 +2388,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 				value.s_addr = 0;
 
@@ -2509,7 +2508,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					if (text[start] == '-' ||
 						text[start] == '_' ||
@@ -2547,7 +2546,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					wchar_t buf[3];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
@@ -2624,7 +2623,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 				memset(&value, 0, sizeof(value));
 
@@ -2828,7 +2827,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					if (('A' <= text[start] && text[start] <= 'Z') ||
 						('a' <= text[start] && text[start] <= 'z') ||
@@ -2882,7 +2881,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					wchar_t buf[3];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
@@ -2931,7 +2930,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				size_t i = start, count;
 				for (count = 0; i < end && text[i] && count < 127; count++) {
 					if (m_domain_char->match(text, i, end, flags) &&
@@ -3005,7 +3004,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					if (text[start] == '-' ||
 						text[start] == '.' ||
@@ -3056,7 +3055,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					wchar_t buf[3];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
@@ -3104,7 +3103,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					if (text[start] == '-' ||
 						text[start] == '.' ||
@@ -3156,7 +3155,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					wchar_t buf[3];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
@@ -3204,7 +3203,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					if (text[start] == '/' ||
 						text[start] == '-' ||
@@ -3260,7 +3259,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					wchar_t buf[3];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
@@ -3321,7 +3320,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 
 				this->interval.end = start;
 				path.start = start;
@@ -3488,7 +3487,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 
 				this->interval.end = start;
 
@@ -3827,7 +3826,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 
 				if (username->match(text, start, end, flags) &&
 					m_at->match(text, username->interval.end, end, flags))
@@ -3931,7 +3930,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 
 				if (emoticon && emoticon->match(text, start, end, flags)) {
 					if (apex) apex->invalidate();
@@ -4057,7 +4056,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 
 				const int space_match_flags = flags & ~match_multiline; // Spaces in dates must never be broken in new line.
 				if ((m_format_mask & date_format_dmy) == date_format_dmy) {
@@ -4323,7 +4322,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 
 				if (hour->match(text, start, end, flags) &&
 					m_separator->match(text, hour->interval.end, end, flags) &&
@@ -4428,7 +4427,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 
 				this->interval.end = start;
 
@@ -4549,7 +4548,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 
 				size_t safe_digit_end = start, safe_value_size = 0;
 				bool has_digits = false, after_digit = false, in_parentheses = false, after_parentheses = false;
@@ -4567,7 +4566,7 @@ namespace stdex
 				}
 
 				for (;;) {
-					assert(text || this->interval.end >= end);
+					_Assume_(text || this->interval.end >= end);
 					if (this->interval.end >= end || !text[this->interval.end])
 						break;
 					if (m_digit->match(text, this->interval.end, end, flags)) {
@@ -4697,7 +4696,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				const auto& ctype = std::use_facet<std::ctype<T>>(this->m_locale);
 				const bool case_insensitive = flags & match_case_insensitive ? true : false;
 				struct country_t {
@@ -4990,7 +4989,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				const auto& ctype = std::use_facet<std::ctype<T>>(this->m_locale);
 				const bool case_insensitive = flags & match_case_insensitive ? true : false;
 				size_t n, available, next;
@@ -5133,7 +5132,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 				for (;;) {
 					if (this->interval.end >= end || !text[this->interval.end])
@@ -5178,7 +5177,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start < end && text[start] == '-') {
 					this->interval.end = (this->interval.start = start) + 1;
 					return true;
@@ -5228,7 +5227,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				const auto& ctype = std::use_facet<std::ctype<T>>(this->m_locale);
 				const bool case_insensitive = flags & match_case_insensitive ? true : false;
 
@@ -5471,7 +5470,7 @@ namespace stdex
 			static bool check11(
 				_In_count_(num_part1) const T* part1, _In_ size_t num_part1)
 			{
-				assert(part1 && num_part1 >= 1);
+				_Assume_(part1 && num_part1 >= 1);
 				uint32_t nominator = 0, ponder = 2;
 				for (size_t i = num_part1 - 1; i--; ++ponder)
 					nominator += (part1[i] - '0') * ponder;
@@ -5485,8 +5484,8 @@ namespace stdex
 				_In_count_(num_part1) const T* part1, _In_ size_t num_part1,
 				_In_count_(num_part2) const T* part2, _In_ size_t num_part2)
 			{
-				assert(part1 || !num_part1);
-				assert(part2 && num_part2 >= 1);
+				_Assume_(part1 || !num_part1);
+				_Assume_(part2 && num_part2 >= 1);
 				uint32_t nominator = 0, ponder = 2;
 				for (size_t i = num_part2 - 1; i--; ++ponder)
 					nominator += (part2[i] - '0') * ponder;
@@ -5503,9 +5502,9 @@ namespace stdex
 				_In_count_(num_part2) const T* part2, _In_ size_t num_part2,
 				_In_count_(num_part3) const T* part3, _In_ size_t num_part3)
 			{
-				assert(part1 || !num_part1);
-				assert(part2 || !num_part2);
-				assert(part3 && num_part3 >= 1);
+				_Assume_(part1 || !num_part1);
+				_Assume_(part2 || !num_part2);
+				_Assume_(part3 && num_part3 >= 1);
 				uint32_t nominator = 0, ponder = 2;
 				for (size_t i = num_part3 - 1; i--; ++ponder)
 					nominator += (part3[i] - '0') * ponder;
@@ -5566,7 +5565,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 
 				has_digits = false;
 				has_charge = false;
@@ -5634,10 +5633,10 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 
-				assert(text || this->interval.end >= end);
+				_Assume_(text || this->interval.end >= end);
 				if (this->interval.end < end && text[this->interval.end]) {
 					if (text[this->interval.end] == '\r') {
 						this->interval.end++;
@@ -5670,7 +5669,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 				if (m_line_break.match(text, this->interval.end, end, flags)) {
 					this->interval.end = m_line_break.interval.end;
@@ -5707,10 +5706,10 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 
-				assert(text || this->interval.end >= end);
+				_Assume_(text || this->interval.end >= end);
 				if (m_space.match(text, this->interval.end, end, flags)) {
 					this->interval.start = start;
 					this->interval.end = m_space.interval.end;
@@ -5741,7 +5740,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 				for (;;) {
 					if (this->interval.end < end && text[this->interval.end]) {
@@ -5795,14 +5794,14 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 				if (this->interval.end < end && text[this->interval.end] != '"')
 					goto error;
 				this->interval.end++;
 				content.start = this->interval.end;
 				for (;;) {
-					assert(text || this->interval.end >= end);
+					_Assume_(text || this->interval.end >= end);
 					if (this->interval.end < end && text[this->interval.end]) {
 						if (text[this->interval.end] == '"') {
 							content.end = this->interval.end;
@@ -5861,7 +5860,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 				if (string.match(text, this->interval.end, end, flags)) {
 					token.invalidate();
@@ -5905,7 +5904,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 				if (name.match(text, this->interval.end, end, flags))
 					this->interval.end = name.interval.end;
@@ -5913,7 +5912,7 @@ namespace stdex
 					goto error;
 				while (m_space.match(text, this->interval.end, end, flags))
 					this->interval.end = m_space.interval.end;
-				assert(text || this->interval.end >= end);
+				_Assume_(text || this->interval.end >= end);
 				if (this->interval.end < end && text[this->interval.end] == '=')
 					this->interval.end++;
 				else
@@ -5960,7 +5959,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (start + 2 < end &&
 					text[start] == '*' &&
 					text[start + 1] == '/' &&
@@ -5992,7 +5991,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 				if (type.match(text, this->interval.end, end, flags))
 					this->interval.end = type.interval.end;
@@ -6047,7 +6046,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				if (!http_media_range::match(text, start, end, flags))
 					goto error;
 				params.clear();
@@ -6105,7 +6104,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 				for (;;) {
 					if (this->interval.end < end && text[this->interval.end]) {
@@ -6147,7 +6146,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				value = 0;
 				this->interval.end = start;
 				for (;;) {
@@ -6198,7 +6197,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 				for (;;) {
 					if (this->interval.end < end && text[this->interval.end]) {
@@ -6231,11 +6230,11 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				http_url_path_segment s;
 				this->interval.end = start;
 				segments.clear();
-				assert(text || this->interval.end >= end);
+				_Assume_(text || this->interval.end >= end);
 				if (this->interval.end < end && text[this->interval.end] != '/')
 					goto error;
 				this->interval.end++;
@@ -6287,7 +6286,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 				name.start = this->interval.end;
 				for (;;) {
@@ -6373,7 +6372,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 
 				if (this->interval.end + 7 <= end && stdex::strnicmp(text + this->interval.end, 7, "http://", (size_t)-1, m_locale) == 0) {
@@ -6470,7 +6469,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 				components.clear();
 				for (;;) {
@@ -6538,7 +6537,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				size_t celi_del = 0, decimalni_del = 0, decimalni_del_n = 1;
 				this->interval.end = start;
 				for (;;) {
@@ -6602,7 +6601,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || end <= start);
+				_Assume_(text || end <= start);
 				if (start < end && text[start] == '*') {
 					this->interval.end = (this->interval.start = start) + 1;
 					return true;
@@ -6630,7 +6629,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				size_t konec_vrednosti;
 				this->interval.end = start;
 				if (asterisk.match(text, this->interval.end, end, flags)) {
@@ -6697,7 +6696,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 				if (this->interval.end < end && text[this->interval.end] == '$')
 					this->interval.end++;
@@ -6756,7 +6755,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 				if (name.match(text, this->interval.end, end, flags))
 					this->interval.end = name.interval.end;
@@ -6838,7 +6837,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 				type.start = this->interval.end;
 				for (;;) {
@@ -6919,7 +6918,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 				type.start = this->interval.end;
 				for (;;) {
@@ -7029,7 +7028,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 
 				for (;;) {
@@ -7161,7 +7160,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 
 				if (m_line_break.match(text, this->interval.end, end, flags) ||
@@ -7342,7 +7341,7 @@ namespace stdex
 				_In_ size_t end = (size_t)-1,
 				_In_ int flags = match_default)
 			{
-				assert(text || start >= end);
+				_Assume_(text || start >= end);
 				this->interval.end = start;
 				if (m_quote->match(text, this->interval.end, end, flags)) {
 					this->interval.end = m_quote->interval.end;
@@ -7387,7 +7386,7 @@ namespace stdex
 								m_hex->match(text, m_uni->interval.end, std::min(m_uni->interval.end + 4, end), flags | match_case_insensitive) &&
 								m_hex->interval.size() == 4 /* JSON requests 4-digit Unicode sequneces: \u.... */)
 							{
-								assert(m_hex->value <= 0xffff);
+								_Assume_(m_hex->value <= 0xffff);
 								if (sizeof(T) == 1) {
 									if (m_hex->value > 0x7ff) {
 										value += (T)(0xe0 | ((m_hex->value >> 12) & 0x0f));

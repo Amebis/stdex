@@ -7,7 +7,6 @@
 
 #include "compat.hpp"
 #include "stream.hpp"
-#include <assert.h>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -71,7 +70,7 @@ namespace stdex
 		template<class _Elem, class _Traits, class _Ax>
 		void encode(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &out, _In_bytecount_(size) const void *data, _In_ size_t size, _In_opt_ bool is_last = true)
 		{
-			assert(data || !size);
+			_Assume_(data || !size);
 
 			// Preallocate output
 			out.reserve(out.size() + enc_size(size));
@@ -191,7 +190,7 @@ namespace stdex
 		virtual _Success_(return != 0) size_t write(
 			_In_reads_bytes_opt_(length) const void* data, _In_ size_t length)
 		{
-			assert(data || !length);
+			_Assume_(data || !length);
 			for (size_t i = 0;; i++) {
 				if (m_num >= 3) {
 					if (++m_num_blocks > m_max_blocks) {
@@ -386,7 +385,7 @@ namespace stdex
 		virtual _Success_(return != 0 || length == 0) size_t read(
 			_Out_writes_bytes_to_opt_(length, return) void* data, _In_ size_t length)
 		{
-			assert(data || !length);
+			_Assume_(data || !length);
 			for (size_t to_read = length;;) {
 				if (m_temp_len >= to_read) {
 					memcpy(data, m_temp + m_temp_off, to_read);

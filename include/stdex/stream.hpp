@@ -13,7 +13,6 @@
 #include "string.hpp"
 #include "system.hpp"
 #include "unicode.hpp"
-#include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>
 #if defined(_WIN32)
@@ -965,7 +964,7 @@ namespace stdex
 			///
 			LPSAFEARRAY read_sa()
 			{
-				assert(size() <= SIZE_MAX);
+				_Assume_(size() <= SIZE_MAX);
 				size_t length = static_cast<size_t>(size());
 				std::unique_ptr<SAFEARRAY, SafeArrayDestroy_delete> sa(SafeArrayCreateVector(VT_UI1, 0, (ULONG)length));
 				if (!sa) _Unlikely_
@@ -1263,7 +1262,7 @@ namespace stdex
 			virtual _Success_(return != 0 || length == 0) size_t read(
 				_Out_writes_bytes_to_opt_(length, return) void* data, _In_ size_t length)
 			{
-				assert(data || !length);
+				_Assume_(data || !length);
 				for (size_t to_read = length;;) {
 					uint8_t* ptr; size_t num_read;
 					std::tie(ptr, num_read) = m_ring.front();
@@ -1329,7 +1328,7 @@ namespace stdex
 			virtual _Success_(return != 0) size_t write(
 				_In_reads_bytes_opt_(length) const void* data, _In_ size_t length)
 			{
-				assert(data || !length);
+				_Assume_(data || !length);
 				for (size_t to_write = length;;) {
 					uint8_t* ptr; size_t num_write;
 					std::tie(ptr, num_write) = m_ring.back();
@@ -1415,7 +1414,7 @@ namespace stdex
 			virtual _Success_(return != 0 || length == 0) size_t read(
 				_Out_writes_bytes_to_opt_(length, return) void* data, _In_ size_t length)
 			{
-				assert(data || !length);
+				_Assume_(data || !length);
 				for (size_t to_read = length;;) {
 					size_t buffer_size = m_read_buffer.tail - m_read_buffer.head;
 					if (to_read <= buffer_size) {
@@ -1451,7 +1450,7 @@ namespace stdex
 			virtual _Success_(return != 0) size_t write(
 				_In_reads_bytes_opt_(length) const void* data, _In_ size_t length)
 			{
-				assert(data || !length);
+				_Assume_(data || !length);
 				if (!length) _Unlikely_ {
 					// Pass null writes (zero-byte length). Null write operations have special meaning with with Windows pipes.
 					flush_write();
@@ -1713,7 +1712,7 @@ namespace stdex
 			virtual _Success_(return != 0 || length == 0) size_t read(
 				_Out_writes_bytes_to_opt_(length, return) void* data, _In_ size_t length)
 			{
-				assert(data || !length);
+				_Assume_(data || !length);
 				if (m_region.contains(m_offset)) {
 					size_t num_read = m_source.read(data, static_cast<size_t>(std::min<fpos_t>(length, m_region.end - m_offset)));
 					m_state = m_source.state();
@@ -1727,7 +1726,7 @@ namespace stdex
 			virtual _Success_(return != 0) size_t write(
 				_In_reads_bytes_opt_(length) const void* data, _In_ size_t length)
 			{
-				assert(data || !length);
+				_Assume_(data || !length);
 				if (m_region.contains(m_offset)) {
 					size_t num_written = m_source.write(data, static_cast<size_t>(std::min<fpos_t>(length, m_region.end - m_offset)));
 					m_state = m_source.state();
@@ -1871,7 +1870,7 @@ namespace stdex
 			virtual _Success_(return != 0 || length == 0) size_t read(
 				_Out_writes_bytes_to_opt_(length, return) void* data, _In_ size_t length)
 			{
-				assert(data || !length);
+				_Assume_(data || !length);
 #if SET_FILE_OP_TIMES
 				m_atime = time_point::now();
 #endif
@@ -1933,7 +1932,7 @@ namespace stdex
 			virtual _Success_(return != 0) size_t write(
 				_In_reads_bytes_opt_(length) const void* data, _In_ size_t length)
 			{
-				assert(data || !length);
+				_Assume_(data || !length);
 #if SET_FILE_OP_TIMES
 				m_atime = m_mtime = time_point::now();
 #endif
@@ -2136,7 +2135,7 @@ namespace stdex
 
 			void load_cache(_In_ fpos_t start)
 			{
-				assert(m_cache.status != cache_t::cache_t::status_t::dirty);
+				_Assume_(m_cache.status != cache_t::cache_t::status_t::dirty);
 				start -= start % m_cache.capacity; // Align to cache block size.
 				m_source->seek(m_cache.region.start = start);
 				if (m_source->ok()) {
@@ -2150,7 +2149,7 @@ namespace stdex
 
 			void write_cache()
 			{
-				assert(m_cache.status == cache_t::cache_t::status_t::dirty);
+				_Assume_(m_cache.status == cache_t::cache_t::status_t::dirty);
 				m_source->seek(m_cache.region.start);
 				m_source->write(m_cache.data, static_cast<size_t>(m_cache.region.size()));
 				m_state = m_source->state();
@@ -2201,7 +2200,7 @@ namespace stdex
 			virtual _Success_(return != 0 || length == 0) size_t read(
 				_Out_writes_bytes_to_opt_(length, return) void* data, _In_ size_t length)
 			{
-				assert(data || !length);
+				_Assume_(data || !length);
 				// Windows Server 2003 and Windows XP:  Pipe write operations across a network are limited in size per write.
 				// The amount varies per platform. For x86 platforms it's 63.97 MB. For x64 platforms it's 31.97 MB. For Itanium
 				// it's 63.95 MB. For more information regarding pipes, see the Remarks section.
@@ -2403,7 +2402,7 @@ namespace stdex
 			virtual _Success_(return != 0 || length == 0) size_t read(
 				_Out_writes_bytes_to_opt_(length, return) void* data, _In_ size_t length)
 			{
-				assert(data || !length);
+				_Assume_(data || !length);
 				constexpr int block_size = 0x10000000;
 				for (size_t to_read = length;;) {
 					int num_read = recv(m_h, reinterpret_cast<char*>(data), static_cast<int>(std::min<size_t>(to_read, block_size)), 0);
@@ -2427,7 +2426,7 @@ namespace stdex
 			virtual _Success_(return != 0) size_t write(
 				_In_reads_bytes_opt_(length) const void* data, _In_ size_t length)
 			{
-				assert(data || !length);
+				_Assume_(data || !length);
 				constexpr int block_size = 0x10000000;
 				for (size_t to_write = length;;) {
 					int num_written = send(m_h, reinterpret_cast<const char*>(data), static_cast<int>(std::min<size_t>(to_write, block_size)), 0);
@@ -2477,7 +2476,7 @@ namespace stdex
 			virtual _Success_(return != 0 || length == 0) size_t read(
 				_Out_writes_bytes_to_opt_(length, return) void* data, _In_ size_t length)
 			{
-				assert(data || !length);
+				_Assume_(data || !length);
 				for (size_t to_read = length;;) {
 					HRESULT hr;
 					ULONG num_read = 0;
@@ -2503,7 +2502,7 @@ namespace stdex
 			virtual _Success_(return != 0) size_t write(
 				_In_reads_bytes_opt_(length) const void* data, _In_ size_t length)
 			{
-				assert(data || !length);
+				_Assume_(data || !length);
 				for (size_t to_write = length;;) {
 					HRESULT hr;
 					ULONG num_written = 0;
@@ -2555,7 +2554,7 @@ namespace stdex
 			virtual _Success_(return != 0 || length == 0) size_t read(
 				_Out_writes_bytes_to_opt_(length, return) void* data, _In_ size_t length)
 			{
-				assert(data || !length);
+				_Assume_(data || !length);
 				if (!m_request) _Unlikely_ {
 					m_state = state_t::fail;
 					return 0;
@@ -2573,8 +2572,8 @@ namespace stdex
 						m_state = to_read < length ? state_t::ok : state_t::fail;
 						return length - to_read;
 					}
-					assert(V_VT(&var_amount) == VT_I4);
-					assert(V_VT(&var_data) == (VT_ARRAY | VT_UI1));
+					_Assume_(V_VT(&var_amount) == VT_I4);
+					_Assume_(V_VT(&var_data) == (VT_ARRAY | VT_UI1));
 					std::unique_ptr<SAFEARRAY, SafeArrayDestroy_delete> sa(V_ARRAY(&var_data));
 					if (!V_I4(&var_amount)) _Unlikely_ {
 						m_state = to_read < length || !length ? state_t::ok : state_t::eof;
@@ -2978,7 +2977,7 @@ namespace stdex
 
 			virtual void set_ctime(time_point date)
 			{
-				assert(m_h != invalid_handle);
+				_Assume_(m_h != invalid_handle);
 #ifdef _WIN32
 				FILETIME ft;
 				tp2ft(date, ft);
@@ -2992,7 +2991,7 @@ namespace stdex
 
 			virtual void set_atime(time_point date)
 			{
-				assert(m_h != invalid_handle);
+				_Assume_(m_h != invalid_handle);
 #ifdef _WIN32
 				FILETIME ft;
 				tp2ft(date, ft);
@@ -3225,8 +3224,8 @@ namespace stdex
 				m_reserved(reserved),
 				m_manage(manage)
 			{
-				assert(data || !size);
-				assert(reserved >= size);
+				_Assume_(data || !size);
+				_Assume_(reserved >= size);
 #if SET_FILE_OP_TIMES
 				m_ctime = m_atime = m_mtime = time_point::now();
 #endif
@@ -3387,7 +3386,7 @@ namespace stdex
 			virtual _Success_(return != 0 || length == 0) size_t read(
 				_Out_writes_bytes_to_opt_(length, return) void* data, _In_ size_t length)
 			{
-				assert(data || !length);
+				_Assume_(data || !length);
 #if SET_FILE_OP_TIMES
 				m_atime = time_point::now();
 #endif
@@ -3497,7 +3496,7 @@ namespace stdex
 			virtual _Success_(return != 0) size_t write(
 				_In_reads_bytes_opt_(length) const void* data, _In_ size_t length)
 			{
-				assert(data || !length);
+				_Assume_(data || !length);
 #if SET_FILE_OP_TIMES
 				m_atime = m_mtime = time_point::now();
 #endif
@@ -3804,7 +3803,7 @@ namespace stdex
 		protected:
 			///
 			/// Writes data to specified file location
-			/// This does not move file pointer nor update file size. It checks for reserved space assert-only (in Debug builds). Use with caution!
+			/// This does not move file pointer nor update file size. It checks for reserved space _Assume_-only (in Debug builds). Use with caution!
 			///
 			/// \param[in] offset  Offset in file where to write data
 			/// \param[in] data    Data to write
@@ -3815,7 +3814,7 @@ namespace stdex
 #if SET_FILE_OP_TIMES
 				m_atime = m_mtime = time_point::now();
 #endif
-				assert(offset + sizeof(T) < m_size);
+				_Assume_(offset + sizeof(T) < m_size);
 				(*reinterpret_cast<T*>(m_data + offset)) = HE2LE(data);
 			}
 
@@ -3837,7 +3836,7 @@ namespace stdex
 
 			///
 			/// Reads data from specified file location
-			/// This does not move file pointer. It checks for data size assert-only (in Debug builds). Use with caution!
+			/// This does not move file pointer. It checks for data size _Assume_-only (in Debug builds). Use with caution!
 			///
 			/// \param[in] offset  Offset in file where to write data
 			/// \param[in] data    Data to write
@@ -3846,7 +3845,7 @@ namespace stdex
 			template <class T>
 			inline void get(_In_ fpos_t offset, _Out_ T & data)
 			{
-				assert(offset + sizeof(T) < m_size);
+				_Assume_(offset + sizeof(T) < m_size);
 				data = LE2HE(*(T*)(m_data + offset));
 #if SET_FILE_OP_TIMES
 				m_atime = time_point::now();
@@ -3941,7 +3940,7 @@ namespace stdex
 			virtual _Success_(return != 0 || length == 0) size_t read(
 				_Out_writes_bytes_to_opt_(length, return) void* data, _In_ size_t length)
 			{
-				assert(data || !length);
+				_Assume_(data || !length);
 				for (size_t to_read = length;;) {
 					if (!m_head) _Unlikely_ {
 						m_state = to_read < length || !length ? state_t::ok : state_t::eof;
@@ -3969,7 +3968,7 @@ namespace stdex
 			virtual _Success_(return != 0) size_t write(
 				_In_reads_bytes_opt_(length) const void* data, _In_ size_t length)
 			{
-				assert(data || !length);
+				_Assume_(data || !length);
 				try {
 					std::unique_ptr<node_t> n(reinterpret_cast<node_t*>(new uint8_t[sizeof(node_t) + length]));
 					n->next = nullptr;
@@ -4029,13 +4028,13 @@ namespace stdex
 			virtual _Success_(return != 0 || length == 0) size_t read(
 				_Out_writes_bytes_to_opt_(length, return) void* data, _In_ size_t length)
 			{
-				assert(data || !length);
+				_Assume_(data || !length);
 				if (m_files.empty()) {
 					m_state = state_t::fail;
 					return 0;
 				}
 				size_t result = m_files[0]->read(data, length);
-				_Analysis_assume_(result <= length);
+				_Assume_(result <= length);
 				m_state = m_files[0]->state();
 				if (length > m_tmp.size())
 					m_tmp.resize(length);

@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <assert.h>
 #include <stddef.h>
 #ifdef _WIN32
 #include <sal.h>
@@ -148,10 +149,6 @@
 #define _Null_terminated_
 #endif
 
-#ifndef _Analysis_assume_
-#define _Analysis_assume_(p)
-#endif
-
 #ifndef _Likely_
 #if _HAS_CXX20
 #define _Likely_ [[likely]]
@@ -192,6 +189,15 @@ size_t _countof(T (&arr)[N])
 {
 	return std::extent<T[N]>::value;
 }
+#endif
+
+#ifndef _Analysis_assume_
+#define _Analysis_assume_(p)
+#endif
+#ifdef NDEBUG
+#define _Assume_(p) _Analysis_assume_(p)
+#else
+#define _Assume_(p) assert(p)
 #endif
 
 #ifdef __APPLE__

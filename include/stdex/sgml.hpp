@@ -9,7 +9,6 @@
 #include "mapping.hpp"
 #include "sgml_unicode.hpp"
 #include "string.hpp"
-#include <assert.h>
 #include <exception>
 #include <string>
 
@@ -19,8 +18,8 @@ namespace stdex
 	template <class T>
 	inline const wchar_t* sgml2uni(_In_reads_or_z_(count) const T* entity, _In_ size_t count)
 	{
-		assert(entity && count);
-		assert(count < 2 || entity[0] != '#'); // No numeric entities
+		_Assume_(entity && count);
+		_Assume_(count < 2 || entity[0] != '#'); // No numeric entities
 
 		for (size_t i = 0, j = _countof(sgml_unicode); i < j; ) {
 			size_t m = (i + j) / 2;
@@ -47,7 +46,7 @@ namespace stdex
 	inline const T* sgmlend(
 		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count)
 	{
-		assert(str || !count);
+		_Assume_(str || !count);
 		for (size_t i = 0; i < count; i++) {
 			if (str[i] == ';')
 				return str + i;
@@ -97,7 +96,7 @@ namespace stdex
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
 		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
 	{
-		assert(src || !count_src);
+		_Assume_(src || !count_src);
 
 		const bool
 			skip_quot = (skip & sgml_quot) == 0,
@@ -237,8 +236,8 @@ namespace stdex
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
 		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
 	{
-		assert(dst || !count_dst);
-		assert(src || !count_src);
+		_Assume_(dst || !count_dst);
+		_Assume_(src || !count_src);
 
 		static const std::invalid_argument buffer_overrun("buffer overrun");
 		const bool
@@ -400,7 +399,7 @@ namespace stdex
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
 		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
 	{
-		assert(dst || !count_dst);
+		_Assume_(dst || !count_dst);
 		if (count_dst)
 			dst[0] = 0;
 		if (map)
@@ -454,7 +453,7 @@ namespace stdex
 	/// \cond internal
 	inline const char* chr2sgml(_In_reads_or_z_(count) const wchar_t* entity, _In_ size_t count)
 	{
-		assert(entity && count);
+		_Assume_(entity && count);
 
 		const wchar_t e2 = entity[0];
 		for (size_t i = 0, j = _countof(unicode_sgml); i < j; ) {
@@ -493,7 +492,7 @@ namespace stdex
 		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
 		_In_ size_t what = 0)
 	{
-		assert(src || !count_src);
+		_Assume_(src || !count_src);
 
 		const bool
 			do_ascii = (what & sgml_full) == 0,
@@ -632,8 +631,8 @@ namespace stdex
 		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
 		_In_ size_t what = 0)
 	{
-		assert(dst || !count_dst);
-		assert(src || !count_src);
+		_Assume_(dst || !count_dst);
+		_Assume_(src || !count_src);
 
 		static const std::invalid_argument buffer_overrun("buffer overrun");
 		const bool
@@ -695,7 +694,7 @@ namespace stdex
 					else {
 						char tmp[3 + 8 + 1 + 1];
 						int m = snprintf(tmp, _countof(tmp), "&#x%x;", src[i++]);
-						assert(m >= 0);
+						_Assume_(m >= 0);
 						if (static_cast<size_t>(m) >= count_dst)
 							throw buffer_overrun;
 						memcpy(dst + j, tmp, m * sizeof(char)); j += m;
@@ -733,7 +732,7 @@ namespace stdex
 							}
 							char tmp[3 + 8 + 1 + 1];
 							int m = snprintf(tmp, _countof(tmp), "&#x%x;", unicode);
-							assert(m >= 0);
+							_Assume_(m >= 0);
 							if (static_cast<size_t>(m) >= count_dst)
 								throw buffer_overrun;
 							memcpy(dst + j, tmp, m * sizeof(char)); j += m;
@@ -805,7 +804,7 @@ namespace stdex
 		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
 		_In_ size_t what = 0)
 	{
-		assert(dst || !count_dst);
+		_Assume_(dst || !count_dst);
 		if (count_dst)
 			dst[0] = 0;
 		return wstr2sgmlcat(dst, count_dst, src, count_src, what);

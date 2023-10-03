@@ -75,7 +75,7 @@ namespace stdex
 
 		virtual void hash(_In_reads_bytes_opt_(length) const void* data, _In_ size_t length)
 		{
-			assert(data || !length);
+			_Assume_(data || !length);
 
 			// Compute number of bytes mod 64.
 			size_t j = static_cast<size_t>((m_counter[0] >> 3) & 63);
@@ -88,8 +88,8 @@ namespace stdex
 			// Transform as many times as possible.
 			size_t i, remainder = 64 - j;
 			if (length >= remainder) {
-				assert(j < 64 && j + remainder <= 64);
-				assert(remainder <= length);
+				_Assume_(j < 64 && j + remainder <= 64);
+				_Assume_(remainder <= length);
 				memcpy(m_queue + j, data, remainder);
 				hash_block();
 				for (i = remainder; i + 64 <= length; i += 64) {
@@ -110,8 +110,8 @@ namespace stdex
 				i = 0;
 
 			// Buffer remaining input.
-			assert(j < 64 && j + length - i <= 64);
-			assert(i <= length);
+			_Assume_(j < 64 && j + length - i <= 64);
+			_Assume_(i <= length);
 			memcpy(m_queue + j, reinterpret_cast<const uint8_t*>(data) + i, length - i);
 		}
 
@@ -240,7 +240,7 @@ namespace stdex
 				0x2d02ef8d
 			};
 
-			assert(data || !length);
+			_Assume_(data || !length);
 			for (size_t i = 0; i < length; i++)
 				m_value = crc32_table[(m_value ^ reinterpret_cast<const uint8_t*>(data)[i]) & 0xff] ^ (m_value >> 8);
 		}

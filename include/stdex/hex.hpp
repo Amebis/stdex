@@ -6,7 +6,6 @@
 #pragma once
 
 #include "compat.hpp"
-#include <assert.h>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -38,7 +37,7 @@ namespace stdex
 		template<class _Elem, class _Traits, class _Ax>
 		void encode(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &out, _In_bytecount_(size) const void *data, _In_ size_t size)
 		{
-			assert(data || !size);
+			_Assume_(data || !size);
 
 			// Preallocate output
 			out.reserve(out.size() + enc_size(size));

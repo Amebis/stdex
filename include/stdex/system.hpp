@@ -20,7 +20,6 @@
 #include <unistd.h>
 #endif
 #include "compat.hpp"
-#include <assert.h>
 #include <regex>
 #include <stdexcept>
 #include <string>
@@ -331,7 +330,7 @@ namespace stdex
 #ifdef _WIN32
 			HMODULE kernel32_handle;
 			kernel32_handle = LoadLibrary(_T("kernel32.dll"));
-			_Analysis_assume_(kernel32_handle);
+			_Assume_(kernel32_handle);
 			BOOL (WINAPI* IsWow64Process2)(HANDLE hProcess, USHORT* pProcessMachine, USHORT* pNativeMachine);
 			*reinterpret_cast<FARPROC*>(&IsWow64Process2) = GetProcAddress(kernel32_handle, "IsWow64Process2");
 			HANDLE process = GetCurrentProcess();
