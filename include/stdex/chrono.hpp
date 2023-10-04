@@ -182,11 +182,11 @@ namespace stdex {
 			static constexpr rep f_day    = 24;   // number of hours per day
 			static constexpr rep f_week   = 7;    // number of days per week
 
-			static constexpr rep p_second = f_second;            // number of milliseconds per second
-			static constexpr rep p_minute = f_minute * p_second; // number of milliseconds per minute
-			static constexpr rep p_hour   = f_hour   * p_minute; // number of milliseconds per hour
-			static constexpr rep p_day    = f_day    * p_hour;   // number of milliseconds per day
-			static constexpr rep p_week   = f_week   * p_day;    // number of milliseconds per week
+			static constexpr rep one_second = f_second;              // number of milliseconds per second
+			static constexpr rep one_minute = f_minute * one_second; // number of milliseconds per minute
+			static constexpr rep one_hour   = f_hour   * one_minute; // number of milliseconds per hour
+			static constexpr rep one_day    = f_day    * one_hour;   // number of milliseconds per day
+			static constexpr rep one_week   = f_week   * one_day;    // number of milliseconds per week
 
 			///
 			/// Gets current timestamp
@@ -209,7 +209,7 @@ namespace stdex {
 			///
 			static std::time_t to_time_t(_In_ const time_point tp) noexcept
 			{
-				return tp.time_since_epoch().count() / p_second - 210866803200;
+				return tp.time_since_epoch().count() / one_second - 210866803200;
 			}
 
 			///
@@ -217,7 +217,7 @@ namespace stdex {
 			///
 			static time_point from_time_t(_In_ std::time_t t) noexcept
 			{
-				return time_point(duration((static_cast<rep>(t) + 210866803200) * p_second));
+				return time_point(duration((static_cast<rep>(t) + 210866803200) * one_second));
 			}
 
 #ifdef _WIN32
@@ -282,7 +282,7 @@ namespace stdex {
 			///
 			static aosn_date::time_point to_date(_In_ time_point tp) noexcept
 			{
-				return aosn_date::time_point(aosn_date::duration(static_cast<aosn_date::rep>(tp.time_since_epoch().count() / p_day)));
+				return aosn_date::time_point(aosn_date::duration(static_cast<aosn_date::rep>(tp.time_since_epoch().count() / one_day)));
 			}
 
 			///
@@ -290,7 +290,7 @@ namespace stdex {
 			///
 			static time_point from_date(_In_ aosn_date::time_point date) noexcept
 			{
-				return time_point(duration(static_cast<rep>(date.time_since_epoch().count()) * p_day));
+				return time_point(duration(static_cast<rep>(date.time_since_epoch().count()) * one_day));
 			}
 
 			///
@@ -301,8 +301,8 @@ namespace stdex {
 				_In_ uint8_t hour, _In_ uint8_t minute, _In_ uint8_t second, _In_ uint16_t millisecond) noexcept
 			{
 				return time_point(duration(
-					(static_cast<rep>(aosn_date::from_dmy(day, month, year).time_since_epoch().count()) * p_day) +
-					(static_cast<rep>(hour) * p_hour + static_cast<rep>(minute) * p_minute + static_cast<rep>(second) * p_second + millisecond)));
+					(static_cast<rep>(aosn_date::from_dmy(day, month, year).time_since_epoch().count()) * one_day) +
+					(static_cast<rep>(hour) * one_hour + static_cast<rep>(minute) * one_minute + static_cast<rep>(second) * one_second + millisecond)));
 			}
 
 			///
@@ -313,7 +313,7 @@ namespace stdex {
 				_Out_opt_ uint8_t* hour, _Out_opt_ uint8_t* minute, _Out_opt_ uint8_t* second, _Out_opt_ uint16_t* millisecond) noexcept
 			{
 				aosn_date::to_dmy(to_date(tp), day, month, year);
-				int32_t u = static_cast<int32_t>(tp.time_since_epoch().count() % p_day);
+				int32_t u = static_cast<int32_t>(tp.time_since_epoch().count() % one_day);
 				if (millisecond) *millisecond = static_cast<uint16_t>(u % f_second);
 				u = u / f_second;
 				if (second) *second = static_cast<uint8_t>(u % f_minute);
