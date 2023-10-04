@@ -4022,8 +4022,7 @@ namespace stdex
 			diag_file(_In_count_(num_files) basic_file* const* files, _In_ size_t num_files) :
 				basic(num_files ? files[0]->state() : state_t::fail),
 				m_files(files, files + num_files)
-			{
-			}
+			{}
 
 			virtual _Success_(return != 0 || length == 0) size_t read(
 				_Out_writes_bytes_to_opt_(length, return) void* data, _In_ size_t length)
