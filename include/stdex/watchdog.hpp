@@ -32,7 +32,7 @@ namespace stdex
 			m_quit(false),
 			m_timeout(timeout),
 			m_callback(callback),
-			m_thread(run, std::ref(*this))
+			m_thread([](_Inout_ watchdog& wd) { wd.run(); }, std::ref(*this))
 		{}
 
 		///
@@ -64,17 +64,17 @@ namespace stdex
 		}
 
 	protected:
-		static void run(_Inout_ watchdog& wd)
+		void run()
 		{
 			for (;;) {
-				std::unique_lock<std::mutex> lk(wd.m_mutex);
-				auto phase = wd.m_phase;
-				if (wd.m_cv.wait_for(lk, wd.m_timeout, [&] {return wd.m_quit || phase != wd.m_phase; })) {
-					if (wd.m_quit)
+				std::unique_lock<std::mutex> lk(m_mutex);
+				auto phase = m_phase;
+				if (m_cv.wait_for(lk, m_timeout, [&] {return m_quit || phase != m_phase; })) {
+					if (m_quit)
 						break;
 				}
 				else {
-					wd.m_callback();
+					m_callback();
 					break;
 				}
 			}

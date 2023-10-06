@@ -1168,32 +1168,32 @@ namespace stdex
 					length(0),
 					num_written(0)
 				{
-					*static_cast<std::thread*>(this) = std::thread(process_op, std::ref(*this));
+					*static_cast<std::thread*>(this) = std::thread([](_Inout_ worker& w) { w.process_op(); }, std::ref(*this));
 				}
 
 			protected:
-				static void process_op(_Inout_ worker& w)
+				void process_op()
 				{
 					for (;;) {
-						std::unique_lock<std::mutex> lk(w.mutex);
-						w.cv.wait(lk, [&] {return w.op != op_t::noop; });
-						switch (w.op) {
+						std::unique_lock<std::mutex> lk(mutex);
+						cv.wait(lk, [&] {return op != op_t::noop; });
+						switch (op) {
 						case op_t::quit:
 							return;
 						case op_t::write:
-							w.num_written = w.source->write(w.data, w.length);
+							num_written = source->write(data, length);
 							break;
 						case op_t::close:
-							w.source->close();
+							source->close();
 							break;
 						case op_t::flush:
-							w.source->flush();
+							source->flush();
 							break;
 						case op_t::noop:;
 						}
-						w.op = op_t::noop;
+						op = op_t::noop;
 						lk.unlock();
-						w.cv.notify_one();
+						cv.notify_one();
 					}
 				}
 
@@ -1249,7 +1249,7 @@ namespace stdex
 		public:
 			async_reader(_Inout_ basic& source) :
 				converter(source),
-				m_worker(process, std::ref(*this))
+				m_worker([](_Inout_ async_reader& w) { w.process(); }, std::ref(*this))
 			{}
 
 			virtual ~async_reader()
@@ -1284,17 +1284,17 @@ namespace stdex
 			}
 
 		protected:
-			static void process(_Inout_ async_reader& w)
+			void process()
 			{
 				for (;;) {
 					uint8_t* ptr; size_t num_write;
-					std::tie(ptr, num_write) = w.m_ring.back();
+					std::tie(ptr, num_write) = m_ring.back();
 					if (!ptr) _Unlikely_
 						break;
-					num_write = w.m_source->read(ptr, num_write);
-					w.m_ring.push(num_write);
-					if (!w.m_source->ok()) {
-						w.m_ring.quit();
+					num_write = m_source->read(ptr, num_write);
+					m_ring.push(num_write);
+					if (!m_source->ok()) {
+						m_ring.quit();
 						break;
 					}
 				}
@@ -1316,7 +1316,7 @@ namespace stdex
 		public:
 			async_writer(_Inout_ basic& source) :
 				converter(source),
-				m_worker(process, std::ref(*this))
+				m_worker([](_Inout_ async_writer& w) { w.process(); }, std::ref(*this))
 			{}
 
 			virtual ~async_writer()
@@ -1356,17 +1356,17 @@ namespace stdex
 			}
 
 		protected:
-			static void process(_Inout_ async_writer& w)
+			void process()
 			{
 				for (;;) {
 					uint8_t* ptr; size_t num_read;
-					std::tie(ptr, num_read) = w.m_ring.front();
+					std::tie(ptr, num_read) = m_ring.front();
 					if (!ptr)
 						break;
-					num_read = w.m_source->write(ptr, num_read);
-					w.m_ring.pop(num_read);
-					if (!w.m_source->ok()) {
-						w.m_ring.quit();
+					num_read = m_source->write(ptr, num_read);
+					m_ring.pop(num_read);
+					if (!m_source->ok()) {
+						m_ring.quit();
 						break;
 					}
 				}
