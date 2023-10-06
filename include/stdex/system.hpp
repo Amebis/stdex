@@ -16,6 +16,9 @@
 #include <tchar.h>
 #else
 #define _LARGEFILE64_SOURCE
+#include <grp.h>
+#include <pwd.h>
+#include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
 #endif
@@ -322,16 +325,28 @@ namespace stdex
 		///
 		bool interactive_process;
 
+		///
+		/// Is member of local group Administrators (Windows) or member of group wheel/sudoers (others)?
+		///
+		bool admin;
+
+		///
+		/// Is elevated process (Windows) or running as root (others)?
+		///
+		bool elevated;
+
 		sys_info_t() :
 			os_platform(IMAGE_FILE_MACHINE_UNKNOWN),
 			wow64(false),
-			interactive_process(true)
+			interactive_process(true),
+			admin(false),
+			elevated(false)
 		{
 #ifdef _WIN32
 			HMODULE kernel32_handle;
 			kernel32_handle = LoadLibrary(_T("kernel32.dll"));
 			_Assume_(kernel32_handle);
-			BOOL (WINAPI* IsWow64Process2)(HANDLE hProcess, USHORT* pProcessMachine, USHORT* pNativeMachine);
+			BOOL(WINAPI * IsWow64Process2)(HANDLE hProcess, USHORT * pProcessMachine, USHORT * pNativeMachine);
 			*reinterpret_cast<FARPROC*>(&IsWow64Process2) = GetProcAddress(kernel32_handle, "IsWow64Process2");
 			HANDLE process = GetCurrentProcess();
 			USHORT process_machine;
@@ -351,29 +366,79 @@ namespace stdex
 				if (Wow64Process) {
 					os_platform = IMAGE_FILE_MACHINE_AMD64;
 					wow64 = true;
-				} else {
+				}
+				else {
 					os_platform = process_platform;
 					wow64 = false;
 				}
 			}
 #endif
 			FreeLibrary(kernel32_handle);
+#else
+			memset(&m_utsn, 0, sizeof(m_utsn));
+			if (uname(&m_utsn) != -1)
+				os_platform = reinterpret_cast<platform_id>(m_utsn.machine);
+#endif
 
+#ifdef _WIN32
 			HWINSTA hWinSta = GetProcessWindowStation();
 			if (hWinSta) {
 				TCHAR sName[MAX_PATH];
 				if (GetUserObjectInformation(hWinSta, UOI_NAME, sName, sizeof(sName), NULL)) {
 					sName[_countof(sName) - 1] = 0;
 					// Only "WinSta0" is interactive (Source: KB171890)
-					interactive_process = _tcsicmp(sName,  _T("WinSta0")) == 0;
+					interactive_process = _tcsicmp(sName, _T("WinSta0")) == 0;
 				}
 			}
 #else
-			memset(&m_utsn, 0, sizeof(m_utsn));
-			if (uname(&m_utsn) != -1)
-				os_platform = reinterpret_cast<platform_id>(m_utsn.machine);
-
 			// TODO: Research interactive process vs service/agent/daemon on this platform.
+#endif
+
+#if defined(_WIN32)
+			{
+				HANDLE token_h;
+				if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &token_h)) {
+					sys_object token(token_h);
+
+					TOKEN_ELEVATION elevation;
+					DWORD size = sizeof(TOKEN_ELEVATION);
+					if (GetTokenInformation(token_h, TokenElevation, &elevation, sizeof(elevation), &size))
+						elevated = elevation.TokenIsElevated;
+
+					GetTokenInformation(token.get(), TokenGroups, NULL, 0, &size);
+					std::unique_ptr<TOKEN_GROUPS> groups((TOKEN_GROUPS*)new uint8_t[size]);
+					if (GetTokenInformation(token.get(), TokenGroups, (LPVOID)groups.get(), size, &size)) {
+						SID_IDENTIFIER_AUTHORITY authority = SECURITY_NT_AUTHORITY;
+						PSID sid_admins_h = NULL;
+						if (AllocateAndInitializeSid(&authority, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &sid_admins_h)) {
+							struct SID_delete { void operator()(_In_ PSID p) const { FreeSid(p); } };
+							std::unique_ptr<void, SID_delete> sid_admins(sid_admins_h);
+							for (DWORD i = 0; i < groups->GroupCount; ++i)
+								if (EqualSid(sid_admins.get(), groups->Groups[i].Sid)) {
+									admin = true;
+									break;
+								}
+						}
+					}
+				}
+			}
+#elif defined(__APPLE__)
+			{
+				gid_t gids[NGROUPS + 1]; // A user cannot be member in more than NGROUPS groups, not counting the default group (hence the + 1)
+				for (int i = 0, n = getgroups(_countof(gids), gids); i < n; ++i) {
+					struct group* group = getgrgid(gids[i]);
+					if (!group) continue;
+					if (strcmp(group->gr_name, "admin") == 0) {
+						admin = true;
+						break;
+					}
+				}
+			}
+
+			elevated = geteuid() == 0;
+#else
+			// TODO: Set admin.
+			elevated = geteuid() == 0;
 #endif
 		}
 
