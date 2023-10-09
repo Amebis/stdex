@@ -1013,7 +1013,9 @@ namespace stdex
 		};
 
 		///
-		/// Modifies data on the fly when reading from/writing to a source stream
+		/// Modifies data on the fly when reading from/writing to a source stream.
+		/// Could also be used to modify read/write boundaries like FIFO queues, async read/write,
+		/// buffering etc.
 		///
 		class converter : public basic
 		{
@@ -1456,8 +1458,7 @@ namespace stdex
 					flush_write();
 					if (!ok()) _Unlikely_
 						return 0;
-					m_source->write(nullptr, 0);
-					m_state = m_source->state();
+					converter::write(nullptr, 0);
 					return 0;
 				}
 
@@ -1477,8 +1478,7 @@ namespace stdex
 					}
 					size_t buffer_size = m_write_buffer.tail - m_write_buffer.head;
 					if (buffer_size) {
-						m_write_buffer.head += m_source->write(m_write_buffer.data + m_write_buffer.head, buffer_size);
-						m_state = m_source->state();
+						m_write_buffer.head += converter::write(m_write_buffer.data + m_write_buffer.head, buffer_size);
 						if (m_write_buffer.head == m_write_buffer.tail)
 							m_write_buffer.head = m_write_buffer.tail = 0;
 						else
@@ -1486,8 +1486,7 @@ namespace stdex
 					}
 					if (to_write > m_write_buffer.capacity) {
 						// When needing to write more data than buffer capacity, bypass the buffer.
-						to_write -= m_source->write(data, to_write);
-						m_state = m_source->state();
+						to_write -= converter::write(data, to_write);
 						return length - to_write;
 					}
 				}
@@ -1553,13 +1552,10 @@ namespace stdex
 				_Out_writes_bytes_to_opt_(length, return) void* data, _In_ size_t length)
 			{
 				size_t num_read;
-				if (read_limit == fsize_max) {
-					num_read = m_source->read(data, length);
-					m_state = m_source->state();
-				}
+				if (read_limit == fsize_max)
+					num_read = converter::read(data, length);
 				else if (length <= read_limit) {
-					num_read = m_source->read(data, length);
-					m_state = m_source->state();
+					num_read = converter::read(data, length);
 					read_limit -= num_read;
 				}
 				else if (length && !read_limit) {
@@ -1567,8 +1563,7 @@ namespace stdex
 					m_state = state_t::eof;
 				}
 				else {
-					num_read = m_source->read(data, static_cast<size_t>(read_limit));
-					m_state = m_source->state();
+					num_read = converter::read(data, static_cast<size_t>(read_limit));
 					read_limit -= num_read;
 				}
 				return num_read;
@@ -1578,13 +1573,10 @@ namespace stdex
 				_In_reads_bytes_opt_(length) const void* data, _In_ size_t length)
 			{
 				size_t num_written;
-				if (write_limit == fsize_max) {
-					num_written = m_source->write(data, length);
-					m_state = m_source->state();
-				}
+				if (write_limit == fsize_max)
+					num_written = converter::write(data, length);
 				else if (length <= write_limit) {
-					num_written = m_source->write(data, length);
-					m_state = m_source->state();
+					num_written = converter::write(data, length);
 					write_limit -= num_written;
 				}
 				else if (length && !write_limit) {
@@ -1592,8 +1584,7 @@ namespace stdex
 					m_state = state_t::fail;
 				}
 				else {
-					num_written = m_source->write(data, static_cast<size_t>(write_limit));
-					m_state = m_source->state();
+					num_written = converter::write(data, static_cast<size_t>(write_limit));
 					write_limit -= num_written;
 				}
 				return num_written;
@@ -1628,13 +1619,10 @@ namespace stdex
 					read_offset = 0;
 				}
 				size_t num_read;
-				if (read_limit == fsize_max) {
-					num_read = m_source->read(data, length);
-					m_state = m_source->state();
-				}
+				if (read_limit == fsize_max)
+					num_read = converter::read(data, length);
 				else if (length <= read_limit) {
-					num_read = m_source->read(data, length);
-					m_state = m_source->state();
+					num_read = converter::read(data, length);
 					read_limit -= num_read;
 				}
 				else if (length && !read_limit) {
@@ -1643,8 +1631,7 @@ namespace stdex
 					m_state = state_t::eof;
 				}
 				else {
-					num_read = m_source->read(data, static_cast<size_t>(read_limit));
-					m_state = m_source->state();
+					num_read = converter::read(data, static_cast<size_t>(read_limit));
 					read_limit -= num_read;
 				}
 				return num_read;
@@ -1667,13 +1654,10 @@ namespace stdex
 				}
 				else
 					num_skipped = 0;
-				if (write_limit == fsize_max) {
-					num_written = m_source->write(data, length);
-					m_state = m_source->state();
-				}
+				if (write_limit == fsize_max)
+					num_written = converter::write(data, length);
 				else if (length <= write_limit) {
-					num_written = m_source->write(data, length);
-					m_state = m_source->state();
+					num_written = converter::write(data, length);
 					write_limit -= num_written;
 				}
 				else if (length && !write_limit) {
@@ -1683,8 +1667,7 @@ namespace stdex
 				}
 				else {
 					num_skipped += length - static_cast<size_t>(write_limit);
-					num_written = m_source->write(data, static_cast<size_t>(write_limit));
-					m_state = m_source->state();
+					num_written = converter::write(data, static_cast<size_t>(write_limit));
 					write_limit -= num_written;
 				}
 				return num_skipped + num_written;
