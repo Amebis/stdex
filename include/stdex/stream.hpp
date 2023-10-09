@@ -1020,21 +1020,26 @@ namespace stdex
 		class converter : public basic
 		{
 		protected:
-			explicit converter() :
-				basic(state_t::fail),
-				m_source(nullptr)
-			{}
+			/// \cond internal
+#pragma warning(suppress: 26495) // The delayed init call will finish initializing the class.
+			explicit converter() : basic(state_t::fail) {}
 
 			void init(_Inout_ basic& source)
 			{
-				m_state = source.state();
 				m_source = &source;
+				init();
+			}
+
+			void init()
+			{
+				m_state = m_source->state();
 			}
 
 			void done()
 			{
 				m_source = nullptr;
 			}
+			/// \endcond
 
 		public:
 			converter(_Inout_ basic& source) :
@@ -1387,6 +1392,7 @@ namespace stdex
 		class buffer : public converter
 		{
 		protected:
+			/// \cond internal
 			explicit buffer(_In_ size_t read_buffer_size = default_buffer_size, _In_ size_t write_buffer_size = default_buffer_size) :
 				converter(),
 				m_read_buffer(read_buffer_size),
@@ -1399,6 +1405,7 @@ namespace stdex
 					flush_write();
 				converter::done();
 			}
+			/// \endcond
 
 		public:
 			buffer(_Inout_ basic& source, _In_ size_t read_buffer_size = default_buffer_size, _In_ size_t write_buffer_size = default_buffer_size) :
@@ -1787,7 +1794,7 @@ namespace stdex
 			interval<fpos_t> m_region;
 		};
 
-		constexpr size_t default_cache_size = 0x1000; ///< privzeta velikost medpomnilnika
+		constexpr size_t default_cache_size = 0x1000; ///< Default cache size
 
 		///
 		/// Cached file
@@ -1795,25 +1802,26 @@ namespace stdex
 		class cache : public basic_file
 		{
 		protected:
+			/// \cond internal
+#pragma warning(suppress: 26495) // The delayed init call will finish initializing the class.
 			explicit cache(_In_ size_t cache_size = default_cache_size) :
 				basic(state_t::fail),
-				m_source(nullptr),
-				m_cache(cache_size),
-				m_offset(0)
-#if SET_FILE_OP_TIMES
-				, m_atime(time_point::min()),
-				m_mtime(time_point::min())
-#endif
+				m_cache(cache_size)
 			{}
 
 			void init(_Inout_ basic_file& source)
 			{
-				m_state = source.state();
 				m_source = &source;
-				m_offset = source.tell();
+				init();
+			}
+
+			void init()
+			{
+				m_state = m_source->state();
+				m_offset = m_source->tell();
 #if SET_FILE_OP_TIMES
-				m_atime = source.atime();
-				m_mtime = source.mtime();
+				m_atime = m_source->atime();
+				m_mtime = m_source->mtime();
 #endif
 			}
 
@@ -1824,9 +1832,14 @@ namespace stdex
 					if (!ok()) _Unlikely_
 						throw std::system_error(sys_error(), std::system_category(), "failed to flush cache"); // Data loss occured
 					m_source->seek(m_offset);
+#if SET_FILE_OP_TIMES
+					m_source->set_atime(m_atime);
+					m_source->set_mtime(m_mtime);
+#endif
 					m_source = nullptr;
 				}
 			}
+			/// \endcond
 
 		public:
 			cache(_Inout_ basic_file& source, _In_ size_t cache_size = default_cache_size) :
@@ -1835,8 +1848,8 @@ namespace stdex
 				m_cache(cache_size),
 				m_offset(source.tell())
 #if SET_FILE_OP_TIMES
-				, m_atime(source.atime()),
-				m_mtime(source.mtime())
+				, m_atime(source.atime())
+				, m_mtime(source.mtime())
 #endif
 			{}
 
@@ -1847,6 +1860,10 @@ namespace stdex
 					if (!ok()) _Unlikely_
 						throw std::system_error(sys_error(), std::system_category(), "failed to flush cache"); // Data loss occured
 					m_source->seek(m_offset);
+#if SET_FILE_OP_TIMES
+					m_source->set_atime(m_atime);
+					m_source->set_mtime(m_mtime);
+#endif
 				}
 			}
 
@@ -2090,6 +2107,7 @@ namespace stdex
 			}
 
 		protected:
+			/// \cond internal
 			void flush_cache()
 			{
 				if (m_cache.status != cache_t::cache_t::status_t::dirty)
@@ -2167,6 +2185,7 @@ namespace stdex
 				m_atime,
 				m_mtime;
 #endif
+			/// \endcond
 		};
 
 		///
@@ -3124,12 +3143,7 @@ namespace stdex
 				}
 				m_source.open(filename, mode & mode_for_writing ? mode | mode_for_reading : mode);
 				if (m_source.ok()) {
-#if SET_FILE_OP_TIMES
-					m_atime = m_source.atime();
-					m_mtime = m_source.mtime();
-#endif
-					m_offset = m_source.tell();
-					m_state = state_t::ok;
+					init();
 					return;
 				}
 				m_state = state_t::fail;
