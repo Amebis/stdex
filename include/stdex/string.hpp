@@ -16,6 +16,9 @@
 #ifdef __APPLE__
 #include <xlocale.h>
 #endif
+#ifndef _WIN32
+#include <uuid/uuid.h>
+#endif
 #include <algorithm> 
 #include <locale>
 #include <memory>
@@ -1392,6 +1395,56 @@ namespace stdex
 		std::basic_string<_Elem, _Traits, _Ax> str;
 		strcatftime(str, format, time, locale);
 		return str;
+	}
+
+	///
+	/// Formats GUID to a registry string {xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}.
+	///
+	/// \param[out] str  String to write GUID. Must point to at least 39 code points to write complete GUID including zero terminator.
+	/// \param[in ] id   GUID to write.
+	///
+	inline void uuidtostr(_Out_writes_z_(39) char str[39], _In_ const uuid_t& id)
+	{
+		_Assume_(str);
+		_snprintf_s_l(str, 39, _TRUNCATE, "{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}", NULL,
+#ifdef _WIN32
+			id.Data1,
+			static_cast<unsigned int>(id.Data2),
+			static_cast<unsigned int>(id.Data3),
+			static_cast<unsigned int>(id.Data4[0]), static_cast<unsigned int>(id.Data4[1]),
+			static_cast<unsigned int>(id.Data4[2]), static_cast<unsigned int>(id.Data4[3]), static_cast<unsigned int>(id.Data4[4]), static_cast<unsigned int>(id.Data4[5]), static_cast<unsigned int>(id.Data4[6]), static_cast<unsigned int>(id.Data4[7]));
+#else
+			*reinterpret_cast<const uint32_t*>(&id[0]),
+			static_cast<unsigned int>(*reinterpret_cast<const uint16_t*>(&id[4])),
+			static_cast<unsigned int>(*reinterpret_cast<const uint16_t*>(&id[6])),
+			static_cast<unsigned int>(id[8]), static_cast<unsigned int>(id[9]),
+			static_cast<unsigned int>(id[10])), static_cast<unsigned int>(id[11]), static_cast<unsigned int>(id[12]), static_cast<unsigned int>(id)), static_cast<unsigned int>(id[14]), static_cast<unsigned int>(id[15]));
+#endif
+	}
+
+	///
+	/// Formats GUID to a registry string {xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}.
+	///
+	/// \param[out] str  String to write GUID. Must point to at least 39 code points to write complete GUID including zero terminator.
+	/// \param[in ] id   GUID to write.
+	///
+	inline void uuidtostr(_Out_writes_z_(39) wchar_t str[39], _In_ const uuid_t& id)
+	{
+		_Assume_(str);
+		_snwprintf_s_l(str, 39, _TRUNCATE, L"{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}", NULL,
+#ifdef _WIN32
+			id.Data1,
+			static_cast<unsigned int>(id.Data2),
+			static_cast<unsigned int>(id.Data3),
+			static_cast<unsigned int>(id.Data4[0]), static_cast<unsigned int>(id.Data4[1]),
+			static_cast<unsigned int>(id.Data4[2]), static_cast<unsigned int>(id.Data4[3]), static_cast<unsigned int>(id.Data4[4]), static_cast<unsigned int>(id.Data4[5]), static_cast<unsigned int>(id.Data4[6]), static_cast<unsigned int>(id.Data4[7]));
+#else
+			*reinterpret_cast<const uint32_t*>(&id[0]),
+			static_cast<unsigned int>(*reinterpret_cast<const uint16_t*>(&id[4])),
+			static_cast<unsigned int>(*reinterpret_cast<const uint16_t*>(&id[6])),
+			static_cast<unsigned int>(id[8]), static_cast<unsigned int>(id[9]),
+			static_cast<unsigned int>(id[10])), static_cast<unsigned int>(id[11]), static_cast<unsigned int>(id[12]), static_cast<unsigned int>(id)), static_cast<unsigned int>(id[14]), static_cast<unsigned int>(id[15]));
+#endif
 	}
 
 	///
