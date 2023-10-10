@@ -862,6 +862,49 @@ namespace stdex
 		return i;
 	}
 
+	///
+	/// Convert CRLF to LF
+	///
+	/// \param[in] dst  Destination string
+	/// \param[in] src  Source string. Must not be dst.c_str().
+	///
+	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
+	inline void crlf2nl(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &dst, _In_z_ const _Elem* src)
+	{
+		_Assume_(src);
+		_Assume_(src != dst.c_str());
+		dst.clear();
+		dst.reserve(strlen(src));
+		for (size_t j = 0; src[j];) {
+			if (src[j] != '\r' || src[j + 1] != '\n')
+				dst += src[j++];
+			else {
+				dst += '\n';
+				j += 2;
+			}
+		}
+	}
+
+	///
+	/// Convert CRLF to LF
+	///
+	/// \param[in] str  String to convert
+	///
+	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
+	inline void crlf2nl(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& str)
+	{
+		size_t i, j, n;
+		for (i = j = 0, n = str.size(); j < n;) {
+			if (str[j] != '\r' || str[j + 1] != '\n')
+				str[i++] = str[j++];
+			else {
+				str[i++] = '\n';
+				j += 2;
+			}
+		}
+		str.resize(i);
+	}
+
 	/// \cond internal
 	template <class T, class T_bin>
 	inline T_bin strtoint(
