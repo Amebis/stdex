@@ -360,6 +360,26 @@ namespace stdex
 	/// Binary compare two strings
 	///
 	/// \param[in] str1    String 1
+	/// \param[in] str2    String 2
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T1, class T2>
+	inline int strcmp(const T1* str1, const T2* str2)
+	{
+		_Assume_(str1 && str2);
+		T1 a; T2 b;
+		for (size_t i = 0; (a = str1[i]) | (b = str2[i]); ++i) {
+			if (a > b) return +1;
+			if (a < b) return -1;
+		}
+		return 0;
+	}
+
+	///
+	/// Binary compare two strings
+	///
+	/// \param[in] str1    String 1
 	/// \param[in] count1  String 1 code unit count limit
 	/// \param[in] str2    String 2
 	/// \param[in] count2  String 2 code unit count limit
