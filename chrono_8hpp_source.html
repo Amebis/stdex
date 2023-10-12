@@ -246,11 +246,11 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>            <span class="keyword">static</span> <span class="keyword">constexpr</span> rep f_day    = 24;   <span class="comment">// number of hours per day</span></div>
 <div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>            <span class="keyword">static</span> <span class="keyword">constexpr</span> rep f_week   = 7;    <span class="comment">// number of days per week</span></div>
 <div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span> </div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>            <span class="keyword">static</span> <span class="keyword">constexpr</span> rep p_second = f_second;            <span class="comment">// number of milliseconds per second</span></div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>            <span class="keyword">static</span> <span class="keyword">constexpr</span> rep p_minute = f_minute * p_second; <span class="comment">// number of milliseconds per minute</span></div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>            <span class="keyword">static</span> <span class="keyword">constexpr</span> rep p_hour   = f_hour   * p_minute; <span class="comment">// number of milliseconds per hour</span></div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>            <span class="keyword">static</span> <span class="keyword">constexpr</span> rep p_day    = f_day    * p_hour;   <span class="comment">// number of milliseconds per day</span></div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>            <span class="keyword">static</span> <span class="keyword">constexpr</span> rep p_week   = f_week   * p_day;    <span class="comment">// number of milliseconds per week</span></div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>            <span class="keyword">static</span> <span class="keyword">constexpr</span> rep one_second = f_second;              <span class="comment">// number of milliseconds per second</span></div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>            <span class="keyword">static</span> <span class="keyword">constexpr</span> rep one_minute = f_minute * one_second; <span class="comment">// number of milliseconds per minute</span></div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>            <span class="keyword">static</span> <span class="keyword">constexpr</span> rep one_hour   = f_hour   * one_minute; <span class="comment">// number of milliseconds per hour</span></div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>            <span class="keyword">static</span> <span class="keyword">constexpr</span> rep one_day    = f_day    * one_hour;   <span class="comment">// number of milliseconds per day</span></div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>            <span class="keyword">static</span> <span class="keyword">constexpr</span> rep one_week   = f_week   * one_day;    <span class="comment">// number of milliseconds per week</span></div>
 <div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span> </div>
 <div class="foldopen" id="foldopen00194" data-start="{" data-end="}">
 <div class="line"><a id="l00194" name="l00194"></a><span class="lineno"><a class="line" href="structstdex_1_1chrono_1_1aosn__timestamp.html#ac6cabfe2d28771397601920e08f79827">  194</a></span>            <span class="keyword">static</span> time_point <a class="code hl_function" href="structstdex_1_1chrono_1_1aosn__timestamp.html#ac6cabfe2d28771397601920e08f79827">now</a>() noexcept</div>
@@ -270,14 +270,14 @@ $(document).ready(function() { init_codefold(0); });
 <div class="foldopen" id="foldopen00210" data-start="{" data-end="}">
 <div class="line"><a id="l00210" name="l00210"></a><span class="lineno"><a class="line" href="structstdex_1_1chrono_1_1aosn__timestamp.html#a7e6d02fbb9bccc438528aaec62babbd8">  210</a></span>            <span class="keyword">static</span> std::time_t <a class="code hl_function" href="structstdex_1_1chrono_1_1aosn__timestamp.html#a7e6d02fbb9bccc438528aaec62babbd8">to_time_t</a>(_In_ <span class="keyword">const</span> time_point tp) <span class="keyword">noexcept</span></div>
 <div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>            {</div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>                <span class="keywordflow">return</span> tp.time_since_epoch().count() / p_second - 210866803200;</div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>                <span class="keywordflow">return</span> tp.time_since_epoch().count() / one_second - 210866803200;</div>
 <div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>            }</div>
 </div>
 <div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span> </div>
 <div class="foldopen" id="foldopen00218" data-start="{" data-end="}">
 <div class="line"><a id="l00218" name="l00218"></a><span class="lineno"><a class="line" href="structstdex_1_1chrono_1_1aosn__timestamp.html#a4ec121890b0afd728ed42dc48d62d179">  218</a></span>            <span class="keyword">static</span> time_point <a class="code hl_function" href="structstdex_1_1chrono_1_1aosn__timestamp.html#a4ec121890b0afd728ed42dc48d62d179">from_time_t</a>(_In_ std::time_t t) <span class="keyword">noexcept</span></div>
 <div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>            {</div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>                <span class="keywordflow">return</span> time_point(duration((<span class="keyword">static_cast&lt;</span>rep<span class="keyword">&gt;</span>(t) + 210866803200) * p_second));</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>                <span class="keywordflow">return</span> time_point(duration((<span class="keyword">static_cast&lt;</span>rep<span class="keyword">&gt;</span>(t) + 210866803200) * one_second));</div>
 <div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>            }</div>
 </div>
 <div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span> </div>
@@ -331,14 +331,14 @@ $(document).ready(function() { init_codefold(0); });
 <div class="foldopen" id="foldopen00283" data-start="{" data-end="}">
 <div class="line"><a id="l00283" name="l00283"></a><span class="lineno"><a class="line" href="structstdex_1_1chrono_1_1aosn__timestamp.html#a805c2ab1855a554a0fc2be56fa234489">  283</a></span>            <span class="keyword">static</span> aosn_date::time_point <a class="code hl_function" href="structstdex_1_1chrono_1_1aosn__timestamp.html#a805c2ab1855a554a0fc2be56fa234489">to_date</a>(_In_ time_point tp) <span class="keyword">noexcept</span></div>
 <div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>            {</div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>                <span class="keywordflow">return</span> aosn_date::time_point(aosn_date::duration(<span class="keyword">static_cast&lt;</span>aosn_date::rep<span class="keyword">&gt;</span>(tp.time_since_epoch().count() / p_day)));</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>                <span class="keywordflow">return</span> aosn_date::time_point(aosn_date::duration(<span class="keyword">static_cast&lt;</span>aosn_date::rep<span class="keyword">&gt;</span>(tp.time_since_epoch().count() / one_day)));</div>
 <div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>            }</div>
 </div>
 <div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span> </div>
 <div class="foldopen" id="foldopen00291" data-start="{" data-end="}">
 <div class="line"><a id="l00291" name="l00291"></a><span class="lineno"><a class="line" href="structstdex_1_1chrono_1_1aosn__timestamp.html#a47f38a2cdf1525e44ac800311d9ab825">  291</a></span>            <span class="keyword">static</span> time_point <a class="code hl_function" href="structstdex_1_1chrono_1_1aosn__timestamp.html#a47f38a2cdf1525e44ac800311d9ab825">from_date</a>(_In_ aosn_date::time_point date) <span class="keyword">noexcept</span></div>
 <div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>            {</div>
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>                <span class="keywordflow">return</span> time_point(duration(<span class="keyword">static_cast&lt;</span>rep<span class="keyword">&gt;</span>(date.time_since_epoch().count()) * p_day));</div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>                <span class="keywordflow">return</span> time_point(duration(<span class="keyword">static_cast&lt;</span>rep<span class="keyword">&gt;</span>(date.time_since_epoch().count()) * one_day));</div>
 <div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>            }</div>
 </div>
 <div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span> </div>
@@ -348,8 +348,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>                _In_ uint8_t hour, _In_ uint8_t minute, _In_ uint8_t second, _In_ uint16_t millisecond) <span class="keyword">noexcept</span></div>
 <div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>            {</div>
 <div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>                <span class="keywordflow">return</span> time_point(duration(</div>
-<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>                    (<span class="keyword">static_cast&lt;</span>rep<span class="keyword">&gt;</span>(<a class="code hl_function" href="structstdex_1_1chrono_1_1aosn__date.html#a1aa2157912e935cf399833c2265628e0">aosn_date::from_dmy</a>(day, month, year).time_since_epoch().count()) * p_day) +</div>
-<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>                    (<span class="keyword">static_cast&lt;</span>rep<span class="keyword">&gt;</span>(hour) * p_hour + <span class="keyword">static_cast&lt;</span>rep<span class="keyword">&gt;</span>(minute) * p_minute + <span class="keyword">static_cast&lt;</span>rep<span class="keyword">&gt;</span>(second) * p_second + millisecond)));</div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>                    (<span class="keyword">static_cast&lt;</span>rep<span class="keyword">&gt;</span>(<a class="code hl_function" href="structstdex_1_1chrono_1_1aosn__date.html#a1aa2157912e935cf399833c2265628e0">aosn_date::from_dmy</a>(day, month, year).time_since_epoch().count()) * one_day) +</div>
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>                    (<span class="keyword">static_cast&lt;</span>rep<span class="keyword">&gt;</span>(hour) * one_hour + <span class="keyword">static_cast&lt;</span>rep<span class="keyword">&gt;</span>(minute) * one_minute + <span class="keyword">static_cast&lt;</span>rep<span class="keyword">&gt;</span>(second) * one_second + millisecond)));</div>
 <div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>            }</div>
 </div>
 <div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span> </div>
@@ -359,7 +359,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>                _Out_opt_ uint8_t* hour, _Out_opt_ uint8_t* minute, _Out_opt_ uint8_t* second, _Out_opt_ uint16_t* millisecond) <span class="keyword">noexcept</span></div>
 <div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>            {</div>
 <div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>                <a class="code hl_function" href="structstdex_1_1chrono_1_1aosn__date.html#a1d7511309210a6766b8a7d5d792dbc62">aosn_date::to_dmy</a>(<a class="code hl_function" href="structstdex_1_1chrono_1_1aosn__timestamp.html#a805c2ab1855a554a0fc2be56fa234489">to_date</a>(tp), day, month, year);</div>
-<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>                int32_t u = <span class="keyword">static_cast&lt;</span>int32_t<span class="keyword">&gt;</span>(tp.time_since_epoch().count() % p_day);</div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>                int32_t u = <span class="keyword">static_cast&lt;</span>int32_t<span class="keyword">&gt;</span>(tp.time_since_epoch().count() % one_day);</div>
 <div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>                <span class="keywordflow">if</span> (millisecond) *millisecond = <span class="keyword">static_cast&lt;</span>uint16_t<span class="keyword">&gt;</span>(u % f_second);</div>
 <div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>                u = u / f_second;</div>
 <div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>                <span class="keywordflow">if</span> (second) *second = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(u % f_minute);</div>
@@ -466,7 +466,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Sep 25 2023 13:06:10 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Thu Oct 12 2023 11:52:38 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

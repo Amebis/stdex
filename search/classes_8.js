@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['interval_0',['interval',['../structstdex_1_1interval.html',1,'stdex']]],
-  ['interval_3c_20fpos_5ft_20_3e_1',['interval&lt; fpos_t &gt;',['../structstdex_1_1interval.html',1,'stdex']]],
-  ['interval_3c_20size_5ft_20_3e_2',['interval&lt; size_t &gt;',['../structstdex_1_1interval.html',1,'stdex']]]
+  ['lazy_5fprogress_0',['lazy_progress',['../classstdex_1_1lazy__progress.html',1,'stdex']]],
+  ['limiter_1',['limiter',['../classstdex_1_1stream_1_1limiter.html',1,'stdex::stream']]]
 ];

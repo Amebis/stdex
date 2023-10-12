@@ -93,7 +93,7 @@ Inheritance diagram for stdex::stream::window:</div>
   <img src="classstdex_1_1stream_1_1window.png" usemap="#stdex::stream::window_map" alt=""/>
   <map id="stdex::stream::window_map" name="stdex::stream::window_map">
 <area href="classstdex_1_1stream_1_1limiter.html" title="Limits reading from/writing to stream to a predefined number of bytes." alt="stdex::stream::limiter" shape="rect" coords="0,112,145,136"/>
-<area href="classstdex_1_1stream_1_1converter.html" title="Modifies data on the fly when reading from/writing to a source stream." alt="stdex::stream::converter" shape="rect" coords="0,56,145,80"/>
+<area href="classstdex_1_1stream_1_1converter.html" title="Modifies data on the fly when reading from/writing to a source stream. Could also be used to modify r..." alt="stdex::stream::converter" shape="rect" coords="0,56,145,80"/>
 <area href="classstdex_1_1stream_1_1basic.html" title="‍UTF-8 byte-order-mark" alt="stdex::stream::basic" shape="rect" coords="0,0,145,24"/>
   </map>
 </div></div>
@@ -203,6 +203,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>write_byte</b> (uint8
 <tr class="memitem:a815369ef1a8ba07b289b8236fce018ac inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classstdex_1_1stream_1_1basic.html">basic</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1basic.html#a815369ef1a8ba07b289b8236fce018ac">write_str</a> (const T *data)</td></tr>
 <tr class="memdesc:a815369ef1a8ba07b289b8236fce018ac inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes string to the stream length-prefixed.  <br /></td></tr>
 <tr class="separator:a815369ef1a8ba07b289b8236fce018ac inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca727d3cab3c7989f691957078a18471 inherit pub_methods_classstdex_1_1stream_1_1basic" id="r_aca727d3cab3c7989f691957078a18471"><td class="memTemplParams" colspan="2">template&lt;class _Elem , class _Traits  = std::char_traits&lt;_Elem&gt;, class _Ax  = std::allocator&lt;_Elem&gt;&gt; </td></tr>
+<tr class="memitem:aca727d3cab3c7989f691957078a18471 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classstdex_1_1stream_1_1basic.html">basic</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1basic.html#aca727d3cab3c7989f691957078a18471">write_str</a> (const std::basic_string&lt; _Elem, _Traits, _Ax &gt; &amp;data)</td></tr>
+<tr class="memdesc:aca727d3cab3c7989f691957078a18471 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes string to the stream length-prefixed.  <br /></td></tr>
+<tr class="separator:aca727d3cab3c7989f691957078a18471 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad28b193e6afa1352a00864bd28193cc2 inherit pub_methods_classstdex_1_1stream_1_1basic" id="r_ad28b193e6afa1352a00864bd28193cc2"><td class="memItemLeft" align="right" valign="top">fsize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1basic.html#ad28b193e6afa1352a00864bd28193cc2">write_stream</a> (<a class="el" href="classstdex_1_1stream_1_1basic.html">basic</a> &amp;stream, fsize_t amount=fsize_max)</td></tr>
 <tr class="memdesc:ad28b193e6afa1352a00864bd28193cc2 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes content of another stream.  <br /></td></tr>
 <tr class="separator:ad28b193e6afa1352a00864bd28193cc2 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -296,6 +300,34 @@ template&lt;class _Elem , class _Traits  = std::char_traits&lt;_Elem&gt;, class 
 template&lt;class T &gt; </td></tr>
 <tr class="memitem:a8c29727e2c211134c0249352bbd13ed6 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classstdex_1_1stream_1_1basic.html">basic</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator&lt;&lt;</b> (const T *data)</td></tr>
 <tr class="separator:a8c29727e2c211134c0249352bbd13ed6 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0f6075a669ff51ec44ee4832dc41f2f inherit pub_methods_classstdex_1_1stream_1_1basic" id="r_ac0f6075a669ff51ec44ee4832dc41f2f"><td class="memTemplParams" colspan="2">
+template&lt;class _Elem , class _Traits  = std::char_traits&lt;_Elem&gt;, class _Ax  = std::allocator&lt;_Elem&gt;&gt; </td></tr>
+<tr class="memitem:ac0f6075a669ff51ec44ee4832dc41f2f inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classstdex_1_1stream_1_1basic.html">basic</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator&lt;&lt;</b> (const std::basic_string&lt; _Elem, _Traits, _Ax &gt; &amp;data)</td></tr>
+<tr class="separator:ac0f6075a669ff51ec44ee4832dc41f2f inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95cdd577d5718dde5756951d487d29dd inherit pub_methods_classstdex_1_1stream_1_1basic" id="r_a95cdd577d5718dde5756951d487d29dd"><td class="memTemplParams" colspan="2">
+template&lt;class _Ty , class _Alloc  = std::allocator&lt;_Ty&gt;&gt; </td></tr>
+<tr class="memitem:a95cdd577d5718dde5756951d487d29dd inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classstdex_1_1stream_1_1basic.html">basic</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator&lt;&lt;</b> (const std::vector&lt; _Ty, _Alloc &gt; &amp;data)</td></tr>
+<tr class="separator:a95cdd577d5718dde5756951d487d29dd inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1844edc85161c2ae37bb9123acc4c466 inherit pub_methods_classstdex_1_1stream_1_1basic" id="r_a1844edc85161c2ae37bb9123acc4c466"><td class="memTemplParams" colspan="2">
+template&lt;class _Ty , class _Alloc  = std::allocator&lt;_Ty&gt;&gt; </td></tr>
+<tr class="memitem:a1844edc85161c2ae37bb9123acc4c466 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classstdex_1_1stream_1_1basic.html">basic</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator&gt;&gt;</b> (std::vector&lt; _Ty, _Alloc &gt; &amp;data)</td></tr>
+<tr class="separator:a1844edc85161c2ae37bb9123acc4c466 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d9110b6e3fc398c8333a0859585724c inherit pub_methods_classstdex_1_1stream_1_1basic" id="r_a1d9110b6e3fc398c8333a0859585724c"><td class="memTemplParams" colspan="2">
+template&lt;class _Kty , class _Pr  = std::less&lt;_Kty&gt;, class _Alloc  = std::allocator&lt;_Kty&gt;&gt; </td></tr>
+<tr class="memitem:a1d9110b6e3fc398c8333a0859585724c inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classstdex_1_1stream_1_1basic.html">basic</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator&lt;&lt;</b> (const std::set&lt; _Kty, _Pr, _Alloc &gt; &amp;data)</td></tr>
+<tr class="separator:a1d9110b6e3fc398c8333a0859585724c inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd1aa05b14e06b30fdd2fb9263976894 inherit pub_methods_classstdex_1_1stream_1_1basic" id="r_abd1aa05b14e06b30fdd2fb9263976894"><td class="memTemplParams" colspan="2">
+template&lt;class _Kty , class _Pr  = std::less&lt;_Kty&gt;, class _Alloc  = std::allocator&lt;_Kty&gt;&gt; </td></tr>
+<tr class="memitem:abd1aa05b14e06b30fdd2fb9263976894 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classstdex_1_1stream_1_1basic.html">basic</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator&gt;&gt;</b> (std::set&lt; _Kty, _Pr, _Alloc &gt; &amp;data)</td></tr>
+<tr class="separator:abd1aa05b14e06b30fdd2fb9263976894 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abbb6565d9b47803ff19a2b3057e0f655 inherit pub_methods_classstdex_1_1stream_1_1basic" id="r_abbb6565d9b47803ff19a2b3057e0f655"><td class="memTemplParams" colspan="2">
+template&lt;class _Kty , class _Pr  = std::less&lt;_Kty&gt;, class _Alloc  = std::allocator&lt;_Kty&gt;&gt; </td></tr>
+<tr class="memitem:abbb6565d9b47803ff19a2b3057e0f655 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classstdex_1_1stream_1_1basic.html">basic</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator&lt;&lt;</b> (const std::multiset&lt; _Kty, _Pr, _Alloc &gt; &amp;data)</td></tr>
+<tr class="separator:abbb6565d9b47803ff19a2b3057e0f655 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a357d336d6a7ff9cf2ee6b0d441fd2551 inherit pub_methods_classstdex_1_1stream_1_1basic" id="r_a357d336d6a7ff9cf2ee6b0d441fd2551"><td class="memTemplParams" colspan="2">
+template&lt;class _Kty , class _Pr  = std::less&lt;_Kty&gt;, class _Alloc  = std::allocator&lt;_Kty&gt;&gt; </td></tr>
+<tr class="memitem:a357d336d6a7ff9cf2ee6b0d441fd2551 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classstdex_1_1stream_1_1basic.html">basic</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator&gt;&gt;</b> (std::multiset&lt; _Kty, _Pr, _Alloc &gt; &amp;data)</td></tr>
+<tr class="separator:a357d336d6a7ff9cf2ee6b0d441fd2551 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -319,13 +351,6 @@ fsize_t&#160;</td><td class="memItemRight" valign="bottom"><b>write_limit</b></t
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pro_methods_classstdex_1_1stream_1_1converter"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classstdex_1_1stream_1_1converter')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classstdex_1_1stream_1_1converter.html">stdex::stream::converter</a></td></tr>
-<tr class="memitem:aa1c593742ba915b3023009ace181a2ec inherit pro_methods_classstdex_1_1stream_1_1converter" id="r_aa1c593742ba915b3023009ace181a2ec"><td class="memItemLeft" align="right" valign="top">
-void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (<a class="el" href="classstdex_1_1stream_1_1basic.html">basic</a> &amp;source)</td></tr>
-<tr class="separator:aa1c593742ba915b3023009ace181a2ec inherit pro_methods_classstdex_1_1stream_1_1converter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a65eb6b91f2e89832c586f9d42a53552f inherit pro_methods_classstdex_1_1stream_1_1converter" id="r_a65eb6b91f2e89832c586f9d42a53552f"><td class="memItemLeft" align="right" valign="top">
-void&#160;</td><td class="memItemRight" valign="bottom"><b>done</b> ()</td></tr>
-<tr class="separator:a65eb6b91f2e89832c586f9d42a53552f inherit pro_methods_classstdex_1_1stream_1_1converter"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classstdex_1_1stream_1_1converter"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classstdex_1_1stream_1_1converter')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classstdex_1_1stream_1_1converter.html">stdex::stream::converter</a></td></tr>
 <tr class="memitem:a5d205a3409df3d98dd981d32069c31e4 inherit pro_attribs_classstdex_1_1stream_1_1converter" id="r_a5d205a3409df3d98dd981d32069c31e4"><td class="memItemLeft" align="right" valign="top">
 <a class="el" href="classstdex_1_1stream_1_1basic.html">basic</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>m_source</b></td></tr>
@@ -440,7 +465,7 @@ state_t&#160;</td><td class="memItemRight" valign="bottom"><b>m_state</b></td></
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Sep 25 2023 13:06:11 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Thu Oct 12 2023 11:52:40 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
