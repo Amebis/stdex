@@ -95,11 +95,11 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &quot;math.hpp&quot;</span></div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &quot;ring.hpp&quot;</span></div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &quot;string.hpp&quot;</span></div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &quot;system.hpp&quot;</span></div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &quot;unicode.hpp&quot;</span></div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#if defined(_WIN32)</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &quot;unicode.hpp&quot;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#if defined(_WIN32)</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#include &lt;windows.h&gt;</span></div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#include &lt;asptlb.h&gt;</span></div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#include &lt;objidl.h&gt;</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#include &lt;WinSock2.h&gt;</span></div>
@@ -4009,7 +4009,7 @@ $(document).ready(function() { init_codefold(0); });
 </div>
 <div class="line"><a id="l04186" name="l04186"></a><span class="lineno"> 4186</span>    }</div>
 <div class="line"><a id="l04187" name="l04187"></a><span class="lineno"> 4187</span>}</div>
-<div class="ttc" id="aclassstdex_1_1charset__encoder_html"><div class="ttname"><a href="classstdex_1_1charset__encoder.html">stdex::charset_encoder</a></div><div class="ttdoc">Encoding converter context.</div><div class="ttdef"><b>Definition</b> unicode.hpp:65</div></div>
+<div class="ttc" id="aclassstdex_1_1charset__encoder_html"><div class="ttname"><a href="classstdex_1_1charset__encoder.html">stdex::charset_encoder</a></div><div class="ttdoc">Encoding converter context.</div><div class="ttdef"><b>Definition</b> unicode.hpp:64</div></div>
 <div class="ttc" id="aclassstdex_1_1stream_1_1async__reader_html"><div class="ttname"><a href="classstdex_1_1stream_1_1async__reader.html">stdex::stream::async_reader</a></div><div class="ttdoc">Provides read-ahead stream capability.</div><div class="ttdef"><b>Definition</b> stream.hpp:1255</div></div>
 <div class="ttc" id="aclassstdex_1_1stream_1_1async__reader_html_a841c1e3cb01cb96df94701465086a529"><div class="ttname"><a href="classstdex_1_1stream_1_1async__reader.html#a841c1e3cb01cb96df94701465086a529">stdex::stream::async_reader::read</a></div><div class="ttdeci">virtual size_t read(_Out_writes_bytes_to_opt_(length, return) void *data, size_t length)</div><div class="ttdoc">Reads block of data from the stream.</div><div class="ttdef"><b>Definition</b> stream.hpp:1269</div></div>
 <div class="ttc" id="aclassstdex_1_1stream_1_1async__writer_html"><div class="ttname"><a href="classstdex_1_1stream_1_1async__writer.html">stdex::stream::async_writer</a></div><div class="ttdoc">Provides write-back stream capability.</div><div class="ttdef"><b>Definition</b> stream.hpp:1322</div></div>
@@ -4212,8 +4212,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="aclassstdex_1_1stream_1_1window_html_a06f05191c35fdbadebc49e05a19d9f3c"><div class="ttname"><a href="classstdex_1_1stream_1_1window.html#a06f05191c35fdbadebc49e05a19d9f3c">stdex::stream::window::write</a></div><div class="ttdeci">virtual size_t write(_In_reads_bytes_opt_(length) const void *data, size_t length)</div><div class="ttdoc">Writes block of data to the stream.</div><div class="ttdef"><b>Definition</b> stream.hpp:1647</div></div>
 <div class="ttc" id="aclassstdex_1_1stream_1_1window_html_a45f2420dfc94c07e101186ae2e541e13"><div class="ttname"><a href="classstdex_1_1stream_1_1window.html#a45f2420dfc94c07e101186ae2e541e13">stdex::stream::window::read</a></div><div class="ttdeci">virtual size_t read(_Out_writes_bytes_to_opt_(length, return) void *data, size_t length)</div><div class="ttdoc">Reads block of data from the stream.</div><div class="ttdef"><b>Definition</b> stream.hpp:1618</div></div>
 <div class="ttc" id="aclassstdex_1_1stream_1_1window_html_acff67a2931b8f1a85f12806002e7e131"><div class="ttname"><a href="classstdex_1_1stream_1_1window.html#acff67a2931b8f1a85f12806002e7e131">stdex::stream::window::read_offset</a></div><div class="ttdeci">fpos_t read_offset</div><div class="ttdoc">Number of bytes to skip on read.</div><div class="ttdef"><b>Definition</b> stream.hpp:1685</div></div>
-<div class="ttc" id="aclassstdex_1_1sys__object_html"><div class="ttname"><a href="classstdex_1_1sys__object.html">stdex::sys_object</a></div><div class="ttdoc">Operating system object (file, pipe, anything with an OS handle etc.)</div><div class="ttdef"><b>Definition</b> system.hpp:106</div></div>
-<div class="ttc" id="aclassstdex_1_1sys__object_html_ab8c0119bc4958f78f51ef2f3b7c91f66"><div class="ttname"><a href="classstdex_1_1sys__object.html#ab8c0119bc4958f78f51ef2f3b7c91f66">stdex::sys_object::close</a></div><div class="ttdeci">virtual void close()</div><div class="ttdoc">Closes object.</div><div class="ttdef"><b>Definition</b> system.hpp:147</div></div>
+<div class="ttc" id="aclassstdex_1_1sys__object_html"><div class="ttname"><a href="classstdex_1_1sys__object.html">stdex::sys_object</a></div><div class="ttdoc">Operating system object (file, pipe, anything with an OS handle etc.)</div><div class="ttdef"><b>Definition</b> system.hpp:91</div></div>
+<div class="ttc" id="aclassstdex_1_1sys__object_html_ab8c0119bc4958f78f51ef2f3b7c91f66"><div class="ttname"><a href="classstdex_1_1sys__object.html#ab8c0119bc4958f78f51ef2f3b7c91f66">stdex::sys_object::close</a></div><div class="ttdeci">virtual void close()</div><div class="ttdoc">Closes object.</div><div class="ttdef"><b>Definition</b> system.hpp:132</div></div>
 <div class="ttc" id="astructstdex_1_1interval_html"><div class="ttname"><a href="structstdex_1_1interval.html">stdex::interval</a></div><div class="ttdoc">Numerical interval.</div><div class="ttdef"><b>Definition</b> interval.hpp:18</div></div>
 <div class="ttc" id="astructstdex_1_1interval_html_a1624ca77e8c9cb45cef61f7f8b532222"><div class="ttname"><a href="structstdex_1_1interval.html#a1624ca77e8c9cb45cef61f7f8b532222">stdex::interval::contains</a></div><div class="ttdeci">bool contains(T x) const</div><div class="ttdoc">Is value in interval?</div><div class="ttdef"><b>Definition</b> interval.hpp:70</div></div>
 <div class="ttc" id="astructstdex_1_1interval_html_a8c5222bc73fc66ba78bfabc1b985c864"><div class="ttname"><a href="structstdex_1_1interval.html#a8c5222bc73fc66ba78bfabc1b985c864">stdex::interval::size</a></div><div class="ttdeci">T size() const</div><div class="ttdoc">Returns interval size.</div><div class="ttdef"><b>Definition</b> interval.hpp:47</div></div>
@@ -4224,7 +4224,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Oct 18 2023 06:14:50 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Wed Oct 18 2023 07:12:30 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
