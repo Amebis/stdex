@@ -6,7 +6,11 @@
 #pragma once
 
 #include "compat.hpp"
-#include "system.hpp"
+#ifdef _WIN32
+#include <windows.h>
+#include <intrin.h>
+#include <intsafe.h>
+#endif
 #include <stdexcept>
 
 namespace stdex
@@ -62,7 +66,6 @@ namespace stdex
 #endif
 		throw std::invalid_argument("add overflow");
 	}
-
 
 	///
 	/// Bitwise rotates left

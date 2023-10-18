@@ -8,7 +8,6 @@
 #include "compat.hpp"
 #include "endian.hpp"
 #include "math.hpp"
-#include "system.hpp"
 #include <stdint.h>
 #ifndef _WIN32
 #include <iconv.h>

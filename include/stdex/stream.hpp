@@ -11,11 +11,11 @@
 #include "math.hpp"
 #include "ring.hpp"
 #include "string.hpp"
-#include "system.hpp"
 #include "unicode.hpp"
 #include <stdint.h>
 #include <stdlib.h>
 #if defined(_WIN32)
+#include <windows.h>
 #include <asptlb.h>
 #include <objidl.h>
 #include <WinSock2.h>

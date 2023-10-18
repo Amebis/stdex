@@ -5,13 +5,9 @@
 
 #pragma once
 
+#include "compat.hpp"
 #ifdef _WIN32
-#ifndef NOMINMAX
-#define NOMINMAX // Collides with std::min/max
-#endif
 #include <windows.h>
-#include <intrin.h>
-#include <intsafe.h>
 #include <oaidl.h>
 #include <tchar.h>
 #else
@@ -22,20 +18,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 #endif
-#include "compat.hpp"
 #include <regex>
 #include <stdexcept>
 #include <string>
-
-// In case somebody #included <windows.h> before us and didn't #define NOMINMAX
-#ifdef _WIN32
-#ifdef min
-#undef min
-#endif
-#ifdef max
-#undef max
-#endif
-#endif
 
 #if defined(_WIN32)
 #define PATH_SEPARATOR '\\'

@@ -10,7 +10,6 @@
 #include "memory.hpp"
 #include "sgml.hpp"
 #include "string.hpp"
-#include "system.hpp"
 #include <stdarg.h>
 #include <stdint.h>
 #include <math.h>

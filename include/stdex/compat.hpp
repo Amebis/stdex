@@ -8,6 +8,7 @@
 #include <assert.h>
 #include <stddef.h>
 #ifdef _WIN32
+#include <windows.h>
 #include <sal.h>
 #endif
 #include <type_traits>

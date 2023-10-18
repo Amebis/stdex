@@ -13,13 +13,14 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <time.h>
-#ifdef __APPLE__
-#include <xlocale.h>
-#endif
-#ifdef _WIN32
-#include <rpcdce.h>
-#else
+#if defined(_WIN32)
+#include <windows.h>
+#include <rpc.h>
+#elif defined(__APPLE__)
 #include <uuid/uuid.h>
+#include <xlocale.h>
+#else
+#include <xlocale.h>
 #endif
 #include <algorithm>
 #include <locale>

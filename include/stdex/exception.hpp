@@ -6,7 +6,7 @@
 #pragma once
 
 #include "compat.hpp"
-#include <exception>
+#include <stdexcept>
 
 namespace stdex
 {

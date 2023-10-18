@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "compat.hpp"
 #include <memory>
 
 namespace stdex
