@@ -7,7 +7,7 @@
 
 #include "compat.hpp"
 #ifdef _WIN32
-#include <windows.h>
+#include "windows.h"
 #include <oaidl.h>
 #include <tchar.h>
 #else

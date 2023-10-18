@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <time.h>
 #if defined(_WIN32)
-#include <windows.h>
+#include "windows.h"
 #include <rpc.h>
 #elif defined(__APPLE__)
 #include <uuid/uuid.h>
