@@ -16,10 +16,12 @@
 #ifdef __APPLE__
 #include <xlocale.h>
 #endif
-#ifndef _WIN32
+#ifdef _WIN32
+#include <rpcdce.h>
+#else
 #include <uuid/uuid.h>
 #endif
-#include <algorithm> 
+#include <algorithm>
 #include <locale>
 #include <memory>
 #include <stdexcept>
