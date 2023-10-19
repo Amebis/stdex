@@ -20,6 +20,7 @@
 #include <stdex/sgml.hpp>
 #include <stdex/stream.hpp>
 #include <stdex/string.hpp>
+#include <stdex/sys_info.hpp>
 #include <stdex/system.hpp>
 #include <stdex/unicode.hpp>
 #include <stdex/vector_queue.hpp>
