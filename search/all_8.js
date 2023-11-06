@@ -7,6 +7,7 @@ var searchData=
   ['interval_3c_20fpos_5ft_20_3e_4',['interval&lt; fpos_t &gt;',['../structstdex_1_1interval.html',1,'stdex']]],
   ['interval_3c_20size_5ft_20_3e_5',['interval&lt; size_t &gt;',['../structstdex_1_1interval.html',1,'stdex']]],
   ['into_20std_20c_6',['stdex - Random stuff that didn&apos;t made it into std C++',['../index.html',1,'']]],
-  ['is_5fvalid_7',['is_valid',['../classstdex_1_1parser_1_1basic__iban.html#acfc23c46ecbeef921e7b39a812c07ec7',1,'stdex::parser::basic_iban::is_valid'],['../classstdex_1_1parser_1_1basic__creditor__reference.html#aee8d302b914c5d7d64d2f7ace18d74cc',1,'stdex::parser::basic_creditor_reference::is_valid'],['../classstdex_1_1parser_1_1basic__si__reference.html#a75ec581785b9cfbab1c26ca9e4787b10',1,'stdex::parser::basic_si_reference::is_valid']]],
-  ['it_20into_20std_20c_8',['stdex - Random stuff that didn&apos;t made it into std C++',['../index.html',1,'']]]
+  ['invalidate_7',['invalidate',['../structstdex_1_1interval.html#aa8113c9f2e3781fb25e30cb3d139e119',1,'stdex::interval']]],
+  ['is_5fvalid_8',['is_valid',['../classstdex_1_1parser_1_1basic__iban.html#acfc23c46ecbeef921e7b39a812c07ec7',1,'stdex::parser::basic_iban::is_valid'],['../classstdex_1_1parser_1_1basic__creditor__reference.html#aee8d302b914c5d7d64d2f7ace18d74cc',1,'stdex::parser::basic_creditor_reference::is_valid'],['../classstdex_1_1parser_1_1basic__si__reference.html#a75ec581785b9cfbab1c26ca9e4787b10',1,'stdex::parser::basic_si_reference::is_valid']]],
+  ['it_20into_20std_20c_9',['stdex - Random stuff that didn&apos;t made it into std C++',['../index.html',1,'']]]
 ];
