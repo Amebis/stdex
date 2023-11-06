@@ -748,13 +748,13 @@ namespace stdex
 	///
 	/// \param[in] dst    Destination string
 	/// \param[in] src    Source string
-	/// \param[in] count  String code unit count limit
+	/// \param[in] count  Source string code unit count limit
 	///
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
 	template <class T1, class T2>
 	inline size_t strncat(
-		_Out_writes_(count) _Post_maybez_ T1* dst,
+		_Inout_z_ T1* dst,
 		_In_reads_or_z_opt_(count) const T2* src, _In_ size_t count)
 	{
 		_Assume_(dst && src || !count);
