@@ -54,6 +54,15 @@ namespace stdex
 		inline bool empty() const { return start >= end; }
 
 		///
+		/// Invalidates interval
+		///
+		inline void invalidate()
+		{
+			start = static_cast<T>(1);
+			end = static_cast<T>(0);
+		}
+
+		///
 		/// Is interval valid?
 		///
 		/// \returns true if interval is valid or false otherwise
