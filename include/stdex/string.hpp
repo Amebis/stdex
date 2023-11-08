@@ -13,9 +13,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <time.h>
-#if defined(_WIN32)
-#include "windows.h"
-#elif defined(__APPLE__)
+#if defined(__APPLE__)
 #include <xlocale.h>
 #endif
 #include <algorithm>
