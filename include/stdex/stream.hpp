@@ -22,6 +22,7 @@
 #else
 #include <fcntl.h>
 #include <unistd.h>
+#include <sys/socket.h>
 #include <sys/stat.h>
 #endif
 #include <chrono>
@@ -2364,7 +2365,7 @@ namespace stdex
 			{
 				if (this != std::addressof(other)) {
 					if (m_h != INVALID_SOCKET)
-						closesocket(m_h);
+						::closesocket(m_h);
 					m_h = other.m_h;
 					other.m_h = INVALID_SOCKET;
 				}
@@ -2388,7 +2389,7 @@ namespace stdex
 			virtual ~socket()
 			{
 				if (m_h != INVALID_SOCKET)
-					closesocket(m_h);
+					::closesocket(m_h);
 			}
 
 			///
@@ -2448,7 +2449,7 @@ namespace stdex
 			virtual void close()
 			{
 				if (m_h != INVALID_SOCKET) {
-					closesocket(m_h);
+					::closesocket(m_h);
 					m_h = INVALID_SOCKET;
 				}
 				m_state = state_t::ok;

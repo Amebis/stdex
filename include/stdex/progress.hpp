@@ -130,7 +130,7 @@ namespace stdex
 
 	protected:
 		std::chrono::nanoseconds m_timeout;
-		std::chrono::steady_clock::time_point m_last;
+		std::chrono::system_clock::time_point m_last;
 		T m_start, m_end, m_value;
 	};
 

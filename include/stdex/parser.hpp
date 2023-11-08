@@ -19,11 +19,8 @@
 #include <ws2ipdef.h>
 #endif
 #include <ws2tcpip.h>
-#elif defined(__APPLE__)
-#include <netinet/in.h>
 #else
-#include <inaddr.h>
-#include <in6addr.h>
+#include <netinet/in.h>
 #endif
 #include <limits>
 #include <list>
@@ -55,7 +52,7 @@ enum class T : type
 #elif defined(__APPLE__)
 #define s6_words __u6_addr.__u6_addr16
 #else
-#error Unsupported platform
+#define s6_words s6_addr16
 #endif
 
 namespace stdex
@@ -173,7 +170,7 @@ namespace stdex
 			/// \endcond
 
 		public:
-			interval<size_t> interval; ///< Region of the last match
+			stdex::interval<size_t> interval; ///< Region of the last match
 
 		protected:
 			std::locale m_locale;

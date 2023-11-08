@@ -87,7 +87,7 @@ namespace stdex
 		///
 		inline interval<T> operator+(_In_ const interval<T>& other) const
 		{
-			return interval<T>(start + other.start, end + other.end);i.
+			return interval<T>(start + other.start, end + other.end);
 		}
 
 		///

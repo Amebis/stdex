@@ -8,6 +8,7 @@
 #include "compat.hpp"
 #include "endian.hpp"
 #include "math.hpp"
+#include "string.hpp"
 #include <stdint.h>
 #ifndef _WIN32
 #include <iconv.h>
@@ -16,6 +17,11 @@
 #include <map>
 #include <memory>
 #include <string>
+
+#ifndef _WIN32
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 
 namespace stdex
 {
@@ -103,7 +109,7 @@ namespace stdex
 			_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src)
 		{
 			_Assume_(src || !count_src);
-			count_src = stdex::strnlen(src, count_src);
+			count_src = stdex::strnlen<T_from>(src, count_src);
 			if (!count_src) _Unlikely_
 				return;
 
@@ -767,3 +773,7 @@ namespace stdex
 		return wstr2str(src.c_str(), src.size(), charset);
 	}
 }
+
+#ifndef _WIN32
+#pragma GCC diagnostic pop
+#endif

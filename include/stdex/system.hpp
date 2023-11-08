@@ -11,7 +11,9 @@
 #include <oaidl.h>
 #include <tchar.h>
 #else
+#ifndef _LARGEFILE64_SOURCE
 #define _LARGEFILE64_SOURCE // TODO: Make this -D compile-time project setting
+#endif
 #include <grp.h>
 #include <pwd.h>
 #include <string.h>

@@ -61,6 +61,9 @@
 #ifndef _In_reads_bytes_opt_
 #define _In_reads_bytes_opt_(p)
 #endif
+#ifndef _Printf_format_string_
+#define _Printf_format_string_
+#endif
 #ifndef _Printf_format_string_params_
 #define _Printf_format_string_params_(n)
 #endif
@@ -73,6 +76,9 @@
 #endif
 #ifndef _Inout_z_
 #define _Inout_z_
+#endif
+#ifndef _Inout_z_count_
+#define _Inout_z_count_(p)
 #endif
 #ifndef _Inout_cap_
 #define _Inout_cap_(p)
@@ -208,3 +214,9 @@ size_t _countof(T (&arr)[N])
 #define ftruncate64 ftruncate
 #endif
 
+#ifndef _WIN32
+typedef int SOCKET;
+#define INVALID_SOCKET ((SOCKET)-1)
+#define SOCKET_ERROR -1
+#define closesocket close
+#endif

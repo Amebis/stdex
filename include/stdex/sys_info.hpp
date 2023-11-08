@@ -11,6 +11,8 @@
 #include "windows.h"
 #include <stdlib.h>
 #include <tchar.h>
+#else
+#include <sys/utsname.h>
 #endif
 #include <memory>
 
@@ -23,13 +25,6 @@ namespace stdex
 	typedef uint16_t platform_id;
 #else
 	typedef const char* platform_id;
-
-	inline bool operator ==(_In_ const platform_id a, _In_ const platform_id b) { return a == b; }
-	inline bool operator !=(_In_ const platform_id a, _In_ const platform_id b) { return a != b; }
-	inline bool operator <(_In_ const platform_id a, _In_ const platform_id b) { return a == IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN || a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) < 0; }
-	inline bool operator <=(_In_ const platform_id a, _In_ const platform_id b) { return a == IMAGE_FILE_MACHINE_UNKNOWN || a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) <= 0; }
-	inline bool operator >(_In_ const platform_id a, _In_ const platform_id b) { return a != IMAGE_FILE_MACHINE_UNKNOWN && b == IMAGE_FILE_MACHINE_UNKNOWN || a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) > 0; }
-	inline bool operator >=(_In_ const platform_id a, _In_ const platform_id b) { return b == IMAGE_FILE_MACHINE_UNKNOWN || a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) >= 0; }
 #endif
 }
 
@@ -39,6 +34,13 @@ constexpr stdex::platform_id IMAGE_FILE_MACHINE_I386 = "i386";
 constexpr stdex::platform_id IMAGE_FILE_MACHINE_AMD64 = "x86_64";
 constexpr stdex::platform_id IMAGE_FILE_MACHINE_ARMNT = "arm";
 constexpr stdex::platform_id IMAGE_FILE_MACHINE_ARM64 = "aarch64";
+
+inline bool operator ==(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return a == b; }
+inline bool operator !=(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return a != b; }
+inline bool operator <(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return a == IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN || a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) < 0; }
+inline bool operator <=(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return a == IMAGE_FILE_MACHINE_UNKNOWN || a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) <= 0; }
+inline bool operator >(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return a != IMAGE_FILE_MACHINE_UNKNOWN && b == IMAGE_FILE_MACHINE_UNKNOWN || a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) > 0; }
+inline bool operator >=(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return b == IMAGE_FILE_MACHINE_UNKNOWN || a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) >= 0; }
 #endif
 
 namespace stdex
@@ -98,7 +100,9 @@ namespace stdex
 
 		sys_info_t() :
 			os_platform(IMAGE_FILE_MACHINE_UNKNOWN),
+#ifdef _WIN32
 			wow64(false),
+#endif
 			interactive_process(true),
 			admin(false),
 			elevated(false)

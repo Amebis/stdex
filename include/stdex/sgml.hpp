@@ -9,6 +9,7 @@
 #include "mapping.hpp"
 #include "sgml_unicode.hpp"
 #include "string.hpp"
+#include <string.h>
 #include <exception>
 #include <string>
 
