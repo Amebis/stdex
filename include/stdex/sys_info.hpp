@@ -48,7 +48,10 @@ namespace stdex
 	///
 	/// System information
 	///
-	inline const struct sys_info_t
+#if _HAS_CXX17
+	inline
+#endif
+	const struct sys_info_t
 	{
 		///
 		/// The platform this process was compiled for
