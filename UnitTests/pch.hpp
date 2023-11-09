@@ -19,6 +19,7 @@
 #include <stdex/progress.hpp>
 #include <stdex/ring.hpp>
 #include <stdex/sgml.hpp>
+#include <stdex/socket.hpp>
 #include <stdex/stream.hpp>
 #include <stdex/string.hpp>
 #include <stdex/sys_info.hpp>

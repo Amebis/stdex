@@ -213,10 +213,3 @@ size_t _countof(T (&arr)[N])
 #define lockf64 lockf
 #define ftruncate64 ftruncate
 #endif
-
-#ifndef _WIN32
-typedef int SOCKET;
-#define INVALID_SOCKET ((SOCKET)-1)
-#define SOCKET_ERROR -1
-#define closesocket close
-#endif

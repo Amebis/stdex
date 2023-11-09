@@ -11,6 +11,7 @@
 #include "locale.hpp"
 #include "math.hpp"
 #include "ring.hpp"
+#include "socket.hpp"
 #include "string.hpp"
 #include "unicode.hpp"
 #include <stdint.h>
@@ -19,11 +20,9 @@
 #include "windows.h"
 #include <asptlb.h>
 #include <objidl.h>
-#include <WinSock2.h>
 #else
 #include <fcntl.h>
 #include <unistd.h>
-#include <sys/socket.h>
 #include <sys/stat.h>
 #endif
 #include <chrono>
@@ -2347,7 +2346,7 @@ namespace stdex
 		class socket : public basic
 		{
 		public:
-			socket(_In_opt_ SOCKET h = INVALID_SOCKET, _In_ state_t state = state_t::ok) :
+			socket(_In_opt_ socket_t h = invalid_socket, _In_ state_t state = state_t::ok) :
 				basic(state),
 				m_h(h)
 			{}
@@ -2359,16 +2358,16 @@ namespace stdex
 		public:
 			socket(_Inout_ socket&& other) noexcept : m_h(other.m_h)
 			{
-				other.m_h = INVALID_SOCKET;
+				other.m_h = invalid_socket;
 			}
 
 			socket& operator =(_Inout_ socket&& other) noexcept
 			{
 				if (this != std::addressof(other)) {
-					if (m_h != INVALID_SOCKET)
-						::closesocket(m_h);
+					if (m_h != invalid_socket)
+						closesocket(m_h);
 					m_h = other.m_h;
-					other.m_h = INVALID_SOCKET;
+					other.m_h = invalid_socket;
 				}
 				return *this;
 			}
@@ -2383,25 +2382,25 @@ namespace stdex
 			socket(_In_ int af, _In_ int type, _In_ int protocol)
 			{
 				m_h = ::socket(af, type, protocol);
-				if (m_h == INVALID_SOCKET) _Unlikely_
+				if (m_h == invalid_socket) _Unlikely_
 					m_state = state_t::fail;
 			}
 
 			virtual ~socket()
 			{
-				if (m_h != INVALID_SOCKET)
-					::closesocket(m_h);
+				if (m_h != invalid_socket)
+					closesocket(m_h);
 			}
 
 			///
 			/// Returns true if socket handle is valid
 			///
-			inline operator bool() const noexcept { return m_h != INVALID_SOCKET; }
+			inline operator bool() const noexcept { return m_h != invalid_socket; }
 
 			///
 			/// Returns socket handle
 			///
-			inline SOCKET get() const noexcept { return m_h; }
+			inline socket_t get() const noexcept { return m_h; }
 
 			virtual _Success_(return != 0 || length == 0) size_t read(
 				_Out_writes_bytes_to_opt_(length, return) void* data, _In_ size_t length)
@@ -2449,15 +2448,15 @@ namespace stdex
 
 			virtual void close()
 			{
-				if (m_h != INVALID_SOCKET) {
-					::closesocket(m_h);
-					m_h = INVALID_SOCKET;
+				if (m_h != invalid_socket) {
+					closesocket(m_h);
+					m_h = invalid_socket;
 				}
 				m_state = state_t::ok;
 			}
 
 		protected:
-			SOCKET m_h;
+			socket_t m_h;
 		};
 
 #ifdef _WIN32
