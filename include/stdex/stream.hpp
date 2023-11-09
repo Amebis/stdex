@@ -8,6 +8,7 @@
 #include "compat.hpp"
 #include "endian.hpp"
 #include "interval.hpp"
+#include "locale.hpp"
 #include "math.hpp"
 #include "ring.hpp"
 #include "string.hpp"

@@ -12,6 +12,7 @@
 #include <stdex/hex.hpp>
 #include <stdex/idrec.hpp>
 #include <stdex/interval.hpp>
+#include <stdex/locale.hpp>
 #include <stdex/mapping.hpp>
 #include <stdex/math.hpp>
 #include <stdex/parser.hpp>

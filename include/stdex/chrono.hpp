@@ -8,7 +8,7 @@
 #include "compat.hpp"
 #include "math.hpp"
 #include "system.hpp"
-#include "string.hpp"
+#include "locale.hpp"
 #include <stdint.h>
 #include <chrono>
 #include <ctime>
