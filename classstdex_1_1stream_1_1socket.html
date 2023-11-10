@@ -98,9 +98,9 @@ Inheritance diagram for stdex::stream::socket:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae005b0aed40246f919046e7bc5b804f3" id="r_ae005b0aed40246f919046e7bc5b804f3"><td class="memItemLeft" align="right" valign="top"><a id="ae005b0aed40246f919046e7bc5b804f3" name="ae005b0aed40246f919046e7bc5b804f3"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>socket</b> (SOCKET h=INVALID_SOCKET, state_t <a class="el" href="classstdex_1_1stream_1_1basic.html#a2aa36b007017c2052a0118c1df4910d0">state</a>=state_t::ok)</td></tr>
-<tr class="separator:ae005b0aed40246f919046e7bc5b804f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90c35a3d5e0b4732a884a93c3c234eee" id="r_a90c35a3d5e0b4732a884a93c3c234eee"><td class="memItemLeft" align="right" valign="top"><a id="a90c35a3d5e0b4732a884a93c3c234eee" name="a90c35a3d5e0b4732a884a93c3c234eee"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>socket</b> (socket_t h=invalid_socket, state_t <a class="el" href="classstdex_1_1stream_1_1basic.html#a2aa36b007017c2052a0118c1df4910d0">state</a>=state_t::ok)</td></tr>
+<tr class="separator:a90c35a3d5e0b4732a884a93c3c234eee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95e22e5f042ba1a668ff5856e931b03f" id="r_a95e22e5f042ba1a668ff5856e931b03f"><td class="memItemLeft" align="right" valign="top"><a id="a95e22e5f042ba1a668ff5856e931b03f" name="a95e22e5f042ba1a668ff5856e931b03f"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>socket</b> (<a class="el" href="classstdex_1_1stream_1_1socket.html">socket</a> &amp;&amp;other) noexcept</td></tr>
 <tr class="separator:a95e22e5f042ba1a668ff5856e931b03f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -114,10 +114,10 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><b>operator bool</b> () const noexcept</td></tr>
 <tr class="memdesc:a045afb72557249f0f1f1d0f20d93c15d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if socket handle is valid. <br /></td></tr>
 <tr class="separator:a045afb72557249f0f1f1d0f20d93c15d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2b45e459c9d2daeff53b6191403fbe0" id="r_ab2b45e459c9d2daeff53b6191403fbe0"><td class="memItemLeft" align="right" valign="top"><a id="ab2b45e459c9d2daeff53b6191403fbe0" name="ab2b45e459c9d2daeff53b6191403fbe0"></a>
-SOCKET&#160;</td><td class="memItemRight" valign="bottom"><b>get</b> () const noexcept</td></tr>
-<tr class="memdesc:ab2b45e459c9d2daeff53b6191403fbe0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns socket handle. <br /></td></tr>
-<tr class="separator:ab2b45e459c9d2daeff53b6191403fbe0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48f512c2f87d27c40d630ecbd9837d3c" id="r_a48f512c2f87d27c40d630ecbd9837d3c"><td class="memItemLeft" align="right" valign="top"><a id="a48f512c2f87d27c40d630ecbd9837d3c" name="a48f512c2f87d27c40d630ecbd9837d3c"></a>
+socket_t&#160;</td><td class="memItemRight" valign="bottom"><b>get</b> () const noexcept</td></tr>
+<tr class="memdesc:a48f512c2f87d27c40d630ecbd9837d3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns socket handle. <br /></td></tr>
+<tr class="separator:a48f512c2f87d27c40d630ecbd9837d3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4d8e1368be57d2bd5abd971d880bc79" id="r_ad4d8e1368be57d2bd5abd971d880bc79"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1socket.html#ad4d8e1368be57d2bd5abd971d880bc79">read</a> (_Out_writes_bytes_to_opt_(length, return) void *data, size_t length)</td></tr>
 <tr class="memdesc:ad4d8e1368be57d2bd5abd971d880bc79"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads block of data from the stream.  <br /></td></tr>
 <tr class="separator:ad4d8e1368be57d2bd5abd971d880bc79"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -338,9 +338,9 @@ template&lt;class _Kty , class _Pr  = std::less&lt;_Kty&gt;, class _Alloc  = std
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:ae967a5fc35739189ed28555e2b0454ea" id="r_ae967a5fc35739189ed28555e2b0454ea"><td class="memItemLeft" align="right" valign="top"><a id="ae967a5fc35739189ed28555e2b0454ea" name="ae967a5fc35739189ed28555e2b0454ea"></a>
-SOCKET&#160;</td><td class="memItemRight" valign="bottom"><b>m_h</b></td></tr>
-<tr class="separator:ae967a5fc35739189ed28555e2b0454ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b8f9ae6d0b8015fc676cae61c956464" id="r_a5b8f9ae6d0b8015fc676cae61c956464"><td class="memItemLeft" align="right" valign="top"><a id="a5b8f9ae6d0b8015fc676cae61c956464" name="a5b8f9ae6d0b8015fc676cae61c956464"></a>
+socket_t&#160;</td><td class="memItemRight" valign="bottom"><b>m_h</b></td></tr>
+<tr class="separator:a5b8f9ae6d0b8015fc676cae61c956464"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classstdex_1_1stream_1_1basic"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classstdex_1_1stream_1_1basic')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classstdex_1_1stream_1_1basic.html">stdex::stream::basic</a></td></tr>
 <tr class="memitem:afabd865667f92c3de8ef4ca0197f3615 inherit pro_attribs_classstdex_1_1stream_1_1basic" id="r_afabd865667f92c3de8ef4ca0197f3615"><td class="memItemLeft" align="right" valign="top">
 state_t&#160;</td><td class="memItemRight" valign="bottom"><b>m_state</b></td></tr>
@@ -533,7 +533,7 @@ state_t&#160;</td><td class="memItemRight" valign="bottom"><b>m_state</b></td></
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Nov 8 2023 17:48:54 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Nov 10 2023 07:26:23 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
