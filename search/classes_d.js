@@ -16,7 +16,8 @@ var searchData=
   ['sha256_5ft_13',['sha256_t',['../unionstdex_1_1sha256__t.html',1,'stdex']]],
   ['sha_5ft_14',['sha_t',['../unionstdex_1_1sha__t.html',1,'stdex']]],
   ['socket_15',['socket',['../classstdex_1_1stream_1_1socket.html',1,'stdex::stream']]],
-  ['stream_5fhasher_16',['stream_hasher',['../classstdex_1_1stream__hasher.html',1,'stdex']]],
-  ['sys_5finfo_5ft_17',['sys_info_t',['../structstdex_1_1sys__info__t.html',1,'stdex']]],
-  ['sys_5fobject_18',['sys_object',['../classstdex_1_1sys__object.html',1,'stdex']]]
+  ['spinlock_16',['spinlock',['../classstdex_1_1spinlock.html',1,'stdex']]],
+  ['stream_5fhasher_17',['stream_hasher',['../classstdex_1_1stream__hasher.html',1,'stdex']]],
+  ['sys_5finfo_5ft_18',['sys_info_t',['../structstdex_1_1sys__info__t.html',1,'stdex']]],
+  ['sys_5fobject_19',['sys_object',['../classstdex_1_1sys__object.html',1,'stdex']]]
 ];
