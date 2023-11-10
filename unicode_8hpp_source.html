@@ -201,7 +201,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>            }</div>
 <div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span> </div>
 <div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span><span class="preprocessor">#pragma warning(suppress: 4127)</span></div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>            <span class="keywordflow">if</span> _Constexpr_ (<span class="keyword">sizeof</span>(T_from) == <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>) &amp;&amp; <span class="keyword">sizeof</span>(T_to) == <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>)) {</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>            <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<span class="keyword">sizeof</span>(T_from) == <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>) &amp;&amp; <span class="keyword">sizeof</span>(T_to) == <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>)) {</div>
 <div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>                _Assume_(count_src &lt; INT_MAX || count_src == SIZE_MAX);</div>
 <div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span> </div>
 <div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>                <span class="comment">// Try to convert to stack buffer first.</span></div>
@@ -225,7 +225,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>            }</div>
 <div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span> </div>
 <div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span><span class="preprocessor">#pragma warning(suppress: 4127)</span></div>
-<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>            <span class="keywordflow">if</span> _Constexpr_ (<span class="keyword">sizeof</span>(T_from) == <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>) &amp;&amp; <span class="keyword">sizeof</span>(T_to) == <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>)) {</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>            <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<span class="keyword">sizeof</span>(T_from) == <span class="keyword">sizeof</span>(<span class="keywordtype">wchar_t</span>) &amp;&amp; <span class="keyword">sizeof</span>(T_to) == <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>)) {</div>
 <div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>                _Assume_(count_src &lt; INT_MAX || count_src == SIZE_MAX);</div>
 <div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span> </div>
 <div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>                <span class="comment">// Try to convert to stack buffer first.</span></div>
@@ -249,7 +249,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>            }</div>
 <div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span> </div>
 <div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span><span class="preprocessor">#pragma warning(suppress: 4127)</span></div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>            <span class="keywordflow">if</span> _Constexpr_ (<span class="keyword">sizeof</span>(T_from) == <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>) &amp;&amp; <span class="keyword">sizeof</span>(T_to) == <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>)) {</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>            <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<span class="keyword">sizeof</span>(T_from) == <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>) &amp;&amp; <span class="keyword">sizeof</span>(T_to) == <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>)) {</div>
 <div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>                _Assume_(count_src &lt; INT_MAX || count_src == SIZE_MAX);</div>
 <div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span> </div>
 <div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>                <span class="comment">// Try to convert to stack buffer first.</span></div>
@@ -699,7 +699,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Nov 10 2023 07:26:22 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Nov 10 2023 07:42:56 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
