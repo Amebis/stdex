@@ -16,10 +16,12 @@
 #include <stdex/mapping.hpp>
 #include <stdex/math.hpp>
 #include <stdex/parser.hpp>
+#include <stdex/pool.hpp>
 #include <stdex/progress.hpp>
 #include <stdex/ring.hpp>
 #include <stdex/sgml.hpp>
 #include <stdex/socket.hpp>
+#include <stdex/spinlock.hpp>
 #include <stdex/stream.hpp>
 #include <stdex/string.hpp>
 #include <stdex/sys_info.hpp>
@@ -32,4 +34,5 @@
 
 #include <cstdlib>
 #include <filesystem>
+#include <list>
 #include <thread>
