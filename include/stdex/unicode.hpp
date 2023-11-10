@@ -125,7 +125,7 @@ namespace stdex
 			}
 
 #pragma warning(suppress: 4127)
-			if _Constexpr_ (sizeof(T_from) == sizeof(char) && sizeof(T_to) == sizeof(wchar_t)) {
+			if constexpr (sizeof(T_from) == sizeof(char) && sizeof(T_to) == sizeof(wchar_t)) {
 				_Assume_(count_src < INT_MAX || count_src == SIZE_MAX);
 
 				// Try to convert to stack buffer first.
@@ -149,7 +149,7 @@ namespace stdex
 			}
 
 #pragma warning(suppress: 4127)
-			if _Constexpr_ (sizeof(T_from) == sizeof(wchar_t) && sizeof(T_to) == sizeof(char)) {
+			if constexpr (sizeof(T_from) == sizeof(wchar_t) && sizeof(T_to) == sizeof(char)) {
 				_Assume_(count_src < INT_MAX || count_src == SIZE_MAX);
 
 				// Try to convert to stack buffer first.
@@ -173,7 +173,7 @@ namespace stdex
 			}
 
 #pragma warning(suppress: 4127)
-			if _Constexpr_ (sizeof(T_from) == sizeof(char) && sizeof(T_to) == sizeof(char)) {
+			if constexpr (sizeof(T_from) == sizeof(char) && sizeof(T_to) == sizeof(char)) {
 				_Assume_(count_src < INT_MAX || count_src == SIZE_MAX);
 
 				// Try to convert to stack buffer first.

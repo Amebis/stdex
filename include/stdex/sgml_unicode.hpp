@@ -13,10 +13,7 @@ namespace stdex
 		wchar_t unicode[3]; ///< Unicode string representation
 	};
 
-#if _HAS_CXX17
-	inline
-#endif
-	const sgml_unicode_pair sgml_unicode[] = {
+	inline const sgml_unicode_pair sgml_unicode[] = {
 		{ "AElig", L"\u00c6" },
 		{ "Aacgr", L"\u0386" },
 		{ "Aacute", L"\u00c1" },
@@ -1554,10 +1551,7 @@ namespace stdex
 		{ "zwnj", L"\u200c" },
 	};
 
-#if _HAS_CXX17
-	inline
-#endif
-	const size_t unicode_sgml[] = {
+	inline const size_t unicode_sgml[] = {
 		0x5b6,
 		0x48d,
 		0x30d,

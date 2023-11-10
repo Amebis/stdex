@@ -172,12 +172,6 @@
 #endif
 #endif
 
-#if _HAS_CXX17
-#define _Constexpr_ constexpr
-#else
-#define _Constexpr_
-#endif
-
 #ifdef _MSC_VER
 #define _Deprecated_(message) __declspec(deprecated(message))
 #else
