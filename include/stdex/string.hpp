@@ -1238,8 +1238,10 @@ namespace stdex
 	/// \param[in ] locale  Stdlib locale used to perform formatting. Use `NULL` to use locale globally set by `setlocale()`.
 	/// \param[in ] arg     Arguments to `format`
 	///
+	/// \return Number of appended code units
+	///
 	template<class _Elem, class _Traits, class _Ax>
-	inline void vappendf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_params_(2) const _Elem *format, _In_opt_ locale_t locale, _In_ va_list arg)
+	inline size_t vappendf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_params_(2) const _Elem *format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
 		_Elem buf[1024/sizeof(_Elem)];
 
@@ -1248,15 +1250,15 @@ namespace stdex
 		if (count >= 0) {
 			// Copy from stack.
 			str.append(buf, count);
-		} else {
-			for (size_t capacity = 2*1024/sizeof(_Elem);; capacity *= 2) {
-				// Allocate on heap and retry.
-				auto buf_dyn = std::make_unique<_Elem[]>(capacity);
-				count = vsnprintf(buf_dyn.get(), capacity - 1, format, locale, arg);
-				if (count >= 0) {
-					str.append(buf_dyn.get(), count);
-					break;
-				}
+			return count;
+		}
+		for (size_t capacity = 2*1024/sizeof(_Elem);; capacity *= 2) {
+			// Allocate on heap and retry.
+			auto buf_dyn = std::make_unique<_Elem[]>(capacity);
+			count = vsnprintf(buf_dyn.get(), capacity - 1, format, locale, arg);
+			if (count >= 0) {
+				str.append(buf_dyn.get(), count);
+				return count;
 			}
 		}
 	}
@@ -1268,13 +1270,16 @@ namespace stdex
 	/// \param[in ] format  String template using `printf()` style
 	/// \param[in ] locale  Stdlib locale used to perform formatting. Use `NULL` to use locale globally set by `setlocale()`.
 	///
+	/// \return Number of appended code units
+	///
 	template<class _Elem, class _Traits, class _Ax>
-	inline void appendf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_params_(2) const _Elem *format, _In_opt_ locale_t locale, ...)
+	inline size_t appendf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_params_(2) const _Elem *format, _In_opt_ locale_t locale, ...)
 	{
 		va_list arg;
 		va_start(arg, locale);
-		vappendf(str, format, locale, arg);
+		size_t n = vappendf(str, format, locale, arg);
 		va_end(arg);
+		return n;
 	}
 
 	///
