@@ -79,7 +79,7 @@ namespace stdex
 			bool search(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				for (size_t i = start; i < end && text[i]; i++)
@@ -91,14 +91,14 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default) = 0;
 
 			template<class _Traits, class _Ax>
 			inline bool match(
 				const std::basic_string<T, _Traits, _Ax>& text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				return match(text.c_str(), start, std::min<size_t>(end, text.size()), flags);
@@ -106,8 +106,7 @@ namespace stdex
 
 			virtual void invalidate()
 			{
-				this->interval.start = 1;
-				this->interval.end = 0;
+				this->interval.invalidate();
 			}
 
 		protected:
@@ -195,7 +194,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -203,7 +202,7 @@ namespace stdex
 					this->interval.start = this->interval.end = start;
 					return true;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 		};
@@ -229,7 +228,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -237,7 +236,7 @@ namespace stdex
 					this->interval.end = (this->interval.start = start) + 1;
 					return true;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 		};
@@ -261,7 +260,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -282,7 +281,7 @@ namespace stdex
 					this->interval.end = (this->interval.start = start) + 1;
 					return true;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 		};
@@ -303,7 +302,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -320,7 +319,7 @@ namespace stdex
 						return true;
 					}
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -343,7 +342,7 @@ namespace stdex
 		class sgml_cp : public sgml_parser
 		{
 		public:
-			sgml_cp(const char* chr, size_t count = (size_t)-1, bool invert = false, _In_ const std::locale& locale = std::locale()) :
+			sgml_cp(const char* chr, size_t count = SIZE_MAX, bool invert = false, _In_ const std::locale& locale = std::locale()) :
 				sgml_parser(locale),
 				m_invert(invert)
 			{
@@ -356,7 +355,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -364,14 +363,14 @@ namespace stdex
 					wchar_t buf[3];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					bool r = ((flags & match_case_insensitive) ?
-						stdex::strnicmp(chr, (size_t)-1, m_chr.c_str(), m_chr.size(), m_locale) :
-						stdex::strncmp(chr, (size_t)-1, m_chr.c_str(), m_chr.size())) == 0;
+						stdex::strnicmp(chr, SIZE_MAX, m_chr.c_str(), m_chr.size(), m_locale) :
+						stdex::strncmp(chr, SIZE_MAX, m_chr.c_str(), m_chr.size())) == 0;
 					if ((r && !m_invert) || (!r && m_invert)) {
 						this->interval.start = start;
 						return true;
 					}
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -395,7 +394,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -408,7 +407,7 @@ namespace stdex
 						return true;
 					}
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -417,7 +416,7 @@ namespace stdex
 		};
 
 		using space_cu = basic_space_cu<char>;
-			using wspace_cu = basic_space_cu<wchar_t>;
+		using wspace_cu = basic_space_cu<wchar_t>;
 #ifdef _UNICODE
 		using tspace_cu = wspace_cu;
 #else
@@ -437,7 +436,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -446,7 +445,7 @@ namespace stdex
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* chr_end = chr + stdex::strlen(chr);
 					bool r =
-						((flags & match_multiline) || !islbreak(chr, (size_t)-1)) &&
+						((flags & match_multiline) || !islbreak(chr, SIZE_MAX)) &&
 						std::use_facet<std::ctype<wchar_t>>(m_locale).scan_not(std::ctype_base::space, chr, chr_end) == chr_end;
 					if ((r && !m_invert) || (!r && m_invert)) {
 						this->interval.start = start;
@@ -454,7 +453,7 @@ namespace stdex
 					}
 				}
 
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 		};
@@ -474,7 +473,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -485,7 +484,7 @@ namespace stdex
 						return true;
 					}
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -514,7 +513,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -528,7 +527,7 @@ namespace stdex
 						return true;
 					}
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 		};
@@ -548,7 +547,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -561,7 +560,7 @@ namespace stdex
 						return true;
 					}
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -590,7 +589,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -599,14 +598,14 @@ namespace stdex
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* chr_end = chr + stdex::strlen(chr);
 					bool r =
-						((flags & match_multiline) || !islbreak(chr, (size_t)-1)) &&
+						((flags & match_multiline) || !islbreak(chr, SIZE_MAX)) &&
 						std::use_facet<std::ctype<wchar_t>>(m_locale).scan_not(std::ctype_base::space | std::ctype_base::punct, chr, chr_end) == chr_end;
 					if ((r && !m_invert) || (!r && m_invert)) {
 						this->interval.start = start;
 						return true;
 					}
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 		};
@@ -623,7 +622,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -632,7 +631,7 @@ namespace stdex
 					this->interval.end = this->interval.start = start;
 					return true;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -661,7 +660,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -670,7 +669,7 @@ namespace stdex
 					this->interval.end = this->interval.start = start;
 					return true;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -693,19 +692,19 @@ namespace stdex
 		public:
 			basic_set(bool invert = false, _In_ const std::locale& locale = std::locale()) :
 				basic_parser<T>(locale),
-				hit_offset((size_t)-1),
+				hit_offset(SIZE_MAX),
 				m_invert(invert)
 			{}
 
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default) = 0;
 
 			virtual void invalidate()
 			{
-				hit_offset = (size_t)-1;
+				hit_offset = SIZE_MAX;
 				basic_parser<T>::invalidate();
 			}
 
@@ -725,7 +724,7 @@ namespace stdex
 		public:
 			basic_cu_set(
 				_In_reads_or_z_(count) const T* set,
-				_In_ size_t count = (size_t)-1,
+				_In_ size_t count = SIZE_MAX,
 				_In_ bool invert = false,
 				_In_ const std::locale& locale = std::locale()) :
 				basic_set<T>(invert, locale)
@@ -737,7 +736,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -752,8 +751,8 @@ namespace stdex
 						return true;
 					}
 				}
-				this->hit_offset = (size_t)-1;
-				this->interval.start = (this->interval.end = start) + 1;
+				this->hit_offset = SIZE_MAX;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -775,7 +774,7 @@ namespace stdex
 		class sgml_cp_set : public basic_set<char>
 		{
 		public:
-			sgml_cp_set(const char* set, size_t count = (size_t)-1, bool invert = false, _In_ const std::locale& locale = std::locale()) :
+			sgml_cp_set(const char* set, size_t count = SIZE_MAX, bool invert = false, _In_ const std::locale& locale = std::locale()) :
 				basic_set<char>(invert, locale)
 			{
 				if (set)
@@ -785,7 +784,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -802,8 +801,8 @@ namespace stdex
 						return true;
 					}
 				}
-				hit_offset = (size_t)-1;
-				this->interval.start = (this->interval.end = start) + 1;
+				hit_offset = SIZE_MAX;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -820,7 +819,7 @@ namespace stdex
 		public:
 			basic_string(
 				_In_reads_or_z_(count) const T* str,
-				_In_ size_t count = (size_t)-1,
+				_In_ size_t count = SIZE_MAX,
 				_In_ const std::locale& locale = std::locale()) :
 				basic_parser<T>(locale),
 				m_str(str, str + stdex::strnlen(str, count))
@@ -829,7 +828,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -843,7 +842,7 @@ namespace stdex
 					this->interval.end = (this->interval.start = start) + n;
 					return true;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -865,7 +864,7 @@ namespace stdex
 		class sgml_string : public sgml_parser
 		{
 		public:
-			sgml_string(const char* str, size_t count = (size_t)-1, _In_ const std::locale& locale = std::locale()) :
+			sgml_string(const char* str, size_t count = SIZE_MAX, _In_ const std::locale& locale = std::locale()) :
 				sgml_parser(locale),
 				m_str(sgml2wstr(str, count))
 			{}
@@ -873,7 +872,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -886,7 +885,7 @@ namespace stdex
 						return true;
 					}
 					if (this->interval.end >= end || !text[this->interval.end]) {
-						this->interval.start = (this->interval.end = start) + 1;
+						this->interval.invalidate();
 						return false;
 					}
 					wchar_t buf[3];
@@ -895,7 +894,7 @@ namespace stdex
 						if (!*str ||
 							(case_insensitive ? ctype.tolower(*str) != ctype.tolower(*chr) : *str != *chr))
 						{
-							this->interval.start = (this->interval.end = start) + 1;
+							this->interval.invalidate();
 							return false;
 						}
 					}
@@ -913,7 +912,7 @@ namespace stdex
 		class basic_iterations : public basic_parser<T>
 		{
 		public:
-			basic_iterations(const std::shared_ptr<basic_parser<T>>& el, size_t min_iterations = 0, size_t max_iterations = (size_t)-1, bool greedy = true) :
+			basic_iterations(const std::shared_ptr<basic_parser<T>>& el, size_t min_iterations = 0, size_t max_iterations = SIZE_MAX, bool greedy = true) :
 				m_el(el),
 				m_min_iterations(min_iterations),
 				m_max_iterations(max_iterations),
@@ -923,7 +922,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -942,7 +941,7 @@ namespace stdex
 					}
 					this->interval.end = m_el->interval.end;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -993,7 +992,7 @@ namespace stdex
 
 			virtual void invalidate()
 			{
-				for (auto& el: m_collection)
+				for (auto& el : m_collection)
 					el->invalidate();
 				basic_parser<T>::invalidate();
 			}
@@ -1025,7 +1024,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -1034,7 +1033,7 @@ namespace stdex
 					if (!(*i)->match(text, this->interval.end, end, flags)) {
 						for (++i; i != this->m_collection.end(); ++i)
 							(*i)->invalidate();
-						this->interval.start = (this->interval.end = start) + 1;
+						this->interval.invalidate();
 						return false;
 					}
 					this->interval.end = (*i)->interval.end;
@@ -1062,7 +1061,7 @@ namespace stdex
 		protected:
 			basic_branch(_In_ const std::locale& locale) :
 				parser_collection<T>(locale),
-				hit_offset((size_t)-1)
+				hit_offset(SIZE_MAX)
 			{}
 
 		public:
@@ -1071,20 +1070,20 @@ namespace stdex
 				_In_ size_t count = 0,
 				_In_ const std::locale& locale = std::locale()) :
 				parser_collection<T>(el, count, locale),
-				hit_offset((size_t)-1)
+				hit_offset(SIZE_MAX)
 			{}
 
 			basic_branch(
 				_Inout_ std::vector<std::shared_ptr<basic_parser<T>>>&& collection,
 				_In_ const std::locale& locale = std::locale()) :
 				parser_collection<T>(std::move(collection), locale),
-				hit_offset((size_t)-1)
+				hit_offset(SIZE_MAX)
 			{}
 
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -1097,14 +1096,14 @@ namespace stdex
 						return true;
 					}
 				}
-				hit_offset = (size_t)-1;
-				this->interval.start = (this->interval.end = start) + 1;
+				hit_offset = SIZE_MAX;
+				this->interval.invalidate();
 				return false;
 			}
 
 			virtual void invalidate()
 			{
-				hit_offset = (size_t)-1;
+				hit_offset = SIZE_MAX;
 				parser_collection<T>::invalidate();
 			}
 
@@ -1178,9 +1177,9 @@ namespace stdex
 			{
 				const T* p;
 				for (
-					this->m_collection.push_back(std::move(std::make_shared<T_parser>(str, (size_t)-1, this->m_locale)));
+					this->m_collection.push_back(std::move(std::make_shared<T_parser>(str, SIZE_MAX, this->m_locale)));
 					(p = va_arg(params, const T*)) != nullptr;
-					this->m_collection.push_back(std::move(std::make_shared<T_parser>(p, (size_t)-1, this->m_locale))));
+					this->m_collection.push_back(std::move(std::make_shared<T_parser>(p, SIZE_MAX, this->m_locale))));
 			}
 		};
 
@@ -1216,17 +1215,17 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
-				for (auto& el: this->m_collection)
+				for (auto& el : this->m_collection)
 					el->invalidate();
 				if (match_recursively(text, start, end, flags)) {
 					this->interval.start = start;
 					return true;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -1234,11 +1233,11 @@ namespace stdex
 			bool match_recursively(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				bool all_matched = true;
-				for (auto& el: this->m_collection) {
+				for (auto& el : this->m_collection) {
 					if (!el->interval) {
 						// Element was not matched in permutatuion yet.
 						all_matched = false;
@@ -1326,7 +1325,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -1349,7 +1348,7 @@ namespace stdex
 					this->interval.start = start;
 					return true;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -1397,7 +1396,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -1410,9 +1409,9 @@ namespace stdex
 					this->interval.end = m_digits->interval.end;
 					if (m_digits->interval.size() <= 3) {
 						// Maybe separated with thousand separators?
-						size_t hit_offset = (size_t)-1;
+						size_t hit_offset = SIZE_MAX;
 						while (m_separator->match(text, this->interval.end, end, flags) &&
-							(hit_offset == (size_t)-1 || hit_offset == m_separator->hit_offset) && // All separators must be the same, no mixing.
+							(hit_offset == SIZE_MAX || hit_offset == m_separator->hit_offset) && // All separators must be the same, no mixing.
 							m_digits->match(text, m_separator->interval.end, end, flags) &&
 							m_digits->interval.size() == 3)
 						{
@@ -1428,7 +1427,7 @@ namespace stdex
 					return true;
 				}
 				this->value = 0;
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -1504,7 +1503,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -1533,7 +1532,7 @@ namespace stdex
 					this->interval.start = start;
 					return true;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -1599,12 +1598,12 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
 				size_t
-					dig[5] = { (size_t)-1, (size_t)-1, (size_t)-1, (size_t)-1, (size_t)-1 },
+					dig[5] = { SIZE_MAX, SIZE_MAX, SIZE_MAX, SIZE_MAX, SIZE_MAX },
 					end2;
 
 				for (this->interval.end = start, this->value = 0; this->interval.end < end && text[this->interval.end]; dig[3] = dig[2], dig[2] = dig[1], dig[1] = dig[0], this->interval.end = end2) {
@@ -1620,7 +1619,7 @@ namespace stdex
 					else break;
 
 					// Store first digit.
-					if (dig[4] == (size_t)-1) dig[4] = dig[0];
+					if (dig[4] == SIZE_MAX) dig[4] = dig[0];
 
 					if (dig[3] == dig[2] && dig[2] == dig[1] && dig[1] == dig[0] && dig[0] != dig[4]) {
 						// Same digit repeated four times. No-go, unless first digit. E.g. XIIII vs. XIV. MMMMMCD allowed, IIII also...
@@ -1656,7 +1655,7 @@ namespace stdex
 					this->interval.start = start;
 					return true;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -1703,7 +1702,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -1718,7 +1717,7 @@ namespace stdex
 				numerator->invalidate();
 				fraction_line->invalidate();
 				denominator->invalidate();
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -1768,7 +1767,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -1802,7 +1801,7 @@ namespace stdex
 				home->invalidate();
 				separator->invalidate();
 				guest->invalidate();
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -1855,7 +1854,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -1889,7 +1888,7 @@ namespace stdex
 				if (negative_sign) negative_sign->invalidate();
 				if (special_sign) special_sign->invalidate();
 				number->invalidate();
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -1945,7 +1944,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -2010,7 +2009,7 @@ namespace stdex
 				if (special_sign) special_sign->invalidate();
 				integer->invalidate();
 				fraction->invalidate();
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -2080,7 +2079,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -2132,7 +2131,7 @@ namespace stdex
 					if (positive_exp_sign) positive_exp_sign->invalidate();
 					if (negative_exp_sign) negative_exp_sign->invalidate();
 					if (exponent) exponent->invalidate();
-					this->interval.start = (this->interval.end = start) + 1;
+					this->interval.invalidate();
 					return false;
 				}
 
@@ -2242,7 +2241,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -2278,7 +2277,7 @@ namespace stdex
 					integer->invalidate();
 					decimal_separator->invalidate();
 					decimal->invalidate();
-					this->interval.start = (this->interval.end = start) + 1;
+					this->interval.invalidate();
 					return false;
 				}
 
@@ -2303,7 +2302,7 @@ namespace stdex
 					integer->invalidate();
 					decimal_separator->invalidate();
 					decimal->invalidate();
-					this->interval.start = (this->interval.end = start) + 1;
+					this->interval.invalidate();
 					return false;
 				}
 
@@ -2381,7 +2380,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -2443,7 +2442,7 @@ namespace stdex
 				components[3].start = 1;
 				components[3].end = 0;
 				value.s_addr = 0;
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -2501,7 +2500,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -2515,7 +2514,7 @@ namespace stdex
 						return true;
 					}
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 		};
@@ -2539,7 +2538,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -2556,7 +2555,7 @@ namespace stdex
 						return true;
 					}
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 		};
@@ -2616,21 +2615,21 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
 				this->interval.end = start;
 				memset(&value, 0, sizeof(value));
 
-				size_t i, compaction_i = (size_t)-1, compaction_start = start;
+				size_t i, compaction_i = SIZE_MAX, compaction_start = start;
 				for (i = 0; i < 8; i++) {
 					bool is_empty = true;
 
 					if (m_separator->match(text, this->interval.end, end, flags)) {
 						if (m_separator->match(text, m_separator->interval.end, end, flags)) {
 							// :: found
-							if (compaction_i == (size_t)-1) {
+							if (compaction_i == SIZE_MAX) {
 								// Zero compaction start
 								compaction_i = i;
 								compaction_start = m_separator->interval.start;
@@ -2686,7 +2685,7 @@ namespace stdex
 							break;
 					}
 					if (is_empty) {
-						if (compaction_i != (size_t)-1) {
+						if (compaction_i != SIZE_MAX) {
 							// Zero compaction active: no sweat.
 							break;
 						}
@@ -2696,7 +2695,7 @@ namespace stdex
 					this->value.s6_words[i] = (uint16_t)x;
 				}
 
-				if (compaction_i != (size_t)-1) {
+				if (compaction_i != SIZE_MAX) {
 					// Align components right due to zero compaction.
 					size_t j, k;
 					for (j = 8, k = i; k > compaction_i;) {
@@ -2740,7 +2739,7 @@ namespace stdex
 				components[7].end = 0;
 				memset(&value, 0, sizeof(value));
 				if (scope_id) scope_id->invalidate();
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -2820,7 +2819,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -2834,13 +2833,13 @@ namespace stdex
 					else if (m_allow_idn && std::use_facet<std::ctype<T>>(this->m_locale).is(std::ctype_base::alnum, text[start]))
 						allow_on_edge = true;
 					else {
-						this->interval.start = (this->interval.end = start) + 1;
+						this->interval.invalidate();
 						return false;
 					}
 					this->interval.end = (this->interval.start = start) + 1;
 					return true;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -2874,7 +2873,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -2891,13 +2890,13 @@ namespace stdex
 					else if (m_allow_idn && std::use_facet<std::ctype<wchar_t>>(m_locale).scan_not(std::ctype_base::alnum, chr, chr_end) == chr_end)
 						allow_on_edge = true;
 					else {
-						this->interval.start = (this->interval.end = start) + 1;
+						this->interval.invalidate();
 						return false;
 					}
 					this->interval.start = start;
 					return true;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 		};
@@ -2923,7 +2922,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -2966,7 +2965,7 @@ namespace stdex
 					this->interval.start = start;
 					return true;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -2997,7 +2996,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -3024,7 +3023,7 @@ namespace stdex
 						return true;
 					}
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 		};
@@ -3048,7 +3047,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -3079,7 +3078,7 @@ namespace stdex
 					}
 				}
 
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 		};
@@ -3096,7 +3095,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -3124,7 +3123,7 @@ namespace stdex
 						return true;
 					}
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 		};
@@ -3148,7 +3147,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -3179,7 +3178,7 @@ namespace stdex
 						return true;
 					}
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 		};
@@ -3196,7 +3195,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -3228,7 +3227,7 @@ namespace stdex
 						return true;
 					}
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 		};
@@ -3252,7 +3251,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -3287,7 +3286,7 @@ namespace stdex
 						return true;
 					}
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 		};
@@ -3313,7 +3312,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -3398,7 +3397,7 @@ namespace stdex
 				path.end = 0;
 				bookmark.start = 1;
 				bookmark.end = 0;
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -3480,7 +3479,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -3819,7 +3818,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -3864,7 +3863,7 @@ namespace stdex
 				ipv4_host->invalidate();
 				ipv6_host->invalidate();
 				dns_host->invalidate();
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -3923,7 +3922,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -3976,7 +3975,7 @@ namespace stdex
 				eyes->invalidate();
 				if (nose) nose->invalidate();
 				mouth->invalidate();
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -4049,7 +4048,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -4139,7 +4138,7 @@ namespace stdex
 						if (m_separator->match(text, this->interval.end, end, flags)) {
 							for (this->interval.end = m_separator->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
 							if (month->match(text, this->interval.end, end, flags) &&
-								is_valid((size_t)-1, month->value))
+								is_valid(SIZE_MAX, month->value))
 							{
 								if (day) day->invalidate();
 								this->interval.start = start;
@@ -4157,7 +4156,7 @@ namespace stdex
 						if (m_separator->match(text, this->interval.end, end, flags)) {
 							for (this->interval.end = m_separator->interval.end; m_space->match(text, this->interval.end, end, space_match_flags); this->interval.end = m_space->interval.end);
 							if (year->match(text, this->interval.end, end, flags) &&
-								is_valid((size_t)-1, month->value))
+								is_valid(SIZE_MAX, month->value))
 							{
 								if (day) day->invalidate();
 								this->interval.start = start;
@@ -4221,7 +4220,7 @@ namespace stdex
 				if (month) month->invalidate();
 				if (year) year->invalidate();
 				format = date_format_none;
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -4237,11 +4236,11 @@ namespace stdex
 		protected:
 			static inline bool is_valid(size_t day, size_t month)
 			{
-				if (month == (size_t)-1) {
+				if (month == SIZE_MAX) {
 					// Default to January. This allows validating day only, as January has all 31 days.
 					month = 1;
 				}
-				if (day == (size_t)-1) {
+				if (day == SIZE_MAX) {
 					// Default to 1st day in month. This allows validating month only, as each month has 1st day.
 					day = 1;
 				}
@@ -4315,7 +4314,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -4358,7 +4357,7 @@ namespace stdex
 				minute->invalidate();
 				if (second) second->invalidate();
 				if (millisecond) millisecond->invalidate();
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -4420,7 +4419,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -4479,7 +4478,7 @@ namespace stdex
 					return true;
 				}
 				if (decimal) decimal->invalidate();
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -4541,7 +4540,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -4634,7 +4633,7 @@ namespace stdex
 					return true;
 				}
 				value.clear();
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -4689,7 +4688,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -4927,7 +4926,7 @@ namespace stdex
 				this->check_digits[0] = 0;
 				this->bban[0] = 0;
 				this->is_valid = false;
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -4982,7 +4981,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -5081,7 +5080,7 @@ namespace stdex
 				this->check_digits[0] = 0;
 				this->reference[0] = 0;
 				this->is_valid = false;
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -5125,7 +5124,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -5142,7 +5141,7 @@ namespace stdex
 					this->interval.start = start;
 					return true;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 		};
@@ -5170,7 +5169,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -5178,7 +5177,7 @@ namespace stdex
 					this->interval.end = (this->interval.start = start) + 1;
 					return true;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 		};
@@ -5220,7 +5219,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -5254,10 +5253,10 @@ namespace stdex
 					this->interval.end = m_space->interval.end;
 
 				this->part1.match(text, this->interval.end, end, flags) &&
-				this->m_delimiter.match(text, this->part1.interval.end, end, flags) &&
-				this->part2.match(text, this->m_delimiter.interval.end, end, flags) &&
-				this->m_delimiter.match(text, this->part2.interval.end, end, flags) &&
-				this->part3.match(text, this->m_delimiter.interval.end, end, flags);
+					this->m_delimiter.match(text, this->part1.interval.end, end, flags) &&
+					this->part2.match(text, this->m_delimiter.interval.end, end, flags) &&
+					this->m_delimiter.match(text, this->part2.interval.end, end, flags) &&
+					this->part3.match(text, this->m_delimiter.interval.end, end, flags);
 
 				this->interval.start = start;
 				if (this->part3.interval)
@@ -5271,173 +5270,173 @@ namespace stdex
 
 				if (this->model[0] == '0' && this->model[1] == '0')
 					is_valid =
-						this->part3.interval ?
-							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
-							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 :
-						this->part2.interval ?
-							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
-							this->part1.interval.size() + this->part2.interval.size() <= 20 :
-						this->part1.interval ?
-							this->part1.interval.size() <= 12 :
-							false;
+					this->part3.interval ?
+					this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+					this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 :
+					this->part2.interval ?
+					this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
+					this->part1.interval.size() + this->part2.interval.size() <= 20 :
+					this->part1.interval ?
+					this->part1.interval.size() <= 12 :
+					false;
 				else if (this->model[0] == '0' && this->model[1] == '1')
 					is_valid =
-						this->part3.interval ?
-							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
-							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
-							check11(
-								text + this->part1.interval.start, this->part1.interval.size(),
-								text + this->part2.interval.start, this->part2.interval.size(),
-								text + this->part3.interval.start, this->part3.interval.size()) :
-						this->part2.interval ?
-							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
-							this->part1.interval.size() + this->part2.interval.size() <= 20 &&
-							check11(
-								text + this->part1.interval.start, this->part1.interval.size(),
-								text + this->part2.interval.start, this->part2.interval.size()) :
-						this->part1.interval ?
-							this->part1.interval.size() <= 12 &&
-							check11(text + this->part1.interval.start, this->part1.interval.size()) :
-							false;
+					this->part3.interval ?
+					this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+					this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+					check11(
+						text + this->part1.interval.start, this->part1.interval.size(),
+						text + this->part2.interval.start, this->part2.interval.size(),
+						text + this->part3.interval.start, this->part3.interval.size()) :
+					this->part2.interval ?
+					this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
+					this->part1.interval.size() + this->part2.interval.size() <= 20 &&
+					check11(
+						text + this->part1.interval.start, this->part1.interval.size(),
+						text + this->part2.interval.start, this->part2.interval.size()) :
+					this->part1.interval ?
+					this->part1.interval.size() <= 12 &&
+					check11(text + this->part1.interval.start, this->part1.interval.size()) :
+					false;
 				else if (this->model[0] == '0' && this->model[1] == '2')
 					is_valid =
-						this->part3.interval ?
-							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
-							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
-							check11(text + this->part2.interval.start, this->part2.interval.size()) &&
-							check11(text + this->part3.interval.start, this->part3.interval.size()) :
-							false;
+					this->part3.interval ?
+					this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+					this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+					check11(text + this->part2.interval.start, this->part2.interval.size()) &&
+					check11(text + this->part3.interval.start, this->part3.interval.size()) :
+					false;
 				else if (this->model[0] == '0' && this->model[1] == '3')
 					is_valid =
-						this->part3.interval ?
-							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
-							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
-							check11(text + this->part1.interval.start, this->part1.interval.size()) &&
-							check11(text + this->part2.interval.start, this->part2.interval.size()) &&
-							check11(text + this->part3.interval.start, this->part3.interval.size()) :
-							false;
+					this->part3.interval ?
+					this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+					this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+					check11(text + this->part1.interval.start, this->part1.interval.size()) &&
+					check11(text + this->part2.interval.start, this->part2.interval.size()) &&
+					check11(text + this->part3.interval.start, this->part3.interval.size()) :
+					false;
 				else if (this->model[0] == '0' && this->model[1] == '4')
 					is_valid =
-						this->part3.interval ?
-							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
-							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
-							check11(text + this->part1.interval.start, this->part1.interval.size()) &&
-							check11(text + this->part3.interval.start, this->part3.interval.size()) :
-							false;
+					this->part3.interval ?
+					this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+					this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+					check11(text + this->part1.interval.start, this->part1.interval.size()) &&
+					check11(text + this->part3.interval.start, this->part3.interval.size()) :
+					false;
 				else if ((this->model[0] == '0' || this->model[0] == '5') && this->model[1] == '5')
 					is_valid =
-						this->part3.interval ?
-							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
-							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
-							check11(text + this->part1.interval.start, this->part1.interval.size()) :
-						this->part2.interval ?
-							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
-							this->part1.interval.size() + this->part2.interval.size() <= 20 &&
-							check11(text + this->part1.interval.start, this->part1.interval.size()) :
-						this->part1.interval ?
-							this->part1.interval.size() <= 12 &&
-							check11(text + this->part1.interval.start, this->part1.interval.size()) :
-							false;
+					this->part3.interval ?
+					this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+					this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+					check11(text + this->part1.interval.start, this->part1.interval.size()) :
+					this->part2.interval ?
+					this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
+					this->part1.interval.size() + this->part2.interval.size() <= 20 &&
+					check11(text + this->part1.interval.start, this->part1.interval.size()) :
+					this->part1.interval ?
+					this->part1.interval.size() <= 12 &&
+					check11(text + this->part1.interval.start, this->part1.interval.size()) :
+					false;
 				else if (this->model[0] == '0' && this->model[1] == '6')
 					is_valid =
-						this->part3.interval ?
-							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
-							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
-							check11(
-								text + this->part2.interval.start, this->part2.interval.size(),
-								text + this->part3.interval.start, this->part3.interval.size()) :
-						this->part2.interval ?
-							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
-							this->part1.interval.size() + this->part2.interval.size() <= 20 &&
-							check11(text + this->part2.interval.start, this->part2.interval.size()) :
-							false;
+					this->part3.interval ?
+					this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+					this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+					check11(
+						text + this->part2.interval.start, this->part2.interval.size(),
+						text + this->part3.interval.start, this->part3.interval.size()) :
+					this->part2.interval ?
+					this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
+					this->part1.interval.size() + this->part2.interval.size() <= 20 &&
+					check11(text + this->part2.interval.start, this->part2.interval.size()) :
+					false;
 				else if (this->model[0] == '0' && this->model[1] == '7')
 					is_valid =
-						this->part3.interval ?
-							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
-							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
-							check11(text + this->part2.interval.start, this->part2.interval.size()) :
-						this->part2.interval ?
-							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
-							this->part1.interval.size() + this->part2.interval.size() <= 20 &&
-							check11(text + this->part2.interval.start, this->part2.interval.size()) :
-						false;
+					this->part3.interval ?
+					this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+					this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+					check11(text + this->part2.interval.start, this->part2.interval.size()) :
+					this->part2.interval ?
+					this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
+					this->part1.interval.size() + this->part2.interval.size() <= 20 &&
+					check11(text + this->part2.interval.start, this->part2.interval.size()) :
+					false;
 				else if (this->model[0] == '0' && this->model[1] == '8')
 					is_valid =
-						this->part3.interval ?
-							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
-							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
-							check11(
-								text + this->part1.interval.start, this->part1.interval.size(),
-								text + this->part2.interval.start, this->part2.interval.size()) &&
-							check11(text + this->part3.interval.start, this->part3.interval.size()) :
-						false;
+					this->part3.interval ?
+					this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+					this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+					check11(
+						text + this->part1.interval.start, this->part1.interval.size(),
+						text + this->part2.interval.start, this->part2.interval.size()) &&
+					check11(text + this->part3.interval.start, this->part3.interval.size()) :
+					false;
 				else if (this->model[0] == '0' && this->model[1] == '9')
 					is_valid =
-						this->part3.interval ?
-							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
-							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
-							check11(
-								text + this->part1.interval.start, this->part1.interval.size(),
-								text + this->part2.interval.start, this->part2.interval.size()) :
-						this->part2.interval ?
-							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
-							this->part1.interval.size() + this->part2.interval.size() <= 20 &&
-							check11(
-								text + this->part1.interval.start, this->part1.interval.size(),
-								text + this->part2.interval.start, this->part2.interval.size()) :
-						this->part1.interval ?
-							this->part1.interval.size() <= 12 &&
-							check11(text + this->part1.interval.start, this->part1.interval.size()) :
-							false;
+					this->part3.interval ?
+					this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+					this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+					check11(
+						text + this->part1.interval.start, this->part1.interval.size(),
+						text + this->part2.interval.start, this->part2.interval.size()) :
+					this->part2.interval ?
+					this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
+					this->part1.interval.size() + this->part2.interval.size() <= 20 &&
+					check11(
+						text + this->part1.interval.start, this->part1.interval.size(),
+						text + this->part2.interval.start, this->part2.interval.size()) :
+					this->part1.interval ?
+					this->part1.interval.size() <= 12 &&
+					check11(text + this->part1.interval.start, this->part1.interval.size()) :
+					false;
 				else if (this->model[0] == '1' && this->model[1] == '0')
 					is_valid =
-						this->part3.interval ?
-							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
-							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
-							check11(text + this->part1.interval.start, this->part1.interval.size()) &&
-							check11(
-								text + this->part2.interval.start, this->part2.interval.size(),
-								text + this->part3.interval.start, this->part3.interval.size()) :
-						this->part2.interval ?
-							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
-							this->part1.interval.size() + this->part2.interval.size() <= 20 &&
-							check11(text + this->part1.interval.start, this->part1.interval.size()) &&
-							check11(text + this->part2.interval.start, this->part2.interval.size()) :
-							false;
+					this->part3.interval ?
+					this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+					this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+					check11(text + this->part1.interval.start, this->part1.interval.size()) &&
+					check11(
+						text + this->part2.interval.start, this->part2.interval.size(),
+						text + this->part3.interval.start, this->part3.interval.size()) :
+					this->part2.interval ?
+					this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
+					this->part1.interval.size() + this->part2.interval.size() <= 20 &&
+					check11(text + this->part1.interval.start, this->part1.interval.size()) &&
+					check11(text + this->part2.interval.start, this->part2.interval.size()) :
+					false;
 				else if (
 					(this->model[0] == '1' && (this->model[1] == '1' || this->model[1] == '8' || this->model[1] == '9')) ||
 					((this->model[0] == '2' || this->model[0] == '3') && this->model[1] == '8') ||
 					(this->model[0] == '4' && (this->model[1] == '0' || this->model[1] == '1' || this->model[1] == '8' || this->model[1] == '9')) ||
 					(this->model[0] == '5' && (this->model[1] == '1' || this->model[1] == '8')))
 					is_valid =
-						this->part3.interval ?
-							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
-							this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
-							check11(text + this->part1.interval.start, this->part1.interval.size()) &&
-							check11(text + this->part2.interval.start, this->part2.interval.size()) :
-						this->part2.interval ?
-							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
-							this->part1.interval.size() + this->part2.interval.size() <= 20 &&
-							check11(text + this->part1.interval.start, this->part1.interval.size()) &&
-							check11(text + this->part2.interval.start, this->part2.interval.size()) :
-							false;
+					this->part3.interval ?
+					this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 && this->part3.interval.size() <= 12 &&
+					this->part1.interval.size() + this->part2.interval.size() + this->part3.interval.size() <= 20 &&
+					check11(text + this->part1.interval.start, this->part1.interval.size()) &&
+					check11(text + this->part2.interval.start, this->part2.interval.size()) :
+					this->part2.interval ?
+					this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
+					this->part1.interval.size() + this->part2.interval.size() <= 20 &&
+					check11(text + this->part1.interval.start, this->part1.interval.size()) &&
+					check11(text + this->part2.interval.start, this->part2.interval.size()) :
+					false;
 				else if (this->model[0] == '1' && this->model[1] == '2')
 					is_valid =
-						this->part3.interval ? false :
-						this->part2.interval ? false :
-						this->part1.interval ?
-							this->part1.interval.size() <= 13 &&
-							check11(text + this->part1.interval.start, this->part1.interval.size()) :
-						false;
+					this->part3.interval ? false :
+					this->part2.interval ? false :
+					this->part1.interval ?
+					this->part1.interval.size() <= 13 &&
+					check11(text + this->part1.interval.start, this->part1.interval.size()) :
+					false;
 				else if ((this->model[0] == '2' || this->model[0] == '3') && this->model[1] == '1')
 					is_valid =
-						this->part3.interval ? false :
-						this->part2.interval ?
-							this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
-							this->part1.interval.size() + this->part2.interval.size() <= 20 &&
-							check11(text + this->part1.interval.start, this->part1.interval.size()) :
-							false;
+					this->part3.interval ? false :
+					this->part2.interval ?
+					this->part1.interval.size() <= 12 && this->part2.interval.size() <= 12 &&
+					this->part1.interval.size() + this->part2.interval.size() <= 20 &&
+					check11(text + this->part1.interval.start, this->part1.interval.size()) :
+					false;
 				else
 					is_valid = true; // Assume models we don't handle as valid
 				return true;
@@ -5448,7 +5447,7 @@ namespace stdex
 				this->part2.interval.start = (this->part2.interval.end = start) + 1;
 				this->part3.interval.start = (this->part3.interval.end = start) + 1;
 				this->is_valid = false;
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -5558,7 +5557,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -5585,7 +5584,7 @@ namespace stdex
 						return true;
 					}
 					else {
-						this->interval.start = (this->interval.end = start) + 1;
+						this->interval.invalidate();
 						return false;
 					}
 				}
@@ -5626,7 +5625,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -5648,7 +5647,7 @@ namespace stdex
 						return true;
 					}
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 		};
@@ -5662,7 +5661,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -5682,7 +5681,7 @@ namespace stdex
 					while (this->interval.end < end && text[this->interval.end] && isspace(text[this->interval.end])) this->interval.end++;
 					return true;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -5699,7 +5698,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -5716,7 +5715,7 @@ namespace stdex
 					this->interval.end++;
 					return true;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -5733,7 +5732,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -5772,7 +5771,7 @@ namespace stdex
 					return true;
 				}
 				else {
-					this->interval.start = (this->interval.end = start) + 1;
+					this->interval.invalidate();
 					return false;
 				}
 			}
@@ -5787,7 +5786,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -5826,7 +5825,7 @@ namespace stdex
 			error:
 				content.start = 1;
 				content.end = 0;
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -5853,7 +5852,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -5871,7 +5870,7 @@ namespace stdex
 					return true;
 				}
 				else {
-					this->interval.start = (this->interval.end = start) + 1;
+					this->interval.invalidate();
 					return false;
 				}
 			}
@@ -5897,7 +5896,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -5924,7 +5923,7 @@ namespace stdex
 			error:
 				name.invalidate();
 				value.invalidate();
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -5952,7 +5951,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -5969,7 +5968,7 @@ namespace stdex
 					return true;
 				}
 				else {
-					this->interval.start = (this->interval.end = start) + 1;
+					this->interval.invalidate();
 					return false;
 				}
 			}
@@ -5984,7 +5983,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -6011,7 +6010,7 @@ namespace stdex
 			error:
 				type.invalidate();
 				subtype.invalidate();
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -6039,7 +6038,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -6074,7 +6073,7 @@ namespace stdex
 			error:
 				http_media_range::invalidate();
 				params.clear();
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -6097,7 +6096,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -6120,7 +6119,7 @@ namespace stdex
 					this->interval.start = start;
 					return true;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 		};
@@ -6139,7 +6138,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -6151,7 +6150,7 @@ namespace stdex
 							size_t _value = (size_t)value * 10 + text[this->interval.end] - '0';
 							if (_value > (uint16_t)-1) {
 								value = 0;
-								this->interval.start = (this->interval.end = start) + 1;
+								this->interval.invalidate();
 								return false;
 							}
 							value = (uint16_t)_value;
@@ -6167,7 +6166,7 @@ namespace stdex
 					this->interval.start = start;
 					return true;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -6190,7 +6189,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -6223,7 +6222,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -6256,7 +6255,7 @@ namespace stdex
 
 			error:
 				segments.clear();
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -6279,7 +6278,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -6333,7 +6332,7 @@ namespace stdex
 				name.end = 0;
 				value.start = 1;
 				value.end = 0;
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -6365,13 +6364,13 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
 				this->interval.end = start;
 
-				if (this->interval.end + 7 <= end && stdex::strnicmp(text + this->interval.end, 7, "http://", (size_t)-1, m_locale) == 0) {
+				if (this->interval.end + 7 <= end && stdex::strnicmp(text + this->interval.end, 7, "http://", SIZE_MAX, m_locale) == 0) {
 					this->interval.end += 7;
 					if (server.match(text, this->interval.end, end, flags))
 						this->interval.end = server.interval.end;
@@ -6433,7 +6432,7 @@ namespace stdex
 				port.invalidate();
 				path.invalidate();
 				params.clear();
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -6462,7 +6461,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -6502,7 +6501,7 @@ namespace stdex
 					this->interval.end = components.back().end;
 					return true;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -6530,7 +6529,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -6571,7 +6570,7 @@ namespace stdex
 					return true;
 				}
 				value = 1.0f;
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -6594,7 +6593,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || end <= start);
@@ -6602,7 +6601,7 @@ namespace stdex
 					this->interval.end = (this->interval.start = start) + 1;
 					return true;
 				}
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 		};
@@ -6622,7 +6621,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -6639,7 +6638,7 @@ namespace stdex
 				else {
 					asterisk.invalidate();
 					value.invalidate();
-					this->interval.start = (this->interval.end = start) + 1;
+					this->interval.invalidate();
 					return false;
 				}
 
@@ -6689,7 +6688,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -6720,7 +6719,7 @@ namespace stdex
 			error:
 				name.invalidate();
 				value.invalidate();
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -6748,7 +6747,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -6800,7 +6799,7 @@ namespace stdex
 				name.invalidate();
 				value.invalidate();
 				params.clear();
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -6830,7 +6829,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -6878,8 +6877,7 @@ namespace stdex
 				type.end = 0;
 				version.start = 1;
 				version.end = 0;
-				this->interval.start = 1;
-				this->interval.end = 0;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -6911,7 +6909,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -6982,8 +6980,7 @@ namespace stdex
 				version_min.start = 1;
 				version_min.end = 0;
 				version = 0x009;
-				this->interval.start = 1;
-				this->interval.end = 0;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -7021,7 +7018,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -7121,8 +7118,7 @@ namespace stdex
 				verb.end = 0;
 				url.invalidate();
 				protocol.invalidate();
-				this->interval.start = 1;
-				this->interval.end = 0;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -7153,7 +7149,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -7201,7 +7197,7 @@ namespace stdex
 					else
 						goto error;
 				}
-				value.start = (size_t)-1;
+				value.start = SIZE_MAX;
 				value.end = 0;
 				for (;;) {
 					if (m_line_break.match(text, this->interval.end, end, flags)) {
@@ -7216,7 +7212,7 @@ namespace stdex
 						if (isspace(text[this->interval.end]))
 							this->interval.end++;
 						else {
-							if (value.start == (size_t)-1) value.start = this->interval.end;
+							if (value.start == SIZE_MAX) value.start = this->interval.end;
 							value.end = ++this->interval.end;
 						}
 					}
@@ -7231,8 +7227,7 @@ namespace stdex
 				name.end = 0;
 				value.start = 1;
 				value.end = 0;
-				this->interval.start = 1;
-				this->interval.end = 0;
+				this->interval.invalidate();
 				return false;
 			}
 
@@ -7263,7 +7258,7 @@ namespace stdex
 			void insert(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				while (start < end) {
@@ -7334,7 +7329,7 @@ namespace stdex
 			virtual bool match(
 				_In_reads_or_z_(end) const T* text,
 				_In_ size_t start = 0,
-				_In_ size_t end = (size_t)-1,
+				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
@@ -7407,7 +7402,7 @@ namespace stdex
 							}
 						}
 						if (m_chr->match(text, this->interval.end, end, flags)) {
-							value.Prilepi(text + m_chr->interval.start, m_chr->interval.size());
+							value.append(text + m_chr->interval.start, m_chr->interval.size());
 							this->interval.end = m_chr->interval.end;
 							continue;
 						}
@@ -7415,7 +7410,7 @@ namespace stdex
 					}
 				}
 				value.clear();
-				this->interval.start = (this->interval.end = start) + 1;
+				this->interval.invalidate();
 				return false;
 			}
 

@@ -64,7 +64,7 @@ namespace stdex
 #endif
 
 	///
-	/// Reusable C locale
+	/// Reusable C-locale
 	///
-	const locale locale_C(create_locale(LC_ALL, "C"));
+	const inline locale locale_C(create_locale(LC_ALL, "C"));
 }

@@ -11,7 +11,6 @@
 #include <string>
 #include <vector>
 
-
 namespace stdex
 {
 	/// \cond internal
