@@ -62,6 +62,53 @@ namespace stdex
 	constexpr charset_id system_charset = charset_id::system;
 #endif
 
+	inline charset_id charset_from_name(_In_z_ const char* name)
+	{
+		struct charset_less {
+			inline bool operator()(_In_z_ const char* a, _In_z_ const char* b) const
+			{
+				return stdex::stricmp(a, b, stdex::std_locale_C) < 0;
+			}
+		};
+		static const std::map<const char*, charset_id, charset_less> charsets = {
+			{ "UNICODE-1-1-UTF-7", charset_id::utf7 },
+			{ "UTF-7", charset_id::utf7 },
+			{ "CSUNICODE11UTF7", charset_id::utf7 },
+
+			{ "UTF-8", charset_id::utf8 },
+			{ "UTF8", charset_id::utf8 },
+
+			{ "UTF-16", charset_id::utf16 },
+#if BYTE_ORDER == BIG_ENDIAN
+			{ "UTF-16BE", charset_id::utf16 },
+#else
+			{ "UTF-16LE", charset_id::utf16 },
+#endif
+
+			{ "UTF-32", charset_id::utf32 },
+#if BYTE_ORDER == BIG_ENDIAN
+			{ "UTF-32BE", charset_id::utf32 },
+#else
+			{ "UTF-32LE", charset_id::utf32 },
+#endif
+
+			{ "CP1250", charset_id::windows1250 },
+			{ "MS-EE", charset_id::windows1250 },
+			{ "WINDOWS-1250", charset_id::windows1250 },
+
+			{ "CP1251", charset_id::windows1251 },
+			{ "MS-CYRL", charset_id::windows1251 },
+			{ "WINDOWS-1251", charset_id::windows1251 },
+
+			{ "CP1252", charset_id::windows1252 },
+			{ "MS-ANSI", charset_id::windows1252 },
+			{ "WINDOWS-1252", charset_id::windows1252 },
+		};
+		if (auto el = charsets.find(name); el != charsets.end())
+			return el->second;
+		return charset_id::system;
+	}
+
 	///
 	/// Encoding converter context
 	///
@@ -105,7 +152,7 @@ namespace stdex
 		///
 		template <class _Traits_to = std::char_traits<T_to>, class _Alloc_to = std::allocator<T_to>>
 		void strcat(
-			_Inout_ std::basic_string<T_to, _Traits_to, _Alloc_to> &dst,
+			_Inout_ std::basic_string<T_to, _Traits_to, _Alloc_to>& dst,
 			_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src)
 		{
 			_Assume_(src || !count_src);
@@ -125,28 +172,28 @@ namespace stdex
 			}
 
 #pragma warning(suppress: 4127)
-			if constexpr (sizeof(T_from) == sizeof(char) && sizeof(T_to) == sizeof(wchar_t)) {
-				_Assume_(count_src < INT_MAX || count_src == SIZE_MAX);
+				if constexpr (sizeof(T_from) == sizeof(char) && sizeof(T_to) == sizeof(wchar_t)) {
+					_Assume_(count_src < INT_MAX || count_src == SIZE_MAX);
 
-				// Try to convert to stack buffer first.
-				WCHAR szStackBuffer[1024 / sizeof(WCHAR)];
+					// Try to convert to stack buffer first.
+					WCHAR szStackBuffer[1024 / sizeof(WCHAR)];
 #pragma warning(suppress: 6387) // Testing indicates src may be NULL when count_src is also 0. Is SAL of the lpMultiByteStr parameter wrong?
-				int cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), szStackBuffer, _countof(szStackBuffer));
-				if (cch) {
-					// Append from stack.
-					dst.append(reinterpret_cast<const T_to*>(szStackBuffer), count_src != SIZE_MAX ? wcsnlen(szStackBuffer, cch) : static_cast<size_t>(cch) - 1);
-					return;
+					int cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), szStackBuffer, _countof(szStackBuffer));
+					if (cch) {
+						// Append from stack.
+						dst.append(reinterpret_cast<const T_to*>(szStackBuffer), count_src != SIZE_MAX ? wcsnlen(szStackBuffer, cch) : static_cast<size_t>(cch) - 1);
+						return;
+					}
+					if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
+						// Query the required output size. Allocate buffer. Then convert again.
+						cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), NULL, 0);
+						std::unique_ptr<WCHAR[]> szBuffer(new WCHAR[cch]);
+						cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), szBuffer.get(), cch);
+						dst.append(reinterpret_cast<const T_to*>(szBuffer.get()), count_src != SIZE_MAX ? wcsnlen(szBuffer.get(), cch) : static_cast<size_t>(cch) - 1);
+						return;
+					}
+					throw std::system_error(GetLastError(), std::system_category(), "MultiByteToWideChar failed");
 				}
-				if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
-					// Query the required output size. Allocate buffer. Then convert again.
-					cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), NULL, 0);
-					std::unique_ptr<WCHAR[]> szBuffer(new WCHAR[cch]);
-					cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), szBuffer.get(), cch);
-					dst.append(reinterpret_cast<const T_to*>(szBuffer.get()), count_src != SIZE_MAX ? wcsnlen(szBuffer.get(), cch) : static_cast<size_t>(cch) - 1);
-					return;
-				}
-				throw std::system_error(GetLastError(), std::system_category(), "MultiByteToWideChar failed");
-			}
 
 #pragma warning(suppress: 4127)
 			if constexpr (sizeof(T_from) == sizeof(wchar_t) && sizeof(T_to) == sizeof(char)) {
@@ -359,44 +406,7 @@ namespace stdex
 #ifdef _WIN32
 			return static_cast<charset_id>(GetACP());
 #else
-			static const std::map<const char*, charset_id> charsets = {
-				{ "UNICODE-1-1-UTF-7", charset_id::utf7 },
-				{ "UTF-7", charset_id::utf7 },
-				{ "CSUNICODE11UTF7", charset_id::utf7 },
-				
-				{ "UTF-8", charset_id::utf8 },
-				{ "UTF8", charset_id::utf8 },
-
-				{ "UTF-16", charset_id::utf16 },
-#if BYTE_ORDER == BIG_ENDIAN
-				{ "UTF-16BE", charset_id::utf16 },
-#else
-				{ "UTF-16LE", charset_id::utf16 },
-#endif
-
-				{ "UTF-32", charset_id::utf32 },
-#if BYTE_ORDER == BIG_ENDIAN
-				{ "UTF-32BE", charset_id::utf32 },
-#else
-				{ "UTF-32LE", charset_id::utf32 },
-#endif
-
-				{ "CP1250", charset_id::windows1250 },
-				{ "MS-EE", charset_id::windows1250 },
-				{ "WINDOWS-1250", charset_id::windows1250 },
-
-				{ "CP1251", charset_id::windows1251 },
-				{ "MS-CYRL", charset_id::windows1251 },
-				{ "WINDOWS-1251", charset_id::windows1251 },
-
-				{ "CP1252", charset_id::windows1252 },
-				{ "MS-ANSI", charset_id::windows1252 },
-				{ "WINDOWS-1252", charset_id::windows1252 },
-			};
-			const char* lctype = nl_langinfo(CODESET);
-			if (auto el = charsets.find(lctype); el != charsets.end())
-				return el->second;
-			return charset_id::system;
+			return charset_from_name(nl_langinfo(CODESET));
 #endif
 		}
 
@@ -454,19 +464,19 @@ namespace stdex
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
-	inline void strcat(
-		_Inout_ std::wstring& dst,
-		_In_reads_or_z_opt_(count_src) const char* src, _In_ size_t count_src,
-		_In_ charset_id charset = charset_id::system)
+		inline void strcat(
+			_Inout_ std::wstring& dst,
+			_In_reads_or_z_opt_(count_src) const char* src, _In_ size_t count_src,
+			_In_ charset_id charset = charset_id::system)
 	{
 		charset_encoder<char, wchar_t>(charset, wchar_t_charset).strcat(dst, src, count_src);
 	}
 
 	_Deprecated_("Use stdex::strcat")
-	inline void str2wstr(
-		_Inout_ std::wstring& dst,
-		_In_reads_or_z_opt_(count_src) const char* src, _In_ size_t count_src,
-		_In_ charset_id charset = charset_id::system)
+		inline void str2wstr(
+			_Inout_ std::wstring& dst,
+			_In_reads_or_z_opt_(count_src) const char* src, _In_ size_t count_src,
+			_In_ charset_id charset = charset_id::system)
 	{
 		strcat(dst, src, count_src, charset);
 	}
@@ -483,19 +493,19 @@ namespace stdex
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
-	inline void strcat(
-		_Inout_ std::wstring& dst,
-		_In_ const std::string& src,
-		_In_ charset_id charset = charset_id::system)
+		inline void strcat(
+			_Inout_ std::wstring& dst,
+			_In_ const std::string& src,
+			_In_ charset_id charset = charset_id::system)
 	{
 		strcat(dst, src.data(), src.size(), charset);
 	}
 
 	_Deprecated_("Use stdex::strcat")
-	inline void str2wstr(
-		_Inout_ std::wstring& dst,
-		_In_ const std::string& src,
-		_In_ charset_id charset = charset_id::system)
+		inline void str2wstr(
+			_Inout_ std::wstring& dst,
+			_In_ const std::string& src,
+			_In_ charset_id charset = charset_id::system)
 	{
 		strcat(dst, src, charset);
 	}
@@ -513,10 +523,10 @@ namespace stdex
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
-	inline void strcpy(
-		_Inout_ std::wstring& dst,
-		_In_reads_or_z_opt_(count_src) const char* src, _In_ size_t count_src,
-		_In_ charset_id charset = charset_id::system)
+		inline void strcpy(
+			_Inout_ std::wstring& dst,
+			_In_reads_or_z_opt_(count_src) const char* src, _In_ size_t count_src,
+			_In_ charset_id charset = charset_id::system)
 	{
 		dst.clear();
 		strcat(dst, src, count_src, charset);
@@ -534,10 +544,10 @@ namespace stdex
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
-	inline void strcpy(
-		_Inout_ std::wstring& dst,
-		_In_ const std::string& src,
-		_In_ charset_id charset = charset_id::system)
+		inline void strcpy(
+			_Inout_ std::wstring& dst,
+			_In_ const std::string& src,
+			_In_ charset_id charset = charset_id::system)
 	{
 		strcpy(dst, src.data(), src.size(), charset);
 	}
@@ -555,9 +565,9 @@ namespace stdex
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
-	inline std::wstring str2wstr(
-		_In_z_ const char* src,
-		_In_ charset_id charset = charset_id::system)
+		inline std::wstring str2wstr(
+			_In_z_ const char* src,
+			_In_ charset_id charset = charset_id::system)
 	{
 		std::wstring dst;
 		strcat(dst, src, SIZE_MAX, charset);
@@ -578,9 +588,9 @@ namespace stdex
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
-	inline std::wstring str2wstr(
-		_In_reads_or_z_opt_(count_src) const char* src, _In_ size_t count_src,
-		_In_ charset_id charset = charset_id::system)
+		inline std::wstring str2wstr(
+			_In_reads_or_z_opt_(count_src) const char* src, _In_ size_t count_src,
+			_In_ charset_id charset = charset_id::system)
 	{
 		std::wstring dst;
 		strcat(dst, src, count_src, charset);
@@ -600,9 +610,9 @@ namespace stdex
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
-	inline std::wstring str2wstr(
-		_In_ const std::string& src,
-		_In_ charset_id charset = charset_id::system)
+		inline std::wstring str2wstr(
+			_In_ const std::string& src,
+			_In_ charset_id charset = charset_id::system)
 	{
 		return str2wstr(src.c_str(), src.size(), charset);
 	}
@@ -620,19 +630,19 @@ namespace stdex
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
-	inline void strcat(
-		_Inout_ std::string& dst,
-		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
-		_In_ charset_id charset = charset_id::system)
+		inline void strcat(
+			_Inout_ std::string& dst,
+			_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
+			_In_ charset_id charset = charset_id::system)
 	{
 		charset_encoder<wchar_t, char>(wchar_t_charset, charset).strcat(dst, src, count_src);
 	}
 
 	_Deprecated_("Use stdex::strcat")
-	inline void wstr2str(
-		_Inout_ std::string& dst,
-		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
-		_In_ charset_id charset = charset_id::system)
+		inline void wstr2str(
+			_Inout_ std::string& dst,
+			_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
+			_In_ charset_id charset = charset_id::system)
 	{
 		strcat(dst, src, count_src, charset);
 	}
@@ -649,19 +659,19 @@ namespace stdex
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
-	inline void strcat(
-		_Inout_ std::string& dst,
-		_In_ const std::wstring& src,
-		_In_ charset_id charset = charset_id::system)
+		inline void strcat(
+			_Inout_ std::string& dst,
+			_In_ const std::wstring& src,
+			_In_ charset_id charset = charset_id::system)
 	{
 		strcat(dst, src.c_str(), src.size(), charset);
 	}
 
 	_Deprecated_("Use stdex::strcat")
-	inline void wstr2str(
-		_Inout_ std::string& dst,
-		_In_ const std::wstring& src,
-		_In_ charset_id charset = charset_id::system)
+		inline void wstr2str(
+			_Inout_ std::string& dst,
+			_In_ const std::wstring& src,
+			_In_ charset_id charset = charset_id::system)
 	{
 		strcat(dst, src, charset);
 	}
@@ -679,10 +689,10 @@ namespace stdex
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
-	inline void strcpy(
-		_Inout_ std::string& dst,
-		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
-		_In_ charset_id charset = charset_id::system)
+		inline void strcpy(
+			_Inout_ std::string& dst,
+			_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
+			_In_ charset_id charset = charset_id::system)
 	{
 		dst.clear();
 		strcat(dst, src, count_src, charset);
@@ -700,10 +710,10 @@ namespace stdex
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
-	inline void strcpy(
-		_Inout_ std::string& dst,
-		_In_ const std::wstring& src,
-		_In_ charset_id charset = charset_id::system)
+		inline void strcpy(
+			_Inout_ std::string& dst,
+			_In_ const std::wstring& src,
+			_In_ charset_id charset = charset_id::system)
 	{
 		strcpy(dst, src.data(), src.size(), charset);
 	}
@@ -721,9 +731,9 @@ namespace stdex
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
-	inline std::string wstr2str(
-		_In_z_ const wchar_t* src,
-		_In_ charset_id charset = charset_id::system)
+		inline std::string wstr2str(
+			_In_z_ const wchar_t* src,
+			_In_ charset_id charset = charset_id::system)
 	{
 		std::string dst;
 		strcat(dst, src, SIZE_MAX, charset);
@@ -744,9 +754,9 @@ namespace stdex
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
-	inline std::string wstr2str(
-		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
-		_In_ charset_id charset = charset_id::system)
+		inline std::string wstr2str(
+			_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
+			_In_ charset_id charset = charset_id::system)
 	{
 		std::string dst;
 		strcat(dst, src, count_src, charset);
@@ -766,9 +776,9 @@ namespace stdex
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
-	inline std::string wstr2str(
-		_In_ const std::wstring& src,
-		_In_ charset_id charset = charset_id::system)
+		inline std::string wstr2str(
+			_In_ const std::wstring& src,
+			_In_ charset_id charset = charset_id::system)
 	{
 		return wstr2str(src.c_str(), src.size(), charset);
 	}
