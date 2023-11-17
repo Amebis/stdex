@@ -253,6 +253,28 @@ namespace stdex
 	const inline std::locale std_locale_C("C");
 
 	///
+	/// Checks if string contains all white-space
+	///
+	/// \param[in] str     String
+	/// \param[in] count   Code unit count limit
+	///
+	/// \return `true` if all characters are white-space or `false` when any non-white-space character is found in string.
+	///
+	template <class T>
+	inline bool isblank(
+		_In_reads_or_z_opt_(count) const T* str,
+		_In_ size_t count,
+		_In_ const std::locale& locale)
+	{
+		_Assume_(str || !count);
+		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
+		for (size_t i = 0; i < count && str[i]; ++i)
+			if (!ctype.is(ctype.space, str[i]))
+				return false;
+		return true;
+	}
+
+	///
 	/// Find a code unit in a string case-insensitive
 	///
 	/// \param[in] str    String
