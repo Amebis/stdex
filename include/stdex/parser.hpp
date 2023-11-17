@@ -7444,6 +7444,1033 @@ namespace stdex
 #else
 		using tjson_string = json_string;
 #endif
+
+		///
+		/// CSS comment
+		///
+		template <class T>
+		class basic_css_comment : public basic_parser<T>
+		{
+		public:
+			virtual bool match(
+				_In_reads_or_z_opt_(end) const T* text,
+				_In_ size_t start = 0,
+				_In_ size_t end = SIZE_MAX,
+				_In_ int flags = match_multiline)
+			{
+				_Unreferenced_(flags);
+				_Assume_(text || start + 1 >= end);
+				if (start + 1 < end &&
+					text[start] == '/' &&
+					text[start + 1] == '*')
+				{
+					// /*
+					this->content.start = this->interval.end = start + 2;
+					for (;;) {
+						if (this->interval.end >= end || !text[this->interval.end])
+							break;
+						if (this->interval.end + 1 < end &&
+							text[this->interval.end] == '*' &&
+							text[this->interval.end + 1] == '/')
+						{
+							// /*...*/
+							this->content.end = this->interval.end;
+							this->interval.start = start;
+							this->interval.end = this->interval.end + 2;
+							return true;
+						}
+						this->interval.end++;
+					}
+				}
+				this->content.invalidate();
+				this->interval.invalidate();
+				return false;
+			}
+
+			virtual void invalidate()
+			{
+				this->content.invalidate();
+				basic_parser::invalidate();
+			}
+
+		public:
+			stdex::interval<size_t> content; ///< content position in source
+		};
+
+		using css_comment = basic_css_comment<char>;
+		using wcss_comment = basic_css_comment<wchar_t>;
+#ifdef _UNICODE
+		using tcss_comment = wcss_comment;
+#else
+		using tcss_comment = css_comment;
+#endif
+
+		///
+		/// Legacy CSS comment start `<!--`
+		///
+		template <class T>
+		class basic_css_cdo : public basic_parser<T>
+		{
+		public:
+			virtual bool match(
+				_In_reads_or_z_opt_(end) const T* text,
+				_In_ size_t start = 0,
+				_In_ size_t end = SIZE_MAX,
+				_In_ int flags = match_multiline)
+			{
+				_Unreferenced_(flags);
+				_Assume_(text || start + 3 >= end);
+				if (start + 3 < end &&
+					text[start] == '<' &&
+					text[start + 1] == '!' &&
+					text[start + 2] == '-' &&
+					text[start + 3] == '-')
+				{
+					this->interval.start = start;
+					this->interval.end = start + 4;
+					return true;
+				}
+				this->interval.invalidate();
+				return false;
+			}
+		};
+
+		using css_cdo = basic_css_cdo<char>;
+		using wcss_cdo = basic_css_cdo<wchar_t>;
+#ifdef _UNICODE
+		using tcss_cdo = wcss_cdo;
+#else
+		using tcss_cdo = css_cdo;
+#endif
+
+		///
+		/// Legacy CSS comment end `-->`
+		///
+		template <class T>
+		class basic_css_cdc : public basic_parser<T>
+		{
+		public:
+			virtual bool match(
+				_In_reads_or_z_opt_(end) const T* text,
+				_In_ size_t start = 0,
+				_In_ size_t end = SIZE_MAX,
+				_In_ int flags = match_multiline)
+			{
+				_Unreferenced_(flags);
+				_Assume_(text || start + 2 >= end);
+				if (start + 2 < end &&
+					text[start] == '-' &&
+					text[start + 1] == '-' &&
+					text[start + 2] == '>')
+				{
+					this->interval.start = start;
+					this->interval.end = start + 3;
+					return true;
+				}
+				this->interval.invalidate();
+				return false;
+			}
+		};
+
+		using css_cdc = basic_css_cdc<char>;
+		using wcss_cdc = basic_css_cdc<wchar_t>;
+#ifdef _UNICODE
+		using tcss_cdc = wcss_cdc;
+#else
+		using tcss_cdc = css_cdc;
+#endif
+
+		///
+		/// CSS string
+		///
+		template <class T>
+		class basic_css_string : public basic_parser<T>
+		{
+		public:
+			virtual bool match(
+				_In_reads_or_z_opt_(end) const T* text,
+				_In_ size_t start = 0,
+				_In_ size_t end = SIZE_MAX,
+				_In_ int flags = match_multiline)
+			{
+				_Unreferenced_(flags);
+				this->interval.end = start;
+				_Assume_(text || this->interval.end >= end);
+				if (this->interval.end < end &&
+					(text[this->interval.end] == '\"' || text[this->interval.end] == '\''))
+				{
+					// "Quoted...
+					T quote = text[this->interval.end];
+					this->content.start = ++this->interval.end;
+					for (;;) {
+						if (this->interval.end >= end || !text[this->interval.end])
+							break;
+						if (text[this->interval.end] == quote) {
+							// End quote"
+							this->content.end = this->interval.end;
+							this->interval.start = start;
+							this->interval.end++;
+							return true;
+						}
+						if (this->interval.end + 1 < end &&
+							text[this->interval.end] == '\\' &&
+							(text[this->interval.end + 1] == '\"' || text[this->interval.end + 1] == '\''))
+						{
+							// Escaped quote
+							this->interval.end = this->interval.end + 2;
+						}
+						else
+							this->interval.end++;
+					}
+				}
+
+				this->content.invalidate();
+				this->interval.invalidate();
+				return false;
+			}
+
+			virtual void invalidate()
+			{
+				this->content.invalidate();
+				basic_parser::invalidate();
+			}
+
+		public:
+			stdex::interval<size_t> content; ///< content position in source
+		};
+
+		using css_string = basic_css_string<char>;
+		using wcss_string = basic_css_string<wchar_t>;
+#ifdef _UNICODE
+		using tcss_string = wcss_string;
+#else
+		using tcss_string = css_string;
+#endif
+
+		///
+		/// URI in CSS
+		///
+		template <class T>
+		class basic_css_uri : public basic_parser<T>
+		{
+		public:
+			virtual bool match(
+				_In_reads_or_z_opt_(end) const T* text,
+				_In_ size_t start = 0,
+				_In_ size_t end = SIZE_MAX,
+				_In_ int flags = match_multiline)
+			{
+				_Unreferenced_(flags);
+				this->interval.end = start;
+				_Assume_(text || this->interval.end + 3 >= end);
+				if (this->interval.end + 3 < end &&
+					(text[this->interval.end] == 'u' || text[this->interval.end] == 'U') &&
+					(text[this->interval.end + 1] == 'r' || text[this->interval.end + 1] == 'R') &&
+					(text[this->interval.end + 2] == 'l' || text[this->interval.end + 2] == 'L') &&
+					text[this->interval.end + 3] == '(')
+				{
+					// url(
+					this->interval.end = this->interval.end + 4;
+
+					// Skip whitespace.
+					const auto& ctype = std::use_facet<std::ctype<T>>(m_locale);
+					for (; this->interval.end < end && text[this->interval.end] && ctype.is(ctype.space, text[this->interval.end]); this->interval.end++);
+
+					if (this->interval.end < end &&
+						(text[this->interval.end] == '\"' || text[this->interval.end] == '\''))
+					{
+						// url("Quoted...
+						T quote = text[this->interval.end];
+						this->content.start = ++this->interval.end;
+						for (;;) {
+							if (this->interval.end >= end || !text[this->interval.end])
+								goto error;
+							if (text[this->interval.end] == quote) {
+								// End quote"
+								this->content.end = this->interval.end;
+								this->interval.end++;
+								break;
+							}
+							if (this->interval.end + 1 < end &&
+								text[this->interval.end] == '\\' &&
+								(text[this->interval.end + 1] == '\"' || text[this->interval.end + 1] == '\''))
+							{
+								// Escaped quote
+								this->interval.end = this->interval.end + 2;
+							}
+							else
+								this->interval.end++;
+						}
+
+						// Skip whitespace.
+						for (; this->interval.end < end && text[this->interval.end] && ctype.is(ctype.space, text[this->interval.end]); this->interval.end++);
+
+						if (this->interval.end < end &&
+							text[this->interval.end] == ')')
+						{
+							// url("...")
+							this->interval.start = start;
+							this->interval.end++;
+							return true;
+						}
+					}
+					else {
+						// url(...
+						this->content.start = content.end = this->interval.end;
+						for (;;) {
+							if (this->interval.end >= end || !text[this->interval.end])
+								goto error;
+							if (text[this->interval.end] == ')') {
+								// url(...)
+								this->interval.start = start;
+								this->interval.end++;
+								return true;
+							}
+							if (ctype.is(ctype.space, text[this->interval.end]))
+								this->interval.end++;
+							else
+								this->content.end = ++this->interval.end;
+						}
+					}
+				}
+
+			error:
+				this->content.invalidate();
+				this->interval.invalidate();
+				return false;
+			}
+
+			virtual void invalidate()
+			{
+				this->content.invalidate();
+				basic_parser::invalidate();
+			}
+
+		public:
+			stdex::interval<size_t> content; ///< content position in source
+		};
+
+		using css_uri = basic_css_uri<char>;
+		using wcss_uri = basic_css_uri<wchar_t>;
+#ifdef _UNICODE
+		using tcss_uri = wcss_uri;
+#else
+		using tcss_uri = css_uri;
+#endif
+
+		///
+		/// CSS import directive
+		///
+		template <class T>
+		class basic_css_import : public basic_parser<T>
+		{
+		public:
+			virtual bool match(
+				_In_reads_or_z_opt_(end) const T* text,
+				_In_ size_t start = 0,
+				_In_ size_t end = SIZE_MAX,
+				_In_ int flags = match_multiline)
+			{
+				_Unreferenced_(flags);
+				this->interval.end = start;
+				_Assume_(text || this->interval.end + 6 >= end);
+				if (this->interval.end + 6 < end &&
+					text[this->interval.end] == '@' &&
+					(text[this->interval.end + 1] == 'i' || text[this->interval.end + 1] == 'I') &&
+					(text[this->interval.end + 2] == 'm' || text[this->interval.end + 2] == 'M') &&
+					(text[this->interval.end + 3] == 'p' || text[this->interval.end + 3] == 'P') &&
+					(text[this->interval.end + 4] == 'o' || text[this->interval.end + 4] == 'O') &&
+					(text[this->interval.end + 5] == 'r' || text[this->interval.end + 5] == 'R') &&
+					(text[this->interval.end + 6] == 't' || text[this->interval.end + 6] == 'T'))
+				{
+					// @import...
+					this->interval.end = this->interval.end + 7;
+
+					// Skip whitespace.
+					const auto& ctype = std::use_facet<std::ctype<T>>(m_locale);
+					for (; this->interval.end < end && text[this->interval.end] && ctype.is(ctype.space, text[this->interval.end]); this->interval.end++);
+
+					if (this->interval.end < end &&
+						(text[this->interval.end] == '\"' || text[this->interval.end] == '\''))
+					{
+						// @import "Quoted
+						T quote = text[this->interval.end];
+						this->content.start = ++this->interval.end;
+						for (;;) {
+							if (this->interval.end >= end || !text[this->interval.end])
+								goto error;
+							if (text[this->interval.end] == quote) {
+								// End quote"
+								this->content.end = this->interval.end;
+								this->interval.start = start;
+								this->interval.end++;
+								return true;
+							}
+							if (this->interval.end + 1 < end &&
+								text[this->interval.end] == '\\' &&
+								(text[this->interval.end + 1] == '\"' || text[this->interval.end + 1] == '\''))
+							{
+								// Escaped quote
+								this->interval.end = this->interval.end + 2;
+							}
+							else
+								this->interval.end++;
+						}
+					}
+				}
+
+			error:
+				this->content.invalidate();
+				this->interval.invalidate();
+				return false;
+			}
+
+			virtual void invalidate()
+			{
+				this->content.invalidate();
+				basic_parser::invalidate();
+			}
+
+		public:
+			stdex::interval<size_t> content; ///< content position in source
+		};
+
+		using css_import = basic_css_import<char>;
+		using wcss_import = basic_css_import<wchar_t>;
+#ifdef _UNICODE
+		using tcss_import = wcss_import;
+#else
+		using tcss_import = css_import;
+#endif
+
+		///
+		/// MIME content type
+		///
+		template <class T>
+		class basic_mime_type : public basic_parser<T>
+		{
+		public:
+			virtual bool match(
+				_In_reads_or_z_opt_(end) const T* text,
+				_In_ size_t start = 0,
+				_In_ size_t end = SIZE_MAX,
+				_In_ int flags = match_multiline)
+			{
+				_Unreferenced_(flags);
+				const auto& ctype = std::use_facet<std::ctype<T>>(m_locale);
+
+				this->interval.end = start;
+				this->base_type.start = this->interval.end;
+				for (;;) {
+					_Assume_(text || this->interval.end >= end);
+					if (this->interval.end >= end || !text[this->interval.end])
+						break;
+					if (text[this->interval.end] == '/' ||
+						text[this->interval.end] == ';' ||
+						ctype.is(ctype.space, text[this->interval.end]))
+						break;
+					this->interval.end++;
+				}
+				if (this->interval.end <= this->base_type.start)
+					goto error;
+				this->base_type.end = this->interval.end;
+
+				if (end <= this->interval.end || text[this->interval.end] != '/')
+					goto error;
+
+				this->interval.end++;
+				this->sub_type.start = this->interval.end;
+				for (;;) {
+					if (this->interval.end >= end || !text[this->interval.end])
+						break;
+					if (text[this->interval.end] == '/' ||
+						text[this->interval.end] == ';' ||
+						ctype.is(ctype.space, text[this->interval.end]))
+						break;
+					this->interval.end++;
+				}
+				if (this->interval.end <= this->sub_type.start)
+					goto error;
+
+				this->sub_type.end = this->interval.end;
+				this->charset.invalidate();
+				if (this->interval.end < end && text[this->interval.end] == ';') {
+					this->interval.end++;
+
+					// Skip whitespace.
+					for (; this->interval.end < end && text[this->interval.end] && ctype.is(ctype.space, text[this->interval.end]); this->interval.end++);
+
+					if (this->interval.end + 7 < end &&
+						(text[this->interval.end] == 'c' || text[this->interval.end] == 'C') &&
+						(text[this->interval.end + 1] == 'h' || text[this->interval.end + 1] == 'H') &&
+						(text[this->interval.end + 2] == 'a' || text[this->interval.end + 2] == 'A') &&
+						(text[this->interval.end + 3] == 'r' || text[this->interval.end + 3] == 'R') &&
+						(text[this->interval.end + 4] == 's' || text[this->interval.end + 4] == 'S') &&
+						(text[this->interval.end + 5] == 'e' || text[this->interval.end + 5] == 'E') &&
+						(text[this->interval.end + 6] == 't' || text[this->interval.end + 6] == 'T') &&
+						text[this->interval.end + 7] == '=')
+					{
+						this->interval.end = this->interval.end + 8;
+						if (this->interval.end < end &&
+							(text[this->interval.end] == '\"' || text[this->interval.end] == '\''))
+						{
+							// "Quoted...
+							T quote = text[this->interval.end];
+							this->charset.start = ++this->interval.end;
+							for (;;) {
+								if (this->interval.end >= end || !text[this->interval.end]) {
+									// No end quote!
+									this->charset.invalidate();
+									break;
+								}
+								if (text[this->interval.end] == quote) {
+									// End quote"
+									this->charset.end = this->interval.end;
+									this->interval.end++;
+									break;
+								}
+								this->interval.end++;
+							}
+						}
+						else {
+							// Nonquoted
+							this->charset.start = this->interval.end;
+							for (;;) {
+								if (this->interval.end >= end || !text[this->interval.end] ||
+									ctype.is(ctype.space, text[this->interval.end])) {
+									this->charset.end = this->interval.end;
+									break;
+								}
+								this->interval.end++;
+							}
+						}
+					}
+				}
+				this->interval.start = start;
+				return true;
+
+			error:
+				this->base_type.invalidate();
+				this->sub_type.invalidate();
+				this->charset.invalidate();
+				this->interval.invalidate();
+				return false;
+			}
+
+			virtual void invalidate()
+			{
+				this->base_type.invalidate();
+				this->sub_type.invalidate();
+				this->charset.invalidate();
+				basic_parser::invalidate();
+			}
+
+		public:
+			stdex::interval<size_t> base_type; ///< basic type position in source
+			stdex::interval<size_t> sub_type;  ///< sub-type position in source
+			stdex::interval<size_t> charset;   ///< charset position in source
+		};
+
+		using mime_type = basic_mime_type<char>;
+		using wmime_type = basic_mime_type<wchar_t>;
+#ifdef _UNICODE
+		using tmime_type = wmime_type;
+#else
+		using tmime_type = mime_type;
+#endif
+
+		///
+		/// Contiguous sequence of characters representing name of element, attribute etc.
+		///
+		template <class T>
+		class basic_html_ident : public basic_parser<T>
+		{
+		public:
+			virtual bool match(
+				_In_reads_or_z_opt_(end) const T* text,
+				_In_ size_t start = 0,
+				_In_ size_t end = SIZE_MAX,
+				_In_ int flags = match_default)
+			{
+				_Unreferenced_(flags);
+				const auto& ctype = std::use_facet<std::ctype<T>>(m_locale);
+				this->interval.end = start;
+				for (;;) {
+					_Assume_(text || this->interval.end >= end);
+					if (this->interval.end >= end || !text[this->interval.end]) {
+						if (start < this->interval.end) {
+							this->interval.start = start;
+							return true;
+						}
+						this->interval.invalidate();
+						return false;
+					}
+					if (text[this->interval.end] == '>' ||
+						text[this->interval.end] == '=' ||
+						text[this->interval.end] == '/' && this->interval.end + 1 < end && text[this->interval.end + 1] == '>' ||
+						ctype.is(ctype.space, text[this->interval.end]))
+					{
+						this->interval.start = start;
+						return true;
+					}
+					this->interval.end++;
+				}
+			}
+		};
+
+		using html_ident = basic_html_ident<char>;
+		using whtml_ident = basic_html_ident<wchar_t>;
+#ifdef _UNICODE
+		using thtml_ident = whtml_ident;
+#else
+		using thtml_ident = html_ident;
+#endif
+
+		///
+		/// Optionally-quoted string representing value of an attribute
+		///
+		template <class T>
+		class basic_html_value : public basic_parser<T>
+		{
+		public:
+			virtual bool match(
+				_In_reads_or_z_opt_(end) const T* text,
+				_In_ size_t start = 0,
+				_In_ size_t end = SIZE_MAX,
+				_In_ int flags = match_default)
+			{
+				_Unreferenced_(flags);
+				this->interval.end = start;
+				_Assume_(text || this->interval.end >= end);
+				if (this->interval.end < end &&
+					(text[this->interval.end] == '\"' || text[this->interval.end] == '\''))
+				{
+					// "Quoted...
+					T quote = text[this->interval.end];
+					this->content.start = ++this->interval.end;
+					for (;;) {
+						if (this->interval.end >= end || !text[this->interval.end]) {
+							// No end quote!
+							this->content.invalidate();
+							this->interval.invalidate();
+							return false;
+						}
+						if (text[this->interval.end] == quote) {
+							// End quote"
+							this->content.end = this->interval.end;
+							this->interval.start = start;
+							this->interval.end++;
+							return true;
+						}
+						this->interval.end++;
+					}
+				}
+
+				// Nonquoted
+				this->content.start = this->interval.end;
+				const auto& ctype = std::use_facet<std::ctype<T>>(m_locale);
+				for (;;) {
+					_Assume_(text || this->interval.end >= end);
+					if (this->interval.end >= end || !text[this->interval.end]) {
+						this->content.end = this->interval.end;
+						this->interval.start = start;
+						return true;
+					}
+					if (text[this->interval.end] == '>' ||
+						text[this->interval.end] == '/' && this->interval.end + 1 < end && text[this->interval.end + 1] == '>' ||
+						ctype.is(ctype.space, text[this->interval.end]))
+					{
+						this->content.end = this->interval.end;
+						this->interval.start = start;
+						return true;
+					}
+					this->interval.end++;
+				}
+			}
+
+			virtual void invalidate()
+			{
+				this->content.invalidate();
+				basic_parser::invalidate();
+			}
+
+		public:
+			stdex::interval<size_t> content; ///< content position in source
+		};
+
+		using html_value = basic_html_value<char>;
+		using whtml_value = basic_html_value<wchar_t>;
+#ifdef _UNICODE
+		using thtml_value = whtml_value;
+#else
+		using thtml_value = html_value;
+#endif
+
+		///
+		/// HTML sequence type
+		///
+		enum class html_sequence_t {
+			text = 0,
+			element,       ///< `<.../>` tag
+			element_start, ///< `<...>` element start tag
+			element_end,   ///< `</...>` element end tag
+			declaration,   ///< `<!...>` declaration
+			comment,       ///< `<!--...-->` comment
+			instruction,   ///< `<?...>` and `<?...?>` declarations
+			PCDATA,        ///< `<![PCDATA[...]]>` elements
+			CDATA,         ///< `<![CDATA[...]]>` elements
+
+			unknown = -1,
+		};
+
+		///
+		/// Tag attribute
+		///
+		struct html_attribute {
+			stdex::interval<size_t> name;  ///< attribute name position in source
+			stdex::interval<size_t> value; ///< attribute value position in source
+		};
+
+		///
+		/// Tag
+		///
+		template <class T>
+		class basic_html_tag : public basic_parser<T>
+		{
+		public:
+			basic_html_tag(_In_ const std::locale& locale = std::locale()) :
+				basic_parser(locale),
+				type(html_sequence_t::unknown)
+			{}
+
+			virtual bool match(
+				_In_reads_or_z_opt_(end) const T* text,
+				_In_ size_t start = 0,
+				_In_ size_t end = SIZE_MAX,
+				_In_ int flags = match_multiline)
+			{
+				_Assume_(text || start >= end);
+				if (start >= end || text[start] != '<')
+					goto error;
+				this->interval.end = start + 1;
+				if (this->interval.end >= end || !text[this->interval.end])
+					goto error;
+				if (text[this->interval.end] == '/' &&
+					this->m_ident.match(text, this->interval.end + 1, end, flags))
+				{
+					// </...
+					this->type = html_sequence_t::element_end;
+					this->name = this->m_ident.interval;
+					this->interval.end = this->m_ident.interval.end;
+				}
+				else if (text[this->interval.end] == '!') {
+					// <!...
+					this->interval.end++;
+					if (this->interval.end + 1 < end &&
+						text[this->interval.end] == '-' &&
+						text[this->interval.end + 1] == '-')
+					{
+						// <!--...
+						this->name.start = this->interval.end = this->interval.end + 2;
+						for (;;) {
+							if (this->interval.end >= end || !text[this->interval.end])
+								goto error;
+							if (this->interval.end + 2 < end &&
+								text[this->interval.end] == '-' &&
+								text[this->interval.end + 1] == '-' &&
+								text[this->interval.end + 2] == '>')
+							{
+								// <!--...-->
+								this->type = html_sequence_t::comment;
+								this->name.end = this->interval.end;
+								this->attributes.clear();
+								this->interval.start = start;
+								this->interval.end = this->interval.end + 3;
+								return true;
+							}
+							this->interval.end++;
+						}
+					}
+					this->type = html_sequence_t::declaration;
+					this->name.start = this->name.end = this->interval.end;
+				}
+				else if (text[this->interval.end] == '?') {
+					// <?...
+					this->name.start = ++this->interval.end;
+					for (;;) {
+						if (this->interval.end >= end || !text[this->interval.end])
+							goto error;
+						if (text[this->interval.end] == '>') {
+							// <?...>
+							this->type = html_sequence_t::instruction;
+							this->name.end = this->interval.end;
+							this->attributes.clear();
+							this->interval.start = start;
+							this->interval.end++;
+							return true;
+						}
+						if (this->interval.end + 1 < end &&
+							text[this->interval.end] == '?' &&
+							text[this->interval.end + 1] == '>')
+						{
+							// <?...?>
+							this->type = html_sequence_t::instruction;
+							this->name.end = this->interval.end;
+							this->attributes.clear();
+							this->interval.start = start;
+							this->interval.end = this->interval.end + 2;
+							return true;
+						}
+						this->interval.end++;
+					}
+				}
+				else if (this->m_ident.match(text, this->interval.end, end, flags)) {
+					// <tag...
+					this->type = html_sequence_t::element_start;
+					this->name = this->m_ident.interval;
+					this->interval.end = this->m_ident.interval.end;
+				}
+				else
+					goto error;
+
+				// Skip whitespace.
+				const auto& ctype = std::use_facet<std::ctype<T>>(m_locale);
+				for (; this->interval.end < end && text[this->interval.end] && ctype.is(ctype.space, text[this->interval.end]); this->interval.end++);
+
+				this->attributes.clear();
+				for (;;) {
+					if (this->type == html_sequence_t::element_start &&
+						this->interval.end + 1 < end &&
+						text[this->interval.end] == '/' &&
+						text[this->interval.end + 1] == '>')
+					{
+						// <tag .../>
+						this->type = html_sequence_t::element;
+						this->interval.end = this->interval.end + 2;
+						break;
+					}
+					if (this->interval.end < end &&
+						text[this->interval.end] == '>')
+					{
+						// <tag ...>
+						this->interval.end++;
+						break;
+					}
+					if (this->type == html_sequence_t::declaration &&
+						this->interval.end + 1 < end &&
+						text[this->interval.end] == '!' &&
+						text[this->interval.end + 1] == '>')
+					{
+						// "<!...!>".
+						this->interval.end = this->interval.end + 2;
+						break;
+					}
+					if (this->type == html_sequence_t::declaration &&
+						this->interval.end + 1 < end &&
+						text[this->interval.end] == '-' &&
+						text[this->interval.end + 1] == '-')
+					{
+						// "<! ... --...".
+						this->interval.end = this->interval.end + 2;
+						for (;;) {
+							if (this->interval.end >= end || !text[this->interval.end])
+								goto error;
+							if (this->interval.end + 1 < end &&
+								text[this->interval.end] == '-' &&
+								text[this->interval.end + 1] == '-')
+							{
+								// "<! ... --...--".
+								this->interval.end = this->interval.end + 2;
+								break;
+							}
+							this->interval.end++;
+						}
+
+						// Skip whitespace.
+						for (; this->interval.end < end && text[this->interval.end] && ctype.is(ctype.space, text[this->interval.end]); this->interval.end++);
+						continue;
+					}
+
+					if (this->interval.end >= end || !text[this->interval.end])
+						goto error;
+
+					// Attributes follow...
+					html_attribute* a = nullptr;
+					if (this->m_ident.match(text, this->interval.end, end, flags)) {
+						this->attributes.push_back(std::move(html_attribute{ this->m_ident.interval }));
+						a = &this->attributes.back();
+						_Assume_(a);
+						this->interval.end = this->m_ident.interval.end;
+					}
+					else {
+						// What was that?! Skip.
+						this->interval.end++;
+						continue;
+					}
+
+					// Skip whitespace.
+					for (; this->interval.end < end && text[this->interval.end] && ctype.is(ctype.space, text[this->interval.end]); this->interval.end++);
+
+					if (this->interval.end < end && text[this->interval.end] == '=') {
+						this->interval.end++;
+
+						// Skip whitespace.
+						for (; this->interval.end < end && text[this->interval.end] && ctype.is(ctype.space, text[this->interval.end]); this->interval.end++);
+
+						if (this->m_value.match(text, this->interval.end, end, flags)) {
+							// This attribute has value.
+							a->value = this->m_value.content;
+							this->interval.end = this->m_value.interval.end;
+
+							// Skip whitespace.
+							for (; this->interval.end < end && text[this->interval.end] && ctype.is(ctype.space, text[this->interval.end]); this->interval.end++);
+						}
+					}
+					else {
+						// This attribute has no value.
+						a->value.invalidate();
+					}
+				}
+
+				this->interval.start = start;
+				return true;
+
+			error:
+				this->type = html_sequence_t::unknown;
+				this->name.invalidate();
+				this->attributes.clear();
+				this->interval.invalidate();
+				return false;
+			}
+
+			virtual void invalidate()
+			{
+				this->type = html_sequence_t::unknown;
+				this->name.invalidate();
+				this->attributes.clear();
+				basic_parser::invalidate();
+			}
+
+		public:
+			html_sequence_t type;                   ///< tag type
+			stdex::interval<size_t> name;           ///< tag name position in source
+			std::vector<html_attribute> attributes; ///< tag attributes
+
+		protected:
+			basic_html_ident<T> m_ident;
+			basic_html_value<T> m_value;
+		};
+
+		using html_tag = basic_html_tag<char>;
+		using whtml_tag = basic_html_tag<wchar_t>;
+#ifdef _UNICODE
+		using thtml_tag = whtml_tag;
+#else
+		using thtml_tag = html_tag;
+#endif
+
+		///
+		/// Start of condition `<![condition[...`
+		///
+		template <class T>
+		class basic_html_declaration_condition_start : public basic_parser<T>
+		{
+		public:
+			virtual bool match(
+				_In_reads_or_z_opt_(end) const T* text,
+				_In_ size_t start = 0,
+				_In_ size_t end = SIZE_MAX,
+				_In_ int flags = match_multiline)
+			{
+				_Unreferenced_(flags);
+				_Assume_(text || start + 2 >= end);
+				if (start + 2 < end &&
+					text[start] == '<' &&
+					text[start + 1] == '!' &&
+					text[start + 2] == '[')
+				{
+					this->interval.end = start + 3;
+
+					// Skip whitespace.
+					const auto& ctype = std::use_facet<std::ctype<T>>(m_locale);
+					for (; this->interval.end < end && text[this->interval.end] && ctype.is(ctype.space, text[this->interval.end]); this->interval.end++);
+
+					this->condition.start = this->condition.end = this->interval.end;
+
+					for (;;) {
+						if (this->interval.end >= end || !text[this->interval.end])
+							break;
+						if (text[this->interval.end] == '[') {
+							this->interval.start = start;
+							this->interval.end++;
+							return true;
+						}
+						if (ctype.is(ctype.space, text[this->interval.end]))
+							this->interval.end++;
+						else
+							this->condition.end = ++this->interval.end;
+					}
+				}
+
+				this->condition.invalidate();
+				this->interval.invalidate();
+				return false;
+			}
+
+			virtual void invalidate()
+			{
+				this->condition.invalidate();
+				basic_parser::invalidate();
+			}
+
+		public:
+			stdex::interval<size_t> condition; /// condition position in source
+		};
+
+		using html_declaration_condition_start = basic_html_declaration_condition_start<char>;
+		using whtml_declaration_condition_start = basic_html_declaration_condition_start<wchar_t>;
+#ifdef _UNICODE
+		using thtml_declaration_condition_start = whtml_declaration_condition_start;
+#else
+		using thtml_declaration_condition_start = html_declaration_condition_start;
+#endif
+
+		///
+		/// End of condition `...]]>`
+		///
+		template <class T>
+		class basic_html_declaration_condition_end : public basic_parser<T>
+		{
+		public:
+			virtual bool match(
+				_In_reads_or_z_opt_(end) const T* text,
+				_In_ size_t start = 0,
+				_In_ size_t end = SIZE_MAX,
+				_In_ int flags = match_multiline)
+			{
+				_Unreferenced_(flags);
+				_Assume_(text || start + 2 >= end);
+				if (start + 2 < end &&
+					text[start] == ']' &&
+					text[start + 1] == ']' &&
+					text[start + 2] == '>')
+				{
+					this->interval.start = start;
+					this->interval.end = start + 3;
+					return true;
+				}
+				this->interval.invalidate();
+				return false;
+			}
+		};
+
+		using html_declaration_condition_end = basic_html_declaration_condition_end<char>;
+		using whtml_declaration_condition_end = basic_html_declaration_condition_end<wchar_t>;
+#ifdef _UNICODE
+		using thtml_declaration_condition_end = whtml_declaration_condition_end;
+#else
+		using thtml_declaration_condition_end = html_declaration_condition_end;
+#endif
 	}
 }
 

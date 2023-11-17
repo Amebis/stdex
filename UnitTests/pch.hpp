@@ -10,6 +10,7 @@
 #include <stdex/exception.hpp>
 #include <stdex/hash.hpp>
 #include <stdex/hex.hpp>
+#include <stdex/html.hpp>
 #include <stdex/idrec.hpp>
 #include <stdex/interval.hpp>
 #include <stdex/locale.hpp>
