@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['watchdog_0',['watchdog',['../classstdex_1_1watchdog.html',1,'stdex']]],
-  ['window_1',['window',['../classstdex_1_1stream_1_1window.html',1,'stdex::stream']]],
-  ['worker_2',['worker',['../classstdex_1_1stream_1_1replicator_1_1worker.html',1,'stdex::stream::replicator']]]
+  ['url_5ftoken_0',['url_token',['../classstdex_1_1html_1_1url__token.html',1,'stdex::html']]],
+  ['user_5fcancelled_1',['user_cancelled',['../classstdex_1_1user__cancelled.html',1,'stdex']]]
 ];

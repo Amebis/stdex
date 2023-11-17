@@ -142,14 +142,14 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    <span class="keyword">using </span>locale = std::unique_ptr&lt;struct __locale_struct, free_locale_delete&gt;;</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="keyword">const</span> locale locale_C(create_locale(LC_ALL, <span class="stringliteral">&quot;C&quot;</span>));</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="keyword">const</span> <span class="keyword">inline</span> locale locale_C(create_locale(LC_ALL, <span class="stringliteral">&quot;C&quot;</span>));</div>
 <div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>}</div>
 <div class="ttc" id="astructstdex_1_1free__locale__delete_html"><div class="ttname"><a href="structstdex_1_1free__locale__delete.html">stdex::free_locale_delete</a></div><div class="ttdoc">Deleter for unique_ptr using free_locale.</div><div class="ttdef"><b>Definition</b> locale.hpp:45</div></div>
 <div class="ttc" id="astructstdex_1_1free__locale__delete_html_ab7a2cd4be45534b436a871e09805b36f"><div class="ttname"><a href="structstdex_1_1free__locale__delete.html#ab7a2cd4be45534b436a871e09805b36f">stdex::free_locale_delete::operator()</a></div><div class="ttdeci">void operator()(locale_t locale) const</div><div class="ttdoc">Delete a pointer.</div><div class="ttdef"><b>Definition</b> locale.hpp:49</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Nov 10 2023 11:42:46 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Nov 17 2023 14:18:27 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

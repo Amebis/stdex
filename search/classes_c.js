@@ -1,7 +1,9 @@
 var searchData=
 [
-  ['record_0',['record',['../classstdex_1_1idrec_1_1record.html',1,'stdex::idrec']]],
-  ['replicator_1',['replicator',['../classstdex_1_1stream_1_1replicator.html',1,'stdex::stream']]],
-  ['ring_2',['ring',['../classstdex_1_1ring.html',1,'stdex']]],
-  ['ring_3c_20uint8_5ft_2c_20default_5fasync_5flimit_20_3e_3',['ring&lt; uint8_t, default_async_limit &gt;',['../classstdex_1_1ring.html',1,'stdex']]]
+  ['parser_0',['parser',['../classstdex_1_1html_1_1parser.html',1,'stdex::html']]],
+  ['parser_5fcollection_1',['parser_collection',['../classstdex_1_1parser_1_1parser__collection.html',1,'stdex::parser']]],
+  ['pool_2',['pool',['../classstdex_1_1pool.html',1,'stdex']]],
+  ['progress_3',['progress',['../classstdex_1_1progress.html',1,'stdex']]],
+  ['progress_3c_20size_5ft_20_3e_4',['progress&lt; size_t &gt;',['../classstdex_1_1progress.html',1,'stdex']]],
+  ['progress_5fswitcher_5',['progress_switcher',['../classstdex_1_1progress__switcher.html',1,'stdex']]]
 ];

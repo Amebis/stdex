@@ -16,10 +16,11 @@ var searchData=
   ['record_13',['record',['../classstdex_1_1idrec_1_1record.html#a611da3801d9e7215324c9a5992a27f39',1,'stdex::idrec::record::record(T &amp;d)'],['../classstdex_1_1idrec_1_1record.html#ab84a09093bd1a2cbf720329b84c6d73b',1,'stdex::idrec::record::record(const T &amp;d)'],['../classstdex_1_1idrec_1_1record.html',1,'stdex::idrec::record&lt; T, T_ID, ID, T_SIZE, ALIGN &gt;']]],
   ['reference_14',['reference',['../classstdex_1_1vector__queue.html#a3e8d68368eb5014a2df5b3e26943e28c',1,'stdex::vector_queue::reference'],['../classstdex_1_1parser_1_1basic__creditor__reference.html#a0fe3a5c082dc0424000650eb04124573',1,'stdex::parser::basic_creditor_reference::reference']]],
   ['remove_15',['remove',['../classstdex_1_1stream_1_1replicator.html#a7916a391dfa9484df02b1202c0a03edf',1,'stdex::stream::replicator']]],
-  ['replicator_16',['replicator',['../classstdex_1_1stream_1_1replicator.html',1,'stdex::stream']]],
-  ['requirements_17',['Requirements',['../index.html#autotoc_md1',1,'']]],
-  ['reserve_18',['reserve',['../classstdex_1_1stream_1_1memory__file.html#a6b59e4dd13195dd91211ece4c680cb9b',1,'stdex::stream::memory_file']]],
-  ['reset_19',['reset',['../classstdex_1_1watchdog.html#ac9d5d1c1b17425f47f3892deec4d31db',1,'stdex::watchdog']]],
-  ['ring_20',['ring',['../classstdex_1_1ring.html',1,'stdex']]],
-  ['ring_3c_20uint8_5ft_2c_20default_5fasync_5flimit_20_3e_21',['ring&lt; uint8_t, default_async_limit &gt;',['../classstdex_1_1ring.html',1,'stdex']]]
+  ['replace_5fentities_16',['replace_entities',['../classstdex_1_1html_1_1document.html#ad51755eb57de670729adf07f32d5225d',1,'stdex::html::document']]],
+  ['replicator_17',['replicator',['../classstdex_1_1stream_1_1replicator.html',1,'stdex::stream']]],
+  ['requirements_18',['Requirements',['../index.html#autotoc_md1',1,'']]],
+  ['reserve_19',['reserve',['../classstdex_1_1stream_1_1memory__file.html#a6b59e4dd13195dd91211ece4c680cb9b',1,'stdex::stream::memory_file']]],
+  ['reset_20',['reset',['../classstdex_1_1watchdog.html#ac9d5d1c1b17425f47f3892deec4d31db',1,'stdex::watchdog']]],
+  ['ring_21',['ring',['../classstdex_1_1ring.html',1,'stdex']]],
+  ['ring_3c_20uint8_5ft_2c_20default_5fasync_5flimit_20_3e_22',['ring&lt; uint8_t, default_async_limit &gt;',['../classstdex_1_1ring.html',1,'stdex']]]
 ];
