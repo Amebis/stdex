@@ -26,8 +26,8 @@ int main(int argc, const char * argv[])
 		UnitTests::parser::sgml_test();
 		UnitTests::parser::http_test();
 		UnitTests::ring::test();
-		UnitTests::sgml::sgml2wstr();
-		UnitTests::sgml::wstr2sgml();
+		UnitTests::sgml::sgml2str();
+		UnitTests::sgml::str2sgml();
 		UnitTests::stream::async();
 		UnitTests::stream::replicator();
 		UnitTests::stream::open_close();
