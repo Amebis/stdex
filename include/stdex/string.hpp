@@ -248,6 +248,11 @@ namespace stdex
 	}
 
 	///
+	/// Reusable standard C++ C-locale
+	///
+	const inline std::locale std_locale_C("C");
+
+	///
 	/// Find a code unit in a string case-insensitive
 	///
 	/// \param[in] str    String
