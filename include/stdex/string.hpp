@@ -109,7 +109,7 @@ namespace stdex
 	/// \param[in] chr  Code unit
 	///
 	template <class T>
-	inline size_t islbreak(_In_ T chr)
+	inline bool islbreak(_In_ T chr)
 	{
 		return chr == '\n' || chr == '\r';
 	}
@@ -120,6 +120,8 @@ namespace stdex
 	/// \param[in] chr    Pointer to the first code unit of the code point
 	/// \param[in] count  Code unit limit
 	///
+	/// \return 0 if not line break; length of line break in code units otherwise.
+	///
 	template <class T>
 	inline size_t islbreak(_In_reads_or_z_opt_(count) const T* chr, _In_ size_t count)
 	{
@@ -129,6 +131,50 @@ namespace stdex
 		if (count > 1 && (chr[0] == '\n' || chr[0] == '\r'))
 			return 1;
 		return 0;
+	}
+
+	///
+	/// Test if the given code unit is ASCII-white-space
+	///
+	/// \param[in] chr  Code unit
+	///
+	template <class T>
+	inline bool isspace(_In_ T chr)
+	{
+		return chr == ' ' || chr == '\t' || chr == '\n' || chr == '\r' || chr == '\v' || chr == '\f';
+	}
+
+	///
+	/// Test if the given code unit is ASCII-lower-case-character
+	///
+	/// \param[in] chr  Code unit
+	///
+	template <class T>
+	inline bool islower(_In_ T chr)
+	{
+		return 'a' <= chr && chr <= 'z';
+	}
+
+	///
+	/// Test if the given code unit is ASCII-upper-case-character
+	///
+	/// \param[in] chr  Code unit
+	///
+	template <class T>
+	inline bool isupper(_In_ T chr)
+	{
+		return 'A' <= chr && chr <= 'Z';
+	}
+
+	///
+	/// Test if the given code unit is ASCII-digit
+	///
+	/// \param[in] chr  Code unit
+	///
+	template <class T>
+	inline bool isdigit(_In_ T chr)
+	{
+		return '0' <= chr && chr <= '9';
 	}
 
 	///
@@ -150,6 +196,32 @@ namespace stdex
 			return i;
 		}
 		return 0;
+	}
+
+	///
+	/// Convert to ASCII-lower-case
+	///
+	/// \param[in] chr  Code unit
+	///
+	/// \return Lower-case code unit
+	///
+	template <class T>
+	inline T tolower(_In_ T chr)
+	{
+		return isupper(chr) ? chr | 0x20 : chr;
+	}
+
+	///
+	/// Convert to ASCII-upper-case
+	///
+	/// \param[in] chr  Code unit
+	///
+	/// \return Upper-case code unit
+	///
+	template <class T>
+	inline T toupper(_In_ T chr)
+	{
+		return islower(chr) ? chr | ~0x20 : chr;
 	}
 
 	///
@@ -248,15 +320,31 @@ namespace stdex
 	}
 
 	///
-	/// Reusable standard C++ C-locale
+	/// Checks if string contains all ASCII-white-space
 	///
-	const inline std::locale std_locale_C("C");
+	/// \param[in] str    String
+	/// \param[in] count  Code unit count limit
+	///
+	/// \return `true` if all characters are white-space or `false` when any non-white-space character is found in string.
+	///
+	template <class T>
+	inline bool isblank(
+		_In_reads_or_z_opt_(count) const T* str,
+		_In_ size_t count)
+	{
+		_Assume_(str || !count);
+		for (size_t i = 0; i < count && str[i]; ++i)
+			if (!isspace(str[i]))
+				return false;
+		return true;
+	}
 
 	///
 	/// Checks if string contains all white-space
 	///
 	/// \param[in] str     String
 	/// \param[in] count   Code unit count limit
+	/// \param[in] locale  C++ locale to use
 	///
 	/// \return `true` if all characters are white-space or `false` when any non-white-space character is found in string.
 	///
@@ -275,11 +363,34 @@ namespace stdex
 	}
 
 	///
-	/// Find a code unit in a string case-insensitive
+	/// Find a code unit in a string ASCII-case-insensitive
 	///
 	/// \param[in] str    String
 	/// \param[in] count  Code unit count limit
 	/// \param[in] chr    Code unit to search for
+	///
+	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
+	///
+	template <class T>
+	inline size_t strnichr(
+		_In_reads_or_z_opt_(count) const T* str,
+		_In_ size_t count,
+		_In_ T chr)
+	{
+		_Assume_(str || !count);
+		chr = tolower(chr);
+		for (size_t i = 0; i < count && str[i]; ++i)
+			if (tolower(str[i]) == chr) return i;
+		return npos;
+	}
+
+	///
+	/// Find a code unit in a string case-insensitive
+	///
+	/// \param[in] str     String
+	/// \param[in] count   Code unit count limit
+	/// \param[in] chr     Code unit to search for
+	/// \param[in] locale  C++ locale to use
 	///
 	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
 	///
@@ -299,11 +410,35 @@ namespace stdex
 	}
 
 	///
-	/// Find a code unit in a string case-insensitive
+	/// Find a code unit in a string ASCII-case-insensitive
 	///
 	/// \param[in] str    String
 	/// \param[in] count  Code unit count limit
 	/// \param[in] chr    Code unit to search for
+	///
+	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
+	///
+	template <class T>
+	inline size_t strrnichr(
+		_In_reads_or_z_opt_(count) const T* str,
+		_In_ size_t count,
+		_In_ T chr)
+	{
+		_Assume_(str || !count);
+		chr = tolower(chr);
+		size_t z = npos;
+		for (size_t i = 0; i < count && str[i]; ++i)
+			if (tolower(str[i]) == chr) z = i;
+		return z;
+	}
+
+	///
+	/// Find a code unit in a string case-insensitive
+	///
+	/// \param[in] str     String
+	/// \param[in] count   Code unit count limit
+	/// \param[in] chr     Code unit to search for
+	/// \param[in] locale  C++ locale to use
 	///
 	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
 	///
@@ -400,6 +535,7 @@ namespace stdex
 	/// \param[in] count1  String 1 code unit count limit
 	/// \param[in] str2    String 2
 	/// \param[in] count2  String 2 code unit count limit
+	/// \param[in] locale  C++ locale to use
 	///
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
@@ -416,10 +552,34 @@ namespace stdex
 	}
 
 	///
+	/// Binary compare two strings ASCII-case-insensitive
+	///
+	/// \param[in] str1    String 1
+	/// \param[in] str2    String 2
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T1, class T2>
+	inline int stricmp(_In_z_ const T1* str1, _In_z_ const T2* str2)
+	{
+		_Assume_(str1);
+		_Assume_(str2);
+		size_t i; T1 a; T2 b;
+		for (i = 0; (a = tolower(str1[i])) | (b = tolower(str2[i])); i++) {
+			if (a > b) return +1;
+			if (a < b) return -1;
+		}
+		if (str1[i]) return +1;
+		if (str2[i]) return -1;
+		return 0;
+	}
+
+	///
 	/// Binary compare two strings case-insensitive
 	///
 	/// \param[in] str1    String 1
 	/// \param[in] str2    String 2
+	/// \param[in] locale  C++ locale to use
 	///
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
@@ -441,11 +601,36 @@ namespace stdex
 	}
 
 	///
+	/// Binary compare two strings ASCII-case-insensitive
+	///
+	/// \param[in] str1    String 1
+	/// \param[in] str2    String 2
+	/// \param[in] count   Code unit count limit
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T1, class T2>
+	inline int strnicmp(_In_reads_or_z_opt_(count) const T1* str1, _In_reads_or_z_opt_(count) const T2* str2, _In_ size_t count)
+	{
+		_Assume_(str1 || !count);
+		_Assume_(str2 || !count);
+		size_t i; T1 a; T2 b;
+		for (i = 0; i < count && ((a = tolower(str1[i])) | (b = tolower(str2[i]))); i++) {
+			if (a > b) return +1;
+			if (a < b) return -1;
+		}
+		if (i < count && str1[i]) return +1;
+		if (i < count && str2[i]) return -1;
+		return 0;
+	}
+
+	///
 	/// Binary compare two strings case-insensitive
 	///
 	/// \param[in] str1    String 1
 	/// \param[in] str2    String 2
 	/// \param[in] count   Code unit count limit
+	/// \param[in] locale  C++ locale to use
 	///
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
@@ -467,12 +652,40 @@ namespace stdex
 	}
 
 	///
+	/// Binary compare two strings ASCII-case-insensitive
+	///
+	/// \param[in] str1    String 1
+	/// \param[in] count1  String 1 code unit count limit
+	/// \param[in] str2    String 2
+	/// \param[in] count2  String 2 code unit count limit
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T1, class T2>
+	inline int strnicmp(
+		_In_reads_or_z_opt_(count1) const T1* str1, _In_ size_t count1,
+		_In_reads_or_z_opt_(count2) const T2* str2, _In_ size_t count2)
+	{
+		_Assume_(str1 || !count1);
+		_Assume_(str2 || !count2);
+		size_t i; T1 a; T2 b;
+		for (i = 0; i < count1 && i < count2 && ((a = tolower(str1[i])) | (b = tolower(str2[i]))); i++) {
+			if (a > b) return +1;
+			if (a < b) return -1;
+		}
+		if (i < count1 && str1[i]) return +1;
+		if (i < count2 && str2[i]) return -1;
+		return 0;
+	}
+
+	///
 	/// Binary compare two strings case-insensitive
 	///
 	/// \param[in] str1    String 1
 	/// \param[in] count1  String 1 code unit count limit
 	/// \param[in] str2    String 2
 	/// \param[in] count2  String 2 code unit count limit
+	/// \param[in] locale  C++ locale to use
 	///
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
@@ -553,10 +766,38 @@ namespace stdex
 	}
 
 	///
+	/// Search for a substring ASCII-case-insensitive
+	///
+	/// \param[in] str     String to search in
+	/// \param[in] sample  Substring to search for
+	///
+	/// \return Offset inside str where sample string is found; stdex::npos if not found
+	///
+	template <class T1, class T2>
+	inline size_t stristr(
+		_In_z_ const T1* str,
+		_In_z_ const T2* sample)
+	{
+		_Assume_(str);
+		_Assume_(sample);
+		for (size_t offset = 0;; ++offset) {
+			for (size_t i = offset, j = 0;; ++i, ++j) {
+				if (!sample[j])
+					return offset;
+				if (!str[i])
+					return npos;
+				if (tolower(str[i]) != tolower(sample[j]))
+					break;
+			}
+		}
+	}
+
+	///
 	/// Search for a substring case-insensitive
 	///
 	/// \param[in] str     String to search in
 	/// \param[in] sample  Substring to search for
+	/// \param[in] locale  C++ locale to use
 	///
 	/// \return Offset inside str where sample string is found; stdex::npos if not found
 	///
@@ -583,11 +824,41 @@ namespace stdex
 	}
 
 	///
+	/// Search for a substring ASCII-case-insensitive
+	///
+	/// \param[in] str     String to search in
+	/// \param[in] count   String code unit count limit
+	/// \param[in] sample  Substring to search for
+	///
+	/// \return Offset inside str where sample string is found; stdex::npos if not found
+	///
+	template <class T1, class T2>
+	inline size_t strnistr(
+		_In_reads_or_z_opt_(count) const T1* str,
+		_In_ size_t count,
+		_In_z_ const T2* sample)
+	{
+		_Assume_(str || !count);
+		_Assume_(sample);
+		for (size_t offset = 0;; ++offset) {
+			for (size_t i = offset, j = 0;; ++i, ++j) {
+				if (!sample[j])
+					return offset;
+				if (i >= count || !str[i])
+					return npos;
+				if (tolower(str[i]) != tolower(sample[j]))
+					break;
+			}
+		}
+	}
+
+	///
 	/// Search for a substring case-insensitive
 	///
 	/// \param[in] str     String to search in
 	/// \param[in] count   String code unit count limit
 	/// \param[in] sample  Substring to search for
+	/// \param[in] locale  C++ locale to use
 	///
 	/// \return Offset inside str where sample string is found; stdex::npos if not found
 	///
@@ -836,7 +1107,7 @@ namespace stdex
 	/// \param[in] src  Source string. Must not be dst.c_str().
 	///
 	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-	inline void crlf2nl(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &dst, _In_z_ const _Elem* src)
+	inline void crlf2nl(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& dst, _In_z_ const _Elem* src)
 	{
 		_Assume_(src);
 		_Assume_(src != dst.c_str());
@@ -1189,7 +1460,7 @@ namespace stdex
 	}
 
 	/// \cond internal
-	inline int vsnprintf(_Out_z_cap_(capacity) char *str, _In_ size_t capacity, _In_z_ _Printf_format_string_params_(2) const char *format, _In_opt_ locale_t locale, _In_ va_list arg)
+	inline int vsnprintf(_Out_z_cap_(capacity) char* str, _In_ size_t capacity, _In_z_ _Printf_format_string_params_(2) const char* format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
 		int r;
 #ifdef _WIN32
@@ -1209,7 +1480,7 @@ namespace stdex
 		return r;
 	}
 
-	inline int vsnprintf(_Out_z_cap_(capacity) wchar_t *str, _In_ size_t capacity, _In_z_ _Printf_format_string_params_(2) const wchar_t *format, _In_opt_ locale_t locale, _In_ va_list arg)
+	inline int vsnprintf(_Out_z_cap_(capacity) wchar_t* str, _In_ size_t capacity, _In_z_ _Printf_format_string_params_(2) const wchar_t* format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
 		int r;
 #ifdef _WIN32
@@ -1241,9 +1512,9 @@ namespace stdex
 	/// \return Number of appended code units
 	///
 	template<class _Elem, class _Traits, class _Ax>
-	inline size_t vappendf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_params_(2) const _Elem *format, _In_opt_ locale_t locale, _In_ va_list arg)
+	inline size_t vappendf(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& str, _In_z_ _Printf_format_string_params_(2) const _Elem* format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
-		_Elem buf[1024/sizeof(_Elem)];
+		_Elem buf[1024 / sizeof(_Elem)];
 
 		// Try with stack buffer first.
 		int count = vsnprintf(buf, _countof(buf) - 1, format, locale, arg);
@@ -1252,7 +1523,7 @@ namespace stdex
 			str.append(buf, count);
 			return count;
 		}
-		for (size_t capacity = 2*1024/sizeof(_Elem);; capacity *= 2) {
+		for (size_t capacity = 2 * 1024 / sizeof(_Elem);; capacity *= 2) {
 			// Allocate on heap and retry.
 			auto buf_dyn = std::make_unique<_Elem[]>(capacity);
 			count = vsnprintf(buf_dyn.get(), capacity - 1, format, locale, arg);
@@ -1273,7 +1544,7 @@ namespace stdex
 	/// \return Number of appended code units
 	///
 	template<class _Elem, class _Traits, class _Ax>
-	inline size_t appendf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_params_(2) const _Elem *format, _In_opt_ locale_t locale, ...)
+	inline size_t appendf(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& str, _In_z_ _Printf_format_string_params_(2) const _Elem* format, _In_opt_ locale_t locale, ...)
 	{
 		va_list arg;
 		va_start(arg, locale);
@@ -1291,7 +1562,7 @@ namespace stdex
 	/// \param[in ] arg     Arguments to `format`
 	///
 	template<class _Elem, class _Traits, class _Ax>
-	inline void vsprintf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_params_(2) const _Elem *format, _In_opt_ locale_t locale, _In_ va_list arg)
+	inline void vsprintf(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& str, _In_z_ _Printf_format_string_params_(2) const _Elem* format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
 		str.clear();
 		vappendf(str, format, locale, arg);
@@ -1305,7 +1576,7 @@ namespace stdex
 	/// \param[in ] locale  Stdlib locale used to perform formatting. Use `NULL` to use locale globally set by `setlocale()`.
 	///
 	template<class _Elem, class _Traits, class _Ax>
-	inline void sprintf(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_params_(2) const _Elem *format, _In_opt_ locale_t locale, ...)
+	inline void sprintf(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& str, _In_z_ _Printf_format_string_params_(2) const _Elem* format, _In_opt_ locale_t locale, ...)
 	{
 		va_list arg;
 		va_start(arg, locale);
@@ -1323,7 +1594,7 @@ namespace stdex
 	/// \returns Formatted string
 	///
 	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-	inline std::basic_string<_Elem, _Traits, _Ax> vsprintf(_In_z_ _Printf_format_string_params_(2) const _Elem *format, _In_opt_ locale_t locale, _In_ va_list arg)
+	inline std::basic_string<_Elem, _Traits, _Ax> vsprintf(_In_z_ _Printf_format_string_params_(2) const _Elem* format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
 		std::basic_string<_Elem, _Traits, _Ax> str;
 		vappendf(str, format, locale, arg);
@@ -1339,7 +1610,7 @@ namespace stdex
 	/// \returns Formatted string
 	///
 	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-	inline std::basic_string<_Elem, _Traits, _Ax> sprintf(_In_z_ _Printf_format_string_params_(2) const _Elem *format, _In_opt_ locale_t locale, ...)
+	inline std::basic_string<_Elem, _Traits, _Ax> sprintf(_In_z_ _Printf_format_string_params_(2) const _Elem* format, _In_opt_ locale_t locale, ...)
 	{
 		va_list arg;
 		va_start(arg, locale);
@@ -1349,7 +1620,7 @@ namespace stdex
 	}
 
 	/// \cond internal
-	inline size_t strftime(_Out_z_cap_(capacity) char *str, _In_ size_t capacity, _In_z_ _Printf_format_string_ const char *format, _In_ const struct tm* time, _In_opt_ locale_t locale)
+	inline size_t strftime(_Out_z_cap_(capacity) char* str, _In_ size_t capacity, _In_z_ _Printf_format_string_ const char* format, _In_ const struct tm* time, _In_opt_ locale_t locale)
 	{
 #ifdef _WIN32
 		return _strftime_l(str, capacity, format, time, locale);
@@ -1358,7 +1629,7 @@ namespace stdex
 #endif
 	}
 
-	inline size_t strftime(_Out_z_cap_(capacity) wchar_t *str, _In_ size_t capacity, _In_z_ _Printf_format_string_ const wchar_t *format, _In_ const struct tm* time, _In_opt_ locale_t locale)
+	inline size_t strftime(_Out_z_cap_(capacity) wchar_t* str, _In_ size_t capacity, _In_z_ _Printf_format_string_ const wchar_t* format, _In_ const struct tm* time, _In_opt_ locale_t locale)
 	{
 #ifdef _WIN32
 		return _wcsftime_l(str, capacity, format, time, locale);
@@ -1377,17 +1648,18 @@ namespace stdex
 	/// \param[in ] locale  Stdlib locale used to perform formatting. Use `NULL` to use locale globally set by `setlocale()`.
 	///
 	template<class _Elem, class _Traits, class _Ax>
-	inline void strcatftime(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_ const _Elem *format, _In_ const struct tm* time, _In_opt_ locale_t locale)
+	inline void strcatftime(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& str, _In_z_ _Printf_format_string_ const _Elem* format, _In_ const struct tm* time, _In_opt_ locale_t locale)
 	{
-		_Elem buf[1024/sizeof(_Elem)];
+		_Elem buf[1024 / sizeof(_Elem)];
 
 		// Try with stack buffer first.
 		size_t count = strftime(buf, _countof(buf), format, time, locale);
 		if (count) {
 			// Copy from stack.
 			str.append(buf, count);
-		} else {
-			for (size_t capacity = 2*1024/sizeof(_Elem);; capacity *= 2) {
+		}
+		else {
+			for (size_t capacity = 2 * 1024 / sizeof(_Elem);; capacity *= 2) {
 				// Allocate on heap and retry.
 				auto buf_dyn = std::make_unique<_Elem[]>(capacity);
 				count = strftime(buf_dyn.get(), capacity, format, time, locale);
@@ -1408,7 +1680,7 @@ namespace stdex
 	/// \param[in ] locale  Stdlib locale used to perform formatting. Use `NULL` to use locale globally set by `setlocale()`.
 	///
 	template<class _Elem, class _Traits, class _Ax>
-	inline void strftime(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &str, _In_z_ _Printf_format_string_ const _Elem *format, _In_ const struct tm* time, _In_opt_ locale_t locale)
+	inline void strftime(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& str, _In_z_ _Printf_format_string_ const _Elem* format, _In_ const struct tm* time, _In_opt_ locale_t locale)
 	{
 		str.clear();
 		strcatftime(str, format, time, locale);
@@ -1425,7 +1697,7 @@ namespace stdex
 	/// \returns Formatted string
 	///
 	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-	inline std::basic_string<_Elem, _Traits, _Ax> strftime(_In_z_ _Printf_format_string_ const _Elem *format, _In_ const struct tm* time, _In_opt_ locale_t locale)
+	inline std::basic_string<_Elem, _Traits, _Ax> strftime(_In_z_ _Printf_format_string_ const _Elem* format, _In_ const struct tm* time, _In_opt_ locale_t locale)
 	{
 		std::basic_string<_Elem, _Traits, _Ax> str;
 		strcatftime(str, format, time, locale);
@@ -1433,11 +1705,23 @@ namespace stdex
 	}
 
 	///
+	/// Convert string to ASCII-lower-case character-by-character
+	///
+	/// \param[in,out] str  String
+	///
+	template<class T>
+	inline void strlwr(_Inout_z_ T* str)
+	{
+		_Assume_(str);
+		for (size_t i = 0; str[i]; ++i)
+			str[i] = tolower(str[i]);
+	}
+
+	///
 	/// Convert string to lower-case character-by-character
 	///
-	/// \note For legacy code support only.
-	///
-	/// \param[in,out] str    String
+	/// \param[in,out] str     String
+	/// \param[in]     locale  C++ locale to use
 	///
 	template<class T>
 	inline void strlwr(_Inout_z_ T* str, _In_ const std::locale& locale)
@@ -1449,12 +1733,25 @@ namespace stdex
 	}
 
 	///
+	/// Convert string to ASCII-lower-case character-by-character
+	///
+	/// \param[in,out] str     String
+	/// \param[in]     count   Code unit limit
+	///
+	template<class T>
+	inline void strlwr(_Inout_updates_z_(count) T* str, _In_ size_t count)
+	{
+		_Assume_(str || !count);
+		for (size_t i = 0; i < count && str[i]; ++i)
+			str[i] = tolower(str[i]);
+	}
+
+	///
 	/// Convert string to lower-case character-by-character
 	///
-	/// \note For legacy code support only.
-	///
-	/// \param[in,out] str    String
-	/// \param[in]     count  Code unit limit
+	/// \param[in,out] str     String
+	/// \param[in]     count   Code unit limit
+	/// \param[in]     locale  C++ locale to use
 	///
 	template<class T>
 	inline void strlwr(_Inout_updates_z_(count) T* str, _In_ size_t count, _In_ const std::locale& locale)
@@ -1466,11 +1763,23 @@ namespace stdex
 	}
 
 	///
+	/// Convert string to ASCII-upper-case character-by-character
+	///
+	/// \param[in,out] str  String
+	///
+	template<class T>
+	inline void strupr(_Inout_z_ T* str)
+	{
+		_Assume_(str);
+		for (size_t i = 0; str[i]; ++i)
+			str[i] = toupper(str[i]);
+	}
+
+	///
 	/// Convert string to upper-case character-by-character
 	///
-	/// \note For legacy code support only.
-	///
-	/// \param[in,out] str    String
+	/// \param[in,out] str     String
+	/// \param[in]     locale  C++ locale to use
 	///
 	template<class T>
 	inline void strupr(_Inout_z_ T* str, _In_ const std::locale& locale)
@@ -1482,12 +1791,25 @@ namespace stdex
 	}
 
 	///
-	/// Convert string to upper-case character-by-character
-	///
-	/// \note For legacy code support only.
+	/// Convert string to ASCII-upper-case character-by-character
 	///
 	/// \param[in,out] str    String
 	/// \param[in]     count  Code unit limit
+	///
+	template<class T>
+	inline void strupr(_Inout_updates_z_(count) T* str, _In_ size_t count)
+	{
+		_Assume_(str || !count);
+		for (size_t i = 0; i < count && str[i]; ++i)
+			str[i] = toupper(str[i]);
+	}
+
+	///
+	/// Convert string to upper-case character-by-character
+	///
+	/// \param[in,out] str     String
+	/// \param[in]     count   Code unit limit
+	/// \param[in]     locale  C++ locale to use
 	///
 	template<class T>
 	inline void strupr(_Inout_updates_z_(count) T* str, _In_ size_t count, _In_ const std::locale& locale)
@@ -1499,11 +1821,22 @@ namespace stdex
 	}
 
 	///
+	/// Convert string to ASCII-upper-case character-by-character
+	///
+	/// \param[in,out] str  String
+	///
+	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
+	inline void strupr(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& str)
+	{
+		for (size_t i = 0; i < str.size(); ++i)
+			str[i] = toupper(str[i]);
+	}
+
+	///
 	/// Convert string to upper-case character-by-character
 	///
-	/// \note For legacy code support only.
-	///
 	/// \param[in,out] str    String
+	/// \param[in]     locale  C++ locale to use
 	///
 	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
 	inline void strupr(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& str, _In_ const std::locale& locale)
@@ -1514,10 +1847,42 @@ namespace stdex
 	}
 
 	///
-	/// Trim whitespace from string start
+	/// Trim ASCII-whitespace from string start
 	///
 	/// \param[in] str    String to trim
 	/// \param[in] count  Code unit limit
+	///
+	/// \return Number of code units excluding zero terminator in the string after the operation.
+	///
+	template<class T>
+	inline size_t ltrim(
+		_Inout_z_count_(count) T* str, _In_ size_t count)
+	{
+		for (size_t i = 0;; ++i) {
+			if (i >= count) {
+				if (count) str[0] = 0;
+				return 0;
+			}
+			if (!str[i]) {
+				str[0] = 0;
+				return 0;
+			}
+			if (!isspace(str[i])) {
+				if (!i)
+					return strnlen(str, count);
+				size_t n = count != SIZE_MAX ? strncpy(str, str + i, count - i) : strcpy(str, str + i);
+				str[n] = 0;
+				return n;
+			}
+		}
+	}
+
+	///
+	/// Trim whitespace from string start
+	///
+	/// \param[in] str     String to trim
+	/// \param[in] count   Code unit limit
+	/// \param[in] locale  C++ locale to use
 	///
 	/// \return Number of code units excluding zero terminator in the string after the operation.
 	///
@@ -1547,12 +1912,29 @@ namespace stdex
 	}
 
 	///
-	/// Trim whitespace from string start
+	/// Trim ASCII-whitespace from string start
 	///
 	/// \param[in,out] s  String to trim
 	///
 	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-	inline void ltrim(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &s, _In_ const std::locale& locale)
+	inline void ltrim(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& s)
+	{
+		s.erase(
+			s.begin(),
+			std::find_if(
+				s.begin(),
+				s.end(),
+				[&](_In_ _Elem ch) { return !isspace(ch); }));
+	}
+
+	///
+	/// Trim whitespace from string start
+	///
+	/// \param[in,out] s       String to trim
+	/// \param[in]     locale  C++ locale to use
+	///
+	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
+	inline void ltrim(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& s, _In_ const std::locale& locale)
 	{
 		const auto& ctype = std::use_facet<std::ctype<_Elem>>(locale);
 		s.erase(
@@ -1560,14 +1942,39 @@ namespace stdex
 			std::find_if(
 				s.begin(),
 				s.end(),
-				[&](_Elem ch) { return !ctype.is(ctype.space, ch); }));
+				[&](_In_ _Elem ch) { return !ctype.is(ctype.space, ch); }));
+	}
+
+	///
+	/// Trim ASCII-whitespace from string end
+	///
+	/// \param[in] str    String to trim
+	/// \param[in] count  Code unit limit
+	///
+	/// \return Number of code units excluding zero terminator in the string after the operation.
+	///
+	template<class T>
+	inline size_t rtrim(
+		_Inout_z_count_(count) T* str, _In_ size_t count)
+	{
+		for (size_t i = 0, j = 0;;) {
+			if (i >= count || !str[i]) {
+				if (j < count) str[j] = 0;
+				return j;
+			}
+			if (!isspace(str[i]))
+				j = ++i;
+			else
+				++i;
+		}
 	}
 
 	///
 	/// Trim whitespace from string end
 	///
-	/// \param[in] str    String to trim
-	/// \param[in] count  Code unit limit
+	/// \param[in] str     String to trim
+	/// \param[in] count   Code unit limit
+	/// \param[in] locale  C++ locale to use
 	///
 	/// \return Number of code units excluding zero terminator in the string after the operation.
 	///
@@ -1590,27 +1997,60 @@ namespace stdex
 	}
 
 	///
-	/// Trim whitespace from string end
+	/// Trim ASCII-whitespace from string end
 	///
 	/// \param[in,out] s  String to trim
 	///
 	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-	static inline void rtrim(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &s, _In_ const std::locale& locale)
+	static inline void rtrim(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& s)
+	{
+		s.erase(
+			std::find_if(
+				s.rbegin(),
+				s.rend(),
+				[&](_In_ _Elem ch) { return !isspace(ch); }).base(),
+			s.end());
+	}
+
+	///
+	/// Trim whitespace from string end
+	///
+	/// \param[in,out] s       String to trim
+	/// \param[in]     locale  C++ locale to use
+	///
+	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
+	static inline void rtrim(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& s, _In_ const std::locale& locale)
 	{
 		const auto& ctype = std::use_facet<std::ctype<_Elem>>(locale);
 		s.erase(
 			std::find_if(
 				s.rbegin(),
 				s.rend(),
-				[&](_Elem ch) { return !ctype.is(ctype.space, ch); }).base(),
+				[&](_In_ _Elem ch) { return !ctype.is(ctype.space, ch); }).base(),
 			s.end());
+	}
+
+	///
+	/// Trim ASCII-whitespace from string start and end
+	///
+	/// \param[in] str    String to trim
+	/// \param[in] count  Code unit limit
+	///
+	/// \return Number of code units excluding zero terminator in the string after the operation.
+	///
+	template<class T>
+	inline size_t trim(
+		_Inout_z_count_(count) T* str, _In_ size_t count)
+	{
+		return ltrim(str, rtrim(str, count));
 	}
 
 	///
 	/// Trim whitespace from string start and end
 	///
-	/// \param[in] str    String to trim
-	/// \param[in] count  Code unit limit
+	/// \param[in] str     String to trim
+	/// \param[in] count   Code unit limit
+	/// \param[in] locale  C++ locale to use
 	///
 	/// \return Number of code units excluding zero terminator in the string after the operation.
 	///
@@ -1623,25 +2063,50 @@ namespace stdex
 	}
 
 	///
-	/// Trim whitespace from string start and end
+	/// Trim ASCII-whitespace from string start and end
 	///
 	/// \param[in,out] s  String to trim
 	///
 	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-	static inline void trim(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &s, _In_ const std::locale& locale)
+	static inline void trim(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& s)
 	{
-		const auto& ctype = std::use_facet<std::ctype<_Elem>>(locale);
+		auto nonspace = [&](_In_ _Elem ch) { return !isspace(ch); };
 		s.erase(
 			s.begin(),
 			std::find_if(
 				s.begin(),
 				s.end(),
-				[&](_Elem ch) { return !ctype.is(ctype.space, ch); }));
+				nonspace));
 		s.erase(
 			std::find_if(
 				s.rbegin(),
 				s.rend(),
-				[&](_Elem ch) { return !ctype.is(ctype.space, ch); }).base(),
+				nonspace).base(),
+			s.end());
+	}
+
+	///
+	/// Trim whitespace from string start and end
+	///
+	/// \param[in,out] s       String to trim
+	/// \param[in]     locale  C++ locale to use
+	///
+	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
+	static inline void trim(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& s, _In_ const std::locale& locale)
+	{
+		const auto& ctype = std::use_facet<std::ctype<_Elem>>(locale);
+		auto nonspace = [&](_In_ _Elem ch) { return !ctype.is(ctype.space, ch); };
+		s.erase(
+			s.begin(),
+			std::find_if(
+				s.begin(),
+				s.end(),
+				nonspace));
+		s.erase(
+			std::find_if(
+				s.rbegin(),
+				s.rend(),
+				nonspace).base(),
 			s.end());
 	}
 }

@@ -1051,45 +1051,45 @@ namespace stdex
 			{
 				_Assume_(attr_name || !num_chars);
 				switch (code) {
-				case element_t::a:          return !stdex::strnicmp(attr_name, num_chars, "href", SIZE_MAX, stdex::std_locale_C);
-				case element_t::applet:     return !stdex::strnicmp(attr_name, num_chars, "code", SIZE_MAX, stdex::std_locale_C) ||
-					!stdex::strnicmp(attr_name, num_chars, "codebase", SIZE_MAX, stdex::std_locale_C) ||
-					!stdex::strnicmp(attr_name, num_chars, "src", SIZE_MAX, stdex::std_locale_C);
-				case element_t::area:       return !stdex::strnicmp(attr_name, num_chars, "href", SIZE_MAX, stdex::std_locale_C);
-				case element_t::base:       return !stdex::strnicmp(attr_name, num_chars, "href", SIZE_MAX, stdex::std_locale_C);
-				case element_t::bgsound:    return !stdex::strnicmp(attr_name, num_chars, "src", SIZE_MAX, stdex::std_locale_C);
-				case element_t::blockquote: return !stdex::strnicmp(attr_name, num_chars, "cite", SIZE_MAX, stdex::std_locale_C);
-				case element_t::body:       return !stdex::strnicmp(attr_name, num_chars, "background", SIZE_MAX, stdex::std_locale_C);
-				case element_t::comment:    return !stdex::strnicmp(attr_name, num_chars, "data", SIZE_MAX, stdex::std_locale_C);
-				case element_t::del:        return !stdex::strnicmp(attr_name, num_chars, "cite", SIZE_MAX, stdex::std_locale_C);
-				case element_t::embed:      return !stdex::strnicmp(attr_name, num_chars, "pluginspage", SIZE_MAX, stdex::std_locale_C) ||
-					!stdex::strnicmp(attr_name, num_chars, "src", SIZE_MAX, stdex::std_locale_C);
-				case element_t::form:       return !stdex::strnicmp(attr_name, num_chars, "action", SIZE_MAX, stdex::std_locale_C);
-				case element_t::frame:      return !stdex::strnicmp(attr_name, num_chars, "longdesc", SIZE_MAX, stdex::std_locale_C) ||
-					!stdex::strnicmp(attr_name, num_chars, "src", SIZE_MAX, stdex::std_locale_C);
-				case element_t::head:       return !stdex::strnicmp(attr_name, num_chars, "profile", SIZE_MAX, stdex::std_locale_C);
-				case element_t::iframe:     return !stdex::strnicmp(attr_name, num_chars, "longdesc", SIZE_MAX, stdex::std_locale_C) ||
-					!stdex::strnicmp(attr_name, num_chars, "src", SIZE_MAX, stdex::std_locale_C);
-				case element_t::img:        return !stdex::strnicmp(attr_name, num_chars, "longdesc", SIZE_MAX, stdex::std_locale_C) ||
-					!stdex::strnicmp(attr_name, num_chars, "lowsrc", SIZE_MAX, stdex::std_locale_C) ||
-					!stdex::strnicmp(attr_name, num_chars, "src", SIZE_MAX, stdex::std_locale_C) ||
-					!stdex::strnicmp(attr_name, num_chars, "usemap", SIZE_MAX, stdex::std_locale_C);
-				case element_t::input:      return !stdex::strnicmp(attr_name, num_chars, "lowsrc", SIZE_MAX, stdex::std_locale_C) ||
-					!stdex::strnicmp(attr_name, num_chars, "src", SIZE_MAX, stdex::std_locale_C) ||
-					!stdex::strnicmp(attr_name, num_chars, "usemap", SIZE_MAX, stdex::std_locale_C);
-				case element_t::ins:        return !stdex::strnicmp(attr_name, num_chars, "cite", SIZE_MAX, stdex::std_locale_C);
-				case element_t::link:       return !stdex::strnicmp(attr_name, num_chars, "href", SIZE_MAX, stdex::std_locale_C);
-				case element_t::object:     return !stdex::strnicmp(attr_name, num_chars, "basehref", SIZE_MAX, stdex::std_locale_C) ||
-					!stdex::strnicmp(attr_name, num_chars, "classid", SIZE_MAX, stdex::std_locale_C) ||
-					!stdex::strnicmp(attr_name, num_chars, "code", SIZE_MAX, stdex::std_locale_C) ||
-					!stdex::strnicmp(attr_name, num_chars, "codebase", SIZE_MAX, stdex::std_locale_C) ||
-					!stdex::strnicmp(attr_name, num_chars, "data", SIZE_MAX, stdex::std_locale_C) ||
-					!stdex::strnicmp(attr_name, num_chars, "usemap", SIZE_MAX, stdex::std_locale_C);
-				case element_t::q:          return !stdex::strnicmp(attr_name, num_chars, "cite", SIZE_MAX, stdex::std_locale_C);
-				case element_t::script:     return !stdex::strnicmp(attr_name, num_chars, "src", SIZE_MAX, stdex::std_locale_C);
-				case element_t::table:      return !stdex::strnicmp(attr_name, num_chars, "background", SIZE_MAX, stdex::std_locale_C);
-				case element_t::td:         return !stdex::strnicmp(attr_name, num_chars, "background", SIZE_MAX, stdex::std_locale_C);
-				case element_t::th:         return !stdex::strnicmp(attr_name, num_chars, "background", SIZE_MAX, stdex::std_locale_C);
+				case element_t::a:          return !stdex::strnicmp(attr_name, num_chars, "href", SIZE_MAX);
+				case element_t::applet:     return !stdex::strnicmp(attr_name, num_chars, "code", SIZE_MAX) ||
+					!stdex::strnicmp(attr_name, num_chars, "codebase", SIZE_MAX) ||
+					!stdex::strnicmp(attr_name, num_chars, "src", SIZE_MAX);
+				case element_t::area:       return !stdex::strnicmp(attr_name, num_chars, "href", SIZE_MAX);
+				case element_t::base:       return !stdex::strnicmp(attr_name, num_chars, "href", SIZE_MAX);
+				case element_t::bgsound:    return !stdex::strnicmp(attr_name, num_chars, "src", SIZE_MAX);
+				case element_t::blockquote: return !stdex::strnicmp(attr_name, num_chars, "cite", SIZE_MAX);
+				case element_t::body:       return !stdex::strnicmp(attr_name, num_chars, "background", SIZE_MAX);
+				case element_t::comment:    return !stdex::strnicmp(attr_name, num_chars, "data", SIZE_MAX);
+				case element_t::del:        return !stdex::strnicmp(attr_name, num_chars, "cite", SIZE_MAX);
+				case element_t::embed:      return !stdex::strnicmp(attr_name, num_chars, "pluginspage", SIZE_MAX) ||
+					!stdex::strnicmp(attr_name, num_chars, "src", SIZE_MAX);
+				case element_t::form:       return !stdex::strnicmp(attr_name, num_chars, "action", SIZE_MAX);
+				case element_t::frame:      return !stdex::strnicmp(attr_name, num_chars, "longdesc", SIZE_MAX) ||
+					!stdex::strnicmp(attr_name, num_chars, "src", SIZE_MAX);
+				case element_t::head:       return !stdex::strnicmp(attr_name, num_chars, "profile", SIZE_MAX);
+				case element_t::iframe:     return !stdex::strnicmp(attr_name, num_chars, "longdesc", SIZE_MAX) ||
+					!stdex::strnicmp(attr_name, num_chars, "src", SIZE_MAX);
+				case element_t::img:        return !stdex::strnicmp(attr_name, num_chars, "longdesc", SIZE_MAX) ||
+					!stdex::strnicmp(attr_name, num_chars, "lowsrc", SIZE_MAX) ||
+					!stdex::strnicmp(attr_name, num_chars, "src", SIZE_MAX) ||
+					!stdex::strnicmp(attr_name, num_chars, "usemap", SIZE_MAX);
+				case element_t::input:      return !stdex::strnicmp(attr_name, num_chars, "lowsrc", SIZE_MAX) ||
+					!stdex::strnicmp(attr_name, num_chars, "src", SIZE_MAX) ||
+					!stdex::strnicmp(attr_name, num_chars, "usemap", SIZE_MAX);
+				case element_t::ins:        return !stdex::strnicmp(attr_name, num_chars, "cite", SIZE_MAX);
+				case element_t::link:       return !stdex::strnicmp(attr_name, num_chars, "href", SIZE_MAX);
+				case element_t::object:     return !stdex::strnicmp(attr_name, num_chars, "basehref", SIZE_MAX) ||
+					!stdex::strnicmp(attr_name, num_chars, "classid", SIZE_MAX) ||
+					!stdex::strnicmp(attr_name, num_chars, "code", SIZE_MAX) ||
+					!stdex::strnicmp(attr_name, num_chars, "codebase", SIZE_MAX) ||
+					!stdex::strnicmp(attr_name, num_chars, "data", SIZE_MAX) ||
+					!stdex::strnicmp(attr_name, num_chars, "usemap", SIZE_MAX);
+				case element_t::q:          return !stdex::strnicmp(attr_name, num_chars, "cite", SIZE_MAX);
+				case element_t::script:     return !stdex::strnicmp(attr_name, num_chars, "src", SIZE_MAX);
+				case element_t::table:      return !stdex::strnicmp(attr_name, num_chars, "background", SIZE_MAX);
+				case element_t::td:         return !stdex::strnicmp(attr_name, num_chars, "background", SIZE_MAX);
+				case element_t::th:         return !stdex::strnicmp(attr_name, num_chars, "background", SIZE_MAX);
 				}
 				return false;
 			}
@@ -1105,17 +1105,17 @@ namespace stdex
 			static inline bool is_localizable(element_t code, const T* attr_name, size_t num_chars)
 			{
 				_Assume_(attr_name || !num_chars);
-				if (!stdex::strnicmp(attr_name, num_chars, "title", SIZE_MAX, stdex::std_locale_C))
+				if (!stdex::strnicmp(attr_name, num_chars, "title", SIZE_MAX))
 					return true;
 				switch (code) {
-				case element_t::applet: return !stdex::strnicmp(attr_name, num_chars, "alt", SIZE_MAX, stdex::std_locale_C);
-				case element_t::area:   return !stdex::strnicmp(attr_name, num_chars, "alt", SIZE_MAX, stdex::std_locale_C);
-				case element_t::img:    return !stdex::strnicmp(attr_name, num_chars, "alt", SIZE_MAX, stdex::std_locale_C);
-				case element_t::input:  return !stdex::strnicmp(attr_name, num_chars, "alt", SIZE_MAX, stdex::std_locale_C);
-				case element_t::object: return !stdex::strnicmp(attr_name, num_chars, "alt", SIZE_MAX, stdex::std_locale_C);
-				case element_t::table:  return !stdex::strnicmp(attr_name, num_chars, "summary", SIZE_MAX, stdex::std_locale_C);
-				case element_t::td:     return !stdex::strnicmp(attr_name, num_chars, "abbr", SIZE_MAX, stdex::std_locale_C);
-				case element_t::th:     return !stdex::strnicmp(attr_name, num_chars, "abbr", SIZE_MAX, stdex::std_locale_C);
+				case element_t::applet: return !stdex::strnicmp(attr_name, num_chars, "alt", SIZE_MAX);
+				case element_t::area:   return !stdex::strnicmp(attr_name, num_chars, "alt", SIZE_MAX);
+				case element_t::img:    return !stdex::strnicmp(attr_name, num_chars, "alt", SIZE_MAX);
+				case element_t::input:  return !stdex::strnicmp(attr_name, num_chars, "alt", SIZE_MAX);
+				case element_t::object: return !stdex::strnicmp(attr_name, num_chars, "alt", SIZE_MAX);
+				case element_t::table:  return !stdex::strnicmp(attr_name, num_chars, "summary", SIZE_MAX);
+				case element_t::td:     return !stdex::strnicmp(attr_name, num_chars, "abbr", SIZE_MAX);
+				case element_t::th:     return !stdex::strnicmp(attr_name, num_chars, "abbr", SIZE_MAX);
 				}
 				return false;
 			}
@@ -1274,13 +1274,11 @@ namespace stdex
 				// The mapping table MUST be sorted and all names in lowercase.
 				for (size_t i = 1; i < _countof(mapping); i++)
 					_Assume_(stdex::strcmp(mapping[i - 1].name, mapping[i].name) <= 0);
-				const auto& ctype = std::use_facet<std::ctype<char>>(stdex::std_locale_C);
 				for (size_t i = 0; i < _countof(mapping); i++) {
 					for (size_t j = 0; mapping[i].name[j]; j++)
-						_Assume_(ctype.is(ctype.lower | ctype.digit, mapping[i].name[j]));
+						_Assume_(stdex::islower(mapping[i].name[j]) | stdex::isdigit(mapping[i].name[j]));
 				}
 #endif
-				const auto& ctypeT = std::use_facet<std::ctype<T>>(stdex::std_locale_C);
 				for (size_t i = 0, j = _countof(mapping); i < j; ) {
 					size_t m = (i + j) / 2;
 					int r = 0;
@@ -1294,7 +1292,7 @@ namespace stdex
 							break;
 						}
 
-						auto chr = static_cast<char>(ctypeT.tolower(name[i2++]));
+						auto chr = static_cast<char>(stdex::tolower(name[i2++]));
 						if (mapping[m].name[i1] > chr) {
 							r = 1;
 							break;
@@ -1594,10 +1592,10 @@ namespace stdex
 								bool is_content_type = false;
 								stdex::parser::html_attribute* content_attr = nullptr;
 								for (auto& attr : e->attributes) {
-									if (!stdex::strnicmp(source + attr.name.start, attr.name.size(), "http-equiv", SIZE_MAX, stdex::std_locale_C) &&
-										!stdex::strnicmp(source + attr.value.start, attr.value.size(), "content-type", SIZE_MAX, stdex::std_locale_C))
+									if (!stdex::strnicmp(source + attr.name.start, attr.name.size(), "http-equiv", SIZE_MAX) &&
+										!stdex::strnicmp(source + attr.value.start, attr.value.size(), "content-type", SIZE_MAX))
 										is_content_type = true;
-									else if (!stdex::strnicmp(source + attr.name.start, attr.name.size(), "content", SIZE_MAX, stdex::std_locale_C))
+									else if (!stdex::strnicmp(source + attr.name.start, attr.name.size(), "content", SIZE_MAX))
 										content_attr = &attr;
 								}
 								if (is_content_type && content_attr) {
@@ -1625,7 +1623,7 @@ namespace stdex
 								auto starting_tag = m_element_stack[j];
 								_Assume_(starting_tag && starting_tag->type == stdex::parser::html_sequence_t::element_start);
 								if (starting_tag->code == e->code ||
-									starting_tag->code == element_t::unknown && e->code == element_t::unknown && !stdex::strnicmp(source + starting_tag->name.start, starting_tag->name.size(), source + e->name.start, e->name.size(), stdex::std_locale_C))
+									starting_tag->code == element_t::unknown && e->code == element_t::unknown && !stdex::strnicmp(source + starting_tag->name.start, starting_tag->name.size(), source + e->name.start, e->name.size()))
 								{
 									e->start = starting_tag;
 									e->parent = starting_tag->parent;
@@ -1640,7 +1638,7 @@ namespace stdex
 						}
 						case stdex::parser::html_sequence_t::declaration:
 							if (m_tag.attributes.size() > 3 &&
-								!stdex::strnicmp(source + m_tag.attributes[0].name.start, m_tag.attributes[0].name.size(), "entity", SIZE_MAX, stdex::std_locale_C))
+								!stdex::strnicmp(source + m_tag.attributes[0].name.start, m_tag.attributes[0].name.size(), "entity", SIZE_MAX))
 							{
 								if (!stdex::strncmp(source + m_tag.attributes[1].name.start, m_tag.attributes[1].name.size(), "%", SIZE_MAX) &&
 									stdex::strncmp(source + m_tag.attributes[3].name.start, m_tag.attributes[3].name.size(), "SYSTEM", SIZE_MAX) &&
@@ -2283,7 +2281,7 @@ namespace stdex
 						stdex::sgml2strcat(token->text, m_source + s->interval.start, s->interval.size(), 0, rel, &token->mapping);
 						rel.to = token->text.size();
 						if (!(token->text_type & has_text) &&
-							!stdex::isblank(m_source + s->interval.start, s->interval.size(), stdex::std_locale_C))
+							!stdex::isblank(m_source + s->interval.start, s->interval.size()))
 							token->text_type |= has_text;
 						++m_offset;
 					}
@@ -2303,7 +2301,7 @@ namespace stdex
 							// Copy the tag contents, but mind any attributes containing localizable text.
 							for (auto& a : s_el->attributes) {
 								if (a.value.empty() ||
-									stdex::isblank(m_source + a.value.start, a.value.size(), stdex::std_locale_C))
+									stdex::isblank(m_source + a.value.start, a.value.size()))
 									continue;
 
 								if (element_traits::is_uri(s_el->code, m_source + a.name.start, a.name.size())) {

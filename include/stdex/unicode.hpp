@@ -67,7 +67,7 @@ namespace stdex
 		struct charset_less {
 			inline bool operator()(_In_z_ const char* a, _In_z_ const char* b) const
 			{
-				return stdex::stricmp(a, b, stdex::std_locale_C) < 0;
+				return stdex::stricmp(a, b) < 0;
 			}
 		};
 		static const std::map<const char*, charset_id, charset_less> charsets = {
