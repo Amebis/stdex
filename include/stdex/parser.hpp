@@ -2627,7 +2627,9 @@ namespace stdex
 					bool is_empty = true;
 
 					if (m_separator->match(text, this->interval.end, end, flags)) {
-						if (m_separator->match(text, m_separator->interval.end, end, flags)) {
+						// : found
+						this->interval.end = m_separator->interval.end;
+						if (m_separator->match(text, this->interval.end, end, flags)) {
 							// :: found
 							if (compaction_i == SIZE_MAX) {
 								// Zero compaction start
@@ -2640,11 +2642,7 @@ namespace stdex
 								break;
 							}
 						}
-						else if (i) {
-							// Inner : found
-							this->interval.end = m_separator->interval.end;
-						}
-						else {
+						else if (!i) {
 							// Leading : found
 							goto error;
 						}
