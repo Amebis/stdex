@@ -2324,7 +2324,7 @@ namespace stdex
 										s.get()));
 									stdex::mapping<size_t> rel_value(a.value.start, 0);
 									t_value->mapping.push_back(rel_value);
-									stdex::sgml2strcpy(t_value->text, m_source + a.value.start, a.value.size(), 0, rel_value, &t_value->mapping);
+									stdex::sgml2strcat(t_value->text, m_source + a.value.start, a.value.size(), 0, rel_value, &t_value->mapping);
 									append_token(std::move(t_value), t->text);
 									t->text_type |= has_tokens;
 									offset = a.value.end;
