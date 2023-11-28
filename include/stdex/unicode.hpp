@@ -62,6 +62,11 @@ namespace stdex
 	constexpr charset_id system_charset = charset_id::system;
 #endif
 
+	/// <summary>
+	/// Parses charset name and returns matching charset code
+	/// </summary>
+	/// <param name="name">Charset name</param>
+	/// <returns>Charset code or `charset_id::system` if match not found</returns>
 	inline charset_id charset_from_name(_In_z_ const char* name)
 	{
 		struct charset_less {
@@ -107,6 +112,17 @@ namespace stdex
 		if (auto el = charsets.find(name); el != charsets.end())
 			return el->second;
 		return charset_id::system;
+	}
+
+	/// <summary>
+	/// Parses charset name and returns matching charset code
+	/// </summary>
+	/// <param name="name">Charset name</param>
+	/// <returns>Charset code or `charset_id::system` if match not found</returns>
+	template <class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
+	inline charset_id charset_from_name(_In_ const std::basic_string<char, _Traits, _Alloc>& name)
+	{
+		return charset_from_name(name.c_str());
 	}
 
 	///
