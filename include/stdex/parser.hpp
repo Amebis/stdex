@@ -5666,17 +5666,17 @@ namespace stdex
 				this->interval.end = start;
 				if (m_line_break.match(text, this->interval.end, end, flags)) {
 					this->interval.end = m_line_break.interval.end;
-					if (this->interval.end < end && text[this->interval.end] && isspace(text[this->interval.end])) {
+					if (this->interval.end < end && text[this->interval.end] && stdex::isspace(text[this->interval.end])) {
 						this->interval.start = start;
 						this->interval.end++;
-						while (this->interval.end < end && text[this->interval.end] && isspace(text[this->interval.end])) this->interval.end++;
+						while (this->interval.end < end && text[this->interval.end] && stdex::isspace(text[this->interval.end])) this->interval.end++;
 						return true;
 					}
 				}
-				else if (this->interval.end < end && text[this->interval.end] && isspace(text[this->interval.end])) {
+				else if (this->interval.end < end && text[this->interval.end] && stdex::isspace(text[this->interval.end])) {
 					this->interval.start = start;
 					this->interval.end++;
-					while (this->interval.end < end && text[this->interval.end] && isspace(text[this->interval.end])) this->interval.end++;
+					while (this->interval.end < end && text[this->interval.end] && stdex::isspace(text[this->interval.end])) this->interval.end++;
 					return true;
 				}
 				this->interval.invalidate();
@@ -5756,7 +5756,7 @@ namespace stdex
 							text[this->interval.end] == '=' ||
 							text[this->interval.end] == '{' ||
 							text[this->interval.end] == '}' ||
-							isspace(text[this->interval.end]))
+							stdex::isspace(text[this->interval.end]))
 							break;
 						else
 							this->interval.end++;
@@ -6105,7 +6105,7 @@ namespace stdex
 							(unsigned int)text[this->interval.end] == 0x7f ||
 							text[this->interval.end] == ':' ||
 							text[this->interval.end] == '/' ||
-							isspace(text[this->interval.end]))
+							stdex::isspace(text[this->interval.end]))
 							break;
 						else
 							this->interval.end++;
@@ -6198,7 +6198,7 @@ namespace stdex
 							(unsigned int)text[this->interval.end] == 0x7f ||
 							text[this->interval.end] == '?' ||
 							text[this->interval.end] == '/' ||
-							isspace(text[this->interval.end]))
+							stdex::isspace(text[this->interval.end]))
 							break;
 						else
 							this->interval.end++;
@@ -6288,7 +6288,7 @@ namespace stdex
 							(unsigned int)text[this->interval.end] == 0x7f ||
 							text[this->interval.end] == '&' ||
 							text[this->interval.end] == '=' ||
-							isspace(text[this->interval.end]))
+							stdex::isspace(text[this->interval.end]))
 							break;
 						else
 							this->interval.end++;
@@ -6308,7 +6308,7 @@ namespace stdex
 							if ((unsigned int)text[this->interval.end] < 0x20 ||
 								(unsigned int)text[this->interval.end] == 0x7f ||
 								text[this->interval.end] == '&' ||
-								isspace(text[this->interval.end]))
+								stdex::isspace(text[this->interval.end]))
 								break;
 							else
 								this->interval.end++;
@@ -6403,7 +6403,7 @@ namespace stdex
 						if (this->interval.end < end && text[this->interval.end]) {
 							if ((unsigned int)text[this->interval.end] < 0x20 ||
 								(unsigned int)text[this->interval.end] == 0x7f ||
-								isspace(text[this->interval.end]))
+								stdex::isspace(text[this->interval.end]))
 								break;
 							else if (text[this->interval.end] == '&')
 								this->interval.end++;
@@ -6640,16 +6640,16 @@ namespace stdex
 					return false;
 				}
 
-				while (this->interval.end < end && text[this->interval.end] && isspace(text[this->interval.end])) this->interval.end++;
+				while (this->interval.end < end && text[this->interval.end] && stdex::isspace(text[this->interval.end])) this->interval.end++;
 				if (this->interval.end < end && text[this->interval.end] == ';') {
 					this->interval.end++;
-					while (this->interval.end < end && text[this->interval.end] && isspace(text[this->interval.end])) this->interval.end++;
+					while (this->interval.end < end && text[this->interval.end] && stdex::isspace(text[this->interval.end])) this->interval.end++;
 					if (this->interval.end < end && (text[this->interval.end] == 'q' || text[this->interval.end] == 'Q')) {
 						this->interval.end++;
-						while (this->interval.end < end && text[this->interval.end] && isspace(text[this->interval.end])) this->interval.end++;
+						while (this->interval.end < end && text[this->interval.end] && stdex::isspace(text[this->interval.end])) this->interval.end++;
 						if (this->interval.end < end && text[this->interval.end] == '=') {
 							this->interval.end++;
-							while (this->interval.end < end && text[this->interval.end] && isspace(text[this->interval.end])) this->interval.end++;
+							while (this->interval.end < end && text[this->interval.end] && stdex::isspace(text[this->interval.end])) this->interval.end++;
 							if (factor.match(text, this->interval.end, end, flags))
 								this->interval.end = factor.interval.end;
 						}
@@ -6841,7 +6841,7 @@ namespace stdex
 							version.start = this->interval.end;
 							for (;;) {
 								if (this->interval.end < end && text[this->interval.end]) {
-									if (isspace(text[this->interval.end])) {
+									if (stdex::isspace(text[this->interval.end])) {
 										version.end = this->interval.end;
 										break;
 									}
@@ -6855,7 +6855,7 @@ namespace stdex
 							}
 							break;
 						}
-						else if (isspace(text[this->interval.end])) {
+						else if (stdex::isspace(text[this->interval.end])) {
 							type.end = this->interval.end;
 							break;
 						}
@@ -6920,7 +6920,7 @@ namespace stdex
 							this->interval.end++;
 							break;
 						}
-						else if (isspace(text[this->interval.end]))
+						else if (stdex::isspace(text[this->interval.end]))
 							goto error;
 						else
 							this->interval.end++;
@@ -6939,7 +6939,7 @@ namespace stdex
 							version_min.start = this->interval.end;
 							for (;;) {
 								if (this->interval.end < end && text[this->interval.end]) {
-									if (isspace(text[this->interval.end])) {
+									if (stdex::isspace(text[this->interval.end])) {
 										version_min.end = this->interval.end;
 										version =
 											(uint16_t)strtoui(text + version_maj.start, version_maj.size(), nullptr, 10) * 0x100 +
@@ -6954,7 +6954,7 @@ namespace stdex
 							}
 							break;
 						}
-						else if (isspace(text[this->interval.end])) {
+						else if (stdex::isspace(text[this->interval.end])) {
 							version_maj.end = this->interval.end;
 							version_min.start = 1;
 							version_min.end = 0;
@@ -7026,7 +7026,7 @@ namespace stdex
 					if (m_line_break.match(text, this->interval.end, end, flags))
 						goto error;
 					else if (this->interval.end < end && text[this->interval.end]) {
-						if (isspace(text[this->interval.end]))
+						if (stdex::isspace(text[this->interval.end]))
 							this->interval.end++;
 						else
 							break;
@@ -7039,7 +7039,7 @@ namespace stdex
 					if (m_line_break.match(text, this->interval.end, end, flags))
 						goto error;
 					else if (this->interval.end < end && text[this->interval.end]) {
-						if (isspace(text[this->interval.end])) {
+						if (stdex::isspace(text[this->interval.end])) {
 							verb.end = this->interval.end;
 							this->interval.end++;
 							break;
@@ -7055,7 +7055,7 @@ namespace stdex
 					if (m_line_break.match(text, this->interval.end, end, flags))
 						goto error;
 					else if (this->interval.end < end && text[this->interval.end]) {
-						if (isspace(text[this->interval.end]))
+						if (stdex::isspace(text[this->interval.end]))
 							this->interval.end++;
 						else
 							break;
@@ -7075,7 +7075,7 @@ namespace stdex
 						goto end;
 					}
 					else if (this->interval.end < end && text[this->interval.end]) {
-						if (isspace(text[this->interval.end]))
+						if (stdex::isspace(text[this->interval.end]))
 							this->interval.end++;
 						else
 							break;
@@ -7154,21 +7154,21 @@ namespace stdex
 				this->interval.end = start;
 
 				if (m_line_break.match(text, this->interval.end, end, flags) ||
-					(this->interval.end < end && text[this->interval.end] && isspace(text[this->interval.end])))
+					(this->interval.end < end && text[this->interval.end] && stdex::isspace(text[this->interval.end])))
 					goto error;
 				name.start = this->interval.end;
 				for (;;) {
 					if (m_line_break.match(text, this->interval.end, end, flags))
 						goto error;
 					else if (this->interval.end < end && text[this->interval.end]) {
-						if (isspace(text[this->interval.end])) {
+						if (stdex::isspace(text[this->interval.end])) {
 							name.end = this->interval.end;
 							this->interval.end++;
 							for (;;) {
 								if (m_line_break.match(text, this->interval.end, end, flags))
 									goto error;
 								else if (this->interval.end < end && text[this->interval.end]) {
-									if (isspace(text[this->interval.end]))
+									if (stdex::isspace(text[this->interval.end]))
 										this->interval.end++;
 									else
 										break;
@@ -7201,13 +7201,13 @@ namespace stdex
 					if (m_line_break.match(text, this->interval.end, end, flags)) {
 						this->interval.end = m_line_break.interval.end;
 						if (!m_line_break.match(text, this->interval.end, end, flags) &&
-							this->interval.end < end && text[this->interval.end] && isspace(text[this->interval.end]))
+							this->interval.end < end && text[this->interval.end] && stdex::isspace(text[this->interval.end]))
 							this->interval.end++;
 						else
 							break;
 					}
 					else if (this->interval.end < end && text[this->interval.end]) {
-						if (isspace(text[this->interval.end]))
+						if (stdex::isspace(text[this->interval.end]))
 							this->interval.end++;
 						else {
 							if (value.start == SIZE_MAX) value.start = this->interval.end;
@@ -7260,10 +7260,10 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				while (start < end) {
-					while (start < end && text[start] && isspace(text[start])) start++;
+					while (start < end && text[start] && stdex::isspace(text[start])) start++;
 					if (start < end && text[start] == ',') {
 						start++;
-						while (start < end&& text[start] && isspace(text[start])) start++;
+						while (start < end&& text[start] && stdex::isspace(text[start])) start++;
 					}
 					_Key el;
 					if (el.match(text, start, end, flags)) {
