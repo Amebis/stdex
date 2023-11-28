@@ -400,7 +400,7 @@ namespace stdex
 				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					bool r =
-						((flags & match_multiline) || !islbreak(text[start])) &&
+						((flags & match_multiline) || !stdex::islbreak(text[start])) &&
 						std::use_facet<std::ctype<T>>(this->m_locale).is(std::ctype_base::space, text[start]);
 					if ((r && !m_invert) || (!r && m_invert)) {
 						this->interval.end = (this->interval.start = start) + 1;
@@ -445,7 +445,7 @@ namespace stdex
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* chr_end = chr + stdex::strlen(chr);
 					bool r =
-						((flags & match_multiline) || !islbreak(chr, SIZE_MAX)) &&
+						((flags & match_multiline) || !stdex::islbreak(chr, SIZE_MAX)) &&
 						std::use_facet<std::ctype<wchar_t>>(m_locale).scan_not(std::ctype_base::space, chr, chr_end) == chr_end;
 					if ((r && !m_invert) || (!r && m_invert)) {
 						this->interval.start = start;
@@ -553,7 +553,7 @@ namespace stdex
 				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
 					bool r =
-						((flags & match_multiline) || !islbreak(text[start])) &&
+						((flags & match_multiline) || !stdex::islbreak(text[start])) &&
 						std::use_facet<std::ctype<T>>(this->m_locale).is(std::ctype_base::space | std::ctype_base::punct, text[start]);
 					if ((r && !m_invert) || (!r && m_invert)) {
 						this->interval.end = (this->interval.start = start) + 1;
@@ -598,7 +598,7 @@ namespace stdex
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* chr_end = chr + stdex::strlen(chr);
 					bool r =
-						((flags & match_multiline) || !islbreak(chr, SIZE_MAX)) &&
+						((flags & match_multiline) || !stdex::islbreak(chr, SIZE_MAX)) &&
 						std::use_facet<std::ctype<wchar_t>>(m_locale).scan_not(std::ctype_base::space | std::ctype_base::punct, chr, chr_end) == chr_end;
 					if ((r && !m_invert) || (!r && m_invert)) {
 						this->interval.start = start;
@@ -626,7 +626,7 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
-				bool r = start == 0 || (start <= end && islbreak(text[start - 1]));
+				bool r = start == 0 || (start <= end && stdex::islbreak(text[start - 1]));
 				if ((r && !m_invert) || (!r && m_invert)) {
 					this->interval.end = this->interval.start = start;
 					return true;
@@ -664,7 +664,7 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
-				bool r = islbreak(text[start]);
+				bool r = stdex::islbreak(text[start]);
 				if ((r && !m_invert) || (!r && m_invert)) {
 					this->interval.end = this->interval.start = start;
 					return true;
@@ -6471,7 +6471,7 @@ namespace stdex
 						k.end = this->interval.end;
 						for (;;) {
 							if (k.end < end && text[k.end]) {
-								if (isalpha(text[k.end]))
+								if (stdex::isalpha(text[k.end]))
 									k.end++;
 								else
 									break;

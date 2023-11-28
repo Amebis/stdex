@@ -178,6 +178,17 @@ namespace stdex
 	}
 
 	///
+	/// Test if the given code unit is ASCII-character
+	///
+	/// \param[in] chr  Code unit
+	///
+	template <class T>
+	inline bool isalpha(_In_ T chr)
+	{
+		return islower(chr) || isupper(chr);
+	}
+
+	///
 	/// Return number of code units the glyph represents
 	///
 	/// \param[in] glyph  Start of a glyph
