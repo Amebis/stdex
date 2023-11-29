@@ -664,7 +664,7 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
-				bool r = stdex::islbreak(text[start]);
+				bool r = start >= end || !text[start] || stdex::islbreak(text[start]);
 				if ((r && !m_invert) || (!r && m_invert)) {
 					this->interval.end = this->interval.start = start;
 					return true;
