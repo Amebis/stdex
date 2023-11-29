@@ -2259,7 +2259,7 @@ namespace stdex
 					token_t::complete,
 					nullptr, 0,
 					text_type,
-					m_offset->get()));
+					m_offset != end ? m_offset->get() : nullptr));
 
 				while (m_offset != end) {
 					auto& s = *m_offset;
