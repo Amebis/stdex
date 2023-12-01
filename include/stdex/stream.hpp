@@ -901,7 +901,7 @@ namespace stdex
 			/// Returns file size
 			/// Should the file size cannot be determined, the method returns fsize_max and it does not reset the state to failed.
 			///
-			virtual fsize_t size() = 0;
+			virtual fsize_t size() const = 0;
 
 			///
 			/// Sets file size - truncates the remainder of file content from the current file position to the end of file.
@@ -1779,7 +1779,7 @@ namespace stdex
 					m_state = state_t::fail;
 			}
 
-			virtual fsize_t size()
+			virtual fsize_t size() const
 			{
 				return m_region.size();
 			}
@@ -2011,8 +2011,14 @@ namespace stdex
 					return m_offset = offset;
 				case seek_t::cur:
 					return m_offset += offset;
-				case seek_t::end:
-					return m_offset = size() + offset;
+				case seek_t::end: {
+					auto n = size();
+					if (n == fsize_max) _Unlikely_{
+						m_state = state_t::fail;
+						return fpos_max;
+					}
+					return m_offset = n + offset;
+				}
 				default:
 					throw std::invalid_argument("unknown seek origin");
 				}
@@ -2035,7 +2041,7 @@ namespace stdex
 				m_state = m_source->state();
 			}
 
-			virtual fsize_t size()
+			virtual fsize_t size() const
 			{
 				return m_cache.status != cache_t::cache_t::status_t::empty ?
 					std::max(m_source->size(), m_cache.region.end) :
@@ -2882,7 +2888,7 @@ namespace stdex
 				m_state = state_t::fail;
 			}
 
-			virtual fsize_t size()
+			virtual fsize_t size() const
 			{
 #ifdef _WIN32
 				LARGE_INTEGER li;
@@ -3752,7 +3758,7 @@ namespace stdex
 				return m_offset;
 			}
 
-			virtual fsize_t size()
+			virtual fsize_t size() const
 			{
 				return m_size;
 			}
@@ -4150,19 +4156,14 @@ namespace stdex
 				}
 			}
 
-			virtual fsize_t size()
+			virtual fsize_t size() const
 			{
-				if (m_files.empty()) {
-					m_state = state_t::fail;
-					return 0;
-				}
+				if (m_files.empty())
+					return fsize_max;
 				fsize_t result = m_files[0]->size();
-				m_state = m_files[0]->state();
 				for (size_t i = 1, n = m_files.size(); i < n; ++i) {
 					if (m_files[i]->size() != result)
 						throw std::runtime_error("size mismatch");
-					if (m_files[i]->state() != m_state)
-						throw std::runtime_error("state mismatch");
 				}
 				return result;
 			}
