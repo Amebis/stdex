@@ -30,6 +30,7 @@
 #include <stdex/unicode.hpp>
 #include <stdex/vector_queue.hpp>
 #include <stdex/watchdog.hpp>
+#include <stdex/wav.hpp>
 
 #include "compat.hpp"
 
