@@ -140,7 +140,7 @@ namespace stdex
 		}
 
 		///
-		/// Returns true if object is valid
+		/// Returns true if object has a valid handle
 		///
 		inline operator bool() const noexcept { return m_h != invalid_handle; }
 
