@@ -129,9 +129,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a28e6d46e4183e094ef9fdcf591ebec46" id="r_a28e6d46e4183e094ef9fdcf591ebec46"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1file.html#a28e6d46e4183e094ef9fdcf591ebec46">unlock</a> (fpos_t offset, fsize_t length)</td></tr>
 <tr class="memdesc:a28e6d46e4183e094ef9fdcf591ebec46"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unlocks file section for exclusive access.  <br /></td></tr>
 <tr class="separator:a28e6d46e4183e094ef9fdcf591ebec46"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc591c2378e51340b7af7fbf12d1a98f" id="r_acc591c2378e51340b7af7fbf12d1a98f"><td class="memItemLeft" align="right" valign="top">virtual fsize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1file.html#acc591c2378e51340b7af7fbf12d1a98f">size</a> ()</td></tr>
-<tr class="memdesc:acc591c2378e51340b7af7fbf12d1a98f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns file size Should the file size cannot be determined, the method returns fsize_max and it does not reset the state to failed.  <br /></td></tr>
-<tr class="separator:acc591c2378e51340b7af7fbf12d1a98f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a020509db889ab8b1129e55a9c8ea1b09" id="r_a020509db889ab8b1129e55a9c8ea1b09"><td class="memItemLeft" align="right" valign="top">virtual fsize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1file.html#a020509db889ab8b1129e55a9c8ea1b09">size</a> () const</td></tr>
+<tr class="memdesc:a020509db889ab8b1129e55a9c8ea1b09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns file size Should the file size cannot be determined, the method returns fsize_max and it does not reset the state to failed.  <br /></td></tr>
+<tr class="separator:a020509db889ab8b1129e55a9c8ea1b09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1c4de0bca72ddc02db4e8328cefcf17" id="r_aa1c4de0bca72ddc02db4e8328cefcf17"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1file.html#aa1c4de0bca72ddc02db4e8328cefcf17">truncate</a> ()</td></tr>
 <tr class="memdesc:aa1c4de0bca72ddc02db4e8328cefcf17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets file size - truncates the remainder of file content from the current file position to the end of file.  <br /></td></tr>
 <tr class="separator:aa1c4de0bca72ddc02db4e8328cefcf17"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -405,7 +405,7 @@ template&lt;class _Kty , class _Pr  = std::less&lt;_Kty&gt;, class _Alloc  = std
 <tr class="separator:a88a709abb28be61cf5e621ff71433791 inherit pub_methods_classstdex_1_1sys__object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a529b0f9294ed46591389ca3dd9c540f3 inherit pub_methods_classstdex_1_1sys__object" id="r_a529b0f9294ed46591389ca3dd9c540f3"><td class="memItemLeft" align="right" valign="top">
 &#160;</td><td class="memItemRight" valign="bottom"><b>operator bool</b> () const noexcept</td></tr>
-<tr class="memdesc:a529b0f9294ed46591389ca3dd9c540f3 inherit pub_methods_classstdex_1_1sys__object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if object is valid. <br /></td></tr>
+<tr class="memdesc:a529b0f9294ed46591389ca3dd9c540f3 inherit pub_methods_classstdex_1_1sys__object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if object has a valid handle. <br /></td></tr>
 <tr class="separator:a529b0f9294ed46591389ca3dd9c540f3 inherit pub_methods_classstdex_1_1sys__object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68edd83d50aee1dd85645aa0506c8769 inherit pub_methods_classstdex_1_1sys__object" id="r_a68edd83d50aee1dd85645aa0506c8769"><td class="memItemLeft" align="right" valign="top">
 sys_handle&#160;</td><td class="memItemRight" valign="bottom"><b>get</b> () const noexcept</td></tr>
@@ -1027,8 +1027,8 @@ sys_handle&#160;</td><td class="memItemRight" valign="bottom"><b>m_h</b></td></t
 
 </div>
 </div>
-<a id="acc591c2378e51340b7af7fbf12d1a98f" name="acc591c2378e51340b7af7fbf12d1a98f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acc591c2378e51340b7af7fbf12d1a98f">&#9670;&#160;</a></span>size()</h2>
+<a id="a020509db889ab8b1129e55a9c8ea1b09" name="a020509db889ab8b1129e55a9c8ea1b09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a020509db889ab8b1129e55a9c8ea1b09">&#9670;&#160;</a></span>size()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1040,7 +1040,7 @@ sys_handle&#160;</td><td class="memItemRight" valign="bottom"><b>m_h</b></td></t
           <td class="memname">virtual fsize_t stdex::stream::file::size </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
   </td>
@@ -1052,7 +1052,7 @@ sys_handle&#160;</td><td class="memItemRight" valign="bottom"><b>m_h</b></td></t
 
 <p>Returns file size Should the file size cannot be determined, the method returns fsize_max and it does not reset the state to failed. </p>
 
-<p>Implements <a class="el" href="classstdex_1_1stream_1_1basic__file.html#ad868d7c25aa45cefc95dd54a24febf2f">stdex::stream::basic_file</a>.</p>
+<p>Implements <a class="el" href="classstdex_1_1stream_1_1basic__file.html#a5ce5b79bc42a41426debb10022ec0627">stdex::stream::basic_file</a>.</p>
 
 </div>
 </div>
@@ -1161,7 +1161,7 @@ sys_handle&#160;</td><td class="memItemRight" valign="bottom"><b>m_h</b></td></t
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Nov 29 2023 11:04:43 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Dec 1 2023 14:52:25 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

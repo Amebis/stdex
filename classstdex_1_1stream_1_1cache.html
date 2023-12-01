@@ -126,9 +126,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a7a15ab17abc847b380b13b43b4f1d12e" id="r_a7a15ab17abc847b380b13b43b4f1d12e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1cache.html#a7a15ab17abc847b380b13b43b4f1d12e">unlock</a> (fpos_t offset, fsize_t length)</td></tr>
 <tr class="memdesc:a7a15ab17abc847b380b13b43b4f1d12e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unlocks file section for exclusive access.  <br /></td></tr>
 <tr class="separator:a7a15ab17abc847b380b13b43b4f1d12e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a769034b8641a17210a916091b112af2d" id="r_a769034b8641a17210a916091b112af2d"><td class="memItemLeft" align="right" valign="top">virtual fsize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1cache.html#a769034b8641a17210a916091b112af2d">size</a> ()</td></tr>
-<tr class="memdesc:a769034b8641a17210a916091b112af2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns file size Should the file size cannot be determined, the method returns fsize_max and it does not reset the state to failed.  <br /></td></tr>
-<tr class="separator:a769034b8641a17210a916091b112af2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac984f9471425a3179f4b02694c83211a" id="r_ac984f9471425a3179f4b02694c83211a"><td class="memItemLeft" align="right" valign="top">virtual fsize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1cache.html#ac984f9471425a3179f4b02694c83211a">size</a> () const</td></tr>
+<tr class="memdesc:ac984f9471425a3179f4b02694c83211a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns file size Should the file size cannot be determined, the method returns fsize_max and it does not reset the state to failed.  <br /></td></tr>
+<tr class="separator:ac984f9471425a3179f4b02694c83211a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e19026e55cda14db786948b66d63aba" id="r_a2e19026e55cda14db786948b66d63aba"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1cache.html#a2e19026e55cda14db786948b66d63aba">truncate</a> ()</td></tr>
 <tr class="memdesc:a2e19026e55cda14db786948b66d63aba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets file size - truncates the remainder of file content from the current file position to the end of file.  <br /></td></tr>
 <tr class="separator:a2e19026e55cda14db786948b66d63aba"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -743,8 +743,8 @@ state_t&#160;</td><td class="memItemRight" valign="bottom"><b>m_state</b></td></
 
 </div>
 </div>
-<a id="a769034b8641a17210a916091b112af2d" name="a769034b8641a17210a916091b112af2d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a769034b8641a17210a916091b112af2d">&#9670;&#160;</a></span>size()</h2>
+<a id="ac984f9471425a3179f4b02694c83211a" name="ac984f9471425a3179f4b02694c83211a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac984f9471425a3179f4b02694c83211a">&#9670;&#160;</a></span>size()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -756,7 +756,7 @@ state_t&#160;</td><td class="memItemRight" valign="bottom"><b>m_state</b></td></
           <td class="memname">virtual fsize_t stdex::stream::cache::size </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
   </td>
@@ -768,7 +768,7 @@ state_t&#160;</td><td class="memItemRight" valign="bottom"><b>m_state</b></td></
 
 <p>Returns file size Should the file size cannot be determined, the method returns fsize_max and it does not reset the state to failed. </p>
 
-<p>Implements <a class="el" href="classstdex_1_1stream_1_1basic__file.html#ad868d7c25aa45cefc95dd54a24febf2f">stdex::stream::basic_file</a>.</p>
+<p>Implements <a class="el" href="classstdex_1_1stream_1_1basic__file.html#a5ce5b79bc42a41426debb10022ec0627">stdex::stream::basic_file</a>.</p>
 
 </div>
 </div>
@@ -925,7 +925,7 @@ state_t&#160;</td><td class="memItemRight" valign="bottom"><b>m_state</b></td></
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Nov 29 2023 11:04:43 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Fri Dec 1 2023 14:52:25 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
