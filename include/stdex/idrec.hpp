@@ -294,7 +294,7 @@ namespace stdex {
 			///
 			/// Returns record id
 			///
-			static const T_ID id()
+			static constexpr T_ID id()
 			{
 				return ID;
 			}
