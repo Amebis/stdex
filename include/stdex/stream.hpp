@@ -3167,6 +3167,11 @@ namespace stdex
 				open(filename.c_str(), mode);
 			}
 
+			///
+			/// Returns true if file has a valid handle
+			///
+			inline operator bool() const noexcept { return m_source; }
+
 		protected:
 			file m_source;
 		};
