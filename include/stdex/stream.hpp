@@ -3204,8 +3204,10 @@ namespace stdex
 				m_reserved(size),
 				m_manage(true)
 			{
-				if (!m_data)
+				if (!m_data) {
+					m_state = state_t::fail;
 					throw std::bad_alloc();
+				}
 #if SET_FILE_OP_TIMES
 				m_ctime = m_atime = m_mtime = time_point::now();
 #endif
@@ -3265,6 +3267,121 @@ namespace stdex
 			/// \param[in] mode      Bitwise combination of mode_t flags
 			///
 			inline memory_file(_In_ const stdex::sstring& filename, _In_ int mode) : memory_file(filename.c_str(), mode) {}
+
+			///
+			/// Copies content from another file
+			///
+			/// \param[in] other  Other file
+			///
+			memory_file(_In_ const memory_file& other) :
+				basic_file(other),
+				m_data(reinterpret_cast<uint8_t*>(malloc(other.m_size))),
+				m_offset(other.m_offset),
+				m_size(other.m_size),
+				m_reserved(other.m_size),
+				m_manage(true)
+#if SET_FILE_OP_TIMES
+				, m_ctime(other.m_ctime)
+				, m_atime(other.m_atime)
+				, m_mtime(other.m_mtime)
+#endif
+			{
+				if (!m_data) {
+					m_state = state_t::fail;
+					throw std::bad_alloc();
+				}
+				memcpy(m_data, other.m_data, other.m_size);
+			}
+
+			///
+			/// Copies content from another file
+			///
+			/// \param[in] other  Other file
+			///
+			memory_file& operator=(_In_ const memory_file& other)
+			{
+				if (this != std::addressof(other)) {
+					*static_cast<basic_file*>(this) = other;
+					if (m_manage && m_data)
+						free(m_data);
+					m_data = reinterpret_cast<uint8_t*>(malloc(other.m_size));
+					if (!m_data) {
+						m_state = state_t::fail;
+						throw std::bad_alloc();
+					}
+					memcpy(m_data, other.m_data, other.m_size);
+					m_offset = other.m_offset;
+					m_size = other.m_size;
+					m_reserved = other.m_size;
+					m_manage = true;
+#if SET_FILE_OP_TIMES
+					m_ctime = other.m_ctime;
+					m_atime = other.m_atime;
+					m_mtime = other.m_mtime;
+#endif
+				}
+				return *this;
+			}
+
+			///
+			/// Moves content from another file
+			///
+			/// \param[in] other  Other file
+			///
+			memory_file(_Inout_ memory_file&& other) noexcept :
+				basic_file(std::move(other)),
+				m_data(other.m_data),
+				m_offset(other.m_offset),
+				m_size(other.m_size),
+				m_reserved(other.m_reserved),
+				m_manage(other.m_manage)
+#if SET_FILE_OP_TIMES
+				, m_ctime(other.m_ctime)
+				, m_atime(other.m_atime)
+				, m_mtime(other.m_mtime)
+#endif
+			{
+				other.m_state = state_t::ok;
+				other.m_data = nullptr;
+				other.m_offset = 0;
+				other.m_size = 0;
+				other.m_reserved = 0;
+				other.m_manage = true;
+#if SET_FILE_OP_TIMES
+				other.m_ctime = other.m_atime = other.m_mtime = time_point::now();
+#endif
+			}
+
+			///
+			/// Moves content from another file
+			///
+			/// \param[in] other  Other file
+			///
+			memory_file& operator=(_Inout_ memory_file&& other) noexcept
+			{
+				if (this != std::addressof(other)) {
+					*static_cast<basic_file*>(this) = std::move(other);
+					if (m_manage && m_data)
+						free(m_data);
+					m_data = other.m_data;
+					other.m_data = nullptr;
+					m_offset = other.m_offset;
+					other.m_offset = 0;
+					m_size = other.m_size;
+					other.m_size = 0;
+					m_reserved = other.m_reserved;
+					other.m_reserved = 0;
+					m_manage = other.m_manage;
+					other.m_manage = true;
+#if SET_FILE_OP_TIMES
+					m_ctime = other.m_ctime;
+					m_atime = other.m_atime;
+					m_mtime = other.m_mtime;
+					other.m_ctime = other.m_atime = other.m_mtime = time_point::now();
+#endif
+				}
+				return *this;
+			}
 
 			virtual ~memory_file()
 			{
