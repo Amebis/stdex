@@ -118,6 +118,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a7a134b82c4dd44bf5823e4cd25bbec29" id="r_a7a134b82c4dd44bf5823e4cd25bbec29"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1memory__file.html#a7a134b82c4dd44bf5823e4cd25bbec29">memory_file</a> (const stdex::sstring &amp;filename, int mode)</td></tr>
 <tr class="memdesc:a7a134b82c4dd44bf5823e4cd25bbec29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads content from file-system file.  <br /></td></tr>
 <tr class="separator:a7a134b82c4dd44bf5823e4cd25bbec29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ab587eecc39d9586a623cc34221de92" id="r_a1ab587eecc39d9586a623cc34221de92"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1memory__file.html#a1ab587eecc39d9586a623cc34221de92">memory_file</a> (const <a class="el" href="classstdex_1_1stream_1_1memory__file.html">memory_file</a> &amp;other)</td></tr>
+<tr class="memdesc:a1ab587eecc39d9586a623cc34221de92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copies content from another file.  <br /></td></tr>
+<tr class="separator:a1ab587eecc39d9586a623cc34221de92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8864aed603e57ceb982956ce05da8b68" id="r_a8864aed603e57ceb982956ce05da8b68"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstdex_1_1stream_1_1memory__file.html">memory_file</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1memory__file.html#a8864aed603e57ceb982956ce05da8b68">operator=</a> (const <a class="el" href="classstdex_1_1stream_1_1memory__file.html">memory_file</a> &amp;other)</td></tr>
+<tr class="memdesc:a8864aed603e57ceb982956ce05da8b68"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copies content from another file.  <br /></td></tr>
+<tr class="separator:a8864aed603e57ceb982956ce05da8b68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b3b3e2206dd54a06c8da4a1a469acd4" id="r_a7b3b3e2206dd54a06c8da4a1a469acd4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1memory__file.html#a7b3b3e2206dd54a06c8da4a1a469acd4">memory_file</a> (<a class="el" href="classstdex_1_1stream_1_1memory__file.html">memory_file</a> &amp;&amp;other) noexcept</td></tr>
+<tr class="memdesc:a7b3b3e2206dd54a06c8da4a1a469acd4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Moves content from another file.  <br /></td></tr>
+<tr class="separator:a7b3b3e2206dd54a06c8da4a1a469acd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a053bad774ae0343bcc5d05b5108a5a90" id="r_a053bad774ae0343bcc5d05b5108a5a90"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstdex_1_1stream_1_1memory__file.html">memory_file</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1memory__file.html#a053bad774ae0343bcc5d05b5108a5a90">operator=</a> (<a class="el" href="classstdex_1_1stream_1_1memory__file.html">memory_file</a> &amp;&amp;other) noexcept</td></tr>
+<tr class="memdesc:a053bad774ae0343bcc5d05b5108a5a90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Moves content from another file.  <br /></td></tr>
+<tr class="separator:a053bad774ae0343bcc5d05b5108a5a90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b59e4dd13195dd91211ece4c680cb9b" id="r_a6b59e4dd13195dd91211ece4c680cb9b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1memory__file.html#a6b59e4dd13195dd91211ece4c680cb9b">reserve</a> (size_t required, bool tight=false) noexcept</td></tr>
 <tr class="memdesc:a6b59e4dd13195dd91211ece4c680cb9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reallocates memory.  <br /></td></tr>
 <tr class="separator:a6b59e4dd13195dd91211ece4c680cb9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -617,7 +629,7 @@ state_t&#160;</td><td class="memItemRight" valign="bottom"><b>m_state</b></td></
 <div class="textblock"><p>In-memory file. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a6b4b9daa088fb20678a502e81553c745" name="a6b4b9daa088fb20678a502e81553c745"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6b4b9daa088fb20678a502e81553c745">&#9670;&#160;</a></span>memory_file() <span class="overload">[1/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b4b9daa088fb20678a502e81553c745">&#9670;&#160;</a></span>memory_file() <span class="overload">[1/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -662,7 +674,7 @@ state_t&#160;</td><td class="memItemRight" valign="bottom"><b>m_state</b></td></
 </div>
 </div>
 <a id="af7fdc0b7ffcd3713487a75cfd9c1704f" name="af7fdc0b7ffcd3713487a75cfd9c1704f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af7fdc0b7ffcd3713487a75cfd9c1704f">&#9670;&#160;</a></span>memory_file() <span class="overload">[2/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#af7fdc0b7ffcd3713487a75cfd9c1704f">&#9670;&#160;</a></span>memory_file() <span class="overload">[2/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -728,7 +740,7 @@ state_t&#160;</td><td class="memItemRight" valign="bottom"><b>m_state</b></td></
 </div>
 </div>
 <a id="ad0da8c8758672af312026957e2556b60" name="ad0da8c8758672af312026957e2556b60"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad0da8c8758672af312026957e2556b60">&#9670;&#160;</a></span>memory_file() <span class="overload">[3/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad0da8c8758672af312026957e2556b60">&#9670;&#160;</a></span>memory_file() <span class="overload">[3/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -787,7 +799,7 @@ state_t&#160;</td><td class="memItemRight" valign="bottom"><b>m_state</b></td></
 </div>
 </div>
 <a id="a0bb7b9759667e810c91b3e58c1771d91" name="a0bb7b9759667e810c91b3e58c1771d91"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0bb7b9759667e810c91b3e58c1771d91">&#9670;&#160;</a></span>memory_file() <span class="overload">[4/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0bb7b9759667e810c91b3e58c1771d91">&#9670;&#160;</a></span>memory_file() <span class="overload">[4/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -832,7 +844,7 @@ state_t&#160;</td><td class="memItemRight" valign="bottom"><b>m_state</b></td></
 </div>
 </div>
 <a id="a7a134b82c4dd44bf5823e4cd25bbec29" name="a7a134b82c4dd44bf5823e4cd25bbec29"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7a134b82c4dd44bf5823e4cd25bbec29">&#9670;&#160;</a></span>memory_file() <span class="overload">[5/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a134b82c4dd44bf5823e4cd25bbec29">&#9670;&#160;</a></span>memory_file() <span class="overload">[5/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -870,6 +882,74 @@ state_t&#160;</td><td class="memItemRight" valign="bottom"><b>m_state</b></td></
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">filename</td><td>Filename </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">mode</td><td>Bitwise combination of mode_t flags </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1ab587eecc39d9586a623cc34221de92" name="a1ab587eecc39d9586a623cc34221de92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ab587eecc39d9586a623cc34221de92">&#9670;&#160;</a></span>memory_file() <span class="overload">[6/7]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">stdex::stream::memory_file::memory_file </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classstdex_1_1stream_1_1memory__file.html">memory_file</a> &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Copies content from another file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">other</td><td>Other file </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a7b3b3e2206dd54a06c8da4a1a469acd4" name="a7b3b3e2206dd54a06c8da4a1a469acd4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b3b3e2206dd54a06c8da4a1a469acd4">&#9670;&#160;</a></span>memory_file() <span class="overload">[7/7]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">stdex::stream::memory_file::memory_file </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classstdex_1_1stream_1_1memory__file.html">memory_file</a> &amp;&amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Moves content from another file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">other</td><td>Other file </td></tr>
   </table>
   </dd>
 </dl>
@@ -1037,6 +1117,74 @@ template&lt;class T &gt; </div>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">filename</td><td>Filename </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">mode</td><td>Bitwise combination of mode_t flags </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8864aed603e57ceb982956ce05da8b68" name="a8864aed603e57ceb982956ce05da8b68"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8864aed603e57ceb982956ce05da8b68">&#9670;&#160;</a></span>operator=() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classstdex_1_1stream_1_1memory__file.html">memory_file</a> &amp; stdex::stream::memory_file::operator= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classstdex_1_1stream_1_1memory__file.html">memory_file</a> &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Copies content from another file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">other</td><td>Other file </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a053bad774ae0343bcc5d05b5108a5a90" name="a053bad774ae0343bcc5d05b5108a5a90"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a053bad774ae0343bcc5d05b5108a5a90">&#9670;&#160;</a></span>operator=() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classstdex_1_1stream_1_1memory__file.html">memory_file</a> &amp; stdex::stream::memory_file::operator= </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classstdex_1_1stream_1_1memory__file.html">memory_file</a> &amp;&amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Moves content from another file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">other</td><td>Other file </td></tr>
   </table>
   </dd>
 </dl>
@@ -1690,7 +1838,7 @@ template&lt;class T &gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Dec 1 2023 14:52:26 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Wed Dec 6 2023 10:02:34 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

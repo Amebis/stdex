@@ -100,11 +100,16 @@ var searchData=
   ['basic_5furl_5fusername_5fchar_97',['basic_url_username_char',['../classstdex_1_1parser_1_1basic__url__username__char.html',1,'stdex::parser']]],
   ['basic_5furl_5fusername_5fchar_3c_20char_20_3e_98',['basic_url_username_char&lt; char &gt;',['../classstdex_1_1parser_1_1basic__url__username__char.html',1,'stdex::parser']]],
   ['bban_99',['bban',['../classstdex_1_1parser_1_1basic__iban.html#a527b724e495e34938d8e57179e5dbd71',1,'stdex::parser::basic_iban']]],
-  ['block_5fhash_100',['block_hash',['../classstdex_1_1block__hash.html',1,'stdex']]],
-  ['block_5fhash_3c_20md5_5ft_20_3e_101',['block_hash&lt; md5_t &gt;',['../classstdex_1_1block__hash.html',1,'stdex']]],
-  ['block_5fhash_3c_20sha1_5ft_20_3e_102',['block_hash&lt; sha1_t &gt;',['../classstdex_1_1block__hash.html',1,'stdex']]],
-  ['buf_103',['buf',['../classstdex_1_1hex__dec.html#a47a6b05d03e3cd075fe74505675b5126',1,'stdex::hex_dec']]],
-  ['buffer_104',['buffer',['../classstdex_1_1stream_1_1buffer.html',1,'stdex::stream']]],
-  ['buffer_5ft_105',['buffer_t',['../structstdex_1_1stream_1_1buffer_1_1buffer__t.html',1,'stdex::stream::buffer']]],
-  ['buffered_5fsys_106',['buffered_sys',['../classstdex_1_1stream_1_1buffered__sys.html',1,'stdex::stream']]]
+  ['bits_5fper_5fchannel_100',['bits_per_channel',['../structstdex_1_1wav_1_1format.html#a67f8c858e962c30f4f38f08bfc02354f',1,'stdex::wav::format']]],
+  ['block_5falign_101',['block_align',['../structstdex_1_1wav_1_1format.html#ad1e8389dc2e46f4a89ca19bb5b9804f5',1,'stdex::wav::format']]],
+  ['block_5fhash_102',['block_hash',['../classstdex_1_1block__hash.html',1,'stdex']]],
+  ['block_5fhash_3c_20md5_5ft_20_3e_103',['block_hash&lt; md5_t &gt;',['../classstdex_1_1block__hash.html',1,'stdex']]],
+  ['block_5fhash_3c_20sha1_5ft_20_3e_104',['block_hash&lt; sha1_t &gt;',['../classstdex_1_1block__hash.html',1,'stdex']]],
+  ['block_5foffset_105',['block_offset',['../structstdex_1_1wav_1_1cue.html#ad38b61b681205faa6af40310b305758e',1,'stdex::wav::cue']]],
+  ['block_5fstart_106',['block_start',['../structstdex_1_1wav_1_1cue.html#a5ff713152c9608e62a8ee0a97a01bdac',1,'stdex::wav::cue']]],
+  ['buf_107',['buf',['../classstdex_1_1hex__dec.html#a47a6b05d03e3cd075fe74505675b5126',1,'stdex::hex_dec']]],
+  ['buffer_108',['buffer',['../classstdex_1_1stream_1_1buffer.html',1,'stdex::stream']]],
+  ['buffer_5ft_109',['buffer_t',['../structstdex_1_1stream_1_1buffer_1_1buffer__t.html',1,'stdex::stream::buffer']]],
+  ['buffered_5fsys_110',['buffered_sys',['../classstdex_1_1stream_1_1buffered__sys.html',1,'stdex::stream']]],
+  ['bytes_5fper_5fsecond_111',['bytes_per_second',['../structstdex_1_1wav_1_1format.html#a09a6dc6744dbd0331c2dd50379679497',1,'stdex::wav::format']]]
 ];

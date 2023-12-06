@@ -7,5 +7,6 @@ var searchData=
   ['end_5fsequence_4',['end_sequence',['../classstdex_1_1html_1_1starting__token.html#a314307ae87aead197750b2457e1df21d',1,'stdex::html::starting_token']]],
   ['exponent_5',['exponent',['../classstdex_1_1parser_1_1basic__scientific__numeral.html#ac3b886b3334d64811d82d1d47fbafe66',1,'stdex::parser::basic_scientific_numeral']]],
   ['exponent_5fsymbol_6',['exponent_symbol',['../classstdex_1_1parser_1_1basic__scientific__numeral.html#a66134e1cb72bdfb75f2ac634fee02ee3',1,'stdex::parser::basic_scientific_numeral']]],
-  ['eyes_7',['eyes',['../classstdex_1_1parser_1_1basic__emoticon.html#a2700be6652350445e571cf95940fd32a',1,'stdex::parser::basic_emoticon']]]
+  ['extra_7',['extra',['../structstdex_1_1wav_1_1format.html#a87fad34087b6372c05a9d2c449a49123',1,'stdex::wav::format']]],
+  ['eyes_8',['eyes',['../classstdex_1_1parser_1_1basic__emoticon.html#a2700be6652350445e571cf95940fd32a',1,'stdex::parser::basic_emoticon']]]
 ];
