@@ -304,6 +304,20 @@ namespace stdex
 	/// Find a code unit in a string.
 	///
 	/// \param[in] str    String
+	/// \param[in] chr    Code unit to search for
+	///
+	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
+	///
+	template <class T, class _Traits = std::char_traits<T>, class _Ax = std::allocator<T>>
+	inline size_t strrchr(_In_ const std::basic_string<T, _Traits, _Ax>& str, _In_ T chr)
+	{
+		return strrnchr(str.data(), str.size(), chr);
+	}
+
+	///
+	/// Find a code unit in a string.
+	///
+	/// \param[in] str    String
 	/// \param[in] count  Code unit count limit
 	/// \param[in] chr    Code unit to search for
 	///
@@ -578,8 +592,8 @@ namespace stdex
 	///
 	/// Binary compare two strings ASCII-case-insensitive
 	///
-	/// \param[in] str1    String 1
-	/// \param[in] str2    String 2
+	/// \param[in] str1  String 1
+	/// \param[in] str2  String 2
 	///
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
@@ -596,6 +610,22 @@ namespace stdex
 		if (str1[i]) return +1;
 		if (str2[i]) return -1;
 		return 0;
+	}
+
+	///
+	/// Binary compare two strings ASCII-case-insensitive
+	///
+	/// \param[in] str1  String 1
+	/// \param[in] str2  String 2
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T1, class _Traits1 = std::char_traits<T1>, class _Ax1 = std::allocator<T1>, class T2, class _Traits2 = std::char_traits<T2>, class _Ax2 = std::allocator<T2>>
+	inline int stricmp(
+		_In_ const std::basic_string<T1, _Traits1, _Ax1>& str1,
+		_In_ const std::basic_string<T2, _Traits2, _Ax2>& str2)
+	{
+		return strnicmp(str1.data(), str1.size(), str2.data(), str2.size());
 	}
 
 	///
@@ -622,6 +652,24 @@ namespace stdex
 		if (str1[i]) return +1;
 		if (str2[i]) return -1;
 		return 0;
+	}
+
+	///
+	/// Binary compare two strings ASCII-case-insensitive
+	///
+	/// \param[in] str1    String 1
+	/// \param[in] str2    String 2
+	/// \param[in] locale  C++ locale to use
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T1, class _Traits1 = std::char_traits<T1>, class _Ax1 = std::allocator<T1>, class T2, class _Traits2 = std::char_traits<T2>, class _Ax2 = std::allocator<T2>>
+	inline int stricmp(
+		_In_ const std::basic_string<T1, _Traits1, _Ax1>& str1,
+		_In_ const std::basic_string<T2, _Traits2, _Ax2>& str2,
+		_In_ const std::locale& locale)
+	{
+		return strnicmp(str1.data(), str1.size(), str2.data(), str2.size(), locale);
 	}
 
 	///
