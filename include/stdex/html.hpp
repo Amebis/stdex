@@ -40,7 +40,7 @@ namespace stdex
 		template<class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
 		inline void escape(
 			_Inout_ std::basic_string<char, _Traits, _Alloc>& dst,
-			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars = SIZE_MAX)
+			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars)
 		{
 			_Assume_(src || !num_chars);
 			for (size_t i = 0; i < num_chars && src[i]; ++i) {
@@ -67,7 +67,7 @@ namespace stdex
 		template<class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
 		inline void escape(
 			_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst,
-			_In_reads_or_z_opt_(num_chars) const wchar_t* src, _In_ size_t num_chars = SIZE_MAX)
+			_In_reads_or_z_opt_(num_chars) const wchar_t* src, _In_ size_t num_chars)
 		{
 			_Assume_(src || !num_chars);
 			for (size_t i = 0; i < num_chars && src[i]; ++i) {
@@ -82,6 +82,34 @@ namespace stdex
 				default: dst += src[i]; break;
 				}
 			}
+		}
+
+		///
+		/// Appends HTML escaped string
+		///
+		/// \param[in,out] dst  String to append to
+		/// \param[in]     src  Source string
+		///
+		template<class _Elem, size_t _Size, class _Traits = std::char_traits<_Elem>, class _Alloc = std::allocator<_Elem>>
+		inline void escape(
+			_Inout_ std::basic_string<_Elem, _Traits, _Alloc>& dst,
+			_In_ const _Elem (&src)[_Size])
+		{
+			escape(dst, src, _Size);
+		}
+
+		///
+		/// Appends HTML escaped string
+		///
+		/// \param[in,out] dst  String to append to
+		/// \param[in]     src  Source string
+		///
+		template<class _Elem, class _Traits_dst = std::char_traits<_Elem>, class _Alloc_dst = std::allocator<_Elem>, class _Traits_src = std::char_traits<_Elem>, class _Alloc_src = std::allocator<_Elem>>
+		inline void escape(
+			_Inout_ std::basic_string<_Elem, _Traits_dst, _Alloc_dst>& dst,
+			_In_ const std::basic_string<_Elem, _Traits_src, _Alloc_src>& src)
+		{
+			escape(dst, src.data(), src.size());
 		}
 
 		///
@@ -130,7 +158,7 @@ namespace stdex
 		template<class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
 		inline void escape_min(
 			_Inout_ std::basic_string<char, _Traits, _Alloc>& dst,
-			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars = SIZE_MAX)
+			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars)
 		{
 			_Assume_(src || !num_chars);
 			for (size_t i = 0; i < num_chars && src[i]; ++i) {
@@ -154,7 +182,7 @@ namespace stdex
 		template<class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
 		inline void escape_min(
 			_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst,
-			_In_reads_or_z_opt_(num_chars) const wchar_t* src, _In_ size_t num_chars = SIZE_MAX)
+			_In_reads_or_z_opt_(num_chars) const wchar_t* src, _In_ size_t num_chars)
 		{
 			_Assume_(src || !num_chars);
 			for (size_t i = 0; i < num_chars && src[i]; ++i) {
@@ -169,6 +197,34 @@ namespace stdex
 		}
 
 		///
+		/// Appends HTML escaped string
+		///
+		/// \param[in,out] dst  String to append to
+		/// \param[in]     src  Source string
+		///
+		template<class _Elem, size_t _Size, class _Traits = std::char_traits<_Elem>, class _Alloc = std::allocator<_Elem>>
+		inline void escape_min(
+			_Inout_ std::basic_string<_Elem, _Traits, _Alloc>& dst,
+			_In_ const _Elem (&src)[_Size])
+		{
+			escape_min(dst, src, _Size);
+		}
+
+		///
+		/// Appends HTML escaped string
+		///
+		/// \param[in,out] dst  String to append to
+		/// \param[in]     src  Source string
+		///
+		template<class _Elem, class _Traits_dst = std::char_traits<_Elem>, class _Alloc_dst = std::allocator<_Elem>, class _Traits_src = std::char_traits<_Elem>, class _Alloc_src = std::allocator<_Elem>>
+		inline void escape_min(
+			_Inout_ std::basic_string<_Elem, _Traits_dst, _Alloc_dst>& dst,
+			_In_ const std::basic_string<_Elem, _Traits_src, _Alloc_src>& src)
+		{
+			escape_min(dst, src.data(), src.size());
+		}
+
+		///
 		/// Appends unescaped URL string
 		///
 		/// \param[in,out] dst        String to append to
@@ -178,7 +234,7 @@ namespace stdex
 		template<class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
 		inline void url_unescape(
 			_Inout_ std::basic_string<char, _Traits, _Alloc>& dst,
-			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars = SIZE_MAX)
+			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars)
 		{
 			_Assume_(src || !num_chars);
 			for (size_t i = 0; i < num_chars && src[i];) {
@@ -211,6 +267,34 @@ namespace stdex
 		}
 
 		///
+		/// Appends unescaped URL string
+		///
+		/// \param[in,out] dst  String to append to
+		/// \param[in]     src  Source string
+		///
+		template<size_t _Size, class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
+		inline void url_unescape(
+			_Inout_ std::basic_string<char, _Traits, _Alloc>& dst,
+			_In_ const char (&src)[_Size])
+		{
+			url_unescape(dst, src, _Size);
+		}
+
+		///
+		/// Appends unescaped URL string
+		///
+		/// \param[in,out] dst  String to append to
+		/// \param[in]     src  Source string
+		///
+		template<class _Traits_dst = std::char_traits<char>, class _Alloc_dst = std::allocator<char>, class _Traits_src = std::char_traits<char>, class _Alloc_src = std::allocator<char>>
+		inline void url_unescape(
+			_Inout_ std::basic_string<char, _Traits_dst, _Alloc_dst>& dst,
+			_In_ const std::basic_string<char, _Traits_src, _Alloc_src>& src)
+		{
+			url_unescape(dst, src.data(), src.size());
+		}
+
+		///
 		/// Appends escaped URL string
 		///
 		/// \param[in,out] dst        String to append to
@@ -220,7 +304,7 @@ namespace stdex
 		template<class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
 		inline void url_escape(
 			_Inout_ std::basic_string<char, _Traits, _Alloc>& dst,
-			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars = SIZE_MAX)
+			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars)
 		{
 			_Assume_(src || !num_chars);
 			for (size_t i = 0; i < num_chars && src[i]; ++i) {
@@ -262,6 +346,34 @@ namespace stdex
 		}
 
 		///
+		/// Appends escaped URL string
+		///
+		/// \param[in,out] dst  String to append to
+		/// \param[in]     src  Source string
+		///
+		template<size_t _Size, class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
+		inline void url_escape(
+			_Inout_ std::basic_string<char, _Traits, _Alloc>& dst,
+			_In_ const char (&src)[_Size])
+		{
+			url_escape(dst, src, _Size);
+		}
+
+		///
+		/// Appends escaped URL string
+		///
+		/// \param[in,out] dst  String to append to
+		/// \param[in]     src  Source string
+		///
+		template<class _Traits_dst = std::char_traits<char>, class _Alloc_dst = std::allocator<char>, class _Traits_src = std::char_traits<char>, class _Alloc_src = std::allocator<char>>
+		inline void url_escape(
+			_Inout_ std::basic_string<char, _Traits_dst, _Alloc_dst>& dst,
+			_In_ const std::basic_string<char, _Traits_src, _Alloc_src>& src)
+		{
+			url_escape(dst, src.data(), src.size());
+		}
+
+		///
 		/// Appends unescaped CSS string
 		///
 		/// \param[in,out] dst        String to append to
@@ -271,7 +383,7 @@ namespace stdex
 		template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Alloc = std::allocator<_Elem>>
 		inline void css_unescape(
 			_Inout_ std::basic_string<_Elem, _Traits, _Alloc>& dst,
-			_In_reads_or_z_opt_(num_chars) const _Elem* src, _In_ size_t num_chars = SIZE_MAX)
+			_In_reads_or_z_opt_(num_chars) const _Elem* src, _In_ size_t num_chars)
 		{
 			_Assume_(src || !num_chars);
 			for (size_t i = 0; i < num_chars && src[i];) {
@@ -332,6 +444,34 @@ namespace stdex
 		}
 
 		///
+		/// Appends unescaped CSS string
+		///
+		/// \param[in,out] dst  String to append to
+		/// \param[in]     src  Source string
+		///
+		template<class _Elem, size_t _Size, class _Traits = std::char_traits<_Elem>, class _Alloc = std::allocator<_Elem>>
+		inline void css_unescape(
+			_Inout_ std::basic_string<_Elem, _Traits, _Alloc>& dst,
+			_In_ const _Elem (&src)[_Size])
+		{
+			css_unescape(dst, src, _Size);
+		}
+
+		///
+		/// Appends unescaped CSS string
+		///
+		/// \param[in,out] dst  String to append to
+		/// \param[in]     src  Source string
+		///
+		template<class _Elem, class _Traits_dst = std::char_traits<_Elem>, class _Alloc_dst = std::allocator<_Elem>, class _Traits_src = std::char_traits<_Elem>, class _Alloc_src = std::allocator<_Elem>>
+		inline void css_unescape(
+			_Inout_ std::basic_string<_Elem, _Traits_dst, _Alloc_dst>& dst,
+			_In_ const std::basic_string<_Elem, _Traits_src, _Alloc_src>& src)
+		{
+			css_unescape(dst, src.data(), src.size());
+		}
+
+		///
 		/// Appends escaped CSS string
 		///
 		/// \param[in,out] dst        String to append to
@@ -341,7 +481,7 @@ namespace stdex
 		template<class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
 		inline void css_escape(
 			_Inout_ std::basic_string<char, _Traits, _Alloc>& dst,
-			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars = SIZE_MAX)
+			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars)
 		{
 			_Assume_(src || !num_chars);
 			for (size_t i = 0; i < num_chars && src[i]; ++i) {
@@ -367,7 +507,7 @@ namespace stdex
 		template<class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
 		inline void css_escape(
 			_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst,
-			_In_reads_or_z_opt_(num_chars) const wchar_t* src, _In_ size_t num_chars = SIZE_MAX)
+			_In_reads_or_z_opt_(num_chars) const wchar_t* src, _In_ size_t num_chars)
 		{
 			_Assume_(src || !num_chars);
 			for (size_t i = 0; i < num_chars && src[i]; ++i) {
@@ -381,6 +521,34 @@ namespace stdex
 				default: dst += src[i]; break;
 				}
 			}
+		}
+
+		///
+		/// Appends escaped CSS string
+		///
+		/// \param[in,out] dst  String to append to
+		/// \param[in]     src  Source string
+		///
+		template<class _Elem, size_t _Size, class _Traits = std::char_traits<_Elem>, class _Alloc = std::allocator<_Elem>>
+		inline void css_escape(
+			_Inout_ std::basic_string<_Elem, _Traits, _Alloc>& dst,
+			_In_ const _Elem (&src)[_Size])
+		{
+			css_escape(dst, src, _Size);
+		}
+
+		///
+		/// Appends escaped CSS string
+		///
+		/// \param[in,out] dst  String to append to
+		/// \param[in]     src  Source string
+		///
+		template<class _Elem, class _Traits_dst = std::char_traits<_Elem>, class _Alloc_dst = std::allocator<_Elem>, class _Traits_src = std::char_traits<_Elem>, class _Alloc_src = std::allocator<_Elem>>
+		inline void css_escape(
+			_Inout_ std::basic_string<_Elem, _Traits_dst, _Alloc_dst>& dst,
+			_In_ const std::basic_string<_Elem, _Traits_src, _Alloc_src>& src)
+		{
+			css_escape(dst, src.data(), src.size());
 		}
 
 		///
@@ -1469,7 +1637,7 @@ namespace stdex
 			///
 			/// Parses HTML source code by chunks
 			///
-			void append(_In_reads_or_z_opt_(num_chars) const _Elem* source, _In_ size_t num_chars = SIZE_MAX)
+			void append(_In_reads_or_z_opt_(num_chars) const _Elem* source, _In_ size_t num_chars)
 			{
 				_Assume_(source || !num_chars);
 				m_source.append(source, stdex::strnlen(source, num_chars));
@@ -1692,7 +1860,7 @@ namespace stdex
 			///
 			/// Parses HTML document source code
 			///
-			inline void assign(_In_reads_or_z_opt_(num_chars) const _Elem* source, _In_ size_t num_chars = SIZE_MAX)
+			inline void assign(_In_reads_or_z_opt_(num_chars) const _Elem* source, _In_ size_t num_chars)
 			{
 				clear();
 				append(source, num_chars);
