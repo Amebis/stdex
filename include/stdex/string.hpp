@@ -1773,6 +1773,18 @@ namespace stdex
 	///
 	/// Convert string to lower-case character-by-character
 	///
+	/// \param[in,out] str String
+	///
+	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
+	inline void strlwr(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& str)
+	{
+		for (auto& c : str)
+			c = tolower(c);
+	}
+
+	///
+	/// Convert string to lower-case character-by-character
+	///
 	/// \param[in,out] str     String
 	/// \param[in]     count   Code unit limit
 	/// \param[in]     locale  C++ locale to use
@@ -1784,6 +1796,20 @@ namespace stdex
 		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
 		for (size_t i = 0; i < count && str[i]; ++i)
 			str[i] = ctype.tolower(str[i]);
+	}
+
+	///
+	/// Convert string to lower-case character-by-character
+	///
+	/// \param[in,out] str     String
+	/// \param[in]     locale  C++ locale to use
+	///
+	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
+	inline void strlwr(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& str, _In_ const std::locale& locale)
+	{
+		const auto& ctype = std::use_facet<std::ctype<_Elem>>(locale);
+		for (auto& c : str)
+			c = ctype.tolower(c);
 	}
 
 	///
@@ -1852,8 +1878,8 @@ namespace stdex
 	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
 	inline void strupr(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& str)
 	{
-		for (size_t i = 0; i < str.size(); ++i)
-			str[i] = toupper(str[i]);
+		for (auto& c : str)
+			c = toupper(c);
 	}
 
 	///
@@ -1866,8 +1892,8 @@ namespace stdex
 	inline void strupr(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& str, _In_ const std::locale& locale)
 	{
 		const auto& ctype = std::use_facet<std::ctype<_Elem>>(locale);
-		for (size_t i = 0; i < str.size(); ++i)
-			str[i] = ctype.toupper(str[i]);
+		for (auto& c : str)
+			c = ctype.toupper(c);
 	}
 
 	///
