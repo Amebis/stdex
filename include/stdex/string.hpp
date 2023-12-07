@@ -268,6 +268,19 @@ namespace stdex
 		return i;
 	}
 
+	///
+	/// Calculate zero-terminated string length.
+	///
+	/// \param[in] str  String
+	///
+	/// \return Number of code units excluding zero terminator in the string.
+	///
+	template <class T, size_t SIZE>
+	inline size_t strnlen(_In_ const T (&str)[SIZE])
+	{
+		return strnlen(str, SIZE);
+	}
+
 	constexpr auto npos{ static_cast<size_t>(-1) };
 
 	///
