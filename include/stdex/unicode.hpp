@@ -798,6 +798,161 @@ namespace stdex
 	{
 		return wstr2str(src.c_str(), src.size(), charset);
 	}
+
+#ifdef _WIN32
+	///
+	/// Normalize characters of a text string according to Unicode 4.0 TR#15 and append to string
+	///
+	/// \param[in,out] dst        String to append normalized string to
+	/// \param[in]     src        String to normalize
+	/// \param[in]     count_src  String to normalize code unit limit
+	///
+	/// \return Number of code units excluding zero terminator in the dst string after the operation.
+	///
+	template <class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
+	inline size_t normalizecat(
+		_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst,
+		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src)
+	{
+		count_src = stdex::strnlen(src, count_src);
+		size_t count_dst = dst.size();
+		dst.resize(count_dst + count_src);
+		_Assume_(count_src + 1 < INT_MAX);
+		int r = NormalizeString(NormalizationC, src, static_cast<int>(count_src), dst.data() + count_dst, static_cast<int>(count_src + 1));
+		if (r >= 0)
+			dst.resize(count_dst + r);
+		else
+			memcpy(dst.data() + count_dst, src, count_src * sizeof(wchar_t));
+		return dst.size();
+	}
+
+	///
+	/// Normalize characters of a text string according to Unicode 4.0 TR#15 and append to string
+	///
+	/// \param[in,out] dst  String to append normalized string to
+	/// \param[in]     src  String to normalize
+	///
+	/// \return Number of code units excluding zero terminator in the dst string after the operation.
+	///
+	template <size_t _Size, class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
+	inline size_t normalizecat(
+		_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst,
+		_In_ const wchar_t (&src)[_Size])
+	{
+		return normalizecat(dst, src, _Size);
+	}
+
+	///
+	/// Normalize characters of a text string according to Unicode 4.0 TR#15 and append to string
+	///
+	/// \param[in,out] dst  String to append normalized string to
+	/// \param[in]     src  String to normalize
+	///
+	/// \return Number of code units excluding zero terminator in the dst string after the operation.
+	///
+	template <class _Traits_dst = std::char_traits<wchar_t>, class _Alloc_dst = std::allocator<wchar_t>, class _Traits_src = std::char_traits<wchar_t>, class _Alloc_src = std::allocator<wchar_t>>
+	inline size_t normalizecat(
+		_Inout_ std::basic_string<wchar_t, _Traits_dst, _Alloc_dst>& dst,
+		_In_ const std::basic_string<wchar_t, _Traits_src, _Alloc_src>& src)
+	{
+		return normalizecat(dst, src.data(), src.size());
+	}
+
+	///
+	/// Normalize characters of a text string according to Unicode 4.0 TR#15 and assign to string
+	///
+	/// \param[in,out] dst        String to assign normalized string to
+	/// \param[in]     src        String to normalize
+	/// \param[in]     count_src  String to normalize code unit limit
+	///
+	/// \return Number of code units excluding zero terminator in the dst string after the operation.
+	///
+	template <class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
+	inline size_t normalize(
+		_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst,
+		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src)
+	{
+		dst.clear();
+		return normalizecat(dst, src, count_src);
+	}
+
+	///
+	/// Normalize characters of a text string according to Unicode 4.0 TR#15 and assign to string
+	///
+	/// \param[in,out] dst  String to assign normalized string to
+	/// \param[in]     src  String to normalize
+	///
+	/// \return Number of code units excluding zero terminator in the dst string after the operation.
+	///
+	template <size_t _Size, class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
+	inline size_t normalize(
+		_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst,
+		_In_ const wchar_t(&src)[_Size])
+	{
+		return normalize(dst, src, _Size);
+	}
+
+	///
+	/// Normalize characters of a text string according to Unicode 4.0 TR#15 and assign to string
+	///
+	/// \param[in,out] dst  String to assign normalized string to
+	/// \param[in]     src  String to normalize
+	///
+	/// \return Number of code units excluding zero terminator in the dst string after the operation.
+	///
+	template <class _Traits_dst = std::char_traits<wchar_t>, class _Alloc_dst = std::allocator<wchar_t>, class _Traits_src = std::char_traits<wchar_t>, class _Alloc_src = std::allocator<wchar_t>>
+	inline size_t normalize(
+		_Inout_ std::basic_string<wchar_t, _Traits_dst, _Alloc_dst>& dst,
+		_In_ const std::basic_string<wchar_t, _Traits_src, _Alloc_src>& src)
+	{
+		return normalize(dst, src.data(), src.size());
+	}
+
+	///
+	/// Normalize characters of a text string according to Unicode 4.0 TR#15
+	///
+	/// \param[in] src        String to normalize
+	/// \param[in] count_src  String to normalize code unit limit
+	///
+	/// \return Normalized string
+	///
+	inline std::wstring normalize(_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src)
+	{
+		std::wstring dst;
+		normalizecat(dst, src, count_src);
+		return dst;
+	}
+
+	///
+	/// Normalize characters of a text string according to Unicode 4.0 TR#15
+	///
+	/// \param[in] src  String to normalize
+	///
+	/// \return Normalized string
+	///
+	template <size_t _Size>
+	inline std::wstring normalize(_In_ const wchar_t(&src)[_Size])
+	{
+		std::wstring dst;
+		normalizecat(dst, src, _Size);
+		return dst;
+	}
+
+	///
+	/// Normalize characters of a text string according to Unicode 4.0 TR#15
+	///
+	/// \param[in] src  String to normalize
+	///
+	/// \return Normalized string
+	///
+	template <class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
+	inline std::wstring normalize(_In_ const std::basic_string<wchar_t, _Traits, _Alloc>& src)
+	{
+		std::wstring dst;
+		normalizecat(dst, src.data(), src.size());
+		return dst;
+	}
+#endif
 }
 
 #ifndef _WIN32
