@@ -302,8 +302,8 @@ namespace stdex
 			///
 			/// \return Number of read characters
 			///
-			template<class _Traits = std::char_traits<char>, class _Ax = std::allocator<char>>
-			inline size_t readln(_Inout_ std::basic_string<char, _Traits, _Ax>& str)
+			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
+			inline size_t readln(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& str)
 			{
 				str.clear();
 				return readln_and_attach(str);
@@ -314,27 +314,15 @@ namespace stdex
 			///
 			/// \return Number of read characters
 			///
-			template<class _Traits = std::char_traits<wchar_t>, class _Ax = std::allocator<wchar_t>>
-			inline size_t readln(_Inout_ std::basic_string<wchar_t, _Traits, _Ax>& wstr)
-			{
-				wstr.clear();
-				return readln_and_attach(wstr);
-			}
-
-			///
-			/// Reads stream to the end-of-line or end-of-file.
-			///
-			/// \return Number of read characters
-			///
 			template<class T_from, class T_to, class _Traits = std::char_traits<T_to>, class _Ax = std::allocator<T_to>>
-			size_t readln(_Inout_ std::basic_string<T_to, _Traits, _Ax>& wstr, _In_ charset_encoder<T_from, T_to>& encoder)
+			size_t readln(_Inout_ std::basic_string<T_to, _Traits, _Ax>& str, _In_ charset_encoder<T_from, T_to>& encoder)
 			{
 				if (encoder.from_encoding() == encoder.to_encoding())
-					return readln(wstr);
-				std::string str;
-				readln_and_attach(str);
-				encoder.strcpy(wstr, str);
-				return wstr.size();
+					return readln(str);
+				std::basic_string<T_from> tmp;
+				readln_and_attach(tmp);
+				encoder.strcpy(str, tmp);
+				return str.size();
 			}
 
 			///
@@ -364,14 +352,14 @@ namespace stdex
 			/// \return Total number of chars in str
 			///
 			template<class T_from, class T_to, class _Traits = std::char_traits<T_to>, class _Ax = std::allocator<T_to>>
-			size_t readln_and_attach(_Inout_ std::basic_string<T_to, _Traits, _Ax>& wstr, _In_ charset_encoder<T_from, T_to>& encoder)
+			size_t readln_and_attach(_Inout_ std::basic_string<T_to, _Traits, _Ax>& str, _In_ charset_encoder<T_from, T_to>& encoder)
 			{
 				if (encoder.from_encoding() == encoder.to_encoding())
-					return readln_and_attach(wstr);
-				std::string str;
-				readln_and_attach(str);
-				encoder.strcat(wstr, str);
-				return wstr.size();
+					return readln_and_attach(str);
+				std::basic_string<T_from> tmp;
+				readln_and_attach(tmp);
+				encoder.strcat(str, tmp);
+				return str.size();
 			}
 
 			///
@@ -405,61 +393,61 @@ namespace stdex
 			///
 			/// Writes array of characters to the stream
 			///
-			/// \param[in] wstr       String to write. Must be zero-terminated.
+			/// \param[in] str        String to write. Must be zero-terminated.
 			/// \param[in] encoder    Encoder for encoding string
 			///
 			/// \return Number of code units written
 			///
 			template <class T_from, class T_to>
-			size_t write_array(_In_z_ const T_from* wstr, _In_ charset_encoder<T_from, T_to>& encoder)
+			size_t write_array(_In_z_ const T_from* str, _In_ charset_encoder<T_from, T_to>& encoder)
 			{
 				if (!ok()) _Unlikely_
 					return 0;
-				size_t num_chars = stdex::strlen(wstr);
+				size_t num_chars = stdex::strlen(str);
 				if (encoder.from_encoding() == encoder.to_encoding())
-					return write_array(wstr, sizeof(T_from), num_chars);
-				std::basic_string<T_to> str(encoder.convert(wstr, num_chars));
-				return write_array(str.data(), sizeof(T_to), str.size());
+					return write_array(str, sizeof(T_from), num_chars);
+				std::basic_string<T_to> tmp(encoder.convert(str, num_chars));
+				return write_array(tmp.data(), sizeof(T_to), tmp.size());
 			}
 
 			///
 			/// Writes array of characters to the stream
 			///
-			/// \param[in] wstr       String to write
+			/// \param[in] str        String to write
 			/// \param[in] num_chars  String code unit count limit
 			/// \param[in] encoder    Encoder for encoding string
 			///
 			/// \return Number of code units written
 			///
 			template <class T_from, class T_to>
-			size_t write_array(_In_reads_or_z_opt_(num_chars) const T_from* wstr, _In_ size_t num_chars, _In_ charset_encoder<T_from, T_to>& encoder)
+			size_t write_array(_In_reads_or_z_opt_(num_chars) const T_from* str, _In_ size_t num_chars, _In_ charset_encoder<T_from, T_to>& encoder)
 			{
 				if (!ok()) _Unlikely_
 					return 0;
-				num_chars = stdex::strnlen(wstr, num_chars);
+				num_chars = stdex::strnlen(str, num_chars);
 				if (encoder.from_encoding() == encoder.to_encoding())
-					return write_array(wstr, sizeof(T_from), num_chars);
-				std::basic_string<T_to> str(encoder.convert(wstr, num_chars));
-				return write_array(str.data(), sizeof(T_to), str.size());
+					return write_array(str, sizeof(T_from), num_chars);
+				std::basic_string<T_to> tmp(encoder.convert(str, num_chars));
+				return write_array(tmp.data(), sizeof(T_to), tmp.size());
 			}
 
 			///
 			/// Writes array of characters to the stream
 			///
-			/// \param[in] wstr       String to write
+			/// \param[in] str        String to write
 			/// \param[in] encoder    Encoder for encoding string
 			///
 			/// \return Number of code units written
 			///
 			template<class T_from, class T_to, class _Traits = std::char_traits<T_from>, class _Ax = std::allocator<T_from>>
-			size_t write_array(_In_ const std::basic_string<T_from, _Traits, _Ax>& wstr, _In_ charset_encoder<T_from, T_to>& encoder)
+			size_t write_array(_In_ const std::basic_string<T_from, _Traits, _Ax>& str, _In_ charset_encoder<T_from, T_to>& encoder)
 			{
 				if (!ok()) _Unlikely_
 					return 0;
 				if (encoder.from_encoding() == encoder.to_encoding())
-					return write_array(wstr.data(), sizeof(T_from), wstr.size());
-				std::basic_string<T_to> str(encoder.convert(wstr));
-				return write_array(str.data(), sizeof(T_to), str.size());
+					return write_array(str.data(), sizeof(T_from), str.size());
+				std::basic_string<T_to> tmp(encoder.convert(str));
+				return write_array(tmp.data(), sizeof(T_to), tmp.size());
 			}
 
 			///
@@ -636,10 +624,10 @@ namespace stdex
 			///
 			size_t write_vsprintf(_In_z_ _Printf_format_string_params_(2) const char* format, _In_opt_ locale_t locale, _In_ va_list params)
 			{
-				std::string str;
-				str.reserve(default_block_size);
-				vappendf(str, format, locale, params);
-				return write_array(str.data(), sizeof(char), str.size());
+				std::string tmp;
+				tmp.reserve(default_block_size);
+				vappendf(tmp, format, locale, params);
+				return write_array(tmp.data(), sizeof(char), tmp.size());
 			}
 
 			///
@@ -649,10 +637,10 @@ namespace stdex
 			///
 			size_t write_vsprintf(_In_z_ _Printf_format_string_params_(2) const wchar_t* format, _In_opt_ locale_t locale, _In_ va_list params)
 			{
-				std::wstring str;
-				str.reserve(default_block_size);
-				vappendf(str, format, locale, params);
-				return write_array(str.data(), sizeof(wchar_t), str.size());
+				std::wstring tmp;
+				tmp.reserve(default_block_size);
+				vappendf(tmp, format, locale, params);
+				return write_array(tmp.data(), sizeof(wchar_t), tmp.size());
 			}
 
 			inline basic& operator >>(_Out_ int8_t& data) { return read_data(data); }

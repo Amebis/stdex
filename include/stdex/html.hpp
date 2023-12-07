@@ -2647,7 +2647,7 @@ namespace stdex
 
 		protected:
 			const document<_Elem, _Traits, _Alloc>& m_document;        ///< Document being analyzed
-			const stdex::sys_string m_url;           ///< Absolute document URL
+			const stdex::sstring m_url;              ///< Absolute document URL
 			const bool m_parse_frames;               ///< Parse frames
 			stdex::progress<size_t>* m_progress;     ///< Progress indicator
 			const _Elem* m_source;                   ///< HTML source code

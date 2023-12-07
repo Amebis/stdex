@@ -75,8 +75,6 @@ namespace stdex
 	constexpr int sgml_sgml = sgml_amp | sgml_lt_gt;
 	constexpr int sgml_ml_attrib = sgml_amp | sgml_quot_apos;
 	constexpr int sgml_c = sgml_amp | sgml_bsol | sgml_quot_apos;
-	// constexpr int sgml_ajt_lemma  = sgml_amp | sgml_quot | sgml_dollar | sgml_percnt;
-	// constexpr int sgml_ajt_form   = sgml_ajt_lemma;
 	// constexpr int sgml_kolos      = sgml_amp | sgml_quot | sgml_dollar | sgml_percnt | sgml_lt_gt | sgml_bsol/* | sgml_commat | sgml_num*/ | sgml_lpar_rpar | sgml_lcub_rcub | sgml_lsqb_rsqb;
 
 	///
@@ -455,7 +453,7 @@ namespace stdex
 	inline void str2sgmlcat(
 		_Inout_ std::string& dst,
 		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
-		_In_ size_t what = 0)
+		_In_ int what = 0)
 	{
 		_Assume_(src || !count_src);
 
@@ -557,7 +555,7 @@ namespace stdex
 	inline void str2sgmlcat(
 		_Inout_ std::string& dst,
 		_In_ const std::wstring& src,
-		_In_ size_t what = 0)
+		_In_ int what = 0)
 	{
 		str2sgmlcat(dst, src.c_str(), src.size(), what);
 	}
@@ -576,7 +574,7 @@ namespace stdex
 	inline size_t str2sgmlcat(
 		_Inout_cap_(count_dst) char* dst, _In_ size_t count_dst,
 		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
-		_In_ size_t what = 0)
+		_In_ int what = 0)
 	{
 		_Assume_(dst || !count_dst);
 		_Assume_(src || !count_src);
@@ -705,7 +703,7 @@ namespace stdex
 	inline void str2sgmlcpy(
 		_Inout_ std::string& dst,
 		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
-		_In_ size_t what = 0)
+		_In_ int what = 0)
 	{
 		dst.clear();
 		str2sgmlcat(dst, src, count_src, what);
@@ -721,7 +719,7 @@ namespace stdex
 	inline void str2sgmlcpy(
 		_Inout_ std::string& dst,
 		_In_ const std::wstring& src,
-		_In_ size_t what = 0)
+		_In_ int what = 0)
 	{
 		str2sgmlcpy(dst, src.data(), src.size(), what);
 	}
@@ -740,7 +738,7 @@ namespace stdex
 	inline size_t str2sgmlcpy(
 		_Inout_cap_(count_dst) char* dst, _In_ size_t count_dst,
 		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
-		_In_ size_t what = 0)
+		_In_ int what = 0)
 	{
 		_Assume_(dst || !count_dst);
 		if (count_dst)
@@ -759,7 +757,7 @@ namespace stdex
 	///
 	inline std::string str2sgml(
 		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
-		_In_ size_t what = 0)
+		_In_ int what = 0)
 	{
 		std::string dst;
 		str2sgmlcat(dst, src, count_src, what);
@@ -776,7 +774,7 @@ namespace stdex
 	///
 	inline std::string str2sgml(
 		_In_ const std::wstring& src,
-		_In_ size_t what = 0)
+		_In_ int what = 0)
 	{
 		return str2sgml(src.c_str(), src.size(), what);
 	}
