@@ -25,7 +25,7 @@ namespace stdex {
 		/// - \c false otherwise
 		///
 		template <class T_ID>
-		_Success_(return) bool read_id(_In_ std::istream& stream, _Out_ T_ID &id, _In_opt_ std::streamoff end = (std::streamoff)-1)
+		inline _Success_(return) bool read_id(_In_ std::istream& stream, _Out_ T_ID &id, _In_opt_ std::streamoff end = (std::streamoff)-1)
 		{
 			if (end == (std::streamoff)-1 || stream.tellg() < end) {
 				stream.read((char*)&id, sizeof(id));
@@ -46,13 +46,26 @@ namespace stdex {
 		/// - \c false otherwise
 		///
 		template <class T_ID>
-		_Success_(return) bool read_id(_In_ stdex::stream::basic_file& stream, _Out_ T_ID &id, _In_opt_ stdex::stream::fpos_t end = stdex::stream::fpos_max)
+		inline _Success_(return) bool read_id(_In_ stdex::stream::basic_file& stream, _Out_ T_ID &id, _In_opt_ stdex::stream::fpos_t end = stdex::stream::fpos_max)
 		{
 			if (end == stdex::stream::fpos_max || stream.tell() < end) {
 				stream >> id;
 				return stream.ok();
 			} else
 				return false;
+		}
+
+		///
+		/// Calculates required padding
+		///
+		/// \param[in] size  Actual data size
+		///
+		/// \return Number of bytes needed to add to the data to align it on `ALIGN` boundary
+		///
+		template <class T_SIZE, T_SIZE ALIGN>
+		inline T_SIZE padding(_In_ T_SIZE size)
+		{
+			return (ALIGN - (size % ALIGN)) % ALIGN;
 		}
 
 		///
@@ -65,7 +78,7 @@ namespace stdex {
 		/// - \c false otherwise
 		///
 		template <class T_SIZE, T_SIZE ALIGN>
-		bool ignore(_In_ std::istream& stream)
+		inline bool ignore(_In_ std::istream& stream)
 		{
 			// Read record size.
 			T_SIZE size;
@@ -73,7 +86,7 @@ namespace stdex {
 			if (!stream.good()) _Unlikely_ return false;
 
 			// Skip the record data.
-			size += (T_SIZE)(ALIGN - size) % ALIGN;
+			size += padding<T_SIZE, ALIGN>(size);
 			stream.ignore(size);
 			if (!stream.good()) _Unlikely_ return false;
 
@@ -90,7 +103,7 @@ namespace stdex {
 		/// - \c false otherwise
 		///
 		template <class T_SIZE, T_SIZE ALIGN>
-		bool ignore(_In_ stdex::stream::basic& stream)
+		inline bool ignore(_In_ stdex::stream::basic& stream)
 		{
 			// Read record size.
 			T_SIZE size;
@@ -98,7 +111,7 @@ namespace stdex {
 			if (!stream.ok()) _Unlikely_ return false;
 
 			// Skip the record data.
-			size += (T_SIZE)(ALIGN - size) % ALIGN;
+			size += padding<T_SIZE, ALIGN>(size);
 			stream.skip(size);
 			if (!stream.ok()) _Unlikely_ return false;
 
@@ -117,7 +130,7 @@ namespace stdex {
 		/// - \c false otherwise
 		///
 		template <class T_ID, class T_SIZE, T_SIZE ALIGN>
-		bool find(_In_ std::istream& stream, _In_ T_ID id, _In_opt_ std::streamoff end = (std::streamoff)-1)
+		inline bool find(_In_ std::istream& stream, _In_ T_ID id, _In_opt_ std::streamoff end = (std::streamoff)-1)
 		{
 			T_ID _id;
 			while (end == (std::streamoff)-1 || stream.tellg() < end) {
@@ -144,7 +157,7 @@ namespace stdex {
 		/// - \c false otherwise
 		///
 		template <class T_ID, class T_SIZE, T_SIZE ALIGN>
-		bool find(_In_ stdex::stream::basic_file& stream, _In_ T_ID id, _In_opt_ stdex::stream::fpos_t end = stdex::stream::fpos_max)
+		inline bool find(_In_ stdex::stream::basic_file& stream, _In_ T_ID id, _In_opt_ stdex::stream::fpos_t end = stdex::stream::fpos_max)
 		{
 			T_ID _id;
 			while (end == stdex::stream::fpos_max || stream.tell() < end) {
@@ -168,7 +181,7 @@ namespace stdex {
 		/// \returns  Position of the record header start in \p stream. Save for later \c close call.
 		///
 		template <class T_ID, class T_SIZE>
-		std::streamoff open(_In_ std::ostream& stream, _In_ T_ID id)
+		inline std::streamoff open(_In_ std::ostream& stream, _In_ T_ID id)
 		{
 			std::streamoff start = stream.tellp();
 
@@ -193,7 +206,7 @@ namespace stdex {
 		/// \returns  Position of the record header start in \p stream. Save for later \c close call.
 		///
 		template <class T_ID, class T_SIZE>
-		stdex::stream::fpos_t open(_In_ stdex::stream::basic_file& stream, _In_ T_ID id)
+		inline stdex::stream::fpos_t open(_In_ stdex::stream::basic_file& stream, _In_ T_ID id)
 		{
 			auto start = stream.tell();
 
@@ -201,7 +214,7 @@ namespace stdex {
 			stream << id;
 
 			// Write 0 as a placeholder for data size.
-			stream << (T_SIZE)0;
+			stream << static_cast<T_SIZE>(0);
 
 			return start;
 		}
@@ -215,12 +228,12 @@ namespace stdex {
 		/// \returns  Position of the record end in \p stream
 		///
 		template <class T_ID, class T_SIZE, T_SIZE ALIGN>
-		std::streamoff close(_In_ std::ostream& stream, _In_ std::streamoff start)
+		inline std::streamoff close(_In_ std::ostream& stream, _In_ std::streamoff start)
 		{
 			std::streamoff end = stream.tellp();
 			T_SIZE
 				size      = static_cast<T_SIZE>(end - start - sizeof(T_ID) - sizeof(T_SIZE)),
-				remainder = static_cast<T_SIZE>((ALIGN - size) % ALIGN); // Number of bytes we need to add, to keep the data integral number of ALIGN blocks long
+				remainder = padding<T_SIZE, ALIGN>(size);
 
 			if (remainder) {
 				// Append padding.
@@ -232,7 +245,7 @@ namespace stdex {
 			// Update the data size.
 			if (stream.fail()) _Unlikely_ return (std::streamoff)-1;
 			stream.seekp(start + sizeof(T_ID));
-			stream.write((const char*)&size, sizeof(size));
+			stream.write(reinterpret_cast<const char*>(&size), sizeof(size));
 			stream.seekp(end);
 
 			return end;
@@ -247,12 +260,12 @@ namespace stdex {
 		/// \returns  Position of the record end in \p stream
 		///
 		template <class T_ID, class T_SIZE, T_SIZE ALIGN>
-		stdex::stream::fpos_t close(_In_ stdex::stream::basic_file& stream, _In_ stdex::stream::fpos_t start)
+		inline stdex::stream::fpos_t close(_In_ stdex::stream::basic_file& stream, _In_ stdex::stream::fpos_t start)
 		{
 			auto end = stream.tell();
 			T_SIZE
 				size      = static_cast<T_SIZE>(end - start - sizeof(T_ID) - sizeof(T_SIZE)),
-				remainder = static_cast<T_SIZE>((ALIGN - size) % ALIGN); // Number of bytes we need to add, to keep the data integral number of ALIGN blocks long
+				remainder = padding<T_SIZE, ALIGN>(size);
 
 			if (remainder) {
 				// Append padding.
@@ -479,7 +492,7 @@ namespace stdex {
 				stream >> r.data; // TODO: operator >> should not read past the record data! Make a size limited stream and read from it instead.
 				if (!stream.good()) _Unlikely_ return stream;
 
-				size += static_cast<T_SIZE>((ALIGN - size) % ALIGN);
+				size += padding<T_SIZE, ALIGN>(size);
 				stream.seekg(start + size);
 
 				return stream;
@@ -510,7 +523,7 @@ namespace stdex {
 					if (!limiter.ok()) _Unlikely_ return stream;
 				}
 
-				size += static_cast<T_SIZE>((ALIGN - size) % ALIGN);
+				size += padding<T_SIZE, ALIGN>(size);
 				stream.seek(start + size);
 
 				return stream;
@@ -539,7 +552,7 @@ namespace stdex {
 					if (!limiter.ok()) _Unlikely_ return stream;
 					limiter.skip(limiter.read_limit);
 				}
-				stream.skip(static_cast<T_SIZE>((ALIGN - size) % ALIGN));
+				stream.skip(padding<T_SIZE, ALIGN>(size));
 
 				return stream;
 			}
