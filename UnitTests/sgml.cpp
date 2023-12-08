@@ -56,9 +56,9 @@ namespace UnitTests
 		{
 			Assert::AreEqual("This is a test.", stdex::str2sgml(L"This is a test.", (size_t)-1).c_str());
 			Assert::AreEqual("Th&iacute;&scaron; i&sdot; a te&smacr;t.&amp;unknown;&#x1f600;&#x1f605;", stdex::str2sgml(L"Th\u00ed\u0161 i\u22c5 a te\u0073\u0304t.&unknown;😀😅", (size_t)-1).c_str());
-			Assert::AreEqual("This", stdex::str2sgml(L"This is a test.", 4).c_str());
-			Assert::AreEqual("te&smacr;", stdex::str2sgml(L"te\u0073\u0304t", 4).c_str());
-			Assert::AreEqual("tes", stdex::str2sgml(L"te\u0073\u0304t", 3).c_str());
+			Assert::AreEqual("This", stdex::str2sgml(L"This is a test.", 4, 0).c_str());
+			Assert::AreEqual("te&smacr;", stdex::str2sgml(L"te\u0073\u0304t", 4, 0).c_str());
+			Assert::AreEqual("tes", stdex::str2sgml(L"te\u0073\u0304t", 3, 0).c_str());
 			Assert::AreEqual("&#x2318;&permil;&#x362;", stdex::str2sgml(L"⌘‰͢", (size_t)-1).c_str());
 			Assert::AreEqual("$\"<>&amp;", stdex::str2sgml(L"$\"<>&", (size_t)-1).c_str());
 			Assert::AreEqual("$&quot;<>&amp;", stdex::str2sgml(L"$\"<>&", (size_t)-1, stdex::sgml_c).c_str());
