@@ -625,6 +625,7 @@ namespace stdex
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
+				_Assume_(text || !end);
 				_Assume_(text || start >= end);
 				bool r = start == 0 || (start <= end && stdex::islbreak(text[start - 1]));
 				if ((r && !m_invert) || (!r && m_invert)) {
