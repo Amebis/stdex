@@ -585,7 +585,7 @@ namespace stdex
 							if (c)
 								c->note = note.note;
 						}
-						else if (stdex::idrec::ignore<length_t, align>(dat)) _Unlikely_
+						else if (!stdex::idrec::ignore<length_t, align>(dat)) _Unlikely_
 							return false;
 					}
 				}
