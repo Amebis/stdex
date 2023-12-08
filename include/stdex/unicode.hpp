@@ -818,10 +818,12 @@ namespace stdex
 		size_t count_dst = dst.size();
 		dst.resize(count_dst + count_src);
 		_Assume_(count_src + 1 < INT_MAX);
+#pragma warning(suppress: 6387) // Testing indicates src may be NULL when count_src is also 0. Is SAL of the lpSrcString parameter wrong?
 		int r = NormalizeString(NormalizationC, src, static_cast<int>(count_src), dst.data() + count_dst, static_cast<int>(count_src + 1));
 		if (r >= 0)
 			dst.resize(count_dst + r);
 		else
+#pragma warning(suppress: 6387) // Testing indicates src may be NULL when count_src is also 0. Is SAL of the _Src parameter wrong?
 			memcpy(dst.data() + count_dst, src, count_src * sizeof(wchar_t));
 		return dst.size();
 	}

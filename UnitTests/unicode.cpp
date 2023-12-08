@@ -87,6 +87,18 @@ namespace UnitTests
 				"",
 				win1250_to_utf8.convert(nullptr, 0).c_str());
 		}
+
+		TEST_METHOD(normalize)
+		{
+#ifdef _WIN32
+			Assert::AreEqual(
+				L"tést",
+				stdex::normalize(L"tést").c_str());
+			Assert::AreEqual(
+				L"",
+				stdex::normalize(nullptr, 0).c_str());
+#endif
+		}
 	};
 }
 
