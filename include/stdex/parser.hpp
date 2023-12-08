@@ -77,7 +77,7 @@ namespace stdex
 			virtual ~basic_parser() {}
 
 			bool search(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -89,7 +89,7 @@ namespace stdex
 			}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default) = 0;
@@ -192,7 +192,7 @@ namespace stdex
 		{
 		public:
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -226,7 +226,7 @@ namespace stdex
 			basic_any_cu(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale) {}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -300,7 +300,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -392,7 +392,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -471,7 +471,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -545,7 +545,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -620,7 +620,7 @@ namespace stdex
 			basic_bol(bool invert = false) : m_invert(invert) {}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -658,7 +658,7 @@ namespace stdex
 			basic_eol(bool invert = false) : m_invert(invert) {}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -697,7 +697,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default) = 0;
@@ -734,7 +734,7 @@ namespace stdex
 			}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -826,7 +826,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -920,7 +920,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -1022,7 +1022,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -1081,7 +1081,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -1213,7 +1213,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -1231,7 +1231,7 @@ namespace stdex
 
 		protected:
 			bool match_recursively(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -1323,7 +1323,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -1394,7 +1394,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -1501,7 +1501,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -1596,7 +1596,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -1700,7 +1700,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -1765,7 +1765,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -1852,7 +1852,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -1942,7 +1942,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -2077,7 +2077,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -2239,7 +2239,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -2378,7 +2378,7 @@ namespace stdex
 			}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -2498,7 +2498,7 @@ namespace stdex
 			basic_ipv6_scope_id_char(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale) {}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -2613,7 +2613,7 @@ namespace stdex
 			}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -2815,7 +2815,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -2918,7 +2918,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -2992,7 +2992,7 @@ namespace stdex
 			basic_url_username_char(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale) {}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -3091,7 +3091,7 @@ namespace stdex
 			basic_url_password_char(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale) {}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -3191,7 +3191,7 @@ namespace stdex
 			basic_url_path_char(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale) {}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -3308,7 +3308,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -3475,7 +3475,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -3814,7 +3814,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -3918,7 +3918,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -4044,7 +4044,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -4310,7 +4310,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -4415,7 +4415,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -4536,7 +4536,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -4684,7 +4684,7 @@ namespace stdex
 			}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -4977,7 +4977,7 @@ namespace stdex
 			}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -5120,7 +5120,7 @@ namespace stdex
 			basic_si_reference_part(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale) {}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -5165,7 +5165,7 @@ namespace stdex
 			basic_si_reference_delimiter(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale) {}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -5215,7 +5215,7 @@ namespace stdex
 			}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -5553,7 +5553,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
@@ -7325,7 +7325,7 @@ namespace stdex
 			{}
 
 			virtual bool match(
-				_In_reads_or_z_(end) const T* text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
