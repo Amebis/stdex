@@ -520,7 +520,7 @@ namespace stdex {
 				{
 					stdex::stream::limiter limiter(stream, size, 0);
 					limiter >> r.data;
-					if (!limiter.ok()) _Unlikely_ return stream;
+					if (limiter.state() == stdex::stream::state_t::fail) _Unlikely_ return stream;
 				}
 
 				size += padding<T_SIZE, ALIGN>(size);
@@ -549,7 +549,7 @@ namespace stdex {
 				{
 					stdex::stream::limiter limiter(stream, size, 0);
 					limiter >> r.data;
-					if (!limiter.ok()) _Unlikely_ return stream;
+					if (limiter.state() == stdex::stream::state_t::fail) _Unlikely_ return stream;
 					limiter.skip(limiter.read_limit);
 				}
 				stream.skip(padding<T_SIZE, ALIGN>(size));
