@@ -465,7 +465,6 @@ namespace stdex
 				if (!stdex::idrec::record<T, id_t, T::record::id(), length_t, align>::find(dat, block_end))
 					return false;
 
-				// Preberemo dolžino elementa.
 				length_t size;
 				dat >> size;
 				if (!dat.ok()) _Unlikely_
@@ -545,7 +544,6 @@ namespace stdex
 			while (dat.tell() < block_end) {
 				stdex::stream::fpos_t found_block_end;
 				if (find_first<list>(dat, *(const id_t*)"adtl", block_end, &found_block_end)) {
-					// Preberemo vse zapise seznama.
 					while (dat.tell() < found_block_end) {
 						id_t id;
 						dat >> id;
