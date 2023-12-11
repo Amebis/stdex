@@ -1911,8 +1911,12 @@ namespace stdex
 						}
 					}
 					load_cache(m_offset);
-					if (!ok() || m_cache.region.end <= m_offset) _Unlikely_ {
+					if (!ok()) _Unlikely_ {
 						m_state = to_read < length ? state_t::ok : state_t::fail;
+						return length - to_read;
+					}
+					if (m_cache.region.end <= m_offset) _Unlikely_ {
+						m_state = to_read < length ? state_t::ok : state_t::eof;
 						return length - to_read;
 					}
 				}
