@@ -18,9 +18,9 @@ namespace stdex
 		constexpr no_delete() noexcept = default;
 
 		template <class T2, std::enable_if_t<std::is_convertible_v<T2*, T*>, int> = 0>
-		inline no_delete(const no_delete<T2>&) noexcept {}
+		no_delete(const no_delete<T2>&) noexcept {}
 
-		inline void operator()(T* p) const noexcept { _Unreferenced_(p); }
+		void operator()(T* p) const noexcept { _Unreferenced_(p); }
 	};
 
 	///
@@ -31,10 +31,10 @@ namespace stdex
 		constexpr no_delete() noexcept = default;
 
 		template <class _Uty, std::enable_if_t<std::is_convertible_v<_Uty(*)[], T(*)[]>, int> = 0>
-		inline no_delete(const no_delete<_Uty[]>&) noexcept {}
+		no_delete(const no_delete<_Uty[]>&) noexcept {}
 
 		template <class _Uty, std::enable_if_t<std::is_convertible_v<_Uty(*)[], T(*)[]>, int> = 0>
-		inline void operator()(_Uty* p) const noexcept { p; }
+		void operator()(_Uty* p) const noexcept { p; }
 	};
 
 	///
@@ -46,7 +46,7 @@ namespace stdex
 	/// \param[in] p  Pointer to assign to shared_ptr
 	///
 	template <class T>
-	inline std::shared_ptr<T> make_shared_no_delete(_In_ T* p)
+	std::shared_ptr<T> make_shared_no_delete(_In_ T* p)
 	{
 		return std::shared_ptr<T>(p, no_delete<T>{});
 	}

@@ -38,7 +38,7 @@ namespace stdex
 		/// \param[in]     num_chars  Code unit limit in string `src`
 		///
 		template<class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
-		inline void escape(
+		void escape(
 			_Inout_ std::basic_string<char, _Traits, _Alloc>& dst,
 			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars)
 		{
@@ -65,7 +65,7 @@ namespace stdex
 		/// \param[in]     num_chars  Code unit limit in string `src`
 		///
 		template<class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
-		inline void escape(
+		void escape(
 			_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst,
 			_In_reads_or_z_opt_(num_chars) const wchar_t* src, _In_ size_t num_chars)
 		{
@@ -91,7 +91,7 @@ namespace stdex
 		/// \param[in]     src  Source string
 		///
 		template<class _Elem, size_t _Size, class _Traits = std::char_traits<_Elem>, class _Alloc = std::allocator<_Elem>>
-		inline void escape(
+		void escape(
 			_Inout_ std::basic_string<_Elem, _Traits, _Alloc>& dst,
 			_In_ const _Elem (&src)[_Size])
 		{
@@ -105,7 +105,7 @@ namespace stdex
 		/// \param[in]     src  Source string
 		///
 		template<class _Elem, class _Traits_dst = std::char_traits<_Elem>, class _Alloc_dst = std::allocator<_Elem>, class _Traits_src = std::char_traits<_Elem>, class _Alloc_src = std::allocator<_Elem>>
-		inline void escape(
+		void escape(
 			_Inout_ std::basic_string<_Elem, _Traits_dst, _Alloc_dst>& dst,
 			_In_ const std::basic_string<_Elem, _Traits_src, _Alloc_src>& src)
 		{
@@ -119,7 +119,7 @@ namespace stdex
 		/// \param[in]     chr  Source character
 		///
 		template<class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
-		inline void escape_min(_Inout_ std::basic_string<char, _Traits, _Alloc>& dst, _In_ char chr)
+		void escape_min(_Inout_ std::basic_string<char, _Traits, _Alloc>& dst, _In_ char chr)
 		{
 			switch (chr) {
 			case '&': dst += "&amp;"; break;
@@ -137,7 +137,7 @@ namespace stdex
 		/// \param[in]     chr  Source character
 		///
 		template<class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
-		inline void escape_min(_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst, _In_ wchar_t chr)
+		void escape_min(_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst, _In_ wchar_t chr)
 		{
 			switch (chr) {
 			case L'&': dst += L"&amp;"; break;
@@ -156,7 +156,7 @@ namespace stdex
 		/// \param[in]     num_chars  Code unit limit in string `src`
 		///
 		template<class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
-		inline void escape_min(
+		void escape_min(
 			_Inout_ std::basic_string<char, _Traits, _Alloc>& dst,
 			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars)
 		{
@@ -180,7 +180,7 @@ namespace stdex
 		/// \param[in]     num_chars  Code unit limit in string `src`
 		///
 		template<class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
-		inline void escape_min(
+		void escape_min(
 			_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst,
 			_In_reads_or_z_opt_(num_chars) const wchar_t* src, _In_ size_t num_chars)
 		{
@@ -203,7 +203,7 @@ namespace stdex
 		/// \param[in]     src  Source string
 		///
 		template<class _Elem, size_t _Size, class _Traits = std::char_traits<_Elem>, class _Alloc = std::allocator<_Elem>>
-		inline void escape_min(
+		void escape_min(
 			_Inout_ std::basic_string<_Elem, _Traits, _Alloc>& dst,
 			_In_ const _Elem (&src)[_Size])
 		{
@@ -217,7 +217,7 @@ namespace stdex
 		/// \param[in]     src  Source string
 		///
 		template<class _Elem, class _Traits_dst = std::char_traits<_Elem>, class _Alloc_dst = std::allocator<_Elem>, class _Traits_src = std::char_traits<_Elem>, class _Alloc_src = std::allocator<_Elem>>
-		inline void escape_min(
+		void escape_min(
 			_Inout_ std::basic_string<_Elem, _Traits_dst, _Alloc_dst>& dst,
 			_In_ const std::basic_string<_Elem, _Traits_src, _Alloc_src>& src)
 		{
@@ -232,7 +232,7 @@ namespace stdex
 		/// \param[in]     num_chars  Code unit limit in string `src`
 		///
 		template<class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
-		inline void url_unescape(
+		void url_unescape(
 			_Inout_ std::basic_string<char, _Traits, _Alloc>& dst,
 			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars)
 		{
@@ -273,7 +273,7 @@ namespace stdex
 		/// \param[in]     src  Source string
 		///
 		template<size_t _Size, class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
-		inline void url_unescape(
+		void url_unescape(
 			_Inout_ std::basic_string<char, _Traits, _Alloc>& dst,
 			_In_ const char (&src)[_Size])
 		{
@@ -287,7 +287,7 @@ namespace stdex
 		/// \param[in]     src  Source string
 		///
 		template<class _Traits_dst = std::char_traits<char>, class _Alloc_dst = std::allocator<char>, class _Traits_src = std::char_traits<char>, class _Alloc_src = std::allocator<char>>
-		inline void url_unescape(
+		void url_unescape(
 			_Inout_ std::basic_string<char, _Traits_dst, _Alloc_dst>& dst,
 			_In_ const std::basic_string<char, _Traits_src, _Alloc_src>& src)
 		{
@@ -302,7 +302,7 @@ namespace stdex
 		/// \param[in]     num_chars  Code unit limit in string `src`
 		///
 		template<class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
-		inline void url_escape(
+		void url_escape(
 			_Inout_ std::basic_string<char, _Traits, _Alloc>& dst,
 			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars)
 		{
@@ -352,7 +352,7 @@ namespace stdex
 		/// \param[in]     src  Source string
 		///
 		template<size_t _Size, class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
-		inline void url_escape(
+		void url_escape(
 			_Inout_ std::basic_string<char, _Traits, _Alloc>& dst,
 			_In_ const char (&src)[_Size])
 		{
@@ -366,7 +366,7 @@ namespace stdex
 		/// \param[in]     src  Source string
 		///
 		template<class _Traits_dst = std::char_traits<char>, class _Alloc_dst = std::allocator<char>, class _Traits_src = std::char_traits<char>, class _Alloc_src = std::allocator<char>>
-		inline void url_escape(
+		void url_escape(
 			_Inout_ std::basic_string<char, _Traits_dst, _Alloc_dst>& dst,
 			_In_ const std::basic_string<char, _Traits_src, _Alloc_src>& src)
 		{
@@ -381,7 +381,7 @@ namespace stdex
 		/// \param[in]     num_chars  Code unit limit in string `src`
 		///
 		template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Alloc = std::allocator<_Elem>>
-		inline void css_unescape(
+		void css_unescape(
 			_Inout_ std::basic_string<_Elem, _Traits, _Alloc>& dst,
 			_In_reads_or_z_opt_(num_chars) const _Elem* src, _In_ size_t num_chars)
 		{
@@ -450,7 +450,7 @@ namespace stdex
 		/// \param[in]     src  Source string
 		///
 		template<class _Elem, size_t _Size, class _Traits = std::char_traits<_Elem>, class _Alloc = std::allocator<_Elem>>
-		inline void css_unescape(
+		void css_unescape(
 			_Inout_ std::basic_string<_Elem, _Traits, _Alloc>& dst,
 			_In_ const _Elem (&src)[_Size])
 		{
@@ -464,7 +464,7 @@ namespace stdex
 		/// \param[in]     src  Source string
 		///
 		template<class _Elem, class _Traits_dst = std::char_traits<_Elem>, class _Alloc_dst = std::allocator<_Elem>, class _Traits_src = std::char_traits<_Elem>, class _Alloc_src = std::allocator<_Elem>>
-		inline void css_unescape(
+		void css_unescape(
 			_Inout_ std::basic_string<_Elem, _Traits_dst, _Alloc_dst>& dst,
 			_In_ const std::basic_string<_Elem, _Traits_src, _Alloc_src>& src)
 		{
@@ -479,7 +479,7 @@ namespace stdex
 		/// \param[in]     num_chars  Code unit limit in string `src`
 		///
 		template<class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
-		inline void css_escape(
+		void css_escape(
 			_Inout_ std::basic_string<char, _Traits, _Alloc>& dst,
 			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars)
 		{
@@ -505,7 +505,7 @@ namespace stdex
 		/// \param[in]     num_chars  Code unit limit in string `src`
 		///
 		template<class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
-		inline void css_escape(
+		void css_escape(
 			_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst,
 			_In_reads_or_z_opt_(num_chars) const wchar_t* src, _In_ size_t num_chars)
 		{
@@ -530,7 +530,7 @@ namespace stdex
 		/// \param[in]     src  Source string
 		///
 		template<class _Elem, size_t _Size, class _Traits = std::char_traits<_Elem>, class _Alloc = std::allocator<_Elem>>
-		inline void css_escape(
+		void css_escape(
 			_Inout_ std::basic_string<_Elem, _Traits, _Alloc>& dst,
 			_In_ const _Elem (&src)[_Size])
 		{
@@ -544,7 +544,7 @@ namespace stdex
 		/// \param[in]     src  Source string
 		///
 		template<class _Elem, class _Traits_dst = std::char_traits<_Elem>, class _Alloc_dst = std::allocator<_Elem>, class _Traits_src = std::char_traits<_Elem>, class _Alloc_src = std::allocator<_Elem>>
-		inline void css_escape(
+		void css_escape(
 			_Inout_ std::basic_string<_Elem, _Traits_dst, _Alloc_dst>& dst,
 			_In_ const std::basic_string<_Elem, _Traits_src, _Alloc_src>& src)
 		{
@@ -686,7 +686,7 @@ namespace stdex
 			///
 			/// \param[in] code  Element code
 			///
-			static inline element_span_t span(_In_ element_t code)
+			static element_span_t span(_In_ element_t code)
 			{
 				static element_span_t lookup[] = {
 					element_span_t::needs_end,    // a
@@ -805,7 +805,7 @@ namespace stdex
 			///
 			/// \param[in] code  Element code
 			///
-			static inline bool is_fontstyle(_In_ element_t code)
+			static bool is_fontstyle(_In_ element_t code)
 			{
 				switch (code) {
 				case element_t::tt:
@@ -827,7 +827,7 @@ namespace stdex
 			///
 			/// \param[in] code  Element code
 			///
-			static inline bool is_phrase(_In_ element_t code)
+			static bool is_phrase(_In_ element_t code)
 			{
 				switch (code) {
 				case element_t::em:
@@ -851,7 +851,7 @@ namespace stdex
 			///
 			/// \param[in] code  Element code
 			///
-			static inline bool is_special(_In_ element_t code)
+			static bool is_special(_In_ element_t code)
 			{
 				switch (code) {
 				case element_t::a:
@@ -884,7 +884,7 @@ namespace stdex
 			///
 			/// \param[in] code  Element code
 			///
-			static inline bool is_formctrl(_In_ element_t code)
+			static bool is_formctrl(_In_ element_t code)
 			{
 				switch (code) {
 				case element_t::input:
@@ -902,7 +902,7 @@ namespace stdex
 			///
 			/// \param[in] code  Element code
 			///
-			static inline bool is_inline(_In_ element_t code)
+			static bool is_inline(_In_ element_t code)
 			{
 				return
 					code == element_t::PCDATA ||
@@ -917,7 +917,7 @@ namespace stdex
 			///
 			/// \param[in] code  Element code
 			///
-			static inline bool is_heading(_In_ element_t code)
+			static bool is_heading(_In_ element_t code)
 			{
 				switch (code) {
 				case element_t::h1:
@@ -936,7 +936,7 @@ namespace stdex
 			///
 			/// \param[in] code  Element code
 			///
-			static inline bool is_list(_In_ element_t code)
+			static bool is_list(_In_ element_t code)
 			{
 				switch (code) {
 				case element_t::ul:
@@ -953,7 +953,7 @@ namespace stdex
 			///
 			/// \param[in] code  Element code
 			///
-			static inline bool is_preformatted(_In_ element_t code)
+			static bool is_preformatted(_In_ element_t code)
 			{
 				switch (code) {
 				case element_t::pre:
@@ -968,7 +968,7 @@ namespace stdex
 			///
 			/// \param[in] code  Element code
 			///
-			static inline bool is_block(_In_ element_t code)
+			static bool is_block(_In_ element_t code)
 			{
 				if (is_heading(code) ||
 					is_list(code) ||
@@ -999,7 +999,7 @@ namespace stdex
 			///
 			/// \param[in] code  Element code
 			///
-			static inline bool is_flow(_In_ element_t code)
+			static bool is_flow(_In_ element_t code)
 			{
 				return is_block(code) || is_inline(code);
 			}
@@ -1009,7 +1009,7 @@ namespace stdex
 			///
 			/// \param[in] code  Element code
 			///
-			static inline bool is_head_content(_In_ element_t code)
+			static bool is_head_content(_In_ element_t code)
 			{
 				switch (code) {
 				case element_t::title:
@@ -1026,7 +1026,7 @@ namespace stdex
 			///
 			/// \param[in] code  Element code
 			///
-			static inline bool is_head_misc(_In_ element_t code)
+			static bool is_head_misc(_In_ element_t code)
 			{
 				switch (code) {
 				case element_t::script:
@@ -1044,7 +1044,7 @@ namespace stdex
 			///
 			/// \param[in] code  Element code
 			///
-			static inline bool is_pre_exclusion(_In_ element_t code)
+			static bool is_pre_exclusion(_In_ element_t code)
 			{
 				switch (code) {
 				case element_t::img:
@@ -1069,7 +1069,7 @@ namespace stdex
 			///
 			/// \param[in] code  Element code
 			///
-			static inline bool is_html_content(_In_ element_t code)
+			static bool is_html_content(_In_ element_t code)
 			{
 				switch (code) {
 				case element_t::head:
@@ -1085,7 +1085,7 @@ namespace stdex
 			///
 			/// \param[in] code  Element code
 			///
-			static inline bool is_group(_In_ element_t code)
+			static bool is_group(_In_ element_t code)
 			{
 				if (is_block(code) ||
 					is_html_content(code) ||
@@ -1115,7 +1115,7 @@ namespace stdex
 			///
 			/// \returns `true` if `child` may nest in `parent`; `false` otherwise
 			///
-			static inline bool may_contain(_In_ element_t parent, _In_ element_t child)
+			static bool may_contain(_In_ element_t parent, _In_ element_t child)
 			{
 				if (child == element_t::unknown || child == element_t::comment)
 					return true;
@@ -1215,7 +1215,7 @@ namespace stdex
 			/// \param[in] num_chars  Code unit limit in `attr_name`
 			///
 			template <class T>
-			static inline bool is_uri(_In_ element_t code, _In_reads_or_z_opt_(num_chars) const T* attr_name, _In_ size_t num_chars)
+			static bool is_uri(_In_ element_t code, _In_reads_or_z_opt_(num_chars) const T* attr_name, _In_ size_t num_chars)
 			{
 				_Assume_(attr_name || !num_chars);
 				switch (code) {
@@ -1270,7 +1270,7 @@ namespace stdex
 			/// \param[in] num_chars  Code unit limit in `attr_name`
 			///
 			template <class T>
-			static inline bool is_localizable(element_t code, const T* attr_name, size_t num_chars)
+			static bool is_localizable(element_t code, const T* attr_name, size_t num_chars)
 			{
 				_Assume_(attr_name || !num_chars);
 				if (!stdex::strnicmp(attr_name, num_chars, "title", SIZE_MAX))
@@ -1318,7 +1318,7 @@ namespace stdex
 		{
 		public:
 			template <class T>
-			inline element(_Inout_ stdex::parser::basic_html_tag<T>&& tag, _In_z_ const T* src, _In_opt_ sequence* parent = nullptr) :
+			element(_Inout_ stdex::parser::basic_html_tag<T>&& tag, _In_z_ const T* src, _In_opt_ sequence* parent = nullptr) :
 				sequence(tag.type, tag.interval.start, tag.interval.end, parent),
 				code(element_code(src + tag.name.start, tag.name.size())),
 				name(std::move(tag.name)),
@@ -1497,7 +1497,7 @@ namespace stdex
 		{
 		public:
 			template <class T>
-			inline element_start(_Inout_ stdex::parser::basic_html_tag<T>&& tag, _In_z_ const T* src, _In_opt_ sequence* parent = nullptr, _In_opt_ sequence* _end = nullptr) :
+			element_start(_Inout_ stdex::parser::basic_html_tag<T>&& tag, _In_z_ const T* src, _In_opt_ sequence* parent = nullptr, _In_opt_ sequence* _end = nullptr) :
 				element(std::move(tag), src, parent),
 				end(_end)
 			{}
@@ -1513,7 +1513,7 @@ namespace stdex
 		{
 		public:
 			template <class T>
-			inline element_end(_Inout_ stdex::parser::basic_html_tag<T>&& tag, _In_z_ const T* src, _In_opt_ sequence* parent = nullptr, _In_opt_ element_start* _start = nullptr) :
+			element_end(_Inout_ stdex::parser::basic_html_tag<T>&& tag, _In_z_ const T* src, _In_opt_ sequence* parent = nullptr, _In_opt_ element_start* _start = nullptr) :
 				sequence(tag.type, tag.interval.start, tag.interval.end, parent),
 				code(element::element_code(src + tag.name.start, tag.name.size())),
 				name(std::move(tag.name)),
@@ -1533,7 +1533,7 @@ namespace stdex
 		{
 		public:
 			template <class T>
-			inline declaration(_Inout_ stdex::parser::basic_html_tag<T>&& tag, _In_opt_ sequence* parent = nullptr) :
+			declaration(_Inout_ stdex::parser::basic_html_tag<T>&& tag, _In_opt_ sequence* parent = nullptr) :
 				sequence(tag.type, tag.interval.start, tag.interval.end, parent),
 				name(std::move(tag.name)),
 				attributes(std::move(tag.attributes))
@@ -1551,7 +1551,7 @@ namespace stdex
 		{
 		public:
 			template <class T>
-			inline comment(_Inout_ stdex::parser::basic_html_tag<T>&& tag, _In_opt_ sequence* parent = nullptr) :
+			comment(_Inout_ stdex::parser::basic_html_tag<T>&& tag, _In_opt_ sequence* parent = nullptr) :
 				sequence(tag.type, tag.interval.start, tag.interval.end, parent),
 				content(std::move(tag.name))
 			{}
@@ -1567,7 +1567,7 @@ namespace stdex
 		{
 		public:
 			template <class T>
-			inline instruction(_Inout_ stdex::parser::basic_html_tag<T>&& tag, _In_opt_ sequence* parent = nullptr) :
+			instruction(_Inout_ stdex::parser::basic_html_tag<T>&& tag, _In_opt_ sequence* parent = nullptr) :
 				sequence(tag.type, tag.interval.start, tag.interval.end, parent),
 				content(std::move(tag.name))
 			{}
@@ -1860,7 +1860,7 @@ namespace stdex
 			///
 			/// Parses HTML document source code
 			///
-			inline void assign(_In_reads_or_z_opt_(num_chars) const _Elem* source, _In_ size_t num_chars)
+			void assign(_In_reads_or_z_opt_(num_chars) const _Elem* source, _In_ size_t num_chars)
 			{
 				clear();
 				append(source, num_chars);
@@ -1870,7 +1870,7 @@ namespace stdex
 			///
 			/// Returns document HTML source code
 			///
-			inline const std::basic_string<_Elem, _Traits, _Alloc>& source() const { return m_source; }
+			const std::basic_string<_Elem, _Traits, _Alloc>& source() const { return m_source; }
 
 			friend class parser<_Elem, _Traits, _Alloc>;
 
@@ -1878,7 +1878,7 @@ namespace stdex
 			///
 			/// Returns starting tag of currently active element or nullptr if no element is known to be started.
 			///
-			inline element_start* active_element() const
+			element_start* active_element() const
 			{
 				return m_element_stack.empty() ? nullptr : m_element_stack.back();
 			}
@@ -1973,7 +1973,7 @@ namespace stdex
 		class token
 		{
 		protected:
-			inline token(_In_ token_t _type = token_t::root, _In_opt_ sequence* _sequence = nullptr, _In_ uintptr_t _data = 0) :
+			token(_In_ token_t _type = token_t::root, _In_opt_ sequence* _sequence = nullptr, _In_ uintptr_t _data = 0) :
 				type(_type),
 				sequence(_sequence),
 				data(_data)
@@ -1993,7 +1993,7 @@ namespace stdex
 			/// \returns Number of code units appended
 			///
 			template<class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
-			inline size_t append_tag(_Inout_ std::basic_string<char, _Traits, _Alloc>& str) const
+			size_t append_tag(_Inout_ std::basic_string<char, _Traits, _Alloc>& str) const
 			{
 				size_t n = str.size();
 				// Use %X instead of %p to ommit leading zeros and save space.
@@ -2009,14 +2009,14 @@ namespace stdex
 			/// \returns Number of code units appended
 			///
 			template<class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
-			inline size_t append_tag(_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& str) const
+			size_t append_tag(_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& str) const
 			{
 				// Use %X instead of %p to ommit leading zeros and save space.
 				return stdex::appendf(str, L"%c%zX%c", stdex::locale_C.get(), static_cast<wchar_t>(token_tag_start), reinterpret_cast<uintptr_t>(this), static_cast<wchar_t>(token_tag_end));
 			}
 
 			template<class T>
-			static inline token* parse_tag(const T* str, size_t& offset)
+			static token* parse_tag(const T* str, size_t& offset)
 			{
 				if (str[offset] != static_cast<T>(token_tag_start))
 					return nullptr;
@@ -2064,7 +2064,7 @@ namespace stdex
 		class text_token : public token
 		{
 		protected:
-			inline text_token(
+			text_token(
 				_In_ token_t type = token_t::complete,
 				_In_reads_or_z_opt_(num_chars) const _Elem* _text = nullptr, _In_ size_t num_chars = 0,
 				_In_ uint32_t _text_type = 0,
@@ -2089,7 +2089,7 @@ namespace stdex
 		class starting_token : public text_token<_Elem, _Traits, _Alloc>
 		{
 		protected:
-			inline starting_token(
+			starting_token(
 				_In_reads_or_z_opt_(num_chars_text) const _Elem* _text = nullptr, _In_ size_t num_chars_text = 0,
 				_In_reads_or_z_opt_(num_chars_name) const _Elem* _name = nullptr, _In_ size_t num_chars_name = 0,
 				_In_ uint32_t text_type = 0,
@@ -2124,7 +2124,7 @@ namespace stdex
 		class url_token : public token
 		{
 		protected:
-			inline url_token(
+			url_token(
 				_In_reads_or_z_opt_(num_chars) const _Elem* _url = nullptr, _In_ size_t num_chars = 0,
 				token_url_t _encoding = token_url_t::plain,
 				_In_opt_ stdex::html::sequence* sequence = nullptr, _In_ uintptr_t data = 0) :
@@ -2156,7 +2156,7 @@ namespace stdex
 		class parser
 		{
 		public:
-			inline parser(
+			parser(
 				_In_ const document<_Elem, _Traits, _Alloc>& document,
 				_In_reads_or_z_opt_(num_chars) const stdex::schar_t* url = nullptr, _In_ size_t num_chars = 0,
 				_In_ bool parse_frames = false, _In_ stdex::progress<size_t>* progress = nullptr) :
@@ -2374,7 +2374,7 @@ namespace stdex
 			///
 			/// Returns collection of tokens
 			///
-			inline const token_vector& tokens() const { return m_tokens; }
+			const token_vector& tokens() const { return m_tokens; }
 
 		protected:
 			///
@@ -2385,7 +2385,7 @@ namespace stdex
 			/// \returns Pointer to the token for non-owning references
 			///
 			template <class T>
-			inline T* append_token(_Inout_ std::unique_ptr<T>&& token)
+			T* append_token(_Inout_ std::unique_ptr<T>&& token)
 			{
 				if (!token)
 					return nullptr;
@@ -2403,7 +2403,7 @@ namespace stdex
 			/// \returns Number of code units appended to the source code
 			///
 			template <class T>
-			inline size_t append_token(_Inout_ std::unique_ptr<T>&& token, _Inout_ std::basic_string<_Elem, _Traits, _Alloc>& source)
+			size_t append_token(_Inout_ std::unique_ptr<T>&& token, _Inout_ std::basic_string<_Elem, _Traits, _Alloc>& source)
 			{
 				if (!token)
 					return 0;

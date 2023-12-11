@@ -70,7 +70,7 @@ namespace stdex
 	inline charset_id charset_from_name(_In_z_ const char* name)
 	{
 		struct charset_less {
-			inline bool operator()(_In_z_ const char* a, _In_z_ const char* b) const
+			bool operator()(_In_z_ const char* a, _In_z_ const char* b) const
 			{
 				return stdex::stricmp(a, b) < 0;
 			}
@@ -120,7 +120,7 @@ namespace stdex
 	/// <param name="name">Charset name</param>
 	/// <returns>Charset code or `charset_id::system` if match not found</returns>
 	template <class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
-	inline charset_id charset_from_name(_In_ const std::basic_string<char, _Traits, _Alloc>& name)
+	charset_id charset_from_name(_In_ const std::basic_string<char, _Traits, _Alloc>& name)
 	{
 		return charset_from_name(name.c_str());
 	}
@@ -156,8 +156,8 @@ namespace stdex
 		}
 #endif
 
-		inline charset_id from_encoding() const { return m_from; }
-		inline charset_id to_encoding() const { return m_to; }
+		charset_id from_encoding() const { return m_from; }
+		charset_id to_encoding() const { return m_to; }
 
 		///
 		/// Convert string and append to string
@@ -309,7 +309,7 @@ namespace stdex
 		/// \param[in]     src        Zero-terminated string to convert
 		///
 		template <class _Traits_to = std::char_traits<T_to>, class _Alloc_to = std::allocator<T_to>>
-		inline void strcat(
+		void strcat(
 			_Inout_ std::basic_string<T_to, _Traits_to, _Alloc_to>& dst,
 			_In_z_ const T_from* src)
 		{
@@ -323,7 +323,7 @@ namespace stdex
 		/// \param[in]     src        String to convert
 		///
 		template <class _Traits_to = std::char_traits<T_to>, class _Alloc_to = std::allocator<T_to>, class _Traits_from = std::char_traits<T_from>, class _Alloc_from = std::allocator<T_from>>
-		inline void strcat(
+		void strcat(
 			_Inout_ std::basic_string<T_to, _Traits_to, _Alloc_to>& dst,
 			_In_ const std::basic_string<T_from, _Traits_from, _Alloc_from>& src)
 		{
@@ -338,7 +338,7 @@ namespace stdex
 		/// \param[in]     count_src  String to convert code unit limit
 		///
 		template <class _Traits_to = std::char_traits<T_to>, class _Alloc_to = std::allocator<T_to>>
-		inline void strcpy(
+		void strcpy(
 			_Inout_ std::basic_string<T_to, _Traits_to, _Alloc_to>& dst,
 			_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src)
 		{
@@ -353,7 +353,7 @@ namespace stdex
 		/// \param[in]     src        Zero-terminated string to convert
 		///
 		template <class _Traits_to = std::char_traits<T_to>, class _Alloc_to = std::allocator<T_to>>
-		inline void strcpy(
+		void strcpy(
 			_Inout_ std::basic_string<T_to, _Traits_to, _Alloc_to>& dst,
 			_In_z_ const T_from* src)
 		{
@@ -367,7 +367,7 @@ namespace stdex
 		/// \param[in]     src        String to convert
 		///
 		template <class _Traits_to = std::char_traits<T_to>, class _Alloc_to = std::allocator<T_to>, class _Traits_from = std::char_traits<T_from>, class _Alloc_from = std::allocator<T_from>>
-		inline void strcpy(
+		void strcpy(
 			_Inout_ std::basic_string<T_to, _Traits_to, _Alloc_to>& dst,
 			_In_ const std::basic_string<T_from, _Traits_from, _Alloc_from>& src)
 		{
@@ -381,7 +381,7 @@ namespace stdex
 		/// \param[in]     count_src  String to convert code unit limit
 		///
 		template <class _Traits_to = std::char_traits<T_to>, class _Alloc_to = std::allocator<T_to>>
-		inline std::basic_string<T_to, _Traits_to, _Alloc_to> convert(_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src)
+		std::basic_string<T_to, _Traits_to, _Alloc_to> convert(_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src)
 		{
 			std::basic_string<T_to, _Traits_to, _Alloc_to> dst;
 			strcat(dst, src, count_src);
@@ -394,7 +394,7 @@ namespace stdex
 		/// \param[in]     src        Zero-terminated string to convert
 		///
 		template <class _Traits_to = std::char_traits<T_to>, class _Alloc_to = std::allocator<T_to>>
-		inline std::basic_string<T_to, _Traits_to, _Alloc_to> convert(_In_z_ const T_from* src)
+		std::basic_string<T_to, _Traits_to, _Alloc_to> convert(_In_z_ const T_from* src)
 		{
 			return convert(src, SIZE_MAX);
 		}
@@ -405,12 +405,12 @@ namespace stdex
 		/// \param[in]     src        String to convert
 		///
 		template <class _Traits_to = std::char_traits<T_to>, class _Alloc_to = std::allocator<T_to>, class _Traits_from = std::char_traits<T_from>, class _Alloc_from = std::allocator<T_from>>
-		inline std::basic_string<T_to, _Traits_to, _Alloc_to> convert(_In_ const std::basic_string<T_from, _Traits_from, _Alloc_from>& src)
+		std::basic_string<T_to, _Traits_to, _Alloc_to> convert(_In_ const std::basic_string<T_from, _Traits_from, _Alloc_from>& src)
 		{
 			return convert(src.data(), src.size());
 		}
 
-		inline void clear()
+		void clear()
 		{
 #ifndef _WIN32
 			iconv(m_handle, NULL, NULL, NULL, NULL);
@@ -810,7 +810,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
 	template <class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
-	inline size_t normalizecat(
+	size_t normalizecat(
 		_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst,
 		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src)
 	{
@@ -837,7 +837,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
 	template <size_t _Size, class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
-	inline size_t normalizecat(
+	size_t normalizecat(
 		_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst,
 		_In_ const wchar_t (&src)[_Size])
 	{
@@ -853,7 +853,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
 	template <class _Traits_dst = std::char_traits<wchar_t>, class _Alloc_dst = std::allocator<wchar_t>, class _Traits_src = std::char_traits<wchar_t>, class _Alloc_src = std::allocator<wchar_t>>
-	inline size_t normalizecat(
+	size_t normalizecat(
 		_Inout_ std::basic_string<wchar_t, _Traits_dst, _Alloc_dst>& dst,
 		_In_ const std::basic_string<wchar_t, _Traits_src, _Alloc_src>& src)
 	{
@@ -870,7 +870,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
 	template <class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
-	inline size_t normalize(
+	size_t normalize(
 		_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst,
 		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src)
 	{
@@ -887,7 +887,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
 	template <size_t _Size, class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
-	inline size_t normalize(
+	size_t normalize(
 		_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst,
 		_In_ const wchar_t(&src)[_Size])
 	{
@@ -903,7 +903,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
 	template <class _Traits_dst = std::char_traits<wchar_t>, class _Alloc_dst = std::allocator<wchar_t>, class _Traits_src = std::char_traits<wchar_t>, class _Alloc_src = std::allocator<wchar_t>>
-	inline size_t normalize(
+	size_t normalize(
 		_Inout_ std::basic_string<wchar_t, _Traits_dst, _Alloc_dst>& dst,
 		_In_ const std::basic_string<wchar_t, _Traits_src, _Alloc_src>& src)
 	{
@@ -933,7 +933,7 @@ namespace stdex
 	/// \return Normalized string
 	///
 	template <size_t _Size>
-	inline std::wstring normalize(_In_ const wchar_t(&src)[_Size])
+	std::wstring normalize(_In_ const wchar_t(&src)[_Size])
 	{
 		std::wstring dst;
 		normalizecat(dst, src, _Size);
@@ -948,7 +948,7 @@ namespace stdex
 	/// \return Normalized string
 	///
 	template <class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
-	inline std::wstring normalize(_In_ const std::basic_string<wchar_t, _Traits, _Alloc>& src)
+	std::wstring normalize(_In_ const std::basic_string<wchar_t, _Traits, _Alloc>& src)
 	{
 		std::wstring dst;
 		normalizecat(dst, src.data(), src.size());

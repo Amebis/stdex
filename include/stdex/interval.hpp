@@ -22,14 +22,14 @@ namespace stdex
 		///
 		/// Constructs an invalid interval
 		///
-		inline interval() noexcept : start(static_cast<T>(1)), end(static_cast<T>(0)) {}
+		interval() noexcept : start(static_cast<T>(1)), end(static_cast<T>(0)) {}
 
 		///
 		/// Constructs a zero-size interval
 		///
 		/// \param[in] x  Interval start and end value
 		///
-		inline interval(_In_ T x) noexcept : start(x), end(x) {}
+		interval(_In_ T x) noexcept : start(x), end(x) {}
 
 		///
 		/// Constructs an interval
@@ -37,26 +37,26 @@ namespace stdex
 		/// \param[in] _start  Interval start value
 		/// \param[in] _end    Interval end value
 		///
-		inline interval(_In_ T _start, _In_ T _end) noexcept : start(_start), end(_end) {}
+		interval(_In_ T _start, _In_ T _end) noexcept : start(_start), end(_end) {}
 
 		///
 		/// Returns interval size
 		///
 		/// \returns Interval size or 0 if interval is invalid
 		///
-		inline T size() const { return start <= end ? end - start : 0; }
+		T size() const { return start <= end ? end - start : 0; }
 
 		///
 		/// Is interval empty?
 		///
 		/// \returns true if interval is empty or false otherwise
 		///
-		inline bool empty() const { return start >= end; }
+		bool empty() const { return start >= end; }
 
 		///
 		/// Invalidates interval
 		///
-		inline void invalidate()
+		void invalidate()
 		{
 			start = static_cast<T>(1);
 			end = static_cast<T>(0);
@@ -67,7 +67,7 @@ namespace stdex
 		///
 		/// \returns true if interval is valid or false otherwise
 		///
-		inline operator bool() const { return start <= end; }
+		operator bool() const { return start <= end; }
 
 		///
 		/// Is value in interval?
@@ -76,7 +76,7 @@ namespace stdex
 		///
 		/// \returns true if x is in [start, end) or false otherwise
 		///
-		inline bool contains(_In_ T x) const { return start <= x && x < end; }
+		bool contains(_In_ T x) const { return start <= x && x < end; }
 
 		///
 		/// Adds two intervals by components
@@ -85,7 +85,7 @@ namespace stdex
 		///
 		/// \returns Resulting interval
 		///
-		inline interval<T> operator+(_In_ const interval<T>& other) const
+		interval<T> operator+(_In_ const interval<T>& other) const
 		{
 			return interval<T>(start + other.start, end + other.end);
 		}
@@ -97,7 +97,7 @@ namespace stdex
 		///
 		/// \returns Moved interval
 		///
-		inline interval<T> operator+(_In_ const T x) const
+		interval<T> operator+(_In_ const T x) const
 		{
 			return interval<T>(start + x, end + x);
 		}
@@ -107,7 +107,7 @@ namespace stdex
 		///
 		/// \returns Moved interval
 		///
-		inline interval<T> operator++()
+		interval<T> operator++()
 		{
 			++start;
 			++end;
@@ -119,7 +119,7 @@ namespace stdex
 		///
 		/// \returns Original interval
 		///
-		inline interval<T> operator++(int) // Postfix increment operator.
+		interval<T> operator++(int) // Postfix increment operator.
 		{
 			interval<T> r = *this;
 			++start;
@@ -134,7 +134,7 @@ namespace stdex
 		///
 		/// \returns Resulting interval
 		///
-		inline interval<T> operator-(_In_ const interval<T>& other) const
+		interval<T> operator-(_In_ const interval<T>& other) const
 		{
 			return interval<T>(start - other.start, end - other.end);
 		}
@@ -146,7 +146,7 @@ namespace stdex
 		///
 		/// \returns Moved interval
 		///
-		inline interval<T> operator-(_In_ const T x) const
+		interval<T> operator-(_In_ const T x) const
 		{
 			return interval<T>(start - x, end - x);
 		}
@@ -156,7 +156,7 @@ namespace stdex
 		///
 		/// \returns Moved interval
 		///
-		inline interval<T> operator--()
+		interval<T> operator--()
 		{
 			--start;
 			--end;
@@ -168,7 +168,7 @@ namespace stdex
 		///
 		/// \returns Original interval
 		///
-		inline interval<T> operator--(int) // Postfix decrement operator.
+		interval<T> operator--(int) // Postfix decrement operator.
 		{
 			interval<T> r = *this;
 			--start;
@@ -183,7 +183,7 @@ namespace stdex
 		///
 		/// \returns true if intervals are identical or false otherwise
 		///
-		inline bool operator==(_In_ const interval<T>& other) const
+		bool operator==(_In_ const interval<T>& other) const
 		{
 			return start == other.start && end == other.end;
 		}
@@ -195,7 +195,7 @@ namespace stdex
 		///
 		/// \returns true if intervals are different or false otherwise
 		///
-		inline bool operator!=(_In_ const interval<T>& other) const
+		bool operator!=(_In_ const interval<T>& other) const
 		{
 			return !operator ==(other);
 		}

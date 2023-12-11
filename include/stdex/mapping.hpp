@@ -21,14 +21,14 @@ namespace stdex
 		///
 		/// Constructs a zero to zero mapping
 		///
-		inline mapping() : from(0), to(0) {}
+		mapping() : from(0), to(0) {}
 
 		///
 		/// Constructs an id mapping
 		///
 		/// \param[in] x  Mapping from and to value
 		///
-		inline mapping(_In_ T x) : from(x), to(x) {}
+		mapping(_In_ T x) : from(x), to(x) {}
 
 		///
 		/// Constructs a mapping
@@ -36,7 +36,7 @@ namespace stdex
 		/// \param[in] _from  Mapping from value
 		/// \param[in] _to    Mapping to value
 		///
-		inline mapping(_In_ T _from, _In_ T _to) : from(_from), to(_to) {}
+		mapping(_In_ T _from, _In_ T _to) : from(_from), to(_to) {}
 
 		///
 		/// Are mappings identical?
@@ -45,7 +45,7 @@ namespace stdex
 		///
 		/// \returns true if mappings are identical or false otherwise
 		///
-		inline bool operator==(const mapping& other) const { return from == other.from && to == other.to; }
+		bool operator==(const mapping& other) const { return from == other.from && to == other.to; }
 
 		///
 		/// Are mappings different?
@@ -54,7 +54,7 @@ namespace stdex
 		///
 		/// \returns true if mappings are different or false otherwise
 		///
-		inline bool operator!=(const mapping& other) const { return !operator==(other); }
+		bool operator!=(const mapping& other) const { return !operator==(other); }
 	};
 
 	template <class T, class _Alloc = std::allocator<mapping<T>>>

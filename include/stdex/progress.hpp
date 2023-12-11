@@ -156,7 +156,7 @@ namespace stdex
 		///
 		/// \param[in] host  Host progress indicator
 		///
-		inline void attach(_In_opt_ progress<T>* host)
+		void attach(_In_opt_ progress<T>* host)
 		{
 			m_host = host;
 		}
@@ -166,7 +166,7 @@ namespace stdex
 		///
 		/// \returns Old host progress indicator
 		///
-		inline progress<T>* detach()
+		progress<T>* detach()
 		{
 			progress<T>* k = m_host;
 			m_host = NULL;
@@ -179,7 +179,7 @@ namespace stdex
 		/// \param[in] start  Minimum value of the progress
 		/// \param[in] end    Maximum value of the progress
 		///
-		inline void set_global_range(_In_ T start, _In_ T end)
+		void set_global_range(_In_ T start, _In_ T end)
 		{
 			m_global.start = start;
 			m_global.end = end;
@@ -193,7 +193,7 @@ namespace stdex
 		/// \param[in] start  Minimum value of the progress
 		/// \param[in] end    Maximum value of the progress
 		///
-		inline void set_section_range(_In_ T start, _In_ T end)
+		void set_section_range(_In_ T start, _In_ T end)
 		{
 			m_section.start = start;
 			m_section.end = end;

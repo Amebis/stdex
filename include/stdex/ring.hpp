@@ -123,18 +123,18 @@ namespace stdex
 		}
 
 	protected:
-		inline size_t wrap(_In_ size_t idx) const
+		size_t wrap(_In_ size_t idx) const
 		{
 			// TODO: When CAPACITY is power of 2, use & ~(CAPACITY - 1) instead.
 			return idx % CAPACITY;
 		}
 
-		inline size_t space() const
+		size_t space() const
 		{
 			return CAPACITY - m_size;
 		}
 
-		inline bool empty() const
+		bool empty() const
 		{
 			return !m_size;
 		}

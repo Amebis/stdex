@@ -37,7 +37,7 @@ namespace stdex
 		std::map<numaid_t, numaentry_t> m_available;
 
 	private:
-		static inline numaid_t numa_node()
+		static numaid_t numa_node()
 		{
 #ifdef _WIN32
 			PROCESSOR_NUMBER Processor;
@@ -49,7 +49,7 @@ namespace stdex
 #endif
 		}
 
-		inline numaentry_t& numa_entry(numaid_t numa = numa_node())
+		numaentry_t& numa_entry(numaid_t numa = numa_node())
 		{
 			const std::lock_guard<std::mutex> guard(m_mutex);
 			return m_available[numa];

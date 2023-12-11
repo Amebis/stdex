@@ -142,12 +142,12 @@ namespace stdex
 		///
 		/// Returns true if object has a valid handle
 		///
-		inline operator bool() const noexcept { return m_h != invalid_handle; }
+		operator bool() const noexcept { return m_h != invalid_handle; }
 
 		///
 		/// Returns object handle
 		///
-		inline sys_handle get() const noexcept { return m_h; }
+		sys_handle get() const noexcept { return m_h; }
 
 	protected:
 		///

@@ -25,7 +25,7 @@ namespace stdex {
 		/// - \c false otherwise
 		///
 		template <class T_ID>
-		inline _Success_(return) bool read_id(_In_ std::istream& stream, _Out_ T_ID &id, _In_opt_ std::streamoff end = (std::streamoff)-1)
+		_Success_(return) bool read_id(_In_ std::istream& stream, _Out_ T_ID &id, _In_opt_ std::streamoff end = (std::streamoff)-1)
 		{
 			if (end == (std::streamoff)-1 || stream.tellg() < end) {
 				stream.read((char*)&id, sizeof(id));
@@ -46,7 +46,7 @@ namespace stdex {
 		/// - \c false otherwise
 		///
 		template <class T_ID>
-		inline _Success_(return) bool read_id(_In_ stdex::stream::basic_file& stream, _Out_ T_ID &id, _In_opt_ stdex::stream::fpos_t end = stdex::stream::fpos_max)
+		_Success_(return) bool read_id(_In_ stdex::stream::basic_file& stream, _Out_ T_ID &id, _In_opt_ stdex::stream::fpos_t end = stdex::stream::fpos_max)
 		{
 			if (end == stdex::stream::fpos_max || stream.tell() < end) {
 				stream >> id;
@@ -63,7 +63,7 @@ namespace stdex {
 		/// \return Number of bytes needed to add to the data to align it on `ALIGN` boundary
 		///
 		template <class T_SIZE, T_SIZE ALIGN>
-		inline T_SIZE padding(_In_ T_SIZE size)
+		T_SIZE padding(_In_ T_SIZE size)
 		{
 			return (ALIGN - (size % ALIGN)) % ALIGN;
 		}
@@ -78,7 +78,7 @@ namespace stdex {
 		/// - \c false otherwise
 		///
 		template <class T_SIZE, T_SIZE ALIGN>
-		inline bool ignore(_In_ std::istream& stream)
+		bool ignore(_In_ std::istream& stream)
 		{
 			// Read record size.
 			T_SIZE size;
@@ -103,7 +103,7 @@ namespace stdex {
 		/// - \c false otherwise
 		///
 		template <class T_SIZE, T_SIZE ALIGN>
-		inline bool ignore(_In_ stdex::stream::basic& stream)
+		bool ignore(_In_ stdex::stream::basic& stream)
 		{
 			// Read record size.
 			T_SIZE size;
@@ -130,7 +130,7 @@ namespace stdex {
 		/// - \c false otherwise
 		///
 		template <class T_ID, class T_SIZE, T_SIZE ALIGN>
-		inline bool find(_In_ std::istream& stream, _In_ T_ID id, _In_opt_ std::streamoff end = (std::streamoff)-1)
+		bool find(_In_ std::istream& stream, _In_ T_ID id, _In_opt_ std::streamoff end = (std::streamoff)-1)
 		{
 			T_ID _id;
 			while (end == (std::streamoff)-1 || stream.tellg() < end) {
@@ -157,7 +157,7 @@ namespace stdex {
 		/// - \c false otherwise
 		///
 		template <class T_ID, class T_SIZE, T_SIZE ALIGN>
-		inline bool find(_In_ stdex::stream::basic_file& stream, _In_ T_ID id, _In_opt_ stdex::stream::fpos_t end = stdex::stream::fpos_max)
+		bool find(_In_ stdex::stream::basic_file& stream, _In_ T_ID id, _In_opt_ stdex::stream::fpos_t end = stdex::stream::fpos_max)
 		{
 			T_ID _id;
 			while (end == stdex::stream::fpos_max || stream.tell() < end) {
@@ -181,7 +181,7 @@ namespace stdex {
 		/// \returns  Position of the record header start in \p stream. Save for later \c close call.
 		///
 		template <class T_ID, class T_SIZE>
-		inline std::streamoff open(_In_ std::ostream& stream, _In_ T_ID id)
+		std::streamoff open(_In_ std::ostream& stream, _In_ T_ID id)
 		{
 			std::streamoff start = stream.tellp();
 
@@ -206,7 +206,7 @@ namespace stdex {
 		/// \returns  Position of the record header start in \p stream. Save for later \c close call.
 		///
 		template <class T_ID, class T_SIZE>
-		inline stdex::stream::fpos_t open(_In_ stdex::stream::basic_file& stream, _In_ T_ID id)
+		stdex::stream::fpos_t open(_In_ stdex::stream::basic_file& stream, _In_ T_ID id)
 		{
 			auto start = stream.tell();
 
@@ -228,7 +228,7 @@ namespace stdex {
 		/// \returns  Position of the record end in \p stream
 		///
 		template <class T_ID, class T_SIZE, T_SIZE ALIGN>
-		inline std::streamoff close(_In_ std::ostream& stream, _In_ std::streamoff start)
+		std::streamoff close(_In_ std::ostream& stream, _In_ std::streamoff start)
 		{
 			std::streamoff end = stream.tellp();
 			T_SIZE
@@ -260,7 +260,7 @@ namespace stdex {
 		/// \returns  Position of the record end in \p stream
 		///
 		template <class T_ID, class T_SIZE, T_SIZE ALIGN>
-		inline stdex::stream::fpos_t close(_In_ stdex::stream::basic_file& stream, _In_ stdex::stream::fpos_t start)
+		stdex::stream::fpos_t close(_In_ stdex::stream::basic_file& stream, _In_ stdex::stream::fpos_t start)
 		{
 			auto end = stream.tell();
 			T_SIZE

@@ -455,7 +455,7 @@ namespace stdex
 		}
 
 		template <class T>
-		inline _Success_(return!=0) bool find_first(
+		_Success_(return!=0) bool find_first(
 			_In_ stdex::stream::basic_file& dat,
 			_In_ id_t subid,
 			_In_ stdex::stream::fpos_t block_end = stdex::stream::fpos_max,
@@ -487,7 +487,7 @@ namespace stdex
 		}
 
 		template <class T>
-		inline _Success_(return != 0) bool read_first(
+		_Success_(return != 0) bool read_first(
 			_In_ stdex::stream::basic_file& dat,
 			_Inout_ T& content,
 			_In_ stdex::stream::fpos_t block_end = stdex::stream::fpos_max)

@@ -167,12 +167,12 @@ namespace stdex
 			///
 			/// Returns stream state after last operation
 			///
-			inline state_t state() const { return m_state; };
+			state_t state() const { return m_state; };
 
 			///
 			/// Returns true if the stream state is clean i.e. previous operation was succesful
 			///
-			inline bool ok() const { return m_state == state_t::ok; };
+			bool ok() const { return m_state == state_t::ok; };
 
 			///
 			/// Reads and returns remainder of the stream
@@ -207,7 +207,7 @@ namespace stdex
 			///
 			/// Reads one byte of data
 			///
-			inline uint8_t read_byte()
+			uint8_t read_byte()
 			{
 				uint8_t byte;
 				if (read_array(&byte, sizeof(byte), 1) == 1)
@@ -256,7 +256,7 @@ namespace stdex
 			/// \returns This stream
 			///
 			template <class T>
-			inline basic& read_data(_Out_ T& data)
+			basic& read_data(_Out_ T& data)
 			{
 				if (!ok()) _Unlikely_ {
 					data = 0;
@@ -284,7 +284,7 @@ namespace stdex
 			/// \return This stream
 			///
 			template <class T>
-			inline basic& write_data(_In_ const T data)
+			basic& write_data(_In_ const T data)
 			{
 				if (!ok()) _Unlikely_
 					return *this;
@@ -303,7 +303,7 @@ namespace stdex
 			/// \return Number of read characters
 			///
 			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-			inline size_t readln(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& str)
+			size_t readln(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& str)
 			{
 				str.clear();
 				return readln_and_attach(str);
@@ -385,7 +385,7 @@ namespace stdex
 			///
 			/// \return Number of elements written
 			///
-			inline size_t write_array(_In_reads_bytes_opt_(size* count) const void* array, _In_ size_t size, _In_ size_t count)
+			size_t write_array(_In_reads_bytes_opt_(size* count) const void* array, _In_ size_t size, _In_ size_t count)
 			{
 				return write(array, mul(size, count)) / size;
 			}
@@ -462,7 +462,7 @@ namespace stdex
 			/// \return This stream
 			///
 			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-			inline basic& read_str(_Out_ std::basic_string<_Elem, _Traits, _Ax>& data)
+			basic& read_str(_Out_ std::basic_string<_Elem, _Traits, _Ax>& data)
 			{
 				data.clear();
 				if (!ok()) _Unlikely_
@@ -494,7 +494,7 @@ namespace stdex
 			/// \return This stream
 			///
 			template <class T>
-			inline basic& write_str(_In_z_ const T* data)
+			basic& write_str(_In_z_ const T* data)
 			{
 				// Stream state will be checked in write_data.
 				size_t num_chars = stdex::strlen(data);
@@ -519,7 +519,7 @@ namespace stdex
 			/// \return This stream
 			///
 			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-			inline basic& write_str(_In_ const std::basic_string<_Elem, _Traits, _Ax>& data)
+			basic& write_str(_In_ const std::basic_string<_Elem, _Traits, _Ax>& data)
 			{
 				// Stream state will be checked in write_data.
 				size_t num_chars = data.size();
@@ -643,38 +643,38 @@ namespace stdex
 				return write_array(tmp.data(), sizeof(wchar_t), tmp.size());
 			}
 
-			inline basic& operator >>(_Out_ int8_t& data) { return read_data(data); }
-			inline basic& operator <<(_In_ const int8_t data) { return write_data(data); }
-			inline basic& operator >>(_Out_ int16_t& data) { return read_data(data); }
-			inline basic& operator <<(_In_ const int16_t data) { return write_data(data); }
-			inline basic& operator >>(_Out_ int32_t& data) { return read_data(data); }
-			inline basic& operator <<(_In_ const int32_t data) { return write_data(data); }
-			inline basic& operator >>(_Out_ int64_t& data) { return read_data(data); }
-			inline basic& operator <<(_In_ const int64_t data) { return write_data(data); }
-			inline basic& operator >>(_Out_ uint8_t& data) { return read_data(data); }
-			inline basic& operator <<(_In_ const uint8_t data) { return write_data(data); }
-			inline basic& operator >>(_Out_ uint16_t& data) { return read_data(data); }
-			inline basic& operator <<(_In_ const uint16_t data) { return write_data(data); }
-			inline basic& operator >>(_Out_ uint32_t& data) { return read_data(data); }
-			inline basic& operator <<(_In_ const uint32_t data) { return write_data(data); }
-			inline basic& operator >>(_Out_ uint64_t& data) { return read_data(data); }
-			inline basic& operator <<(_In_ const uint64_t data) { return write_data(data); }
-			inline basic& operator >>(_Out_ float& data) { return read_data(data); }
-			inline basic& operator <<(_In_ const float data) { return write_data(data); }
-			inline basic& operator >>(_Out_ double& data) { return read_data(data); }
-			inline basic& operator <<(_In_ const double data) { return write_data(data); }
-			inline basic& operator >>(_Out_ char& data) { return read_data(data); }
-			inline basic& operator <<(_In_ const char data) { return write_data(data); }
+			basic& operator >>(_Out_ int8_t& data) { return read_data(data); }
+			basic& operator <<(_In_ const int8_t data) { return write_data(data); }
+			basic& operator >>(_Out_ int16_t& data) { return read_data(data); }
+			basic& operator <<(_In_ const int16_t data) { return write_data(data); }
+			basic& operator >>(_Out_ int32_t& data) { return read_data(data); }
+			basic& operator <<(_In_ const int32_t data) { return write_data(data); }
+			basic& operator >>(_Out_ int64_t& data) { return read_data(data); }
+			basic& operator <<(_In_ const int64_t data) { return write_data(data); }
+			basic& operator >>(_Out_ uint8_t& data) { return read_data(data); }
+			basic& operator <<(_In_ const uint8_t data) { return write_data(data); }
+			basic& operator >>(_Out_ uint16_t& data) { return read_data(data); }
+			basic& operator <<(_In_ const uint16_t data) { return write_data(data); }
+			basic& operator >>(_Out_ uint32_t& data) { return read_data(data); }
+			basic& operator <<(_In_ const uint32_t data) { return write_data(data); }
+			basic& operator >>(_Out_ uint64_t& data) { return read_data(data); }
+			basic& operator <<(_In_ const uint64_t data) { return write_data(data); }
+			basic& operator >>(_Out_ float& data) { return read_data(data); }
+			basic& operator <<(_In_ const float data) { return write_data(data); }
+			basic& operator >>(_Out_ double& data) { return read_data(data); }
+			basic& operator <<(_In_ const double data) { return write_data(data); }
+			basic& operator >>(_Out_ char& data) { return read_data(data); }
+			basic& operator <<(_In_ const char data) { return write_data(data); }
 #ifdef _NATIVE_WCHAR_T_DEFINED
-			inline basic& operator >>(_Out_ wchar_t& data) { return read_data(data); }
-			inline basic& operator <<(_In_ const wchar_t data) { return write_data(data); }
+			basic& operator >>(_Out_ wchar_t& data) { return read_data(data); }
+			basic& operator <<(_In_ const wchar_t data) { return write_data(data); }
 #endif
 			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-			inline basic& operator >>(_Out_ std::basic_string<_Elem, _Traits, _Ax>& data) { return read_str(data); }
+			basic& operator >>(_Out_ std::basic_string<_Elem, _Traits, _Ax>& data) { return read_str(data); }
 			template <class T>
-			inline basic& operator <<(_In_ const T* data) { return write_str(data); }
+			basic& operator <<(_In_ const T* data) { return write_str(data); }
 			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-			inline basic& operator <<(_In_ const std::basic_string<_Elem, _Traits, _Ax>& data) { return write_str(data); }
+			basic& operator <<(_In_ const std::basic_string<_Elem, _Traits, _Ax>& data) { return write_str(data); }
 
 			template <class _Ty, class _Alloc = std::allocator<_Ty>>
 			basic& operator <<(_In_ const std::vector<_Ty, _Alloc>& data)
@@ -836,21 +836,21 @@ namespace stdex
 			///
 			/// \return Absolute file position after seek
 			///
-			inline fpos_t seekbeg(_In_ fpos_t offset) { return seek(offset, seek_t::beg); }
+			fpos_t seekbeg(_In_ fpos_t offset) { return seek(offset, seek_t::beg); }
 
 			///
 			/// Seeks to relative from current file position
 			///
 			/// \return Absolute file position after seek
 			///
-			inline fpos_t seekcur(_In_ foff_t offset) { return seek(offset, seek_t::cur); }
+			fpos_t seekcur(_In_ foff_t offset) { return seek(offset, seek_t::cur); }
 
 			///
 			/// Seeks to relative from end file position
 			///
 			/// \return Absolute file position after seek
 			///
-			inline fpos_t seekend(_In_ foff_t offset) { return seek(offset, seek_t::end); }
+			fpos_t seekend(_In_ foff_t offset) { return seek(offset, seek_t::end); }
 
 			virtual void skip(_In_ fsize_t amount)
 			{
@@ -2393,12 +2393,12 @@ namespace stdex
 			///
 			/// Returns true if socket handle is valid
 			///
-			inline operator bool() const noexcept { return m_h != invalid_socket; }
+			operator bool() const noexcept { return m_h != invalid_socket; }
 
 			///
 			/// Returns socket handle
 			///
-			inline socket_t get() const noexcept { return m_h; }
+			socket_t get() const noexcept { return m_h; }
 
 			virtual _Success_(return != 0 || length == 0) size_t read(
 				_Out_writes_bytes_to_opt_(length, return) void* data, _In_ size_t length)
@@ -2707,7 +2707,7 @@ namespace stdex
 			/// \param[in] filename  Filename
 			/// \param[in] mode      Bitwise combination of mode_t flags
 			///
-			inline file(_In_ const stdex::sstring& filename, _In_ int mode) : file(filename.c_str(), mode) {}
+			file(_In_ const stdex::sstring& filename, _In_ int mode) : file(filename.c_str(), mode) {}
 
 			///
 			/// Opens file
@@ -2788,7 +2788,7 @@ namespace stdex
 			/// \param[in] filename  Filename
 			/// \param[in] mode      Bitwise combination of mode_t flags
 			///
-			inline void open(_In_ const stdex::sstring& filename, _In_ int mode)
+			void open(_In_ const stdex::sstring& filename, _In_ int mode)
 			{
 				open(filename.c_str(), mode);
 			}
@@ -2893,10 +2893,10 @@ namespace stdex
 				if (orig >= 0) {
 					length = lseek64(m_h, 0, SEEK_END);
 					lseek64(m_h, orig, SEEK_SET);
-			}
-				return length;
+				}
+					return length;
 #endif
-		}
+			}
 
 			virtual void truncate()
 			{
@@ -2916,7 +2916,7 @@ namespace stdex
 			}
 
 #ifdef _WIN32
-			static inline time_point ft2tp(_In_ const FILETIME& ft)
+			static time_point ft2tp(_In_ const FILETIME& ft)
 			{
 #if _HAS_CXX20
 				uint64_t t = (static_cast<int64_t>(ft.dwHighDateTime) << 32) | ft.dwLowDateTime;
@@ -2926,7 +2926,7 @@ namespace stdex
 				return time_point(time_point::duration(t));
 			}
 
-			static inline void tp2ft(_In_ time_point tp, _Out_ FILETIME& ft)
+			static void tp2ft(_In_ time_point tp, _Out_ FILETIME& ft)
 			{
 #if _HAS_CXX20
 				uint64_t t = tp.time_since_epoch().count();
@@ -3049,7 +3049,7 @@ namespace stdex
 			///
 			/// \param[in] filename  Filename
 			///
-			static inline bool exists(_In_ const stdex::sstring& filename)
+			static bool exists(_In_ const stdex::sstring& filename)
 			{
 				return exists(filename.c_str());
 			}
@@ -3079,7 +3079,7 @@ namespace stdex
 			///
 			/// \param[in] filename  Filename
 			///
-			static inline bool readonly(_In_ const stdex::sstring& filename)
+			static bool readonly(_In_ const stdex::sstring& filename)
 			{
 				return readonly(filename.c_str());
 			}
@@ -3120,7 +3120,7 @@ namespace stdex
 			/// \param[in] mode        Bitwise combination of mode_t flags
 			/// \param[in] cache_size  Size of the cache block
 			///
-			inline cached_file(_In_ const stdex::sstring& filename, _In_ int mode, _In_ size_t cache_size = default_cache_size) : cached_file(filename.c_str(), mode, cache_size) {}
+			cached_file(_In_ const stdex::sstring& filename, _In_ int mode, _In_ size_t cache_size = default_cache_size) : cached_file(filename.c_str(), mode, cache_size) {}
 
 			virtual ~cached_file()
 			{
@@ -3154,7 +3154,7 @@ namespace stdex
 			/// \param[in] filename    Filename
 			/// \param[in] mode        Bitwise combination of mode_t flags
 			///
-			inline void open(_In_ const stdex::sstring& filename, _In_ int mode)
+			void open(_In_ const stdex::sstring& filename, _In_ int mode)
 			{
 				open(filename.c_str(), mode);
 			}
@@ -3162,7 +3162,7 @@ namespace stdex
 			///
 			/// Returns true if file has a valid handle
 			///
-			inline operator bool() const noexcept { return m_source; }
+			operator bool() const noexcept { return m_source; }
 
 		protected:
 			file m_source;
@@ -3263,7 +3263,7 @@ namespace stdex
 			/// \param[in] filename  Filename
 			/// \param[in] mode      Bitwise combination of mode_t flags
 			///
-			inline memory_file(_In_ const stdex::sstring& filename, _In_ int mode) : memory_file(filename.c_str(), mode) {}
+			memory_file(_In_ const stdex::sstring& filename, _In_ int mode) : memory_file(filename.c_str(), mode) {}
 
 			///
 			/// Copies content from another file
@@ -3454,7 +3454,7 @@ namespace stdex
 			/// \param[in] filename  Filename
 			/// \param[in] mode      Bitwise combination of mode_t flags
 			///
-			inline void load(_In_ const stdex::sstring& filename, _In_ int mode)
+			void load(_In_ const stdex::sstring& filename, _In_ int mode)
 			{
 				load(filename.c_str(), mode);
 			}
@@ -3491,7 +3491,7 @@ namespace stdex
 			/// \param[in] filename  Filename
 			/// \param[in] mode      Bitwise combination of mode_t flags
 			///
-			inline void save(_In_ const stdex::sstring& filename, _In_ int mode)
+			void save(_In_ const stdex::sstring& filename, _In_ int mode)
 			{
 				save(filename.c_str(), mode);
 			}
@@ -3499,7 +3499,7 @@ namespace stdex
 			///
 			/// Returns pointer to data
 			///
-			inline const void* data() const { return m_data; }
+			const void* data() const { return m_data; }
 
 			virtual _Success_(return != 0 || length == 0) size_t read(
 				_Out_writes_bytes_to_opt_(length, return) void* data, _In_ size_t length)
@@ -3540,7 +3540,7 @@ namespace stdex
 			/// \returns This stream
 			///
 			template <class T>
-			inline memory_file& read_data(_Out_ T& data)
+			memory_file& read_data(_Out_ T& data)
 			{
 #if SET_FILE_OP_TIMES
 				m_atime = time_point::now();
@@ -3668,7 +3668,7 @@ namespace stdex
 			/// \returns This stream
 			///
 			template <class T>
-			inline memory_file& write_data(const T data)
+			memory_file& write_data(const T data)
 			{
 #if SET_FILE_OP_TIMES
 				m_atime = m_mtime = time_point::now();
@@ -3706,7 +3706,7 @@ namespace stdex
 			/// \return This stream
 			///
 			template <class T>
-			inline memory_file& write_str(_In_z_ const T * data)
+			memory_file& write_str(_In_z_ const T * data)
 			{
 #if SET_FILE_OP_TIMES
 				m_atime = m_mtime = time_point::now();
@@ -3751,7 +3751,7 @@ namespace stdex
 			/// \return This stream
 			///
 			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-			inline memory_file& write_str(_In_ const std::basic_string<_Elem, _Traits, _Ax>& data)
+			memory_file& write_str(_In_ const std::basic_string<_Elem, _Traits, _Ax>& data)
 			{
 #if SET_FILE_OP_TIMES
 				m_atime = m_mtime = time_point::now();
@@ -3927,7 +3927,7 @@ namespace stdex
 			/// \param[in] data    Data to write
 			///
 			template <class T>
-			inline void set(_In_ fpos_t offset, _In_ const T data)
+			void set(_In_ fpos_t offset, _In_ const T data)
 			{
 #if SET_FILE_OP_TIMES
 				m_atime = m_mtime = time_point::now();
@@ -3937,19 +3937,19 @@ namespace stdex
 			}
 
 		public:
-			inline void set(_In_ fpos_t offset, _In_ const int8_t data) { set<int8_t>(offset, data); }
-			inline void set(_In_ fpos_t offset, _In_ const int16_t data) { set<int16_t>(offset, data); }
-			inline void set(_In_ fpos_t offset, _In_ const int32_t data) { set<int32_t>(offset, data); }
-			inline void set(_In_ fpos_t offset, _In_ const int64_t data) { set<int64_t>(offset, data); }
-			inline void set(_In_ fpos_t offset, _In_ const uint8_t data) { set<uint8_t>(offset, data); }
-			inline void set(_In_ fpos_t offset, _In_ const uint16_t data) { set<uint16_t>(offset, data); }
-			inline void set(_In_ fpos_t offset, _In_ const uint32_t data) { set<uint32_t>(offset, data); }
-			inline void set(_In_ fpos_t offset, _In_ const uint64_t data) { set<uint64_t>(offset, data); }
-			inline void set(_In_ fpos_t offset, _In_ const float data) { set<float>(offset, data); }
-			inline void set(_In_ fpos_t offset, _In_ const double data) { set<double>(offset, data); }
-			inline void set(_In_ fpos_t offset, _In_ const char data) { set<char>(offset, data); }
+			void set(_In_ fpos_t offset, _In_ const int8_t data) { set<int8_t>(offset, data); }
+			void set(_In_ fpos_t offset, _In_ const int16_t data) { set<int16_t>(offset, data); }
+			void set(_In_ fpos_t offset, _In_ const int32_t data) { set<int32_t>(offset, data); }
+			void set(_In_ fpos_t offset, _In_ const int64_t data) { set<int64_t>(offset, data); }
+			void set(_In_ fpos_t offset, _In_ const uint8_t data) { set<uint8_t>(offset, data); }
+			void set(_In_ fpos_t offset, _In_ const uint16_t data) { set<uint16_t>(offset, data); }
+			void set(_In_ fpos_t offset, _In_ const uint32_t data) { set<uint32_t>(offset, data); }
+			void set(_In_ fpos_t offset, _In_ const uint64_t data) { set<uint64_t>(offset, data); }
+			void set(_In_ fpos_t offset, _In_ const float data) { set<float>(offset, data); }
+			void set(_In_ fpos_t offset, _In_ const double data) { set<double>(offset, data); }
+			void set(_In_ fpos_t offset, _In_ const char data) { set<char>(offset, data); }
 #ifdef _NATIVE_WCHAR_T_DEFINED
-			inline void set(_In_ fpos_t offset, _In_ const wchar_t data) { set<wchar_t>(offset, data); }
+			void set(_In_ fpos_t offset, _In_ const wchar_t data) { set<wchar_t>(offset, data); }
 #endif
 
 			///
@@ -3961,7 +3961,7 @@ namespace stdex
 			///
 		protected:
 			template <class T>
-			inline void get(_In_ fpos_t offset, _Out_ T & data)
+			void get(_In_ fpos_t offset, _Out_ T & data)
 			{
 				_Assume_(offset + sizeof(T) < m_size);
 				data = LE2HE(*(T*)(m_data + offset));
@@ -3971,53 +3971,53 @@ namespace stdex
 			}
 
 		public:
-			inline void get(_In_ fpos_t offset, _Out_ int8_t & data) { get<int8_t>(offset, data); }
-			inline void get(_In_ fpos_t offset, _Out_ int16_t & data) { get<int16_t>(offset, data); }
-			inline void get(_In_ fpos_t offset, _Out_ int32_t & data) { get<int32_t>(offset, data); }
-			inline void get(_In_ fpos_t offset, _Out_ int64_t & data) { get<int64_t>(offset, data); }
-			inline void get(_In_ fpos_t offset, _Out_ uint8_t & data) { get<uint8_t>(offset, data); }
-			inline void get(_In_ fpos_t offset, _Out_ uint16_t & data) { get<uint16_t>(offset, data); }
-			inline void get(_In_ fpos_t offset, _Out_ uint32_t & data) { get<uint32_t>(offset, data); }
-			inline void get(_In_ fpos_t offset, _Out_ uint64_t & data) { get<uint64_t>(offset, data); }
-			inline void get(_In_ fpos_t offset, _Out_ float& data) { get<float>(offset, data); }
-			inline void get(_In_ fpos_t offset, _Out_ double& data) { get<double>(offset, data); }
-			inline void get(_In_ fpos_t offset, _Out_ char& data) { get<char>(offset, data); }
+			void get(_In_ fpos_t offset, _Out_ int8_t & data) { get<int8_t>(offset, data); }
+			void get(_In_ fpos_t offset, _Out_ int16_t & data) { get<int16_t>(offset, data); }
+			void get(_In_ fpos_t offset, _Out_ int32_t & data) { get<int32_t>(offset, data); }
+			void get(_In_ fpos_t offset, _Out_ int64_t & data) { get<int64_t>(offset, data); }
+			void get(_In_ fpos_t offset, _Out_ uint8_t & data) { get<uint8_t>(offset, data); }
+			void get(_In_ fpos_t offset, _Out_ uint16_t & data) { get<uint16_t>(offset, data); }
+			void get(_In_ fpos_t offset, _Out_ uint32_t & data) { get<uint32_t>(offset, data); }
+			void get(_In_ fpos_t offset, _Out_ uint64_t & data) { get<uint64_t>(offset, data); }
+			void get(_In_ fpos_t offset, _Out_ float& data) { get<float>(offset, data); }
+			void get(_In_ fpos_t offset, _Out_ double& data) { get<double>(offset, data); }
+			void get(_In_ fpos_t offset, _Out_ char& data) { get<char>(offset, data); }
 #ifdef _NATIVE_WCHAR_T_DEFINED
-			inline void get(_In_ fpos_t offset, _Out_ wchar_t& data) { get<wchar_t>(offset, data); }
+			void get(_In_ fpos_t offset, _Out_ wchar_t& data) { get<wchar_t>(offset, data); }
 #endif
 
-			inline memory_file& operator <<(_In_ const int8_t data) { return write_data(data); }
-			inline memory_file& operator >>(_Out_ int8_t & data) { return read_data(data); }
-			inline memory_file& operator <<(_In_ const int16_t data) { return write_data(data); }
-			inline memory_file& operator >>(_Out_ int16_t & data) { return read_data(data); }
-			inline memory_file& operator <<(_In_ const int32_t data) { return write_data(data); }
-			inline memory_file& operator >>(_Out_ int32_t & data) { return read_data(data); }
-			inline memory_file& operator <<(_In_ const int64_t data) { return write_data(data); }
-			inline memory_file& operator >>(_Out_ int64_t & data) { return read_data(data); }
-			inline memory_file& operator <<(_In_ const uint8_t data) { return write_data(data); }
-			inline memory_file& operator >>(_Out_ uint8_t & data) { return read_data(data); }
-			inline memory_file& operator <<(_In_ const uint16_t data) { return write_data(data); }
-			inline memory_file& operator >>(_Out_ uint16_t & data) { return read_data(data); }
-			inline memory_file& operator <<(_In_ const uint32_t data) { return write_data(data); }
-			inline memory_file& operator >>(_Out_ uint32_t & data) { return read_data(data); }
-			inline memory_file& operator <<(_In_ const uint64_t data) { return write_data(data); }
-			inline memory_file& operator >>(_Out_ uint64_t & data) { return read_data(data); }
-			inline memory_file& operator <<(_In_ const float data) { return write_data(data); }
-			inline memory_file& operator >>(_Out_ float& data) { return read_data(data); }
-			inline memory_file& operator <<(_In_ const double data) { return write_data(data); }
-			inline memory_file& operator >>(_Out_ double& data) { return read_data(data); }
-			inline memory_file& operator <<(_In_ const char data) { return write_data(data); }
-			inline memory_file& operator >>(_Out_ char& data) { return read_data(data); }
+			memory_file& operator <<(_In_ const int8_t data) { return write_data(data); }
+			memory_file& operator >>(_Out_ int8_t & data) { return read_data(data); }
+			memory_file& operator <<(_In_ const int16_t data) { return write_data(data); }
+			memory_file& operator >>(_Out_ int16_t & data) { return read_data(data); }
+			memory_file& operator <<(_In_ const int32_t data) { return write_data(data); }
+			memory_file& operator >>(_Out_ int32_t & data) { return read_data(data); }
+			memory_file& operator <<(_In_ const int64_t data) { return write_data(data); }
+			memory_file& operator >>(_Out_ int64_t & data) { return read_data(data); }
+			memory_file& operator <<(_In_ const uint8_t data) { return write_data(data); }
+			memory_file& operator >>(_Out_ uint8_t & data) { return read_data(data); }
+			memory_file& operator <<(_In_ const uint16_t data) { return write_data(data); }
+			memory_file& operator >>(_Out_ uint16_t & data) { return read_data(data); }
+			memory_file& operator <<(_In_ const uint32_t data) { return write_data(data); }
+			memory_file& operator >>(_Out_ uint32_t & data) { return read_data(data); }
+			memory_file& operator <<(_In_ const uint64_t data) { return write_data(data); }
+			memory_file& operator >>(_Out_ uint64_t & data) { return read_data(data); }
+			memory_file& operator <<(_In_ const float data) { return write_data(data); }
+			memory_file& operator >>(_Out_ float& data) { return read_data(data); }
+			memory_file& operator <<(_In_ const double data) { return write_data(data); }
+			memory_file& operator >>(_Out_ double& data) { return read_data(data); }
+			memory_file& operator <<(_In_ const char data) { return write_data(data); }
+			memory_file& operator >>(_Out_ char& data) { return read_data(data); }
 #ifdef _NATIVE_WCHAR_T_DEFINED
-			inline memory_file& operator <<(_In_ const wchar_t data) { return write_data(data); }
-			inline memory_file& operator >>(_Out_ wchar_t& data) { return read_data(data); }
+			memory_file& operator <<(_In_ const wchar_t data) { return write_data(data); }
+			memory_file& operator >>(_Out_ wchar_t& data) { return read_data(data); }
 #endif
 			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-			inline memory_file& operator >>(_Out_ std::basic_string<_Elem, _Traits, _Ax>&data) { return read_str(data); }
+			memory_file& operator >>(_Out_ std::basic_string<_Elem, _Traits, _Ax>&data) { return read_str(data); }
 			template <class T>
-			inline memory_file& operator <<(_In_ const T * data) { return write_str(data); }
+			memory_file& operator <<(_In_ const T * data) { return write_str(data); }
 			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-			inline memory_file& operator <<(_In_ const std::basic_string<_Elem, _Traits, _Ax>& data) { return write_str(data); }
+			memory_file& operator <<(_In_ const std::basic_string<_Elem, _Traits, _Ax>& data) { return write_str(data); }
 
 		protected:
 			uint8_t* m_data; ///< file data
@@ -4120,7 +4120,7 @@ namespace stdex
 			///
 			/// Returns total size of pending data in the queue
 			///
-			inline size_t size() const { return m_size; };
+			size_t size() const { return m_size; };
 
 		protected:
 			size_t m_offset, m_size;

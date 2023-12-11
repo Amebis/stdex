@@ -17,7 +17,7 @@ namespace stdex
 {
 	/// \cond internal
 	template <class T>
-	inline const wchar_t* sgml2uni(_In_reads_or_z_(count) const T* entity, _In_ size_t count)
+	const wchar_t* sgml2uni(_In_reads_or_z_(count) const T* entity, _In_ size_t count)
 	{
 		_Assume_(entity && count);
 		_Assume_(count < 2 || entity[0] != '#'); // No numeric entities
@@ -44,7 +44,7 @@ namespace stdex
 	}
 
 	template <class T>
-	inline const T* sgmlend(
+	const T* sgmlend(
 		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count)
 	{
 		_Assume_(str || !count);
@@ -88,7 +88,7 @@ namespace stdex
 	/// \param[in,out] map        The vector to append index mapping between source and destination string to.
 	///
 	template <class T>
-	inline void sgml2strcat(
+	void sgml2strcat(
 		_Inout_ std::wstring& dst,
 		_In_reads_or_z_opt_(count_src) const T* src, _In_ size_t count_src,
 		_In_ int skip = 0,
@@ -180,7 +180,7 @@ namespace stdex
 	/// \param[in,out] map        The vector to append index mapping between source and destination string to.
 	///
 	template <class T>
-	inline void sgml2strcat(
+	void sgml2strcat(
 		_Inout_ std::wstring& dst,
 		_In_ const std::basic_string<T>& src,
 		_In_ int skip = 0,
@@ -204,7 +204,7 @@ namespace stdex
 	/// \return Final length of SGML string in code points excluding zero-terminator
 	///
 	template <class T>
-	inline size_t sgml2strcat(
+	size_t sgml2strcat(
 		_Inout_cap_(count_dst) wchar_t* dst, _In_ size_t count_dst,
 		_In_reads_or_z_opt_(count_src) const T* src, _In_ size_t count_src,
 		_In_ int skip = 0,
@@ -308,7 +308,7 @@ namespace stdex
 	/// \param[in,out] map        The vector to write index mapping between source and destination string to.
 	///
 	template <class T>
-	inline void sgml2strcpy(
+	void sgml2strcpy(
 		_Inout_ std::wstring& dst,
 		_In_reads_or_z_opt_(count_src) const T* src, _In_ size_t count_src,
 		_In_ int skip = 0,
@@ -331,7 +331,7 @@ namespace stdex
 	/// \param[in,out] map        The vector to write index mapping between source and destination string to.
 	///
 	template<class _Elem, class _Traits, class _Ax>
-	inline void sgml2strcpy(
+	void sgml2strcpy(
 		_Inout_ std::wstring& dst,
 		_In_ const std::basic_string<_Elem, _Traits, _Ax>& src,
 		_In_ int skip = 0,
@@ -355,7 +355,7 @@ namespace stdex
 	/// \return Final length of SGML string in code points excluding zero-terminator
 	///
 	template <class T>
-	inline size_t sgml2strcpy(
+	size_t sgml2strcpy(
 		_Inout_cap_(count_dst) wchar_t* dst, _In_ size_t count_dst,
 		_In_reads_or_z_opt_(count_src) const T* src, _In_ size_t count_src,
 		_In_ int skip = 0,
@@ -382,7 +382,7 @@ namespace stdex
 	/// \return Unicode string
 	///
 	template <class T>
-	inline std::wstring sgml2str(
+	std::wstring sgml2str(
 		_In_reads_or_z_opt_(count_src) const T* src, _In_ size_t count_src,
 		_In_ int skip = 0,
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
@@ -404,7 +404,7 @@ namespace stdex
 	/// \return Unicode string
 	///
 	template <class T>
-	inline std::wstring sgml2str(
+	std::wstring sgml2str(
 		_In_ const std::basic_string<T>& src,
 		_In_ int skip = 0,
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),

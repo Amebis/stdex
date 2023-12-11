@@ -28,14 +28,14 @@ namespace Assert
 	}
 
 	template <class T>
-	inline void AreEqual(const T& a, const T& b)
+	void AreEqual(const T& a, const T& b)
 	{
 		if (!(a == b))
 			throw std::runtime_error("not equal");
 	}
 
 	template <class T, size_t N>
-	inline void AreEqual(const T (&a)[N], const T (&b)[N])
+	void AreEqual(const T (&a)[N], const T (&b)[N])
 	{
 		for (size_t i = 0; i < N; ++i)
 			if (!(a[i] == b[i]))
@@ -55,7 +55,7 @@ namespace Assert
 	}
 
 	template <class T>
-	inline void AreNotEqual(const T& a, const T& b)
+	void AreNotEqual(const T& a, const T& b)
 	{
 		if (a == b)
 			throw std::runtime_error("equal");
@@ -74,7 +74,7 @@ namespace Assert
 	}
 
 	template <class E, typename F>
-	inline void ExpectException(F functor)
+	void ExpectException(F functor)
 	{
 		try { functor(); }
 		catch (const E&) { return; }

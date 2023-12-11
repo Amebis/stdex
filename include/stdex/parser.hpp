@@ -95,7 +95,7 @@ namespace stdex
 				_In_ int flags = match_default) = 0;
 
 			template<class _Traits, class _Ax>
-			inline bool match(
+			bool match(
 				const std::basic_string<T, _Traits, _Ax>& text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -1128,7 +1128,7 @@ namespace stdex
 		class basic_string_branch : public basic_branch<T>
 		{
 		public:
-			inline basic_string_branch(
+			basic_string_branch(
 				_In_reads_(count) const T* str_z = nullptr,
 				_In_ size_t count = 0,
 				_In_ const std::locale& locale = std::locale()) :
@@ -1137,7 +1137,7 @@ namespace stdex
 				build(str_z, count);
 			}
 
-			inline basic_string_branch(_In_z_ const T* str, ...) :
+			basic_string_branch(_In_z_ const T* str, ...) :
 				basic_branch<T>(std::locale())
 			{
 				va_list params;
@@ -1146,7 +1146,7 @@ namespace stdex
 				va_end(params);
 			}
 
-			inline basic_string_branch(_In_ const std::locale& locale, _In_z_ const T* str, ...) :
+			basic_string_branch(_In_ const std::locale& locale, _In_z_ const T* str, ...) :
 				basic_branch<T>(locale)
 			{
 				va_list params;
@@ -4233,7 +4233,7 @@ namespace stdex
 			}
 
 		protected:
-			static inline bool is_valid(size_t day, size_t month)
+			static bool is_valid(size_t day, size_t month)
 			{
 				if (month == SIZE_MAX) {
 					// Default to January. This allows validating day only, as January has all 31 days.

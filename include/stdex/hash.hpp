@@ -45,17 +45,17 @@ namespace stdex
 		///
 		/// Returns size of the hash value in bytes
 		///
-		static inline size_t size() { return sizeof(T); }
+		static size_t size() { return sizeof(T); }
 
 		///
 		/// Returns hash value
 		///
-		inline const T& data() { return m_value; };
+		const T& data() { return m_value; };
 
 		///
 		/// Returns hash value
 		///
-		inline operator const T&() const { return m_value; };
+		operator const T&() const { return m_value; };
 
 	protected:
 		T m_value;
@@ -259,7 +259,7 @@ namespace stdex
 		uint8_t data8[16];
 		uint32_t data32[4];
 
-		inline bool operator !=(_In_ const stdex::md2_t& other) const
+		bool operator !=(_In_ const stdex::md2_t& other) const
 		{
 			return
 				(data32[0] ^ other.data32[0]) |
@@ -268,7 +268,7 @@ namespace stdex
 				(data32[3] ^ other.data32[3]);
 		}
 
-		inline bool operator ==(_In_ const stdex::md2_t& other) const
+		bool operator ==(_In_ const stdex::md2_t& other) const
 		{
 			return !operator !=(other);
 		}
@@ -459,7 +459,7 @@ namespace stdex
 		uint8_t data8[20];
 		uint32_t data32[5];
 
-		inline bool operator !=(_In_ const stdex::sha_t& other) const
+		bool operator !=(_In_ const stdex::sha_t& other) const
 		{
 			return
 				(data32[0] ^ other.data32[0]) |
@@ -469,7 +469,7 @@ namespace stdex
 				(data32[4] ^ other.data32[4]);
 		}
 
-		inline bool operator ==(_In_ const stdex::sha_t& other) const
+		bool operator ==(_In_ const stdex::sha_t& other) const
 		{
 			return !operator !=(other);
 		}
@@ -608,7 +608,7 @@ namespace stdex
 		uint8_t data8[32];
 		uint32_t data32[8];
 
-		inline bool operator !=(_In_ const stdex::sha256_t& other) const
+		bool operator !=(_In_ const stdex::sha256_t& other) const
 		{
 			return
 				(data32[0] ^ other.data32[0]) |
@@ -621,7 +621,7 @@ namespace stdex
 				(data32[7] ^ other.data32[7]);
 		}
 
-		inline bool operator ==(_In_ const stdex::sha256_t& other) const
+		bool operator ==(_In_ const stdex::sha256_t& other) const
 		{
 			return !operator !=(other);
 		}
