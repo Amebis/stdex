@@ -98,7 +98,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">namespace </span>stdex {</div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    <span class="keyword">namespace </span>idrec {</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>        <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_ID&gt;</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>        <span class="keyword">inline</span> _Success_(<span class="keywordflow">return</span>) <span class="keywordtype">bool</span> read_id(_In_ std::istream&amp; stream, _Out_ T_ID &amp;<span class="keywordtype">id</span>, _In_opt_ std::streamoff end = (std::streamoff)-1)</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>        _Success_(<span class="keywordflow">return</span>) <span class="keywordtype">bool</span> read_id(_In_ std::istream&amp; stream, _Out_ T_ID &amp;<span class="keywordtype">id</span>, _In_opt_ std::streamoff end = (std::streamoff)-1)</div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>        {</div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>            <span class="keywordflow">if</span> (end == (std::streamoff)-1 || stream.tellg() &lt; end) {</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>                stream.read((<span class="keywordtype">char</span>*)&amp;<span class="keywordtype">id</span>, <span class="keyword">sizeof</span>(<span class="keywordtype">id</span>));</div>
@@ -108,7 +108,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        }</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_ID&gt;</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        <span class="keyword">inline</span> _Success_(<span class="keywordflow">return</span>) <span class="keywordtype">bool</span> read_id(_In_ <a class="code hl_class" href="classstdex_1_1stream_1_1basic__file.html">stdex::stream::basic_file</a>&amp; stream, _Out_ T_ID &amp;<span class="keywordtype">id</span>, _In_opt_ stdex::stream::fpos_t end = stdex::stream::fpos_max)</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        _Success_(<span class="keywordflow">return</span>) <span class="keywordtype">bool</span> read_id(_In_ <a class="code hl_class" href="classstdex_1_1stream_1_1basic__file.html">stdex::stream::basic_file</a>&amp; stream, _Out_ T_ID &amp;<span class="keywordtype">id</span>, _In_opt_ stdex::stream::fpos_t end = stdex::stream::fpos_max)</div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        {</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>            <span class="keywordflow">if</span> (end == stdex::stream::fpos_max || stream.tell() &lt; end) {</div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>                stream &gt;&gt; id;</div>
@@ -118,13 +118,13 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        }</div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>        <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_SIZE, T_SIZE ALIGN&gt;</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        <span class="keyword">inline</span> T_SIZE padding(_In_ T_SIZE size)</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        T_SIZE padding(_In_ T_SIZE size)</div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>        {</div>
 <div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>            <span class="keywordflow">return</span> (ALIGN - (size % ALIGN)) % ALIGN;</div>
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>        }</div>
 <div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span> </div>
 <div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>        <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_SIZE, T_SIZE ALIGN&gt;</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>        <span class="keyword">inline</span> <span class="keywordtype">bool</span> ignore(_In_ std::istream&amp; stream)</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>        <span class="keywordtype">bool</span> ignore(_In_ std::istream&amp; stream)</div>
 <div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>        {</div>
 <div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>            <span class="comment">// Read record size.</span></div>
 <div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>            T_SIZE size;</div>
@@ -140,7 +140,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>        }</div>
 <div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span> </div>
 <div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>        <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_SIZE, T_SIZE ALIGN&gt;</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        <span class="keyword">inline</span> <span class="keywordtype">bool</span> ignore(_In_ <a class="code hl_class" href="classstdex_1_1stream_1_1basic.html">stdex::stream::basic</a>&amp; stream)</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        <span class="keywordtype">bool</span> ignore(_In_ <a class="code hl_class" href="classstdex_1_1stream_1_1basic.html">stdex::stream::basic</a>&amp; stream)</div>
 <div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>        {</div>
 <div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>            <span class="comment">// Read record size.</span></div>
 <div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>            T_SIZE size;</div>
@@ -156,7 +156,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>        }</div>
 <div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span> </div>
 <div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>        <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_ID, <span class="keyword">class</span> T_SIZE, T_SIZE ALIGN&gt;</div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>        <span class="keyword">inline</span> <span class="keywordtype">bool</span> find(_In_ std::istream&amp; stream, _In_ T_ID <span class="keywordtype">id</span>, _In_opt_ std::streamoff end = (std::streamoff)-1)</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>        <span class="keywordtype">bool</span> find(_In_ std::istream&amp; stream, _In_ T_ID <span class="keywordtype">id</span>, _In_opt_ std::streamoff end = (std::streamoff)-1)</div>
 <div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>        {</div>
 <div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>            T_ID _id;</div>
 <div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>            <span class="keywordflow">while</span> (end == (std::streamoff)-1 || stream.tellg() &lt; end) {</div>
@@ -172,7 +172,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>        }</div>
 <div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span> </div>
 <div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>        <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_ID, <span class="keyword">class</span> T_SIZE, T_SIZE ALIGN&gt;</div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>        <span class="keyword">inline</span> <span class="keywordtype">bool</span> find(_In_ <a class="code hl_class" href="classstdex_1_1stream_1_1basic__file.html">stdex::stream::basic_file</a>&amp; stream, _In_ T_ID <span class="keywordtype">id</span>, _In_opt_ stdex::stream::fpos_t end = stdex::stream::fpos_max)</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>        <span class="keywordtype">bool</span> find(_In_ <a class="code hl_class" href="classstdex_1_1stream_1_1basic__file.html">stdex::stream::basic_file</a>&amp; stream, _In_ T_ID <span class="keywordtype">id</span>, _In_opt_ stdex::stream::fpos_t end = stdex::stream::fpos_max)</div>
 <div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>        {</div>
 <div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>            T_ID _id;</div>
 <div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>            <span class="keywordflow">while</span> (end == stdex::stream::fpos_max || stream.tell() &lt; end) {</div>
@@ -188,7 +188,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>        }</div>
 <div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span> </div>
 <div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>        <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_ID, <span class="keyword">class</span> T_SIZE&gt;</div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>        <span class="keyword">inline</span> std::streamoff open(_In_ std::ostream&amp; stream, _In_ T_ID <span class="keywordtype">id</span>)</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>        std::streamoff open(_In_ std::ostream&amp; stream, _In_ T_ID <span class="keywordtype">id</span>)</div>
 <div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>        {</div>
 <div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>            std::streamoff start = stream.tellp();</div>
 <div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span> </div>
@@ -205,7 +205,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>        }</div>
 <div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span> </div>
 <div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>        <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_ID, <span class="keyword">class</span> T_SIZE&gt;</div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>        <span class="keyword">inline</span> stdex::stream::fpos_t open(_In_ <a class="code hl_class" href="classstdex_1_1stream_1_1basic__file.html">stdex::stream::basic_file</a>&amp; stream, _In_ T_ID <span class="keywordtype">id</span>)</div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>        stdex::stream::fpos_t open(_In_ <a class="code hl_class" href="classstdex_1_1stream_1_1basic__file.html">stdex::stream::basic_file</a>&amp; stream, _In_ T_ID <span class="keywordtype">id</span>)</div>
 <div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>        {</div>
 <div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>            <span class="keyword">auto</span> start = stream.tell();</div>
 <div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span> </div>
@@ -219,7 +219,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>        }</div>
 <div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span> </div>
 <div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>        <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_ID, <span class="keyword">class</span> T_SIZE, T_SIZE ALIGN&gt;</div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>        <span class="keyword">inline</span> std::streamoff close(_In_ std::ostream&amp; stream, _In_ std::streamoff start)</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>        std::streamoff close(_In_ std::ostream&amp; stream, _In_ std::streamoff start)</div>
 <div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>        {</div>
 <div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>            std::streamoff end = stream.tellp();</div>
 <div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>            T_SIZE</div>
@@ -243,7 +243,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>        }</div>
 <div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span> </div>
 <div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>        <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_ID, <span class="keyword">class</span> T_SIZE, T_SIZE ALIGN&gt;</div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>        <span class="keyword">inline</span> stdex::stream::fpos_t close(_In_ <a class="code hl_class" href="classstdex_1_1stream_1_1basic__file.html">stdex::stream::basic_file</a>&amp; stream, _In_ stdex::stream::fpos_t start)</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>        stdex::stream::fpos_t close(_In_ <a class="code hl_class" href="classstdex_1_1stream_1_1basic__file.html">stdex::stream::basic_file</a>&amp; stream, _In_ stdex::stream::fpos_t start)</div>
 <div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>        {</div>
 <div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>            <span class="keyword">auto</span> end = stream.tell();</div>
 <div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>            T_SIZE</div>
@@ -472,13 +472,13 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="aclassstdex_1_1stream_1_1basic_html_a52ce3bdf28a9a7fc5a881616c8db2da4"><div class="ttname"><a href="classstdex_1_1stream_1_1basic.html#a52ce3bdf28a9a7fc5a881616c8db2da4">stdex::stream::basic::skip</a></div><div class="ttdeci">virtual void skip(fsize_t amount)</div><div class="ttdoc">Skips given amount of bytes of data on the stream.</div><div class="ttdef"><b>Definition</b> stream.hpp:142</div></div>
 <div class="ttc" id="aclassstdex_1_1stream_1_1limiter_html"><div class="ttname"><a href="classstdex_1_1stream_1_1limiter.html">stdex::stream::limiter</a></div><div class="ttdoc">Limits reading from/writing to stream to a predefined number of bytes.</div><div class="ttdef"><b>Definition</b> stream.hpp:1539</div></div>
 <div class="ttc" id="aclassstdex_1_1stream_1_1limiter_html_a455a9e38efe1e7473e501dd00fb3d7f0"><div class="ttname"><a href="classstdex_1_1stream_1_1limiter.html#a455a9e38efe1e7473e501dd00fb3d7f0">stdex::stream::limiter::read_limit</a></div><div class="ttdeci">fsize_t read_limit</div><div class="ttdoc">Number of bytes left that may be read from the stream.</div><div class="ttdef"><b>Definition</b> stream.hpp:1591</div></div>
-<div class="ttc" id="aclassstdex_1_1stream_1_1memory__file_html"><div class="ttname"><a href="classstdex_1_1stream_1_1memory__file.html">stdex::stream::memory_file</a></div><div class="ttdoc">In-memory file.</div><div class="ttdef"><b>Definition</b> stream.hpp:3171</div></div>
-<div class="ttc" id="aclassstdex_1_1stream_1_1memory__file_html_a9e67e40e9e3c0f7b002fcdab5220b4e7"><div class="ttname"><a href="classstdex_1_1stream_1_1memory__file.html#a9e67e40e9e3c0f7b002fcdab5220b4e7">stdex::stream::memory_file::seek</a></div><div class="ttdeci">virtual fpos_t seek(foff_t offset, seek_t how=seek_t::beg)</div><div class="ttdoc">Seeks to specified relative file position.</div><div class="ttdef"><b>Definition</b> stream.hpp:3849</div></div>
-<div class="ttc" id="aclassstdex_1_1stream_1_1memory__file_html_aff374fc64c7453dc0cef22f19bc400ce"><div class="ttname"><a href="classstdex_1_1stream_1_1memory__file.html#aff374fc64c7453dc0cef22f19bc400ce">stdex::stream::memory_file::data</a></div><div class="ttdeci">const void * data() const</div><div class="ttdoc">Returns pointer to data.</div><div class="ttdef"><b>Definition</b> stream.hpp:3498</div></div>
+<div class="ttc" id="aclassstdex_1_1stream_1_1memory__file_html"><div class="ttname"><a href="classstdex_1_1stream_1_1memory__file.html">stdex::stream::memory_file</a></div><div class="ttdoc">In-memory file.</div><div class="ttdef"><b>Definition</b> stream.hpp:3175</div></div>
+<div class="ttc" id="aclassstdex_1_1stream_1_1memory__file_html_a9e67e40e9e3c0f7b002fcdab5220b4e7"><div class="ttname"><a href="classstdex_1_1stream_1_1memory__file.html#a9e67e40e9e3c0f7b002fcdab5220b4e7">stdex::stream::memory_file::seek</a></div><div class="ttdeci">virtual fpos_t seek(foff_t offset, seek_t how=seek_t::beg)</div><div class="ttdoc">Seeks to specified relative file position.</div><div class="ttdef"><b>Definition</b> stream.hpp:3853</div></div>
+<div class="ttc" id="aclassstdex_1_1stream_1_1memory__file_html_aff374fc64c7453dc0cef22f19bc400ce"><div class="ttname"><a href="classstdex_1_1stream_1_1memory__file.html#aff374fc64c7453dc0cef22f19bc400ce">stdex::stream::memory_file::data</a></div><div class="ttdeci">const void * data() const</div><div class="ttdoc">Returns pointer to data.</div><div class="ttdef"><b>Definition</b> stream.hpp:3502</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Dec 8 2023 17:54:56 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Mon Dec 11 2023 10:34:13 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

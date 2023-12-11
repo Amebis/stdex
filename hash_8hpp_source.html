@@ -112,11 +112,11 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="classstdex_1_1basic__hash.html#ab2f4729c60bbb2ce12d5100be26108cf">   43</a></span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classstdex_1_1basic__hash.html#ab2f4729c60bbb2ce12d5100be26108cf">finalize</a>() = 0;</div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="classstdex_1_1basic__hash.html#a9b8b5f91873e5d2cfe93533832318b5a">   48</a></span>        <span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">size_t</span> <a class="code hl_function" href="classstdex_1_1basic__hash.html#a9b8b5f91873e5d2cfe93533832318b5a">size</a>() { <span class="keywordflow">return</span> <span class="keyword">sizeof</span>(T); }</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="classstdex_1_1basic__hash.html#a9b8b5f91873e5d2cfe93533832318b5a">   48</a></span>        <span class="keyword">static</span> <span class="keywordtype">size_t</span> <a class="code hl_function" href="classstdex_1_1basic__hash.html#a9b8b5f91873e5d2cfe93533832318b5a">size</a>() { <span class="keywordflow">return</span> <span class="keyword">sizeof</span>(T); }</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="classstdex_1_1basic__hash.html#a00c5ecc12bc29e5381743fa2239a1dc3">   53</a></span>        <span class="keyword">inline</span> <span class="keyword">const</span> T&amp; <a class="code hl_function" href="classstdex_1_1basic__hash.html#a00c5ecc12bc29e5381743fa2239a1dc3">data</a>() { <span class="keywordflow">return</span> m_value; };</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="classstdex_1_1basic__hash.html#a00c5ecc12bc29e5381743fa2239a1dc3">   53</a></span>        <span class="keyword">const</span> T&amp; <a class="code hl_function" href="classstdex_1_1basic__hash.html#a00c5ecc12bc29e5381743fa2239a1dc3">data</a>() { <span class="keywordflow">return</span> m_value; };</div>
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="classstdex_1_1basic__hash.html#a7cacac78cdfbf561da8d9f1a5841c5cb">   58</a></span>        <span class="keyword">inline</span> <span class="keyword">operator</span> <span class="keyword">const</span> T&amp;() <span class="keyword">const</span> { <span class="keywordflow">return</span> m_value; };</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="classstdex_1_1basic__hash.html#a7cacac78cdfbf561da8d9f1a5841c5cb">   58</a></span>        <span class="keyword">operator</span> <span class="keyword">const</span> T&amp;() <span class="keyword">const</span> { <span class="keywordflow">return</span> m_value; };</div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <span class="keyword">protected</span>:</div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>        T m_value;</div>
@@ -327,7 +327,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>        uint8_t data8[16];</div>
 <div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>        uint32_t data32[4];</div>
 <div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span> </div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>        <span class="keyword">inline</span> <span class="keywordtype">bool</span> operator !=(_In_ <span class="keyword">const</span> <a class="code hl_union" href="unionstdex_1_1md2__t.html">stdex::md2_t</a>&amp; other)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>        <span class="keywordtype">bool</span> operator !=(_In_ <span class="keyword">const</span> <a class="code hl_union" href="unionstdex_1_1md2__t.html">stdex::md2_t</a>&amp; other)<span class="keyword"> const</span></div>
 <div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span><span class="keyword">        </span>{</div>
 <div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>            <span class="keywordflow">return</span></div>
 <div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>                (data32[0] ^ other.data32[0]) |</div>
@@ -336,7 +336,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>                (data32[3] ^ other.data32[3]);</div>
 <div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>        }</div>
 <div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span> </div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>        <span class="keyword">inline</span> <span class="keywordtype">bool</span> operator ==(_In_ <span class="keyword">const</span> <a class="code hl_union" href="unionstdex_1_1md2__t.html">stdex::md2_t</a>&amp; other)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>        <span class="keywordtype">bool</span> operator ==(_In_ <span class="keyword">const</span> <a class="code hl_union" href="unionstdex_1_1md2__t.html">stdex::md2_t</a>&amp; other)<span class="keyword"> const</span></div>
 <div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span><span class="keyword">        </span>{</div>
 <div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>            <span class="keywordflow">return</span> !operator !=(other);</div>
 <div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>        }</div>
@@ -526,7 +526,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00459" name="l00459"></a><span class="lineno">  459</span>        uint8_t data8[20];</div>
 <div class="line"><a id="l00460" name="l00460"></a><span class="lineno">  460</span>        uint32_t data32[5];</div>
 <div class="line"><a id="l00461" name="l00461"></a><span class="lineno">  461</span> </div>
-<div class="line"><a id="l00462" name="l00462"></a><span class="lineno">  462</span>        <span class="keyword">inline</span> <span class="keywordtype">bool</span> operator !=(_In_ <span class="keyword">const</span> <a class="code hl_union" href="unionstdex_1_1sha__t.html">stdex::sha_t</a>&amp; other)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00462" name="l00462"></a><span class="lineno">  462</span>        <span class="keywordtype">bool</span> operator !=(_In_ <span class="keyword">const</span> <a class="code hl_union" href="unionstdex_1_1sha__t.html">stdex::sha_t</a>&amp; other)<span class="keyword"> const</span></div>
 <div class="line"><a id="l00463" name="l00463"></a><span class="lineno">  463</span><span class="keyword">        </span>{</div>
 <div class="line"><a id="l00464" name="l00464"></a><span class="lineno">  464</span>            <span class="keywordflow">return</span></div>
 <div class="line"><a id="l00465" name="l00465"></a><span class="lineno">  465</span>                (data32[0] ^ other.data32[0]) |</div>
@@ -536,7 +536,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00469" name="l00469"></a><span class="lineno">  469</span>                (data32[4] ^ other.data32[4]);</div>
 <div class="line"><a id="l00470" name="l00470"></a><span class="lineno">  470</span>        }</div>
 <div class="line"><a id="l00471" name="l00471"></a><span class="lineno">  471</span> </div>
-<div class="line"><a id="l00472" name="l00472"></a><span class="lineno">  472</span>        <span class="keyword">inline</span> <span class="keywordtype">bool</span> operator ==(_In_ <span class="keyword">const</span> <a class="code hl_union" href="unionstdex_1_1sha__t.html">stdex::sha_t</a>&amp; other)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00472" name="l00472"></a><span class="lineno">  472</span>        <span class="keywordtype">bool</span> operator ==(_In_ <span class="keyword">const</span> <a class="code hl_union" href="unionstdex_1_1sha__t.html">stdex::sha_t</a>&amp; other)<span class="keyword"> const</span></div>
 <div class="line"><a id="l00473" name="l00473"></a><span class="lineno">  473</span><span class="keyword">        </span>{</div>
 <div class="line"><a id="l00474" name="l00474"></a><span class="lineno">  474</span>            <span class="keywordflow">return</span> !operator !=(other);</div>
 <div class="line"><a id="l00475" name="l00475"></a><span class="lineno">  475</span>        }</div>
@@ -674,7 +674,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span>        uint8_t data8[32];</div>
 <div class="line"><a id="l00609" name="l00609"></a><span class="lineno">  609</span>        uint32_t data32[8];</div>
 <div class="line"><a id="l00610" name="l00610"></a><span class="lineno">  610</span> </div>
-<div class="line"><a id="l00611" name="l00611"></a><span class="lineno">  611</span>        <span class="keyword">inline</span> <span class="keywordtype">bool</span> operator !=(_In_ <span class="keyword">const</span> <a class="code hl_union" href="unionstdex_1_1sha256__t.html">stdex::sha256_t</a>&amp; other)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00611" name="l00611"></a><span class="lineno">  611</span>        <span class="keywordtype">bool</span> operator !=(_In_ <span class="keyword">const</span> <a class="code hl_union" href="unionstdex_1_1sha256__t.html">stdex::sha256_t</a>&amp; other)<span class="keyword"> const</span></div>
 <div class="line"><a id="l00612" name="l00612"></a><span class="lineno">  612</span><span class="keyword">        </span>{</div>
 <div class="line"><a id="l00613" name="l00613"></a><span class="lineno">  613</span>            <span class="keywordflow">return</span></div>
 <div class="line"><a id="l00614" name="l00614"></a><span class="lineno">  614</span>                (data32[0] ^ other.data32[0]) |</div>
@@ -687,7 +687,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00621" name="l00621"></a><span class="lineno">  621</span>                (data32[7] ^ other.data32[7]);</div>
 <div class="line"><a id="l00622" name="l00622"></a><span class="lineno">  622</span>        }</div>
 <div class="line"><a id="l00623" name="l00623"></a><span class="lineno">  623</span> </div>
-<div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span>        <span class="keyword">inline</span> <span class="keywordtype">bool</span> operator ==(_In_ <span class="keyword">const</span> <a class="code hl_union" href="unionstdex_1_1sha256__t.html">stdex::sha256_t</a>&amp; other)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span>        <span class="keywordtype">bool</span> operator ==(_In_ <span class="keyword">const</span> <a class="code hl_union" href="unionstdex_1_1sha256__t.html">stdex::sha256_t</a>&amp; other)<span class="keyword"> const</span></div>
 <div class="line"><a id="l00625" name="l00625"></a><span class="lineno">  625</span><span class="keyword">        </span>{</div>
 <div class="line"><a id="l00626" name="l00626"></a><span class="lineno">  626</span>            <span class="keywordflow">return</span> !operator !=(other);</div>
 <div class="line"><a id="l00627" name="l00627"></a><span class="lineno">  627</span>        }</div>
@@ -743,7 +743,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Dec 8 2023 17:54:56 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Mon Dec 11 2023 10:34:13 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
