@@ -52,16 +52,38 @@ namespace stdex
 		}
 	};
 
-	///
-	/// locale_t helper class to free_locale when going out of scope
-	///
+	/// \cond internal
 #if defined(_WIN32)
-	using locale = std::unique_ptr<__crt_locale_pointers, free_locale_delete>;
+	using _locale_t_ref = __crt_locale_pointers;
 #elif defined(__APPLE__)
-	using locale = std::unique_ptr<struct _xlocale, free_locale_delete>;
+	using _locale_t_ref = struct _xlocale;
 #else
-	using locale = std::unique_ptr<struct __locale_struct, free_locale_delete>;
+	using _locale_t_ref = struct __locale_struct;
 #endif
+	/// \endcond
+
+	///
+	/// locale_t helper class to free_locale when going out of scope.
+	///
+	class locale : public std::unique_ptr<_locale_t_ref, free_locale_delete>
+	{
+	public:
+		locale() = default;
+
+		locale(_In_ locale_t ptr) :
+			std::unique_ptr<_locale_t_ref, free_locale_delete>(ptr)
+		{}
+
+		locale(_In_ int category, _In_z_ const char* locale) :
+			locale(create_locale(category, locale))
+		{}
+
+		locale(_In_ int category, _In_z_ const wchar_t* locale) :
+			locale(create_locale(category, locale))
+		{}
+
+		operator locale_t() const { return get(); }
+	};
 
 	///
 	/// Reusable C-locale
