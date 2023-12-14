@@ -457,7 +457,7 @@ namespace UnitTests
 				Assert::AreEqual((size_t)15, hdrs.size());
 				http_weighted_collection<http_weighted_value<http_language>> langs;
 				for (const auto& h : hdrs)
-					if (strnicmp(request + h.name.start, h.name.size(), "Accept-Language", (size_t)-1, locale) == 0)
+					if (strnicmp(request + h.name.start, h.name.size(), "Accept-Language", SIZE_MAX, locale) == 0)
 						langs.insert(request, h.value.start, h.value.end);
 				Assert::IsTrue(!langs.empty());
 				{

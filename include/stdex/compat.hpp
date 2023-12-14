@@ -186,7 +186,7 @@
 
 #ifndef _WIN32
 template <typename T, size_t N>
-size_t _countof(T (&arr)[N])
+size_t _countof(const T (&arr)[N])
 {
 	return std::extent<T[N]>::value;
 }
