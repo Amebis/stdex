@@ -20,6 +20,8 @@
 #include <map>
 #include <memory>
 #include <stdexcept>
+#include <string_view>
+#include <string>
 #include <vector>
 
 #ifdef _WIN32
@@ -286,10 +288,10 @@ namespace stdex
 		/// \param[in,out] dst  String to append to
 		/// \param[in]     src  Source string
 		///
-		template<class _Traits_dst = std::char_traits<char>, class _Alloc_dst = std::allocator<char>, class _Traits_src = std::char_traits<char>, class _Alloc_src = std::allocator<char>>
+		template<class _Traits_dst = std::char_traits<char>, class _Alloc_dst = std::allocator<char>>
 		void url_unescape(
 			_Inout_ std::basic_string<char, _Traits_dst, _Alloc_dst>& dst,
-			_In_ const std::basic_string<char, _Traits_src, _Alloc_src>& src)
+			_In_ const std::string_view src)
 		{
 			url_unescape(dst, src.data(), src.size());
 		}
@@ -365,10 +367,10 @@ namespace stdex
 		/// \param[in,out] dst  String to append to
 		/// \param[in]     src  Source string
 		///
-		template<class _Traits_dst = std::char_traits<char>, class _Alloc_dst = std::allocator<char>, class _Traits_src = std::char_traits<char>, class _Alloc_src = std::allocator<char>>
+		template<class _Traits_dst = std::char_traits<char>, class _Alloc_dst = std::allocator<char>>
 		void url_escape(
 			_Inout_ std::basic_string<char, _Traits_dst, _Alloc_dst>& dst,
-			_In_ const std::basic_string<char, _Traits_src, _Alloc_src>& src)
+			_In_ const std::string_view src)
 		{
 			url_escape(dst, src.data(), src.size());
 		}
@@ -1678,13 +1680,13 @@ namespace stdex
 
 					if (m_condition_start.match(source, i, num_chars)) {
 						auto condition_src(replace_entities(source + m_condition_start.condition.start, m_condition_start.condition.size()));
-						if (!stdex::strcmp(condition_src.c_str(), "CDATA"))
+						if (condition_src == "CDATA")
 							m_is_cdata = true;
-						else if (!stdex::strcmp(condition_src.c_str(), "RCDATA"))
+						else if (condition_src == "RCDATA")
 							m_is_rcdata = true;
 						if (m_num_invalid_conditions)
 							m_num_invalid_conditions++;
-						else if (!stdex::strcmp(condition_src.c_str(), "IGNORE"))
+						else if (condition_src == "IGNORE")
 							m_num_invalid_conditions++;
 						else
 							m_num_valid_conditions++;
@@ -1776,7 +1778,7 @@ namespace stdex
 										str.reserve(content.charset.size());
 										for (size_t j = content.charset.start; j < content.charset.end; ++j)
 											str.push_back(static_cast<char>(source[j]));
-										m_charset = stdex::charset_from_name(str.c_str());
+										m_charset = stdex::charset_from_name(str);
 									}
 								}
 							}

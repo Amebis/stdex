@@ -20,6 +20,7 @@
 #include <climits>
 #include <locale>
 #include <stdexcept>
+#include <string_view>
 
 namespace stdex
 {
@@ -71,8 +72,8 @@ namespace stdex
 	{
 		_Assume_(is_surrogate_pair(str));
 		return
-			((char32_t)(str[0] - 0xd800) << 10) +
-			(char32_t)(str[1] - 0xdc00) +
+			(static_cast<char32_t>(str[0] - 0xd800) << 10) +
+			static_cast<char32_t>(str[1] - 0xdc00) +
 			0x10000;
 	}
 
@@ -85,8 +86,8 @@ namespace stdex
 	{
 		_Assume_(chr >= 0x10000);
 		chr -= 0x10000;
-		str[0] = 0xd800 + (char32_t)((chr >> 10) & 0x3ff);
-		str[1] = 0xdc00 + (char32_t)(chr & 0x3ff);
+		str[0] = 0xd800 + static_cast<char32_t>((chr >> 10) & 0x3ff);
+		str[1] = 0xdc00 + static_cast<char32_t>(chr & 0x3ff);
 	}
 
 	///
@@ -281,13 +282,26 @@ namespace stdex
 		return strnlen(str, SIZE);
 	}
 
+	///
+	/// Calculate zero-terminated string length.
+	///
+	/// \param[in] str  String
+	///
+	/// \return Number of code units excluding zero terminator in the string.
+	///
+	template <class T>
+	inline size_t strnlen(_In_ const std::basic_string_view<T, std::char_traits<T>> str)
+	{
+		return strnlen(str.data(), str.size());
+	}
+
 	constexpr auto npos{ static_cast<size_t>(-1) };
 
 	///
 	/// Find a code unit in a string.
 	///
-	/// \param[in] str    String
-	/// \param[in] chr    Code unit to search for
+	/// \param[in] str  String
+	/// \param[in] chr  Code unit to search for
 	///
 	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
 	///
@@ -298,20 +312,6 @@ namespace stdex
 		for (size_t i = 0; str[i]; ++i)
 			if (str[i] == chr) return i;
 		return npos;
-	}
-
-	///
-	/// Find a code unit in a string.
-	///
-	/// \param[in] str    String
-	/// \param[in] chr    Code unit to search for
-	///
-	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
-	///
-	template <class T, class _Traits = std::char_traits<T>, class _Ax = std::allocator<T>>
-	inline size_t strrchr(_In_ const std::basic_string<T, _Traits, _Ax>& str, _In_ T chr)
-	{
-		return strrnchr(str.data(), str.size(), chr);
 	}
 
 	///
@@ -338,6 +338,58 @@ namespace stdex
 	///
 	/// Find a code unit in a string.
 	///
+	/// \param[in] str  String
+	/// \param[in] chr  Code unit to search for
+	///
+	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
+	///
+	template <class T, size_t SIZE>
+	inline size_t strnchr(
+		_In_ const T (&str)[SIZE],
+		_In_ T chr)
+	{
+		return strnchr(str, SIZE, chr);
+	}
+
+	///
+	/// Find a code unit in a string.
+	///
+	/// \param[in] str  String
+	/// \param[in] chr  Code unit to search for
+	///
+	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
+	///
+	template <class T>
+	inline size_t strnchr(
+		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
+		_In_ T chr)
+	{
+		return strchr(str.data(), str.size(), chr);
+	}
+
+	///
+	/// Find a code unit in a string.
+	///
+	/// \param[in] str  String
+	/// \param[in] chr  Code unit to search for
+	///
+	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
+	///
+	template <class T>
+	inline size_t strrchr(
+		_In_z_ const T* str,
+		_In_ T chr)
+	{
+		_Assume_(str);
+		size_t z = npos;
+		for (size_t i = 0; str[i]; ++i)
+			if (str[i] == chr) z = i;
+		return z;
+	}
+
+	///
+	/// Find a code unit in a string.
+	///
 	/// \param[in] str    String
 	/// \param[in] count  Code unit count limit
 	/// \param[in] chr    Code unit to search for
@@ -358,46 +410,76 @@ namespace stdex
 	}
 
 	///
-	/// Checks if string contains all ASCII-white-space
+	/// Find a code unit in a string.
 	///
-	/// \param[in] str    String
-	/// \param[in] count  Code unit count limit
+	/// \param[in] str  String
+	/// \param[in] chr  Code unit to search for
 	///
-	/// \return `true` if all characters are white-space or `false` when any non-white-space character is found in string.
+	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
 	///
-	template <class T>
-	inline bool isblank(
-		_In_reads_or_z_opt_(count) const T* str,
-		_In_ size_t count)
+	template <class T, size_t SIZE>
+	inline size_t strrnchr(
+		_In_ const T (&str)[SIZE],
+		_In_ T chr)
 	{
-		_Assume_(str || !count);
-		for (size_t i = 0; i < count && str[i]; ++i)
-			if (!isspace(str[i]))
-				return false;
-		return true;
+		return strrnchr(str, SIZE, chr);
 	}
 
 	///
-	/// Checks if string contains all white-space
+	/// Find a code unit in a string.
 	///
-	/// \param[in] str     String
-	/// \param[in] count   Code unit count limit
-	/// \param[in] locale  C++ locale to use
+	/// \param[in] str  String
+	/// \param[in] chr  Code unit to search for
 	///
-	/// \return `true` if all characters are white-space or `false` when any non-white-space character is found in string.
+	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T>
-	inline bool isblank(
-		_In_reads_or_z_opt_(count) const T* str,
-		_In_ size_t count,
+	inline size_t strrnchr(_In_ const std::basic_string_view<T, std::char_traits<T>> str, _In_ T chr)
+	{
+		return strrnchr(str.data(), str.size(), chr);
+	}
+
+	///
+	/// Find a code unit in a string ASCII-case-insensitive
+	///
+	/// \param[in] str  String
+	/// \param[in] chr  Code unit to search for
+	///
+	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
+	///
+	template <class T>
+	inline size_t strichr(
+		_In_z_ const T* str,
+		_In_ T chr)
+	{
+		_Assume_(str);
+		chr = tolower(chr);
+		for (size_t i = 0; str[i]; ++i)
+			if (tolower(str[i]) == chr) return i;
+		return npos;
+	}
+
+	///
+	/// Find a code unit in a string case-insensitive
+	///
+	/// \param[in] str     String
+	/// \param[in] chr     Code unit to search for
+	/// \param[in] locale  C++ locale to use
+	///
+	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
+	///
+	template <class T>
+	inline size_t strichr(
+		_In_z_ const T* str,
+		_In_ T chr,
 		_In_ const std::locale& locale)
 	{
-		_Assume_(str || !count);
+		_Assume_(str);
 		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
-		for (size_t i = 0; i < count && str[i]; ++i)
-			if (!ctype.is(ctype.space, str[i]))
-				return false;
-		return true;
+		chr = ctype.tolower(chr);
+		for (size_t i = 0; str[i]; ++i)
+			if (ctype.tolower(str[i]) == chr) return i;
+		return npos;
 	}
 
 	///
@@ -450,6 +532,119 @@ namespace stdex
 	///
 	/// Find a code unit in a string ASCII-case-insensitive
 	///
+	/// \param[in] str  String
+	/// \param[in] chr  Code unit to search for
+	///
+	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
+	///
+	template <class T, size_t SIZE>
+	inline size_t strnichr(
+		_In_ const T (&str)[SIZE],
+		_In_ T chr)
+	{
+		return strnichr(str, SIZE, chr);
+	}
+
+	///
+	/// Find a code unit in a string case-insensitive
+	///
+	/// \param[in] str     String
+	/// \param[in] chr     Code unit to search for
+	/// \param[in] locale  C++ locale to use
+	///
+	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
+	///
+	template <class T, size_t SIZE>
+	inline size_t strnichr(
+		_In_ const T (&str)[SIZE],
+		_In_ T chr,
+		_In_ const std::locale& locale)
+	{
+		return strnichr(str, SIZE, chr, locale);
+	}
+
+	///
+	/// Find a code unit in a string ASCII-case-insensitive
+	///
+	/// \param[in] str  String
+	/// \param[in] chr  Code unit to search for
+	///
+	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
+	///
+	template <class T>
+	inline size_t strnichr(
+		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
+		_In_ T chr)
+	{
+		return strichr(str.data(), str.size(), chr);
+	}
+
+	///
+	/// Find a code unit in a string case-insensitive
+	///
+	/// \param[in] str     String
+	/// \param[in] chr     Code unit to search for
+	/// \param[in] locale  C++ locale to use
+	///
+	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
+	///
+	template <class T>
+	inline size_t strnichr(
+		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
+		_In_ T chr,
+		_In_ const std::locale& locale)
+	{
+		return strichr(str.data(), str.size(), chr, locale);
+	}
+
+	///
+	/// Find a code unit in a string ASCII-case-insensitive
+	///
+	/// \param[in] str  String
+	/// \param[in] chr  Code unit to search for
+	///
+	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
+	///
+	template <class T>
+	inline size_t strrichr(
+		_In_z_ const T* str,
+		_In_ T chr)
+	{
+		_Assume_(str);
+		chr = tolower(chr);
+		size_t z = npos;
+		for (size_t i = 0; str[i]; ++i)
+			if (tolower(str[i]) == chr) z = i;
+		return z;
+	}
+
+	///
+	/// Find a code unit in a string case-insensitive
+	///
+	/// \param[in] str     String
+	/// \param[in] chr     Code unit to search for
+	/// \param[in] locale  C++ locale to use
+	///
+	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
+	///
+	template <class T>
+	inline size_t strrichr(
+		_In_reads_or_z_opt_(count) const T* str,
+		_In_ T chr,
+		_In_ const std::locale& locale)
+	{
+		_Assume_(str);
+		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
+		chr = ctype.tolower(chr);
+		size_t z = npos;
+		for (size_t i = 0; str[i]; ++i)
+			if (ctype.tolower(str[i]) == chr) z = i;
+		return z;
+	}
+
+	///
+	/// Find a code unit in a string ASCII-case-insensitive
+	///
 	/// \param[in] str    String
 	/// \param[in] count  Code unit count limit
 	/// \param[in] chr    Code unit to search for
@@ -497,22 +692,257 @@ namespace stdex
 	}
 
 	///
+	/// Find a code unit in a string ASCII-case-insensitive
+	///
+	/// \param[in] str  String
+	/// \param[in] chr  Code unit to search for
+	///
+	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
+	///
+	template <class T, size_t SIZE>
+	inline size_t strrnichr(
+		_In_ const T (&str)[SIZE],
+		_In_ T chr)
+	{
+		return strrnichr(str, SIZE, chr);
+	}
+
+	///
+	/// Find a code unit in a string case-insensitive
+	///
+	/// \param[in] str     String
+	/// \param[in] chr     Code unit to search for
+	/// \param[in] locale  C++ locale to use
+	///
+	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
+	///
+	template <class T, size_t SIZE>
+	inline size_t strrnichr(
+		_In_ const T (&str)[SIZE],
+		_In_ T chr,
+		_In_ const std::locale& locale)
+	{
+		return strrnichr(str, SIZE, chr, locale);
+	}
+
+	///
+	/// Find a code unit in a string ASCII-case-insensitive
+	///
+	/// \param[in] str  String
+	/// \param[in] chr  Code unit to search for
+	///
+	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
+	///
+	template <class T>
+	inline size_t strrnichr(
+		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
+		_In_ T chr)
+	{
+		return strrnichr(str.data(), str.size(), chr);
+	}
+
+	///
+	/// Find a code unit in a string case-insensitive
+	///
+	/// \param[in] str     String
+	/// \param[in] chr     Code unit to search for
+	/// \param[in] locale  C++ locale to use
+	///
+	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
+	///
+	template <class T>
+	inline size_t strrnichr(
+		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
+		_In_ T chr,
+		_In_ const std::locale& locale)
+	{
+		return strrnichr(str.data(), str.size(), chr, locale);
+	}
+
+	/////
+	///// Checks if string contains all ASCII-white-space
+	/////
+	///// \param[in] str  String
+	/////
+	///// \return `true` if all characters are white-space or `false` when any non-white-space character is found in string.
+	/////
+	//template <class T>
+	//inline bool isblank(_In_z_ const T* str)
+	//{
+	//	_Assume_(str);
+	//	for (size_t i = 0; str[i]; ++i)
+	//		if (!isspace(str[i]))
+	//			return false;
+	//	return true;
+	//}
+
+	/////
+	///// Checks if string contains all white-space
+	/////
+	///// \param[in] str     String
+	///// \param[in] locale  C++ locale to use
+	/////
+	///// \return `true` if all characters are white-space or `false` when any non-white-space character is found in string.
+	/////
+	//template <class T>
+	//inline bool isblank(
+	//	_In_z_ const T* str,
+	//	_In_ const std::locale& locale)
+	//{
+	//	_Assume_(str);
+	//	const auto& ctype = std::use_facet<std::ctype<T>>(locale);
+	//	for (size_t i = 0; str[i]; ++i)
+	//		if (!ctype.is(ctype.space, str[i]))
+	//			return false;
+	//	return true;
+	//}
+
+	///
+	/// Checks if string contains all ASCII-white-space
+	///
+	/// \param[in] str    String
+	/// \param[in] count  Code unit count limit
+	///
+	/// \return `true` if all characters are white-space or `false` when any non-white-space character is found in string.
+	///
+	template <class T>
+	inline bool isblank(
+		_In_reads_or_z_opt_(count) const T* str,
+		_In_ size_t count)
+	{
+		_Assume_(str || !count);
+		for (size_t i = 0; i < count && str[i]; ++i)
+			if (!isspace(str[i]))
+				return false;
+		return true;
+	}
+
+	///
+	/// Checks if string contains all white-space
+	///
+	/// \param[in] str     String
+	/// \param[in] count   Code unit count limit
+	/// \param[in] locale  C++ locale to use
+	///
+	/// \return `true` if all characters are white-space or `false` when any non-white-space character is found in string.
+	///
+	template <class T>
+	inline bool isblank(
+		_In_reads_or_z_opt_(count) const T* str,
+		_In_ size_t count,
+		_In_ const std::locale& locale)
+	{
+		_Assume_(str || !count);
+		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
+		for (size_t i = 0; i < count && str[i]; ++i)
+			if (!ctype.is(ctype.space, str[i]))
+				return false;
+		return true;
+	}
+
+	///
+	/// Checks if string contains all ASCII-white-space
+	///
+	/// \param[in] str  String
+	///
+	/// \return `true` if all characters are white-space or `false` when any non-white-space character is found in string.
+	///
+	template <class T, size_t SIZE>
+	inline bool isblank(_In_ const T (&str)[SIZE])
+	{
+		return isblank(str, SIZE);
+	}
+
+	///
+	/// Checks if string contains all white-space
+	///
+	/// \param[in] str     String
+	/// \param[in] locale  C++ locale to use
+	///
+	/// \return `true` if all characters are white-space or `false` when any non-white-space character is found in string.
+	///
+	template <class T, size_t SIZE>
+	inline bool isblank(
+		_In_ const T (&str)[SIZE],
+		_In_ const std::locale& locale)
+	{
+		return isblank(str, SIZE, locale);
+	}
+
+	///
+	/// Checks if string contains all ASCII-white-space
+	///
+	/// \param[in] str  String
+	///
+	/// \return `true` if all characters are white-space or `false` when any non-white-space character is found in string.
+	///
+	template <class T>
+	inline bool isblank(_In_ const std::basic_string_view<T, std::char_traits<T>> str)
+	{
+		return isblank(str.data(), str.size());
+	}
+
+	///
+	/// Checks if string contains all white-space
+	///
+	/// \param[in] str     String
+	/// \param[in] locale  C++ locale to use
+	///
+	/// \return `true` if all characters are white-space or `false` when any non-white-space character is found in string.
+	///
+	template <class T>
+	inline bool isblank(
+		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
+		_In_ size_t count,
+		_In_ const std::locale& locale)
+	{
+		return isblank(str.data(), str.size(), locale);
+	}
+
+	///
 	/// Binary compare two strings
 	///
-	/// \param[in] str1    String 1
-	/// \param[in] str2    String 2
+	/// \param[in] str1  String 1
+	/// \param[in] str2  String 2
 	///
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T1, class T2>
-	inline int strcmp(const T1* str1, const T2* str2)
+	inline int strcmp(_In_z_ const T1* str1, _In_z_ const T2* str2)
 	{
-		_Assume_(str1 && str2);
-		T1 a; T2 b;
-		for (size_t i = 0; (a = str1[i]) | (b = str2[i]); ++i) {
+		_Assume_(str1);
+		_Assume_(str2);
+		size_t i; T1 a; T2 b;
+		for (i = 0; (a = str1[i]) | (b = str2[i]); ++i) {
 			if (a > b) return +1;
 			if (a < b) return -1;
 		}
+		if (str1[i]) return +1;
+		if (str2[i]) return -1;
+		return 0;
+	}
+
+	///
+	/// Binary compare two strings
+	///
+	/// \param[in] str1   String 1
+	/// \param[in] str2   String 2
+	/// \param[in] count  String 1 and 2 code unit count limit
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T1, class T2>
+	inline int strncmp(_In_reads_or_z_opt_(count) const T1* str1, _In_reads_or_z_opt_(count) const T2* str2, _In_ size_t count)
+	{
+		_Assume_(str1 || !count);
+		_Assume_(str2 || !count);
+		size_t i; T1 a; T2 b;
+		for (i = 0; i < count && ((a = str1[i]) | (b = str2[i])); ++i) {
+			if (a > b) return +1;
+			if (a < b) return -1;
+		}
+		if (i < count && str1[i]) return +1;
+		if (i < count && str2[i]) return -1;
 		return 0;
 	}
 
@@ -546,47 +976,31 @@ namespace stdex
 	///
 	/// Binary compare two strings
 	///
-	/// \param[in] str1    String 1
-	/// \param[in] str2    String 2
-	/// \param[in] count   String 1 and 2 code unit count limit
+	/// \param[in] str1  String 1
+	/// \param[in] str2  String 2
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T1, size_t SIZE1, class T2, size_t SIZE2>
+	inline int strncmp(
+		_In_ const T1 (&str1)[SIZE1],
+		_In_ const T2 (&str2)[SIZE2])
+	{
+		return strncmp(str1, SIZE, str2, SIZE);
+	}
+
+	///
+	/// Binary compare two strings
+	///
+	/// \param[in] str1  String 1
+	/// \param[in] str2  String 2
 	///
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T1, class T2>
-	inline int strncmp(_In_reads_or_z_opt_(count) const T1* str1, _In_reads_or_z_opt_(count) const T2* str2, _In_ size_t count)
+	inline int strncmp(_In_ const std::basic_string_view<T1> str1, _In_ const std::basic_string_view<T2> str2)
 	{
-		_Assume_((str1 && str2) || !count);
-		size_t i; T1 a; T2 b;
-		for (i = 0; i < count && ((a = str1[i]) | (b = str2[i])); ++i) {
-			if (a > b) return +1;
-			if (a < b) return -1;
-		}
-		if (i < count && str1[i]) return +1;
-		if (i < count && str2[i]) return -1;
-		return 0;
-	}
-
-	///
-	/// Lexigraphically compare two strings
-	///
-	/// \param[in] str1    String 1
-	/// \param[in] count1  String 1 code unit count limit
-	/// \param[in] str2    String 2
-	/// \param[in] count2  String 2 code unit count limit
-	/// \param[in] locale  C++ locale to use
-	///
-	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
-	///
-	template <class T>
-	inline int strncoll(
-		_In_reads_or_z_opt_(count1) const T* str1, _In_ size_t count1,
-		_In_reads_or_z_opt_(count2) const T* str2, _In_ size_t count2,
-		_In_ const std::locale& locale)
-	{
-		_Assume_(str1 || !count1);
-		_Assume_(str2 || !count2);
-		auto& collate = std::use_facet<std::collate<T>>(locale);
-		return collate.compare(str1, str1 + count1, str2, str2 + count2);
+		return strncmp(str1.data(), str1.size(), str2.data(), str2.size());
 	}
 
 	///
@@ -603,29 +1017,13 @@ namespace stdex
 		_Assume_(str1);
 		_Assume_(str2);
 		size_t i; T1 a; T2 b;
-		for (i = 0; (a = tolower(str1[i])) | (b = tolower(str2[i])); i++) {
+		for (i = 0; (a = tolower(str1[i])) | (b = tolower(str2[i])); ++i) {
 			if (a > b) return +1;
 			if (a < b) return -1;
 		}
 		if (str1[i]) return +1;
 		if (str2[i]) return -1;
 		return 0;
-	}
-
-	///
-	/// Binary compare two strings ASCII-case-insensitive
-	///
-	/// \param[in] str1  String 1
-	/// \param[in] str2  String 2
-	///
-	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
-	///
-	template <class T1, class _Traits1 = std::char_traits<T1>, class _Ax1 = std::allocator<T1>, class T2, class _Traits2 = std::char_traits<T2>, class _Ax2 = std::allocator<T2>>
-	inline int stricmp(
-		_In_ const std::basic_string<T1, _Traits1, _Ax1>& str1,
-		_In_ const std::basic_string<T2, _Traits2, _Ax2>& str2)
-	{
-		return strnicmp(str1.data(), str1.size(), str2.data(), str2.size());
 	}
 
 	///
@@ -645,7 +1043,7 @@ namespace stdex
 		size_t i; T1 a; T2 b;
 		const auto& ctype1 = std::use_facet<std::ctype<T1>>(locale);
 		const auto& ctype2 = std::use_facet<std::ctype<T2>>(locale);
-		for (i = 0; (a = ctype1.tolower(str1[i])) | (b = ctype2.tolower(str2[i])); i++) {
+		for (i = 0; (a = ctype1.tolower(str1[i])) | (b = ctype2.tolower(str2[i])); ++i) {
 			if (a > b) return +1;
 			if (a < b) return -1;
 		}
@@ -657,27 +1055,9 @@ namespace stdex
 	///
 	/// Binary compare two strings ASCII-case-insensitive
 	///
-	/// \param[in] str1    String 1
-	/// \param[in] str2    String 2
-	/// \param[in] locale  C++ locale to use
-	///
-	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
-	///
-	template <class T1, class _Traits1 = std::char_traits<T1>, class _Ax1 = std::allocator<T1>, class T2, class _Traits2 = std::char_traits<T2>, class _Ax2 = std::allocator<T2>>
-	inline int stricmp(
-		_In_ const std::basic_string<T1, _Traits1, _Ax1>& str1,
-		_In_ const std::basic_string<T2, _Traits2, _Ax2>& str2,
-		_In_ const std::locale& locale)
-	{
-		return strnicmp(str1.data(), str1.size(), str2.data(), str2.size(), locale);
-	}
-
-	///
-	/// Binary compare two strings ASCII-case-insensitive
-	///
-	/// \param[in] str1    String 1
-	/// \param[in] str2    String 2
-	/// \param[in] count   Code unit count limit
+	/// \param[in] str1   String 1
+	/// \param[in] str2   String 2
+	/// \param[in] count  Code unit count limit
 	///
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
@@ -687,7 +1067,7 @@ namespace stdex
 		_Assume_(str1 || !count);
 		_Assume_(str2 || !count);
 		size_t i; T1 a; T2 b;
-		for (i = 0; i < count && ((a = tolower(str1[i])) | (b = tolower(str2[i]))); i++) {
+		for (i = 0; i < count && ((a = tolower(str1[i])) | (b = tolower(str2[i]))); ++i) {
 			if (a > b) return +1;
 			if (a < b) return -1;
 		}
@@ -714,7 +1094,7 @@ namespace stdex
 		size_t i; T1 a; T2 b;
 		const auto& ctype1 = std::use_facet<std::ctype<T1>>(locale);
 		const auto& ctype2 = std::use_facet<std::ctype<T2>>(locale);
-		for (i = 0; i < count && ((a = ctype1.tolower(str1[i])) | (b = ctype2.tolower(str2[i]))); i++) {
+		for (i = 0; i < count && ((a = ctype1.tolower(str1[i])) | (b = ctype2.tolower(str2[i]))); ++i) {
 			if (a > b) return +1;
 			if (a < b) return -1;
 		}
@@ -741,7 +1121,7 @@ namespace stdex
 		_Assume_(str1 || !count1);
 		_Assume_(str2 || !count2);
 		size_t i; T1 a; T2 b;
-		for (i = 0; i < count1 && i < count2 && ((a = tolower(str1[i])) | (b = tolower(str2[i]))); i++) {
+		for (i = 0; i < count1 && i < count2 && ((a = tolower(str1[i])) | (b = tolower(str2[i]))); ++i) {
 			if (a > b) return +1;
 			if (a < b) return -1;
 		}
@@ -772,13 +1152,159 @@ namespace stdex
 		size_t i; T1 a; T2 b;
 		const auto& ctype1 = std::use_facet<std::ctype<T1>>(locale);
 		const auto& ctype2 = std::use_facet<std::ctype<T2>>(locale);
-		for (i = 0; i < count1 && i < count2 && ((a = ctype1.tolower(str1[i])) | (b = ctype2.tolower(str2[i]))); i++) {
+		for (i = 0; i < count1 && i < count2 && ((a = ctype1.tolower(str1[i])) | (b = ctype2.tolower(str2[i]))); ++i) {
 			if (a > b) return +1;
 			if (a < b) return -1;
 		}
 		if (i < count1 && str1[i]) return +1;
 		if (i < count2 && str2[i]) return -1;
 		return 0;
+	}
+
+	///
+	/// Binary compare two strings ASCII-case-insensitive
+	///
+	/// \param[in] str1  String 1
+	/// \param[in] str2  String 2
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T1, size_t SIZE1, class T2, size_t SIZE2>
+	inline int strnicmp(
+		_In_ const T1 (&str1)[SIZE1],
+		_In_ const T2 (&str2)[SIZE2])
+	{
+		strnicmp(str1, SIZE, str2, SIZE2);
+	}
+
+	///
+	/// Binary compare two strings case-insensitive
+	///
+	/// \param[in] str1    String 1
+	/// \param[in] str2    String 2
+	/// \param[in] locale  C++ locale to use
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T1, size_t SIZE1, class T2, size_t SIZE2>
+	inline int strnicmp(
+		_In_ const T1 (&str1)[SIZE1],
+		_In_ const T2 (&str2)[SIZE2],
+		_In_ const std::locale& locale)
+	{
+		strnicmp(str1, SIZE, str2, SIZE2, locale);
+	}
+
+	///
+	/// Binary compare two strings case-insensitive
+	///
+	/// \param[in] str1  String 1
+	/// \param[in] str2  String 2
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T1, class T2>
+	inline int strnicmp(_In_ const std::basic_string_view<T1> str1, _In_ const std::basic_string_view<T2> str2)
+	{
+		return strnicmp(str1.data(), str1.size(), str2.data(), str2.size());
+	}
+
+	///
+	/// Binary compare two strings ASCII-case-insensitive
+	///
+	/// \param[in] str1    String 1
+	/// \param[in] str2    String 2
+	/// \param[in] locale  C++ locale to use
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T1, class T2>
+	inline int strnicmp(
+		_In_ const std::basic_string_view<T1> str1,
+		_In_ const std::basic_string_view<T2> str2,
+		_In_ const std::locale& locale)
+	{
+		return strnicmp(str1.data(), str1.size(), str2.data(), str2.size(), locale);
+	}
+
+	///
+	/// Lexigraphically compare two strings
+	///
+	/// \param[in] str1    String 1
+	/// \param[in] str2    String 2
+	/// \param[in] locale  C++ locale to use
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T>
+	inline int strcoll(
+		_In_z_ const T* str1,
+		_In_z_ const T* str2,
+		_In_ const std::locale& locale)
+	{
+		_Assume_(str1);
+		_Assume_(str2);
+		auto& collate = std::use_facet<std::collate<T>>(locale);
+		return collate.compare(str1, str1 + strlen(str1), str2, str2 + strlen(str2));
+	}
+
+	///
+	/// Lexigraphically compare two strings
+	///
+	/// \param[in] str1    String 1
+	/// \param[in] count1  String 1 code unit count limit
+	/// \param[in] str2    String 2
+	/// \param[in] count2  String 2 code unit count limit
+	/// \param[in] locale  C++ locale to use
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T>
+	inline int strncoll(
+		_In_reads_or_z_opt_(count1) const T* str1, _In_ size_t count1,
+		_In_reads_or_z_opt_(count2) const T* str2, _In_ size_t count2,
+		_In_ const std::locale& locale)
+	{
+		_Assume_(str1 || !count1);
+		_Assume_(str2 || !count2);
+		auto& collate = std::use_facet<std::collate<T>>(locale);
+		return collate.compare(str1, str1 + count1, str2, str2 + count2);
+	}
+
+	///
+	/// Lexigraphically compare two strings
+	///
+	/// \param[in] str1    String 1
+	/// \param[in] str2    String 2
+	/// \param[in] locale  C++ locale to use
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T, size_t SIZE1, size_t SIZE2>
+	inline int strncoll(
+		_In_ const T (&str1)[SIZE1],
+		_In_ const T (&str2)[SIZE2],
+		_In_ const std::locale& locale)
+	{
+		return strncoll(str1, SIZE1, str2, SIZE2, locale);
+	}
+
+	///
+	/// Lexigraphically compare two strings
+	///
+	/// \param[in] str1    String 1
+	/// \param[in] str2    String 2
+	/// \param[in] locale  C++ locale to use
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T>
+	inline int strncoll(
+		_In_ const std::basic_string_view<T, std::char_traits<T>> str1,
+		_In_ const std::basic_string_view<T, std::char_traits<T>> str2,
+		_In_ const std::locale& locale)
+	{
+		return strncoll(str1.data(), str1.size(), str2.data(), str2.size(), locale);
 	}
 
 	///
@@ -819,8 +1345,7 @@ namespace stdex
 	///
 	template <class T1, class T2>
 	inline size_t strnstr(
-		_In_reads_or_z_opt_(count) const T1* str,
-		_In_ size_t count,
+		_In_reads_or_z_opt_(count) const T1* str, _In_ size_t count,
 		_In_z_ const T2* sample)
 	{
 		_Assume_(str || !count);
@@ -838,6 +1363,38 @@ namespace stdex
 	}
 
 	///
+	/// Search for a substring
+	///
+	/// \param[in] str     String to search in
+	/// \param[in] sample  Substring to search for
+	///
+	/// \return Offset inside str where sample string is found; stdex::npos if not found
+	///
+	template <class T1, size_t SIZE1, class T2>
+	inline size_t strnstr(
+		_In_ const T1 (&str)[SIZE1],
+		_In_z_ const T2* sample)
+	{
+		return strnstr(str, SIZE, sample);
+	}
+
+	///
+	/// Search for a substring
+	///
+	/// \param[in] str     String to search in
+	/// \param[in] sample  Substring to search for
+	///
+	/// \return Offset inside str where sample string is found; stdex::npos if not found
+	///
+	template <class T1, class T2>
+	inline size_t strnstr(
+		_In_ const std::basic_string_view<T1> str,
+		_In_z_ const T2* sample)
+	{
+		return strnstr(str.data(), str.size(), sample);
+	}
+
+	///
 	/// Search for a substring ASCII-case-insensitive
 	///
 	/// \param[in] str     String to search in
@@ -955,13 +1512,81 @@ namespace stdex
 					break;
 			}
 		}
+	}
+
+	///
+	/// Search for a substring ASCII-case-insensitive
+	///
+	/// \param[in] str     String to search in
+	/// \param[in] sample  Substring to search for
+	///
+	/// \return Offset inside str where sample string is found; stdex::npos if not found
+	///
+	template <class T1, size_t SIZE1, class T2>
+	inline size_t strnistr(
+		_In_ const T1 (&str)[SIZE1],
+		_In_z_ const T2* sample)
+	{
+		return strnistr(str, SIZE1, sample);
+	}
+
+	///
+	/// Search for a substring case-insensitive
+	///
+	/// \param[in] str     String to search in
+	/// \param[in] sample  Substring to search for
+	/// \param[in] locale  C++ locale to use
+	///
+	/// \return Offset inside str where sample string is found; stdex::npos if not found
+	///
+	template <class T1, size_t SIZE1, class T2>
+	inline size_t strnistr(
+		_In_ const T1 (&str)[SIZE1],
+		_In_z_ const T2* sample,
+		_In_ const std::locale& locale)
+	{
+		return strnistr(str, SIZE1, sample, locale);
+	}
+
+	///
+	/// Search for a substring ASCII-case-insensitive
+	///
+	/// \param[in] str     String to search in
+	/// \param[in] sample  Substring to search for
+	///
+	/// \return Offset inside str where sample string is found; stdex::npos if not found
+	///
+	template <class T1, class T2>
+	inline size_t strnistr(
+		_In_ const std::basic_string_view<T1> str,
+		_In_z_ const T2* sample)
+	{
+		return strnistr(str.data(), str.size(), sample);
+	}
+
+	///
+	/// Search for a substring case-insensitive
+	///
+	/// \param[in] str     String to search in
+	/// \param[in] sample  Substring to search for
+	/// \param[in] locale  C++ locale to use
+	///
+	/// \return Offset inside str where sample string is found; stdex::npos if not found
+	///
+	template <class T1, class T2>
+	inline size_t strnistr(
+		_In_ const std::basic_string_view<T1> str,
+		_In_z_ const T2* sample,
+		_In_ const std::locale& locale)
+	{
+		return strnistr(str.data(), str.size(), sample, locale);
 	}
 
 	///
 	/// Copy zero-terminated string
 	///
-	/// \param[in] dst    Destination string
-	/// \param[in] src    Source string
+	/// \param[in] dst  Destination string
+	/// \param[in] src  Source string
 	///
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
@@ -970,7 +1595,8 @@ namespace stdex
 		_Out_writes_z_(_String_length_(src) + 1) T1* dst,
 		_In_z_ const T2* src)
 	{
-		_Assume_(dst && src);
+		_Assume_(dst);
+		_Assume_(src);
 		for (size_t i = 0; ; ++i) {
 			if ((dst[i] = src[i]) == 0)
 				return i;
@@ -991,7 +1617,8 @@ namespace stdex
 		_Out_writes_(count) _Post_maybez_ T1* dst,
 		_In_reads_or_z_opt_(count) const T2* src, _In_ size_t count)
 	{
-		_Assume_(dst && src || !count);
+		_Assume_(dst || !count);
+		_Assume_(src || !count);
 		for (size_t i = 0; ; ++i) {
 			if (i >= count)
 				return i;
@@ -1033,8 +1660,8 @@ namespace stdex
 	///
 	/// Append zero-terminated string
 	///
-	/// \param[in] dst    Destination string
-	/// \param[in] src    Source string
+	/// \param[in] dst  Destination string
+	/// \param[in] src  Source string
 	///
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
@@ -1043,7 +1670,8 @@ namespace stdex
 		_In_z_ _Out_writes_z_(_String_length_(dst) + _String_length_(src) + 1) T1* dst,
 		_In_z_ const T2* src)
 	{
-		_Assume_(dst && src);
+		_Assume_(dst);
+		_Assume_(src);
 		for (size_t i = 0, j = stdex::strlen<T1>(dst); ; ++i, ++j) {
 			if ((dst[j] = src[i]) == 0)
 				return j;
@@ -1064,7 +1692,8 @@ namespace stdex
 		_Inout_z_ T1* dst,
 		_In_reads_or_z_opt_(count) const T2* src, _In_ size_t count)
 	{
-		_Assume_(dst && src || !count);
+		_Assume_(dst || !count);
+		_Assume_(src || !count);
 		for (size_t i = 0, j = stdex::strlen<T1>(dst); ; ++i, ++j) {
 			if (i >= count)
 				return j;
@@ -1146,6 +1775,38 @@ namespace stdex
 	}
 
 	///
+	/// Returns duplicated string on the heap
+	///
+	/// In contrast with the stdlib C strdup, the memory is allocated using operator new T[].
+	/// This allows returned string to be fed into std::unique_ptr<T> for auto release.
+	///
+	/// \param[in] str  String to duplicate. Must be zero-terminated.
+	/// 
+	/// \return Pointer to duplicated string; or nullptr if str is nullptr. Use delete operator to free the memory.
+	///
+	template <class T, size_t SIZE>
+	inline _Check_return_ _Ret_maybenull_z_ T* strndup(_In_ const T (&str)[SIZE])
+	{
+		return strndup(str, SIZE);
+	}
+
+	///
+	/// Returns duplicated string on the heap
+	///
+	/// In contrast with the stdlib C strdup, the memory is allocated using operator new T[].
+	/// This allows returned string to be fed into std::unique_ptr<T> for auto release.
+	///
+	/// \param[in] str  String to duplicate. Must be zero-terminated.
+	/// 
+	/// \return Pointer to duplicated string; or nullptr if str is nullptr. Use delete operator to free the memory.
+	///
+	template <class T>
+	inline _Check_return_ _Ret_maybenull_z_ T* strndup(_In_ const std::basic_string_view<T, std::char_traits<T>> str)
+	{
+		return strndup(str.data(), str.size());
+	}
+
+	///
 	/// Convert CRLF to LF
 	/// Source and destination strings may point to the same buffer for inline conversion.
 	///
@@ -1155,7 +1816,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
 	template <class T>
-	inline size_t crlf2nl(_Out_writes_z_(strlen(src)) T* dst, _In_z_ const T* src)
+	inline size_t crlf2nl(_Out_writes_z_(_String_length_(src) + 1) T* dst, _In_z_ const T* src)
 	{
 		_Assume_(dst);
 		_Assume_(src);
@@ -1176,13 +1837,13 @@ namespace stdex
 	/// Convert CRLF to LF
 	///
 	/// \param[in] dst  Destination string
-	/// \param[in] src  Source string. Must not be dst.c_str().
+	/// \param[in] src  Source string. Must not be dst.data().
 	///
 	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
 	inline void crlf2nl(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& dst, _In_z_ const _Elem* src)
 	{
 		_Assume_(src);
-		_Assume_(src != dst.c_str());
+		_Assume_(src != dst.data());
 		dst.clear();
 		dst.reserve(strlen(src));
 		for (size_t j = 0; src[j];) {
@@ -1375,6 +2036,42 @@ namespace stdex
 	}
 
 	///
+	/// Parse string for a signed integer
+	///
+	/// \param[in]  str    String
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T, size_t SIZE, class T_bin>
+	T_bin strtoint(
+		_In_ const T (&str)[SIZE],
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strtoint<T, T_bin>(str, SIZE, end, radix);
+	}
+
+	///
+	/// Parse string for a signed integer
+	///
+	/// \param[in]  str    String
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T, class T_bin>
+	T_bin strtoint(
+		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strtoint<T, T_bin>(str.data(), str.size(), end, radix);
+	}
+
+	///
 	/// Parse string for an unsigned integer
 	///
 	/// \param[in]  str    String
@@ -1408,6 +2105,42 @@ namespace stdex
 	}
 
 	///
+	/// Parse string for an unsigned integer
+	///
+	/// \param[in]  str    String
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T, size_t SIZE, class T_bin>
+	inline T_bin strtouint(
+		_In_ const T (&str)[SIZE],
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strtouint<T, T_bin>(str, SIZE, end, radix);
+	}
+
+	///
+	/// Parse string for an unsigned integer
+	///
+	/// \param[in]  str    String
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T, class T_bin>
+	inline T_bin strtouint(
+		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strtouint<T, T_bin>(str.data(), str.size(), end, radix);
+	}
+
+	///
 	/// Parse string for a signed 32-bit integer
 	///
 	/// \param[in]  str    String
@@ -1424,6 +2157,42 @@ namespace stdex
 		_In_ int radix)
 	{
 		return strtoint<T, int32_t>(str, count, end, radix);
+	}
+
+	///
+	/// Parse string for a signed 32-bit integer
+	///
+	/// \param[in]  str    String
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T, size_t SIZE>
+	inline int32_t strto32(
+		_In_ const T (&str)[SIZE],
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strto32<T>(str, SIZE, end, radix);
+	}
+
+	///
+	/// Parse string for a signed 32-bit integer
+	///
+	/// \param[in]  str    String
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T>
+	inline int32_t strto32(
+		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strto32<T>(str.data(), str.size(), end, radix);
 	}
 
 	///
@@ -1446,6 +2215,42 @@ namespace stdex
 	}
 
 	///
+	/// Parse string for a signed 64-bit integer
+	///
+	/// \param[in]  str    String
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T, size_t SIZE>
+	inline int64_t strto64(
+		_In_ const T (&str)[SIZE],
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strto64<T>(str, SIZE, end, radix);
+	}
+
+	///
+	/// Parse string for a signed 64-bit integer
+	///
+	/// \param[in]  str    String
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T>
+	inline int64_t strto64(
+		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strto64<T>(str.data(), str.size(), end, radix);
+	}
+
+	///
 	/// Parse string for a signed 32/64-bit integer
 	/// Dependent on platform CPU architecture
 	///
@@ -1463,10 +2268,48 @@ namespace stdex
 		_In_ int radix)
 	{
 #if defined(_WIN64) || defined(__LP64__)
-		return (intptr_t)strto64(str, count, end, radix);
+		return static_cast<intptr_t>(strto64(str, count, end, radix));
 #else
-		return (intptr_t)strto32(str, count, end, radix);
+		return static_cast<intptr_t>(strto32(str, count, end, radix));
 #endif
+	}
+
+	///
+	/// Parse string for a signed 32/64-bit integer
+	/// Dependent on platform CPU architecture
+	///
+	/// \param[in]  str    String
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T, size_t SIZE>
+	inline intptr_t strtoi(
+		_In_ const T (&str)[SIZE],
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strtoi<T>(str, SIZE, end, radix);
+	}
+
+	///
+	/// Parse string for a signed 32/64-bit integer
+	/// Dependent on platform CPU architecture
+	///
+	/// \param[in]  str    String
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T>
+	inline intptr_t strtoi(
+		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strtoi<T>(str.data(), str.size(), end, radix);
 	}
 
 	///
@@ -1489,6 +2332,42 @@ namespace stdex
 	}
 
 	///
+	/// Parse string for an unsigned 32-bit integer
+	///
+	/// \param[in]  str    String
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T, size_t SIZE>
+	inline uint32_t strtou32(
+		_In_ const T (&str)[SIZE],
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strtou32(str, SIZE, end, radix);
+	}
+
+	///
+	/// Parse string for an unsigned 32-bit integer
+	///
+	/// \param[in]  str    String
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T>
+	inline uint32_t strtou32(
+		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strtou32(str.data(), str.size(), end, radix);
+	}
+
+	///
 	/// Parse string for an unsigned 64-bit integer
 	///
 	/// \param[in]  str    String
@@ -1505,6 +2384,42 @@ namespace stdex
 		_In_ int radix)
 	{
 		return strtouint<T, uint64_t>(str, count, end, radix);
+	}
+
+	///
+	/// Parse string for an unsigned 64-bit integer
+	///
+	/// \param[in]  str    String
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T, size_t SIZE>
+	inline uint64_t strtou64(
+		_In_ const T (&str)[SIZE],
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strtou64<T>(str, SIZE, end, radix);
+	}
+
+	///
+	/// Parse string for an unsigned 64-bit integer
+	///
+	/// \param[in]  str    String
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T>
+	inline uint64_t strtou64(
+		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strtou64<T>(str.data(), str.size(), end, radix);
 	}
 
 	///
@@ -1525,10 +2440,48 @@ namespace stdex
 		_In_ int radix)
 	{
 #if defined(_WIN64) || defined(__LP64__)
-		return (size_t)strtou64(str, count, end, radix);
+		return static_cast<size_t>(strtou64(str, count, end, radix));
 #else
-		return (size_t)strtou32(str, count, end, radix);
+		return static_cast<size_t>(strtou32(str, count, end, radix));
 #endif
+	}
+
+	///
+	/// Parse string for an unsigned 32/64-bit integer
+	/// Dependent on platform CPU architecture
+	///
+	/// \param[in]  str    String
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T, size_t SIZE>
+	inline size_t strtoui(
+		_In_ const T (&str)[SIZE],
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strtoui<T>(str, SIZE, end, radix);
+	}
+
+	///
+	/// Parse string for an unsigned 32/64-bit integer
+	/// Dependent on platform CPU architecture
+	///
+	/// \param[in]  str    String
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T>
+	inline size_t strtoui(
+		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strtoui<T>(str.data(), str.size(), end, radix);
 	}
 
 	/// \cond internal
@@ -1776,39 +2729,39 @@ namespace stdex
 		return str;
 	}
 
+	/////
+	///// Convert string to ASCII-lower-case character-by-character
+	/////
+	///// \param[in,out] str  String
+	/////
+	//template<class T>
+	//inline void strlwr(_Inout_z_ T* str)
+	//{
+	//	_Assume_(str);
+	//	for (size_t i = 0; str[i]; ++i)
+	//		str[i] = tolower(str[i]);
+	//}
+
+	/////
+	///// Convert string to lower-case character-by-character
+	/////
+	///// \param[in,out] str     String
+	///// \param[in]     locale  C++ locale to use
+	/////
+	//template<class T>
+	//inline void strlwr(_Inout_z_ T* str, _In_ const std::locale& locale)
+	//{
+	//	_Assume_(str);
+	//	const auto& ctype = std::use_facet<std::ctype<T>>(locale);
+	//	for (size_t i = 0; str[i]; ++i)
+	//		str[i] = ctype.tolower(str[i]);
+	//}
+
 	///
 	/// Convert string to ASCII-lower-case character-by-character
 	///
-	/// \param[in,out] str  String
-	///
-	template<class T>
-	inline void strlwr(_Inout_z_ T* str)
-	{
-		_Assume_(str);
-		for (size_t i = 0; str[i]; ++i)
-			str[i] = tolower(str[i]);
-	}
-
-	///
-	/// Convert string to lower-case character-by-character
-	///
-	/// \param[in,out] str     String
-	/// \param[in]     locale  C++ locale to use
-	///
-	template<class T>
-	inline void strlwr(_Inout_z_ T* str, _In_ const std::locale& locale)
-	{
-		_Assume_(str);
-		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
-		for (size_t i = 0; str[i]; ++i)
-			str[i] = ctype.tolower(str[i]);
-	}
-
-	///
-	/// Convert string to ASCII-lower-case character-by-character
-	///
-	/// \param[in,out] str     String
-	/// \param[in]     count   Code unit limit
+	/// \param[in,out] str    String
+	/// \param[in]     count  Code unit limit
 	///
 	template<class T>
 	inline void strlwr(_Inout_updates_z_(count) T* str, _In_ size_t count)
@@ -1816,18 +2769,6 @@ namespace stdex
 		_Assume_(str || !count);
 		for (size_t i = 0; i < count && str[i]; ++i)
 			str[i] = tolower(str[i]);
-	}
-
-	///
-	/// Convert string to lower-case character-by-character
-	///
-	/// \param[in,out] str String
-	///
-	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-	inline void strlwr(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& str)
-	{
-		for (auto& c : str)
-			c = tolower(c);
 	}
 
 	///
@@ -1849,6 +2790,41 @@ namespace stdex
 	///
 	/// Convert string to lower-case character-by-character
 	///
+	/// \param[in,out] str  String
+	///
+	template<class T, size_t SIZE>
+	inline void strlwr(_Inout_ T (&str)[SIZE])
+	{
+		strlwr(str, count);
+	}
+
+	///
+	/// Convert string to lower-case character-by-character
+	///
+	/// \param[in,out] str     String
+	/// \param[in]     locale  C++ locale to use
+	///
+	template<class T, size_t SIZE>
+	inline void strlwr(_Inout_ T (&str)[SIZE], _In_ const std::locale& locale)
+	{
+		strlwr(str, count, locale);
+	}
+
+	///
+	/// Convert string to lower-case character-by-character
+	///
+	/// \param[in,out] str String
+	///
+	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
+	inline void strlwr(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& str)
+	{
+		for (auto& c : str)
+			c = tolower(c);
+	}
+
+	///
+	/// Convert string to lower-case character-by-character
+	///
 	/// \param[in,out] str     String
 	/// \param[in]     locale  C++ locale to use
 	///
@@ -1860,33 +2836,33 @@ namespace stdex
 			c = ctype.tolower(c);
 	}
 
-	///
-	/// Convert string to ASCII-upper-case character-by-character
-	///
-	/// \param[in,out] str  String
-	///
-	template<class T>
-	inline void strupr(_Inout_z_ T* str)
-	{
-		_Assume_(str);
-		for (size_t i = 0; str[i]; ++i)
-			str[i] = toupper(str[i]);
-	}
+	/////
+	///// Convert string to ASCII-upper-case character-by-character
+	/////
+	///// \param[in,out] str  String
+	/////
+	//template<class T>
+	//inline void strupr(_Inout_z_ T* str)
+	//{
+	//	_Assume_(str);
+	//	for (size_t i = 0; str[i]; ++i)
+	//		str[i] = toupper(str[i]);
+	//}
 
-	///
-	/// Convert string to upper-case character-by-character
-	///
-	/// \param[in,out] str     String
-	/// \param[in]     locale  C++ locale to use
-	///
-	template<class T>
-	inline void strupr(_Inout_z_ T* str, _In_ const std::locale& locale)
-	{
-		_Assume_(str);
-		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
-		for (size_t i = 0; str[i]; ++i)
-			str[i] = ctype.toupper(str[i]);
-	}
+	/////
+	///// Convert string to upper-case character-by-character
+	/////
+	///// \param[in,out] str     String
+	///// \param[in]     locale  C++ locale to use
+	/////
+	//template<class T>
+	//inline void strupr(_Inout_z_ T* str, _In_ const std::locale& locale)
+	//{
+	//	_Assume_(str);
+	//	const auto& ctype = std::use_facet<std::ctype<T>>(locale);
+	//	for (size_t i = 0; str[i]; ++i)
+	//		str[i] = ctype.toupper(str[i]);
+	//}
 
 	///
 	/// Convert string to ASCII-upper-case character-by-character
@@ -1919,6 +2895,29 @@ namespace stdex
 	}
 
 	///
+	/// Convert string to upper-case character-by-character
+	///
+	/// \param[in,out] str  String
+	///
+	template<class T, size_t SIZE>
+	inline void strupr(_Inout_ T (&str)[SIZE])
+	{
+		return strupr(str, SIZE);
+	}
+
+	///
+	/// Convert string to upper-case character-by-character
+	///
+	/// \param[in,out] str     String
+	/// \param[in]     locale  C++ locale to use
+	///
+	template<class T, size_t SIZE>
+	inline void strupr(_Inout_ T (&str)[SIZE], _In_ const std::locale& locale)
+	{
+		return strupr(str, SIZE, locale);
+	}
+
+	///
 	/// Convert string to ASCII-upper-case character-by-character
 	///
 	/// \param[in,out] str  String
@@ -1933,7 +2932,7 @@ namespace stdex
 	///
 	/// Convert string to upper-case character-by-character
 	///
-	/// \param[in,out] str    String
+	/// \param[in,out] str     String
 	/// \param[in]     locale  C++ locale to use
 	///
 	template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>

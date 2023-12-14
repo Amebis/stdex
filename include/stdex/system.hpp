@@ -22,6 +22,7 @@
 #endif
 #include <regex>
 #include <stdexcept>
+#include <string_view>
 #include <string>
 
 #if defined(_WIN32)
@@ -80,6 +81,11 @@ namespace stdex
 	/// Use stdex::sstring
 	///
 	using sys_string = sstring;
+
+	///
+	/// String view for system functions
+	///
+	using sstring_view = std::basic_string_view<stdex::schar_t, std::char_traits<stdex::schar_t>>;
 
 	///
 	/// Regular expressions for system strings

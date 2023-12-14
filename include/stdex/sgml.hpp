@@ -11,6 +11,7 @@
 #include "string.hpp"
 #include <string.h>
 #include <exception>
+#include <string_view>
 #include <string>
 
 namespace stdex
@@ -229,7 +230,7 @@ namespace stdex
 			skip_lcub_rcub = (skip & sgml_lcub_rcub) == 0,
 			skip_lsqb_rsqb = (skip & sgml_lsqb_rsqb) == 0;
 
-		size_t j = wcsnlen(dst, count_dst);
+		size_t j = strnlen(dst, count_dst);
 		count_src = strnlen(src, count_src);
 		for (size_t i = 0; i < count_src;) {
 			if (src[i] == '&') {
@@ -410,7 +411,7 @@ namespace stdex
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
 		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
 	{
-		return sgml2str(src.c_str(), src.size(), skip, offset, map);
+		return sgml2str(src.data(), src.size(), skip, offset, map);
 	}
 
 	/// \cond internal
@@ -471,7 +472,7 @@ namespace stdex
 			do_lcub_rcub = (what & sgml_lcub_rcub) == 0,
 			do_lsqb_rsqb = (what & sgml_lsqb_rsqb) == 0;
 
-		count_src = wcsnlen(src, count_src);
+		count_src = strnlen(src, count_src);
 		dst.reserve(dst.size() + count_src);
 		for (size_t i = 0; i < count_src;) {
 			size_t n = glyphlen(src + i, count_src - i);
@@ -552,12 +553,13 @@ namespace stdex
 	/// \param[in]     src        Unicode string
 	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
 	///
-	inline void str2sgmlcat(
-		_Inout_ std::string& dst,
-		_In_ const std::wstring& src,
+	template <class _Traits = std::char_traits<char>, class _Ax = std::allocator<char>>
+	void str2sgmlcat(
+		_Inout_ std::basic_string<char, _Traits, _Ax>& dst,
+		_In_ const std::wstring_view src,
 		_In_ int what = 0)
 	{
-		str2sgmlcat(dst, src.c_str(), src.size(), what);
+		str2sgmlcat(dst, src.data(), src.size(), what);
 	}
 
 	///
@@ -595,7 +597,7 @@ namespace stdex
 			do_lsqb_rsqb = (what & sgml_lsqb_rsqb) == 0;
 
 		size_t j = strnlen(dst, count_dst);
-		count_src = wcsnlen(src, count_src);
+		count_src = strnlen(src, count_src);
 		for (size_t i = 0; i < count_src;) {
 			size_t n = glyphlen(src + i, count_src - i);
 			if (n == 1 &&
@@ -716,9 +718,10 @@ namespace stdex
 	/// \param[in]     src        Unicode string
 	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
 	///
-	inline void str2sgmlcpy(
-		_Inout_ std::string& dst,
-		_In_ const std::wstring& src,
+	template <class _Traits = std::char_traits<char>, class _Ax = std::allocator<char>>
+	void str2sgmlcpy(
+		_Inout_ std::basic_string<char, _Traits, _Ax>& dst,
+		_In_ const std::wstring_view src,
 		_In_ int what = 0)
 	{
 		str2sgmlcpy(dst, src.data(), src.size(), what);
@@ -773,9 +776,9 @@ namespace stdex
 	/// \return SGML string
 	///
 	inline std::string str2sgml(
-		_In_ const std::wstring& src,
+		_In_ const std::wstring_view src,
 		_In_ int what = 0)
 	{
-		return str2sgml(src.c_str(), src.size(), what);
+		return str2sgml(src.data(), src.size(), what);
 	}
 }
