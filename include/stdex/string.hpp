@@ -20,7 +20,6 @@
 #include <climits>
 #include <locale>
 #include <stdexcept>
-#include <string_view>
 
 namespace stdex
 {
@@ -282,19 +281,6 @@ namespace stdex
 		return strnlen(str, N);
 	}
 
-	///
-	/// Calculate zero-terminated string length.
-	///
-	/// \param[in] str  String
-	///
-	/// \return Number of code units excluding zero terminator in the string.
-	///
-	template <class T>
-	inline size_t strnlen(_In_ const std::basic_string_view<T, std::char_traits<T>> str)
-	{
-		return strnlen(str.data(), str.size());
-	}
-
 	constexpr auto npos{ static_cast<size_t>(-1) };
 
 	///
@@ -357,22 +343,6 @@ namespace stdex
 	/// \param[in] str  String
 	/// \param[in] chr  Code unit to search for
 	///
-	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
-	///
-	template <class T>
-	inline size_t strnchr(
-		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
-		_In_ T chr)
-	{
-		return strchr(str.data(), str.size(), chr);
-	}
-
-	///
-	/// Find a code unit in a string.
-	///
-	/// \param[in] str  String
-	/// \param[in] chr  Code unit to search for
-	///
 	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T>
@@ -423,20 +393,6 @@ namespace stdex
 		_In_ T chr)
 	{
 		return strrnchr(str, N, chr);
-	}
-
-	///
-	/// Find a code unit in a string.
-	///
-	/// \param[in] str  String
-	/// \param[in] chr  Code unit to search for
-	///
-	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
-	///
-	template <class T>
-	inline size_t strrnchr(_In_ const std::basic_string_view<T, std::char_traits<T>> str, _In_ T chr)
-	{
-		return strrnchr(str.data(), str.size(), chr);
 	}
 
 	///
@@ -569,40 +525,6 @@ namespace stdex
 	/// \param[in] str  String
 	/// \param[in] chr  Code unit to search for
 	///
-	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
-	///
-	template <class T>
-	inline size_t strnichr(
-		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
-		_In_ T chr)
-	{
-		return strichr(str.data(), str.size(), chr);
-	}
-
-	///
-	/// Find a code unit in a string case-insensitive
-	///
-	/// \param[in] str     String
-	/// \param[in] chr     Code unit to search for
-	/// \param[in] locale  C++ locale to use
-	///
-	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
-	///
-	template <class T>
-	inline size_t strnichr(
-		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
-		_In_ T chr,
-		_In_ const std::locale& locale)
-	{
-		return strichr(str.data(), str.size(), chr, locale);
-	}
-
-	///
-	/// Find a code unit in a string ASCII-case-insensitive
-	///
-	/// \param[in] str  String
-	/// \param[in] chr  Code unit to search for
-	///
 	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T>
@@ -725,40 +647,6 @@ namespace stdex
 		return strrnichr(str, N, chr, locale);
 	}
 
-	///
-	/// Find a code unit in a string ASCII-case-insensitive
-	///
-	/// \param[in] str  String
-	/// \param[in] chr  Code unit to search for
-	///
-	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
-	///
-	template <class T>
-	inline size_t strrnichr(
-		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
-		_In_ T chr)
-	{
-		return strrnichr(str.data(), str.size(), chr);
-	}
-
-	///
-	/// Find a code unit in a string case-insensitive
-	///
-	/// \param[in] str     String
-	/// \param[in] chr     Code unit to search for
-	/// \param[in] locale  C++ locale to use
-	///
-	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
-	///
-	template <class T>
-	inline size_t strrnichr(
-		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
-		_In_ T chr,
-		_In_ const std::locale& locale)
-	{
-		return strrnichr(str.data(), str.size(), chr, locale);
-	}
-
 	/////
 	///// Checks if string contains all ASCII-white-space
 	/////
@@ -870,36 +758,6 @@ namespace stdex
 	}
 
 	///
-	/// Checks if string contains all ASCII-white-space
-	///
-	/// \param[in] str  String
-	///
-	/// \return `true` if all characters are white-space or `false` when any non-white-space character is found in string.
-	///
-	template <class T>
-	inline bool isblank(_In_ const std::basic_string_view<T, std::char_traits<T>> str)
-	{
-		return isblank(str.data(), str.size());
-	}
-
-	///
-	/// Checks if string contains all white-space
-	///
-	/// \param[in] str     String
-	/// \param[in] locale  C++ locale to use
-	///
-	/// \return `true` if all characters are white-space or `false` when any non-white-space character is found in string.
-	///
-	template <class T>
-	inline bool isblank(
-		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
-		_In_ size_t count,
-		_In_ const std::locale& locale)
-	{
-		return isblank(str.data(), str.size(), locale);
-	}
-
-	///
 	/// Binary compare two strings
 	///
 	/// \param[in] str1  String 1
@@ -987,22 +845,6 @@ namespace stdex
 		_In_ const T2 (&str2)[N2])
 	{
 		return strncmp(str1, N1, str2, N2);
-	}
-
-	///
-	/// Binary compare two strings
-	///
-	/// \param[in] str1  String 1
-	/// \param[in] str2  String 2
-	///
-	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
-	///
-	template <class T1, class T2>
-	inline int strncmp(
-		_In_ const std::basic_string_view<T1, std::char_traits<T1>> str1,
-		_In_ const std::basic_string_view<T2, std::char_traits<T2>> str2)
-	{
-		return strncmp(str1.data(), str1.size(), str2.data(), str2.size());
 	}
 
 	///
@@ -1198,40 +1040,6 @@ namespace stdex
 	}
 
 	///
-	/// Binary compare two strings case-insensitive
-	///
-	/// \param[in] str1  String 1
-	/// \param[in] str2  String 2
-	///
-	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
-	///
-	template <class T1, class T2>
-	inline int strnicmp(
-		_In_ const std::basic_string_view<T1, std::char_traits<T1>> str1,
-		_In_ const std::basic_string_view<T2, std::char_traits<T2>> str2)
-	{
-		return strnicmp(str1.data(), str1.size(), str2.data(), str2.size());
-	}
-
-	///
-	/// Binary compare two strings ASCII-case-insensitive
-	///
-	/// \param[in] str1    String 1
-	/// \param[in] str2    String 2
-	/// \param[in] locale  C++ locale to use
-	///
-	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
-	///
-	template <class T1, class T2>
-	inline int strnicmp(
-		_In_ const std::basic_string_view<T1, std::char_traits<T1>> str1,
-		_In_ const std::basic_string_view<T2, std::char_traits<T2>> str2,
-		_In_ const std::locale& locale)
-	{
-		return strnicmp(str1.data(), str1.size(), str2.data(), str2.size(), locale);
-	}
-
-	///
 	/// Lexigraphically compare two strings
 	///
 	/// \param[in] str1    String 1
@@ -1291,24 +1099,6 @@ namespace stdex
 		_In_ const std::locale& locale)
 	{
 		return strncoll(str1, N1, str2, N2, locale);
-	}
-
-	///
-	/// Lexigraphically compare two strings
-	///
-	/// \param[in] str1    String 1
-	/// \param[in] str2    String 2
-	/// \param[in] locale  C++ locale to use
-	///
-	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
-	///
-	template <class T>
-	inline int strncoll(
-		_In_ const std::basic_string_view<T, std::char_traits<T>> str1,
-		_In_ const std::basic_string_view<T, std::char_traits<T>> str2,
-		_In_ const std::locale& locale)
-	{
-		return strncoll(str1.data(), str1.size(), str2.data(), str2.size(), locale);
 	}
 
 	///
@@ -1380,22 +1170,6 @@ namespace stdex
 		_In_z_ const T2* sample)
 	{
 		return strnstr(str, N1, sample);
-	}
-
-	///
-	/// Search for a substring
-	///
-	/// \param[in] str     String to search in
-	/// \param[in] sample  Substring to search for
-	///
-	/// \return Offset inside str where sample string is found; stdex::npos if not found
-	///
-	template <class T1, class T2>
-	inline size_t strnstr(
-		_In_ const std::basic_string_view<T1, std::char_traits<T1>> str,
-		_In_z_ const T2* sample)
-	{
-		return strnstr(str.data(), str.size(), sample);
 	}
 
 	///
@@ -1550,40 +1324,6 @@ namespace stdex
 		_In_ const std::locale& locale)
 	{
 		return strnistr(str, N1, sample, locale);
-	}
-
-	///
-	/// Search for a substring ASCII-case-insensitive
-	///
-	/// \param[in] str     String to search in
-	/// \param[in] sample  Substring to search for
-	///
-	/// \return Offset inside str where sample string is found; stdex::npos if not found
-	///
-	template <class T1, class T2>
-	inline size_t strnistr(
-		_In_ const std::basic_string_view<T1, std::char_traits<T1>> str,
-		_In_z_ const T2* sample)
-	{
-		return strnistr(str.data(), str.size(), sample);
-	}
-
-	///
-	/// Search for a substring case-insensitive
-	///
-	/// \param[in] str     String to search in
-	/// \param[in] sample  Substring to search for
-	/// \param[in] locale  C++ locale to use
-	///
-	/// \return Offset inside str where sample string is found; stdex::npos if not found
-	///
-	template <class T1, class T2>
-	inline size_t strnistr(
-		_In_ const std::basic_string_view<T1, std::char_traits<T1>> str,
-		_In_z_ const T2* sample,
-		_In_ const std::locale& locale)
-	{
-		return strnistr(str.data(), str.size(), sample, locale);
 	}
 
 	///
@@ -1792,22 +1532,6 @@ namespace stdex
 	inline _Check_return_ _Ret_maybenull_z_ T* strndup(_In_ const T (&str)[N])
 	{
 		return strndup(str, N);
-	}
-
-	///
-	/// Returns duplicated string on the heap
-	///
-	/// In contrast with the stdlib C strdup, the memory is allocated using operator new T[].
-	/// This allows returned string to be fed into std::unique_ptr<T> for auto release.
-	///
-	/// \param[in] str  String to duplicate. Must be zero-terminated.
-	/// 
-	/// \return Pointer to duplicated string; or nullptr if str is nullptr. Use delete operator to free the memory.
-	///
-	template <class T>
-	inline _Check_return_ _Ret_maybenull_z_ T* strndup(_In_ const std::basic_string_view<T, std::char_traits<T>> str)
-	{
-		return strndup(str.data(), str.size());
 	}
 
 	///
@@ -2058,24 +1782,6 @@ namespace stdex
 	}
 
 	///
-	/// Parse string for a signed integer
-	///
-	/// \param[in]  str    String
-	/// \param[out] end    On return, count of code units processed
-	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
-	///
-	/// \return Binary integer value
-	///
-	template <class T, class T_bin>
-	T_bin strtoint(
-		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
-		_Out_opt_ size_t* end,
-		_In_ int radix)
-	{
-		return strtoint<T, T_bin>(str.data(), str.size(), end, radix);
-	}
-
-	///
 	/// Parse string for an unsigned integer
 	///
 	/// \param[in]  str    String
@@ -2127,24 +1833,6 @@ namespace stdex
 	}
 
 	///
-	/// Parse string for an unsigned integer
-	///
-	/// \param[in]  str    String
-	/// \param[out] end    On return, count of code units processed
-	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
-	///
-	/// \return Binary integer value
-	///
-	template <class T, class T_bin>
-	inline T_bin strtouint(
-		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
-		_Out_opt_ size_t* end,
-		_In_ int radix)
-	{
-		return strtouint<T, T_bin>(str.data(), str.size(), end, radix);
-	}
-
-	///
 	/// Parse string for a signed 32-bit integer
 	///
 	/// \param[in]  str    String
@@ -2182,24 +1870,6 @@ namespace stdex
 	}
 
 	///
-	/// Parse string for a signed 32-bit integer
-	///
-	/// \param[in]  str    String
-	/// \param[out] end    On return, count of code units processed
-	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
-	///
-	/// \return Binary integer value
-	///
-	template <class T>
-	inline int32_t strto32(
-		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
-		_Out_opt_ size_t* end,
-		_In_ int radix)
-	{
-		return strto32<T>(str.data(), str.size(), end, radix);
-	}
-
-	///
 	/// Parse string for a signed 64-bit integer
 	///
 	/// \param[in]  str    String
@@ -2234,24 +1904,6 @@ namespace stdex
 		_In_ int radix)
 	{
 		return strto64<T>(str, N, end, radix);
-	}
-
-	///
-	/// Parse string for a signed 64-bit integer
-	///
-	/// \param[in]  str    String
-	/// \param[out] end    On return, count of code units processed
-	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
-	///
-	/// \return Binary integer value
-	///
-	template <class T>
-	inline int64_t strto64(
-		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
-		_Out_opt_ size_t* end,
-		_In_ int radix)
-	{
-		return strto64<T>(str.data(), str.size(), end, radix);
 	}
 
 	///
@@ -2298,25 +1950,6 @@ namespace stdex
 	}
 
 	///
-	/// Parse string for a signed 32/64-bit integer
-	/// Dependent on platform CPU architecture
-	///
-	/// \param[in]  str    String
-	/// \param[out] end    On return, count of code units processed
-	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
-	///
-	/// \return Binary integer value
-	///
-	template <class T>
-	inline intptr_t strtoi(
-		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
-		_Out_opt_ size_t* end,
-		_In_ int radix)
-	{
-		return strtoi<T>(str.data(), str.size(), end, radix);
-	}
-
-	///
 	/// Parse string for an unsigned 32-bit integer
 	///
 	/// \param[in]  str    String
@@ -2354,24 +1987,6 @@ namespace stdex
 	}
 
 	///
-	/// Parse string for an unsigned 32-bit integer
-	///
-	/// \param[in]  str    String
-	/// \param[out] end    On return, count of code units processed
-	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
-	///
-	/// \return Binary integer value
-	///
-	template <class T>
-	inline uint32_t strtou32(
-		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
-		_Out_opt_ size_t* end,
-		_In_ int radix)
-	{
-		return strtou32(str.data(), str.size(), end, radix);
-	}
-
-	///
 	/// Parse string for an unsigned 64-bit integer
 	///
 	/// \param[in]  str    String
@@ -2406,24 +2021,6 @@ namespace stdex
 		_In_ int radix)
 	{
 		return strtou64<T>(str, N, end, radix);
-	}
-
-	///
-	/// Parse string for an unsigned 64-bit integer
-	///
-	/// \param[in]  str    String
-	/// \param[out] end    On return, count of code units processed
-	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
-	///
-	/// \return Binary integer value
-	///
-	template <class T>
-	inline uint64_t strtou64(
-		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
-		_Out_opt_ size_t* end,
-		_In_ int radix)
-	{
-		return strtou64<T>(str.data(), str.size(), end, radix);
 	}
 
 	///
@@ -2467,25 +2064,6 @@ namespace stdex
 		_In_ int radix)
 	{
 		return strtoui<T>(str, N, end, radix);
-	}
-
-	///
-	/// Parse string for an unsigned 32/64-bit integer
-	/// Dependent on platform CPU architecture
-	///
-	/// \param[in]  str    String
-	/// \param[out] end    On return, count of code units processed
-	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
-	///
-	/// \return Binary integer value
-	///
-	template <class T>
-	inline size_t strtoui(
-		_In_ const std::basic_string_view<T, std::char_traits<T>> str,
-		_Out_opt_ size_t* end,
-		_In_ int radix)
-	{
-		return strtoui<T>(str.data(), str.size(), end, radix);
 	}
 
 	/// \cond internal
