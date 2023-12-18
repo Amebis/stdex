@@ -27,6 +27,7 @@
 #include <locale>
 #include <memory>
 #include <set>
+#include <string_view>
 #include <string>
 
 #ifdef _MSC_VER
@@ -88,20 +89,22 @@ namespace stdex
 				return false;
 			}
 
-			virtual bool match(
-				_In_reads_or_z_opt_(end) const T* text,
-				_In_ size_t start = 0,
-				_In_ size_t end = SIZE_MAX,
-				_In_ int flags = match_default) = 0;
-
-			template<class _Traits, class _Ax>
 			bool match(
-				const std::basic_string<T, _Traits, _Ax>& text,
+				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
-				return match(text.c_str(), start, std::min<size_t>(end, text.size()), flags);
+				return do_match(text, start, end, flags);
+			}
+
+			bool match(
+				_In_ const std::basic_string_view<T, std::char_traits<T>> text,
+				_In_ size_t start = 0,
+				_In_ size_t end = SIZE_MAX,
+				_In_ int flags = match_default)
+			{
+				return match(text.data(), start, std::min<size_t>(end, text.size()), flags);
 			}
 
 			virtual void invalidate()
@@ -109,7 +112,15 @@ namespace stdex
 				this->interval.invalidate();
 			}
 
+			stdex::interval<size_t> interval; ///< Region of the last match
+
 		protected:
+			virtual bool do_match(
+				_In_reads_or_z_opt_(end) const T* text,
+				_In_ size_t start = 0,
+				_In_ size_t end = SIZE_MAX,
+				_In_ int flags = match_default) = 0;
+
 			/// \cond internal
 			const wchar_t* next_sgml_cp(_In_ const char* text, _In_ size_t start, _In_ size_t end, _Out_ size_t& chr_end, _Out_ wchar_t(&buf)[3])
 			{
@@ -168,10 +179,6 @@ namespace stdex
 			}
 			/// \endcond
 
-		public:
-			stdex::interval<size_t> interval; ///< Region of the last match
-
-		protected:
 			std::locale m_locale;
 		};
 
@@ -190,8 +197,8 @@ namespace stdex
 		template <class T>
 		class basic_noop : public basic_parser<T>
 		{
-		public:
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -225,7 +232,8 @@ namespace stdex
 		public:
 			basic_any_cu(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale) {}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -257,7 +265,8 @@ namespace stdex
 		public:
 			sgml_any_cp(_In_ const std::locale& locale = std::locale()) : basic_any_cu<char>(locale) {}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -299,7 +308,8 @@ namespace stdex
 				m_invert(invert)
 			{}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -323,7 +333,6 @@ namespace stdex
 				return false;
 			}
 
-		protected:
 			T m_chr;
 			bool m_invert;
 		};
@@ -352,7 +361,8 @@ namespace stdex
 				m_chr.assign(count ? next_sgml_cp(chr, 0, count, chr_end, buf) : L"");
 			}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -363,8 +373,8 @@ namespace stdex
 					wchar_t buf[3];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					bool r = ((flags & match_case_insensitive) ?
-						stdex::strnicmp(chr, SIZE_MAX, m_chr.c_str(), m_chr.size(), m_locale) :
-						stdex::strncmp(chr, SIZE_MAX, m_chr.c_str(), m_chr.size())) == 0;
+						stdex::strnicmp(chr, SIZE_MAX, m_chr.data(), m_chr.size(), m_locale) :
+						stdex::strncmp(chr, SIZE_MAX, m_chr.data(), m_chr.size())) == 0;
 					if ((r && !m_invert) || (!r && m_invert)) {
 						this->interval.start = start;
 						return true;
@@ -374,7 +384,6 @@ namespace stdex
 				return false;
 			}
 
-		protected:
 			std::wstring m_chr;
 			bool m_invert;
 		};
@@ -391,7 +400,8 @@ namespace stdex
 				m_invert(invert)
 			{}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -411,7 +421,6 @@ namespace stdex
 				return false;
 			}
 
-		protected:
 			bool m_invert;
 		};
 
@@ -433,7 +442,8 @@ namespace stdex
 				basic_space_cu<char>(invert, locale)
 			{}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -470,7 +480,8 @@ namespace stdex
 				m_invert(invert)
 			{}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -488,7 +499,6 @@ namespace stdex
 				return false;
 			}
 
-		protected:
 			bool m_invert;
 		};
 
@@ -510,7 +520,8 @@ namespace stdex
 				basic_punct_cu<char>(invert, locale)
 			{}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -544,7 +555,8 @@ namespace stdex
 				m_invert(invert)
 			{}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -564,7 +576,6 @@ namespace stdex
 				return false;
 			}
 
-		protected:
 			bool m_invert;
 		};
 
@@ -586,7 +597,8 @@ namespace stdex
 				basic_space_or_punct_cu<char>(invert, locale)
 			{}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -619,7 +631,8 @@ namespace stdex
 		public:
 			basic_bol(bool invert = false) : m_invert(invert) {}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -636,7 +649,6 @@ namespace stdex
 				return false;
 			}
 
-		protected:
 			bool m_invert;
 		};
 
@@ -658,7 +670,8 @@ namespace stdex
 		public:
 			basic_eol(bool invert = false) : m_invert(invert) {}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -674,7 +687,6 @@ namespace stdex
 				return false;
 			}
 
-		protected:
 			bool m_invert;
 		};
 
@@ -697,22 +709,21 @@ namespace stdex
 				m_invert(invert)
 			{}
 
-			virtual bool match(
-				_In_reads_or_z_opt_(end) const T* text,
-				_In_ size_t start = 0,
-				_In_ size_t end = SIZE_MAX,
-				_In_ int flags = match_default) = 0;
-
 			virtual void invalidate()
 			{
 				hit_offset = SIZE_MAX;
 				basic_parser<T>::invalidate();
 			}
 
-		public:
 			size_t hit_offset;
 
 		protected:
+			virtual bool do_match(
+				_In_reads_or_z_opt_(end) const T* text,
+				_In_ size_t start = 0,
+				_In_ size_t end = SIZE_MAX,
+				_In_ int flags = match_default) = 0;
+
 			bool m_invert;
 		};
 
@@ -734,7 +745,8 @@ namespace stdex
 					m_set.assign(set, set + stdex::strnlen(set, count));
 			}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -742,7 +754,7 @@ namespace stdex
 			{
 				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
-					const T* set = m_set.c_str();
+					const T* set = m_set.data();
 					size_t r = (flags & match_case_insensitive) ?
 						stdex::strnichr(set, m_set.size(), text[start], this->m_locale) :
 						stdex::strnchr(set, m_set.size(), text[start]);
@@ -757,7 +769,6 @@ namespace stdex
 				return false;
 			}
 
-		protected:
 			std::basic_string<T> m_set;
 		};
 
@@ -782,7 +793,8 @@ namespace stdex
 					m_set = sgml2str(set, count);
 			}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -792,7 +804,7 @@ namespace stdex
 				if (start < end && text[start]) {
 					wchar_t buf[3];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
-					const wchar_t* set = m_set.c_str();
+					const wchar_t* set = m_set.data();
 					size_t r = (flags & match_case_insensitive) ?
 						stdex::strnistr(set, m_set.size(), chr, m_locale) :
 						stdex::strnstr(set, m_set.size(), chr);
@@ -807,7 +819,6 @@ namespace stdex
 				return false;
 			}
 
-		protected:
 			std::wstring m_set;
 		};
 
@@ -826,7 +837,8 @@ namespace stdex
 				m_str(str, str + stdex::strnlen(str, count))
 			{}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -837,8 +849,8 @@ namespace stdex
 					m = m_str.size(),
 					n = std::min<size_t>(end - start, m);
 				bool r = ((flags & match_case_insensitive) ?
-					stdex::strnicmp(text + start, n, m_str.c_str(), m, this->m_locale) :
-					stdex::strncmp(text + start, n, m_str.c_str(), m)) == 0;
+					stdex::strnicmp(text + start, n, m_str.data(), m, this->m_locale) :
+					stdex::strncmp(text + start, n, m_str.data(), m)) == 0;
 				if (r) {
 					this->interval.end = (this->interval.start = start) + n;
 					return true;
@@ -847,7 +859,6 @@ namespace stdex
 				return false;
 			}
 
-		protected:
 			std::basic_string<T> m_str;
 		};
 
@@ -870,14 +881,15 @@ namespace stdex
 				m_str(sgml2str(str, count))
 			{}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
-				const wchar_t* str = m_str.c_str();
+				const wchar_t* str = m_str.data();
 				const bool case_insensitive = flags & match_case_insensitive ? true : false;
 				const auto& ctype = std::use_facet<std::ctype<wchar_t>>(m_locale);
 				for (this->interval.end = start;;) {
@@ -902,7 +914,6 @@ namespace stdex
 				}
 			}
 
-		protected:
 			std::wstring m_str;
 		};
 
@@ -920,7 +931,8 @@ namespace stdex
 				m_greedy(greedy)
 			{}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -946,7 +958,6 @@ namespace stdex
 				return false;
 			}
 
-		protected:
 			std::shared_ptr<basic_parser<T>> m_el; ///< repeating element
 			size_t m_min_iterations; ///< minimum number of iterations
 			size_t m_max_iterations; ///< maximum number of iterations
@@ -1022,7 +1033,8 @@ namespace stdex
 				parser_collection<T>(std::move(collection), locale)
 			{}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -1081,7 +1093,16 @@ namespace stdex
 				hit_offset(SIZE_MAX)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				hit_offset = SIZE_MAX;
+				parser_collection<T>::invalidate();
+			}
+
+			size_t hit_offset;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -1101,15 +1122,6 @@ namespace stdex
 				this->interval.invalidate();
 				return false;
 			}
-
-			virtual void invalidate()
-			{
-				hit_offset = SIZE_MAX;
-				parser_collection<T>::invalidate();
-			}
-
-		public:
-			size_t hit_offset;
 		};
 
 		using branch = basic_branch<char>;
@@ -1213,7 +1225,8 @@ namespace stdex
 				parser_collection<T>(std::move(collection), locale)
 			{}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -1230,7 +1243,6 @@ namespace stdex
 				return false;
 			}
 
-		protected:
 			bool match_recursively(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
@@ -1323,7 +1335,8 @@ namespace stdex
 				m_digit_9(digit_9)
 			{}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -1353,7 +1366,6 @@ namespace stdex
 				return false;
 			}
 
-		protected:
 			std::shared_ptr<basic_parser<T>>
 				m_digit_0,
 				m_digit_1,
@@ -1394,7 +1406,18 @@ namespace stdex
 				m_separator(separator)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				digit_count = 0;
+				has_separators = false;
+				basic_integer<T>::invalidate();
+			}
+
+			size_t digit_count; ///< Total number of digits in integer
+			bool has_separators; ///< Did integer have any separators?
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -1432,18 +1455,6 @@ namespace stdex
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				digit_count = 0;
-				has_separators = false;
-				basic_integer<T>::invalidate();
-			}
-
-		public:
-			size_t digit_count; ///< Total number of digits in integer
-			bool has_separators; ///< Did integer have any separators?
-
-		protected:
 			std::shared_ptr<basic_integer10<T>> m_digits;
 			std::shared_ptr<basic_set<T>> m_separator;
 		};
@@ -1501,7 +1512,8 @@ namespace stdex
 				m_digit_15(digit_15)
 			{}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -1537,7 +1549,6 @@ namespace stdex
 				return false;
 			}
 
-		protected:
 			std::shared_ptr<basic_parser<T>>
 				m_digit_0,
 				m_digit_1,
@@ -1596,7 +1607,8 @@ namespace stdex
 				m_digit_10000(digit_10000)
 			{}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -1660,7 +1672,6 @@ namespace stdex
 				return false;
 			}
 
-		protected:
 			std::shared_ptr<basic_parser<T>>
 				m_digit_1,
 				m_digit_5,
@@ -1700,7 +1711,20 @@ namespace stdex
 				denominator(_denominator)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				numerator->invalidate();
+				fraction_line->invalidate();
+				denominator->invalidate();
+				basic_parser<T>::invalidate();
+			}
+
+			std::shared_ptr<basic_parser<T>> numerator;
+			std::shared_ptr<basic_parser<T>> fraction_line;
+			std::shared_ptr<basic_parser<T>> denominator;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -1721,19 +1745,6 @@ namespace stdex
 				this->interval.invalidate();
 				return false;
 			}
-
-			virtual void invalidate()
-			{
-				numerator->invalidate();
-				fraction_line->invalidate();
-				denominator->invalidate();
-				basic_parser<T>::invalidate();
-			}
-
-		public:
-			std::shared_ptr<basic_parser<T>> numerator;
-			std::shared_ptr<basic_parser<T>> fraction_line;
-			std::shared_ptr<basic_parser<T>> denominator;
 		};
 
 		using fraction = basic_fraction<char>;
@@ -1765,7 +1776,20 @@ namespace stdex
 				m_space(space)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				home->invalidate();
+				separator->invalidate();
+				guest->invalidate();
+				basic_parser<T>::invalidate();
+			}
+
+			std::shared_ptr<basic_parser<T>> home;
+			std::shared_ptr<basic_parser<T>> separator;
+			std::shared_ptr<basic_parser<T>> guest;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -1806,20 +1830,6 @@ namespace stdex
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				home->invalidate();
-				separator->invalidate();
-				guest->invalidate();
-				basic_parser<T>::invalidate();
-			}
-
-		public:
-			std::shared_ptr<basic_parser<T>> home;
-			std::shared_ptr<basic_parser<T>> separator;
-			std::shared_ptr<basic_parser<T>> guest;
-
-		protected:
 			std::shared_ptr<basic_parser<T>> m_space;
 		};
 
@@ -1852,7 +1862,22 @@ namespace stdex
 				number(_number)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				if (positive_sign) positive_sign->invalidate();
+				if (negative_sign) negative_sign->invalidate();
+				if (special_sign) special_sign->invalidate();
+				number->invalidate();
+				basic_parser<T>::invalidate();
+			}
+
+			std::shared_ptr<basic_parser<T>> positive_sign; ///< Positive sign
+			std::shared_ptr<basic_parser<T>> negative_sign; ///< Negative sign
+			std::shared_ptr<basic_parser<T>> special_sign; ///< Special sign (e.g. plus-minus '±')
+			std::shared_ptr<basic_parser<T>> number; ///< Number
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -1892,21 +1917,6 @@ namespace stdex
 				this->interval.invalidate();
 				return false;
 			}
-
-			virtual void invalidate()
-			{
-				if (positive_sign) positive_sign->invalidate();
-				if (negative_sign) negative_sign->invalidate();
-				if (special_sign) special_sign->invalidate();
-				number->invalidate();
-				basic_parser<T>::invalidate();
-			}
-
-		public:
-			std::shared_ptr<basic_parser<T>> positive_sign; ///< Positive sign
-			std::shared_ptr<basic_parser<T>> negative_sign; ///< Negative sign
-			std::shared_ptr<basic_parser<T>> special_sign; ///< Special sign (e.g. plus-minus '±')
-			std::shared_ptr<basic_parser<T>> number; ///< Number
 		};
 
 		using signed_numeral = basic_signed_numeral<char>;
@@ -1942,7 +1952,24 @@ namespace stdex
 				m_space(space)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				if (positive_sign) positive_sign->invalidate();
+				if (negative_sign) negative_sign->invalidate();
+				if (special_sign) special_sign->invalidate();
+				integer->invalidate();
+				fraction->invalidate();
+				basic_parser<T>::invalidate();
+			}
+
+			std::shared_ptr<basic_parser<T>> positive_sign; ///< Positive sign
+			std::shared_ptr<basic_parser<T>> negative_sign; ///< Negative sign
+			std::shared_ptr<basic_parser<T>> special_sign; ///< Special sign (e.g. plus-minus '±')
+			std::shared_ptr<basic_parser<T>> integer; ///< Integer part
+			std::shared_ptr<basic_parser<T>> fraction; ///< fraction
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -2014,24 +2041,6 @@ namespace stdex
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				if (positive_sign) positive_sign->invalidate();
-				if (negative_sign) negative_sign->invalidate();
-				if (special_sign) special_sign->invalidate();
-				integer->invalidate();
-				fraction->invalidate();
-				basic_parser<T>::invalidate();
-			}
-
-		public:
-			std::shared_ptr<basic_parser<T>> positive_sign; ///< Positive sign
-			std::shared_ptr<basic_parser<T>> negative_sign; ///< Negative sign
-			std::shared_ptr<basic_parser<T>> special_sign; ///< Special sign (e.g. plus-minus '±')
-			std::shared_ptr<basic_parser<T>> integer; ///< Integer part
-			std::shared_ptr<basic_parser<T>> fraction; ///< fraction
-
-		protected:
 			std::shared_ptr<basic_parser<T>> m_space;
 		};
 
@@ -2077,7 +2086,36 @@ namespace stdex
 				value(std::numeric_limits<double>::quiet_NaN())
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				if (positive_sign) positive_sign->invalidate();
+				if (negative_sign) negative_sign->invalidate();
+				if (special_sign) special_sign->invalidate();
+				integer->invalidate();
+				decimal_separator->invalidate();
+				decimal->invalidate();
+				if (exponent_symbol) exponent_symbol->invalidate();
+				if (positive_exp_sign) positive_exp_sign->invalidate();
+				if (negative_exp_sign) negative_exp_sign->invalidate();
+				if (exponent) exponent->invalidate();
+				value = std::numeric_limits<double>::quiet_NaN();
+				basic_parser<T>::invalidate();
+			}
+
+			std::shared_ptr<basic_parser<T>> positive_sign; ///< Positive sign
+			std::shared_ptr<basic_parser<T>> negative_sign; ///< Negative sign
+			std::shared_ptr<basic_parser<T>> special_sign; ///< Special sign (e.g. plus-minus '±')
+			std::shared_ptr<basic_integer<T>> integer; ///< Integer part
+			std::shared_ptr<basic_parser<T>> decimal_separator; ///< Decimal separator
+			std::shared_ptr<basic_integer<T>> decimal; ///< Decimal part
+			std::shared_ptr<basic_parser<T>> exponent_symbol; ///< Exponent symbol (e.g. 'e')
+			std::shared_ptr<basic_parser<T>> positive_exp_sign; ///< Positive exponent sign (e.g. '+')
+			std::shared_ptr<basic_parser<T>> negative_exp_sign; ///< Negative exponent sign (e.g. '-')
+			std::shared_ptr<basic_integer<T>> exponent; ///< Exponent part
+			double value; ///< Calculated value of the numeral
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -2173,35 +2211,6 @@ namespace stdex
 				this->interval.start = start;
 				return true;
 			}
-
-			virtual void invalidate()
-			{
-				if (positive_sign) positive_sign->invalidate();
-				if (negative_sign) negative_sign->invalidate();
-				if (special_sign) special_sign->invalidate();
-				integer->invalidate();
-				decimal_separator->invalidate();
-				decimal->invalidate();
-				if (exponent_symbol) exponent_symbol->invalidate();
-				if (positive_exp_sign) positive_exp_sign->invalidate();
-				if (negative_exp_sign) negative_exp_sign->invalidate();
-				if (exponent) exponent->invalidate();
-				value = std::numeric_limits<double>::quiet_NaN();
-				basic_parser<T>::invalidate();
-			}
-
-		public:
-			std::shared_ptr<basic_parser<T>> positive_sign; ///< Positive sign
-			std::shared_ptr<basic_parser<T>> negative_sign; ///< Negative sign
-			std::shared_ptr<basic_parser<T>> special_sign; ///< Special sign (e.g. plus-minus '±')
-			std::shared_ptr<basic_integer<T>> integer; ///< Integer part
-			std::shared_ptr<basic_parser<T>> decimal_separator; ///< Decimal separator
-			std::shared_ptr<basic_integer<T>> decimal; ///< Decimal part
-			std::shared_ptr<basic_parser<T>> exponent_symbol; ///< Exponent symbol (e.g. 'e')
-			std::shared_ptr<basic_parser<T>> positive_exp_sign; ///< Positive exponent sign (e.g. '+')
-			std::shared_ptr<basic_parser<T>> negative_exp_sign; ///< Negative exponent sign (e.g. '-')
-			std::shared_ptr<basic_integer<T>> exponent; ///< Exponent part
-			double value; ///< Calculated value of the numeral
 		};
 
 		using scientific_numeral = basic_scientific_numeral<char>;
@@ -2239,7 +2248,28 @@ namespace stdex
 				decimal(_decimal)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				if (positive_sign) positive_sign->invalidate();
+				if (negative_sign) negative_sign->invalidate();
+				if (special_sign) special_sign->invalidate();
+				currency->invalidate();
+				integer->invalidate();
+				decimal_separator->invalidate();
+				decimal->invalidate();
+				basic_parser<T>::invalidate();
+			}
+
+			std::shared_ptr<basic_parser<T>> positive_sign; ///< Positive sign
+			std::shared_ptr<basic_parser<T>> negative_sign; ///< Negative sign
+			std::shared_ptr<basic_parser<T>> special_sign; ///< Special sign (e.g. plus-minus '±')
+			std::shared_ptr<basic_parser<T>> currency; ///< Currency part
+			std::shared_ptr<basic_parser<T>> integer; ///< Integer part
+			std::shared_ptr<basic_parser<T>> decimal_separator; ///< Decimal separator
+			std::shared_ptr<basic_parser<T>> decimal; ///< Decimal part
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -2310,27 +2340,6 @@ namespace stdex
 				this->interval.start = start;
 				return true;
 			}
-
-			virtual void invalidate()
-			{
-				if (positive_sign) positive_sign->invalidate();
-				if (negative_sign) negative_sign->invalidate();
-				if (special_sign) special_sign->invalidate();
-				currency->invalidate();
-				integer->invalidate();
-				decimal_separator->invalidate();
-				decimal->invalidate();
-				basic_parser<T>::invalidate();
-			}
-
-		public:
-			std::shared_ptr<basic_parser<T>> positive_sign; ///< Positive sign
-			std::shared_ptr<basic_parser<T>> negative_sign; ///< Negative sign
-			std::shared_ptr<basic_parser<T>> special_sign; ///< Special sign (e.g. plus-minus '±')
-			std::shared_ptr<basic_parser<T>> currency; ///< Currency part
-			std::shared_ptr<basic_parser<T>> integer; ///< Integer part
-			std::shared_ptr<basic_parser<T>> decimal_separator; ///< Decimal separator
-			std::shared_ptr<basic_parser<T>> decimal; ///< Decimal part
 		};
 
 		using monetary_numeral = basic_monetary_numeral<char>;
@@ -2378,7 +2387,25 @@ namespace stdex
 				value.s_addr = 0;
 			}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				components[0].start = 1;
+				components[0].end = 0;
+				components[1].start = 1;
+				components[1].end = 0;
+				components[2].start = 1;
+				components[2].end = 0;
+				components[3].start = 1;
+				components[3].end = 0;
+				value.s_addr = 0;
+				basic_parser<T>::invalidate();
+			}
+
+			stdex::interval<size_t> components[4]; ///< Individual component intervals
+			struct in_addr value; ///< IPv4 address value
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -2434,38 +2461,10 @@ namespace stdex
 				return true;
 
 			error:
-				components[0].start = 1;
-				components[0].end = 0;
-				components[1].start = 1;
-				components[1].end = 0;
-				components[2].start = 1;
-				components[2].end = 0;
-				components[3].start = 1;
-				components[3].end = 0;
-				value.s_addr = 0;
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				components[0].start = 1;
-				components[0].end = 0;
-				components[1].start = 1;
-				components[1].end = 0;
-				components[2].start = 1;
-				components[2].end = 0;
-				components[3].start = 1;
-				components[3].end = 0;
-				value.s_addr = 0;
-				basic_parser<T>::invalidate();
-			}
-
-		public:
-			stdex::interval<size_t> components[4]; ///< Individual component intervals
-			struct in_addr value; ///< IPv4 address value
-
-		protected:
 			std::shared_ptr<basic_parser<T>>
 				m_digit_0,
 				m_digit_1,
@@ -2498,7 +2497,8 @@ namespace stdex
 		public:
 			basic_ipv6_scope_id_char(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale) {}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -2536,7 +2536,8 @@ namespace stdex
 		public:
 			sgml_ipv6_scope_id_char(_In_ const std::locale& locale = std::locale()) : sgml_parser(locale) {}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -2613,7 +2614,35 @@ namespace stdex
 				memset(&value, 0, sizeof(value));
 			}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				components[0].start = 1;
+				components[0].end = 0;
+				components[1].start = 1;
+				components[1].end = 0;
+				components[2].start = 1;
+				components[2].end = 0;
+				components[3].start = 1;
+				components[3].end = 0;
+				components[4].start = 1;
+				components[4].end = 0;
+				components[5].start = 1;
+				components[5].end = 0;
+				components[6].start = 1;
+				components[6].end = 0;
+				components[7].start = 1;
+				components[7].end = 0;
+				memset(&value, 0, sizeof(value));
+				if (scope_id) scope_id->invalidate();
+				basic_parser<T>::invalidate();
+			}
+
+			stdex::interval<size_t> components[8]; ///< Individual component intervals
+			struct in6_addr value; ///< IPv6 address value
+			std::shared_ptr<basic_parser<T>> scope_id; ///< Scope ID (e.g. NIC index with link-local addresses)
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -2720,57 +2749,10 @@ namespace stdex
 				return true;
 
 			error:
-				components[0].start = 1;
-				components[0].end = 0;
-				components[1].start = 1;
-				components[1].end = 0;
-				components[2].start = 1;
-				components[2].end = 0;
-				components[3].start = 1;
-				components[3].end = 0;
-				components[4].start = 1;
-				components[4].end = 0;
-				components[5].start = 1;
-				components[5].end = 0;
-				components[6].start = 1;
-				components[6].end = 0;
-				components[7].start = 1;
-				components[7].end = 0;
-				memset(&value, 0, sizeof(value));
-				if (scope_id) scope_id->invalidate();
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				components[0].start = 1;
-				components[0].end = 0;
-				components[1].start = 1;
-				components[1].end = 0;
-				components[2].start = 1;
-				components[2].end = 0;
-				components[3].start = 1;
-				components[3].end = 0;
-				components[4].start = 1;
-				components[4].end = 0;
-				components[5].start = 1;
-				components[5].end = 0;
-				components[6].start = 1;
-				components[6].end = 0;
-				components[7].start = 1;
-				components[7].end = 0;
-				memset(&value, 0, sizeof(value));
-				if (scope_id) scope_id->invalidate();
-				basic_parser<T>::invalidate();
-			}
-
-		public:
-			stdex::interval<size_t> components[8]; ///< Individual component intervals
-			struct in6_addr value; ///< IPv6 address value
-			std::shared_ptr<basic_parser<T>> scope_id; ///< Scope ID (e.g. NIC index with link-local addresses)
-
-		protected:
 			std::shared_ptr<basic_parser<T>>
 				m_digit_0,
 				m_digit_1,
@@ -2815,7 +2797,10 @@ namespace stdex
 				allow_on_edge(true)
 			{}
 
-			virtual bool match(
+			bool allow_on_edge; ///< Is character allowed at the beginning or an end of a DNS domain?
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -2842,10 +2827,6 @@ namespace stdex
 				return false;
 			}
 
-		public:
-			bool allow_on_edge; ///< Is character allowed at the beginning or an end of a DNS domain?
-
-		protected:
 			bool m_allow_idn;
 		};
 
@@ -2869,7 +2850,8 @@ namespace stdex
 				basic_dns_domain_char<char>(allow_idn, locale)
 			{}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -2918,7 +2900,8 @@ namespace stdex
 				m_separator(separator)
 			{}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -2968,7 +2951,6 @@ namespace stdex
 				return false;
 			}
 
-		protected:
 			bool m_allow_absolute; ///< May DNS names end with a dot (absolute name)?
 			std::shared_ptr<basic_dns_domain_char<T>> m_domain_char;
 			std::shared_ptr<basic_parser<T>> m_separator;
@@ -2992,7 +2974,8 @@ namespace stdex
 		public:
 			basic_url_username_char(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale) {}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -3043,7 +3026,8 @@ namespace stdex
 		public:
 			sgml_url_username_char(_In_ const std::locale& locale = std::locale()) : basic_url_username_char<char>(locale) {}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -3091,7 +3075,8 @@ namespace stdex
 		public:
 			basic_url_password_char(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale) {}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -3143,7 +3128,8 @@ namespace stdex
 		public:
 			sgml_url_password_char(_In_ const std::locale& locale = std::locale()) : basic_url_password_char<char>(locale) {}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -3191,7 +3177,8 @@ namespace stdex
 		public:
 			basic_url_path_char(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale) {}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -3247,7 +3234,8 @@ namespace stdex
 		public:
 			sgml_url_path_char(_In_ const std::locale& locale = std::locale()) : basic_url_path_char<char>(locale) {}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -3308,7 +3296,23 @@ namespace stdex
 				m_bookmark_start(bookmark_start)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				path.start = 1;
+				path.end = 0;
+				query.start = 1;
+				query.end = 0;
+				bookmark.start = 1;
+				bookmark.end = 0;
+				basic_parser<T>::invalidate();
+			}
+
+			stdex::interval<size_t> path;
+			stdex::interval<size_t> query;
+			stdex::interval<size_t> bookmark;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -3400,23 +3404,6 @@ namespace stdex
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				path.start = 1;
-				path.end = 0;
-				query.start = 1;
-				query.end = 0;
-				bookmark.start = 1;
-				bookmark.end = 0;
-				basic_parser<T>::invalidate();
-			}
-
-		public:
-			stdex::interval<size_t> path;
-			stdex::interval<size_t> query;
-			stdex::interval<size_t> bookmark;
-
-		protected:
 			std::shared_ptr<basic_parser<T>> m_path_char;
 			std::shared_ptr<basic_parser<T>> m_query_start;
 			std::shared_ptr<basic_parser<T>> m_bookmark_start;
@@ -3475,7 +3462,36 @@ namespace stdex
 				path(_path)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				http_scheme->invalidate();
+				ftp_scheme->invalidate();
+				mailto_scheme->invalidate();
+				file_scheme->invalidate();
+				username->invalidate();
+				password->invalidate();
+				ipv4_host->invalidate();
+				ipv6_host->invalidate();
+				dns_host->invalidate();
+				port->invalidate();
+				path->invalidate();
+				basic_parser<T>::invalidate();
+			}
+
+			std::shared_ptr<basic_parser<T>> http_scheme;
+			std::shared_ptr<basic_parser<T>> ftp_scheme;
+			std::shared_ptr<basic_parser<T>> mailto_scheme;
+			std::shared_ptr<basic_parser<T>> file_scheme;
+			std::shared_ptr<basic_parser<T>> username;
+			std::shared_ptr<basic_parser<T>> password;
+			std::shared_ptr<basic_parser<T>> ipv4_host;
+			std::shared_ptr<basic_parser<T>> ipv6_host;
+			std::shared_ptr<basic_parser<T>> dns_host;
+			std::shared_ptr<basic_parser<T>> port;
+			std::shared_ptr<basic_parser<T>> path;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -3742,36 +3758,6 @@ namespace stdex
 				return true;
 			}
 
-			virtual void invalidate()
-			{
-				http_scheme->invalidate();
-				ftp_scheme->invalidate();
-				mailto_scheme->invalidate();
-				file_scheme->invalidate();
-				username->invalidate();
-				password->invalidate();
-				ipv4_host->invalidate();
-				ipv6_host->invalidate();
-				dns_host->invalidate();
-				port->invalidate();
-				path->invalidate();
-				basic_parser<T>::invalidate();
-			}
-
-		public:
-			std::shared_ptr<basic_parser<T>> http_scheme;
-			std::shared_ptr<basic_parser<T>> ftp_scheme;
-			std::shared_ptr<basic_parser<T>> mailto_scheme;
-			std::shared_ptr<basic_parser<T>> file_scheme;
-			std::shared_ptr<basic_parser<T>> username;
-			std::shared_ptr<basic_parser<T>> password;
-			std::shared_ptr<basic_parser<T>> ipv4_host;
-			std::shared_ptr<basic_parser<T>> ipv6_host;
-			std::shared_ptr<basic_parser<T>> dns_host;
-			std::shared_ptr<basic_parser<T>> port;
-			std::shared_ptr<basic_parser<T>> path;
-
-		protected:
 			std::shared_ptr<basic_parser<T>> m_colon;
 			std::shared_ptr<basic_parser<T>> m_slash;
 			std::shared_ptr<basic_parser<T>> m_at;
@@ -3814,7 +3800,22 @@ namespace stdex
 				dns_host(_dns_host)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				username->invalidate();
+				ipv4_host->invalidate();
+				ipv6_host->invalidate();
+				dns_host->invalidate();
+				basic_parser<T>::invalidate();
+			}
+
+			std::shared_ptr<basic_parser<T>> username;
+			std::shared_ptr<basic_parser<T>> ipv4_host;
+			std::shared_ptr<basic_parser<T>> ipv6_host;
+			std::shared_ptr<basic_parser<T>> dns_host;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -3858,30 +3859,10 @@ namespace stdex
 				}
 
 			error:
-				username->invalidate();
-				ipv4_host->invalidate();
-				ipv6_host->invalidate();
-				dns_host->invalidate();
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				username->invalidate();
-				ipv4_host->invalidate();
-				ipv6_host->invalidate();
-				dns_host->invalidate();
-				basic_parser<T>::invalidate();
-			}
-
-		public:
-			std::shared_ptr<basic_parser<T>> username;
-			std::shared_ptr<basic_parser<T>> ipv4_host;
-			std::shared_ptr<basic_parser<T>> ipv6_host;
-			std::shared_ptr<basic_parser<T>> dns_host;
-
-		protected:
 			std::shared_ptr<basic_parser<T>> m_at;
 			std::shared_ptr<basic_parser<T>> m_ip_lbracket;
 			std::shared_ptr<basic_parser<T>> m_ip_rbracket;
@@ -3918,7 +3899,24 @@ namespace stdex
 				mouth(_mouth)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				if (emoticon) emoticon->invalidate();
+				if (apex) apex->invalidate();
+				eyes->invalidate();
+				if (nose) nose->invalidate();
+				mouth->invalidate();
+				basic_parser<T>::invalidate();
+			}
+
+			std::shared_ptr<basic_parser<T>> emoticon; ///< emoticon as a whole (e.g. 😀, 🤔, 😶)
+			std::shared_ptr<basic_parser<T>> apex; ///< apex/eyebrows/halo (e.g. O, 0)
+			std::shared_ptr<basic_parser<T>> eyes; ///< eyes (e.g. :, ;, >, |, B)
+			std::shared_ptr<basic_parser<T>> nose; ///< nose (e.g. -, o)
+			std::shared_ptr<basic_set<T>> mouth; ///< mouth (e.g. ), ), (, (, |, P, D, p, d)
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -3977,23 +3975,6 @@ namespace stdex
 				this->interval.invalidate();
 				return false;
 			}
-
-			virtual void invalidate()
-			{
-				if (emoticon) emoticon->invalidate();
-				if (apex) apex->invalidate();
-				eyes->invalidate();
-				if (nose) nose->invalidate();
-				mouth->invalidate();
-				basic_parser<T>::invalidate();
-			}
-
-		public:
-			std::shared_ptr<basic_parser<T>> emoticon; ///< emoticon as a whole (e.g. 😀, 🤔, 😶)
-			std::shared_ptr<basic_parser<T>> apex; ///< apex/eyebrows/halo (e.g. O, 0)
-			std::shared_ptr<basic_parser<T>> eyes; ///< eyes (e.g. :, ;, >, |, B)
-			std::shared_ptr<basic_parser<T>> nose; ///< nose (e.g. -, o)
-			std::shared_ptr<basic_set<T>> mouth; ///< mouth (e.g. ), ), (, (, |, P, D, p, d)
 		};
 
 		using emoticon = basic_emoticon<char>;
@@ -4044,7 +4025,22 @@ namespace stdex
 				m_space(space)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				if (day) day->invalidate();
+				if (month) month->invalidate();
+				if (year) year->invalidate();
+				format = date_format_none;
+				basic_parser<T>::invalidate();
+			}
+
+			date_format_t format;
+			std::shared_ptr<basic_integer<T>> day;
+			std::shared_ptr<basic_integer<T>> month;
+			std::shared_ptr<basic_integer<T>> year;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -4223,16 +4219,6 @@ namespace stdex
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				if (day) day->invalidate();
-				if (month) month->invalidate();
-				if (year) year->invalidate();
-				format = date_format_none;
-				basic_parser<T>::invalidate();
-			}
-
-		protected:
 			static bool is_valid(size_t day, size_t month)
 			{
 				if (month == SIZE_MAX) {
@@ -4265,13 +4251,6 @@ namespace stdex
 				}
 			}
 
-		public:
-			date_format_t format;
-			std::shared_ptr<basic_integer<T>> day;
-			std::shared_ptr<basic_integer<T>> month;
-			std::shared_ptr<basic_integer<T>> year;
-
-		protected:
 			int m_format_mask;
 			std::shared_ptr<basic_set<T>> m_separator;
 			std::shared_ptr<basic_parser<T>> m_space;
@@ -4310,7 +4289,22 @@ namespace stdex
 				m_millisecond_separator(millisecond_separator)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				hour->invalidate();
+				minute->invalidate();
+				if (second) second->invalidate();
+				if (millisecond) millisecond->invalidate();
+				basic_parser<T>::invalidate();
+			}
+
+			std::shared_ptr<basic_integer10<T>> hour;
+			std::shared_ptr<basic_integer10<T>> minute;
+			std::shared_ptr<basic_integer10<T>> second;
+			std::shared_ptr<basic_integer10<T>> millisecond;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -4360,22 +4354,6 @@ namespace stdex
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				hour->invalidate();
-				minute->invalidate();
-				if (second) second->invalidate();
-				if (millisecond) millisecond->invalidate();
-				basic_parser<T>::invalidate();
-			}
-
-		public:
-			std::shared_ptr<basic_integer10<T>> hour;
-			std::shared_ptr<basic_integer10<T>> minute;
-			std::shared_ptr<basic_integer10<T>> second;
-			std::shared_ptr<basic_integer10<T>> millisecond;
-
-		protected:
 			std::shared_ptr<basic_set<T>> m_separator;
 			std::shared_ptr<basic_parser<T>> m_millisecond_separator;
 		};
@@ -4415,7 +4393,28 @@ namespace stdex
 				decimal(_decimal)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				degree->invalidate();
+				degree_separator->invalidate();
+				minute->invalidate();
+				minute_separator->invalidate();
+				if (second) second->invalidate();
+				if (second_separator) second_separator->invalidate();
+				if (decimal) decimal->invalidate();
+				basic_parser<T>::invalidate();
+			}
+
+			std::shared_ptr<basic_integer10<T>> degree;
+			std::shared_ptr<basic_parser<T>> degree_separator;
+			std::shared_ptr<basic_integer10<T>> minute;
+			std::shared_ptr<basic_parser<T>> minute_separator;
+			std::shared_ptr<basic_integer10<T>> second;
+			std::shared_ptr<basic_parser<T>> second_separator;
+			std::shared_ptr<basic_parser<T>> decimal;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -4480,27 +4479,6 @@ namespace stdex
 				this->interval.invalidate();
 				return false;
 			}
-
-			virtual void invalidate()
-			{
-				degree->invalidate();
-				degree_separator->invalidate();
-				minute->invalidate();
-				minute_separator->invalidate();
-				if (second) second->invalidate();
-				if (second_separator) second_separator->invalidate();
-				if (decimal) decimal->invalidate();
-				basic_parser<T>::invalidate();
-			}
-
-		public:
-			std::shared_ptr<basic_integer10<T>> degree;
-			std::shared_ptr<basic_parser<T>> degree_separator;
-			std::shared_ptr<basic_integer10<T>> minute;
-			std::shared_ptr<basic_parser<T>> minute_separator;
-			std::shared_ptr<basic_integer10<T>> second;
-			std::shared_ptr<basic_parser<T>> second_separator;
-			std::shared_ptr<basic_parser<T>> decimal;
 		};
 
 		using angle = basic_angle<char>;
@@ -4536,7 +4514,16 @@ namespace stdex
 				m_space(space)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				value.clear();
+				basic_parser<T>::invalidate();
+			}
+
+			std::basic_string<T> value; ///< Normalized phone number
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -4636,16 +4623,6 @@ namespace stdex
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				value.clear();
-				basic_parser<T>::invalidate();
-			}
-
-		public:
-			std::basic_string<T> value; ///< Normalized phone number
-
-		protected:
 			std::shared_ptr<basic_parser<T>> m_digit;
 			std::shared_ptr<basic_parser<T>> m_plus_sign;
 			std::shared_ptr<basic_set<T>> m_lparenthesis;
@@ -4684,7 +4661,22 @@ namespace stdex
 				this->is_valid = false;
 			}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				this->country[0] = 0;
+				this->check_digits[0] = 0;
+				this->bban[0] = 0;
+				this->is_valid = false;
+				basic_parser<T>::invalidate();
+			}
+
+			T country[3];      ///< ISO 3166-1 alpha-2 country code
+			T check_digits[3]; ///< Two check digits
+			T bban[31];        ///< Normalized Basic Bank Account Number
+			bool is_valid;     ///< Is IBAN valid per ISO 7064
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -4921,30 +4913,10 @@ namespace stdex
 				return true;
 
 			error:
-				this->country[0] = 0;
-				this->check_digits[0] = 0;
-				this->bban[0] = 0;
-				this->is_valid = false;
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				this->country[0] = 0;
-				this->check_digits[0] = 0;
-				this->bban[0] = 0;
-				this->is_valid = false;
-				basic_parser<T>::invalidate();
-			}
-
-		public:
-			T country[3];      ///< ISO 3166-1 alpha-2 country code
-			T check_digits[3]; ///< Two check digits
-			T bban[31];        ///< Normalized Basic Bank Account Number
-			bool is_valid;     ///< Is IBAN valid per ISO 7064
-
-		protected:
 			std::shared_ptr<basic_parser<T>> m_space;
 		};
 
@@ -4977,7 +4949,20 @@ namespace stdex
 				this->is_valid = false;
 			}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				this->check_digits[0] = 0;
+				this->reference[0] = 0;
+				this->is_valid = false;
+				basic_parser<T>::invalidate();
+			}
+
+			T check_digits[3]; ///< Two check digits
+			T reference[22];   ///< Normalized national reference number
+			bool is_valid;     ///< Is reference valid per ISO 7064
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -5076,27 +5061,10 @@ namespace stdex
 				return true;
 
 			error:
-				this->check_digits[0] = 0;
-				this->reference[0] = 0;
-				this->is_valid = false;
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				this->check_digits[0] = 0;
-				this->reference[0] = 0;
-				this->is_valid = false;
-				basic_parser<T>::invalidate();
-			}
-
-		public:
-			T check_digits[3]; ///< Two check digits
-			T reference[22];   ///< Normalized national reference number
-			bool is_valid;     ///< Is reference valid per ISO 7064
-
-		protected:
 			std::shared_ptr<basic_parser<T>> m_space;
 		};
 
@@ -5120,7 +5088,8 @@ namespace stdex
 		public:
 			basic_si_reference_part(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale) {}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -5165,7 +5134,8 @@ namespace stdex
 		public:
 			basic_si_reference_delimiter(_In_ const std::locale& locale = std::locale()) : basic_parser<T>(locale) {}
 
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -5215,7 +5185,24 @@ namespace stdex
 				this->model[0] = 0;
 			}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				this->model[0] = 0;
+				this->part1.invalidate();
+				this->part2.invalidate();
+				this->part3.invalidate();
+				this->is_valid = false;
+				basic_parser<T>::invalidate();
+			}
+
+			T model[3];                       ///< Reference model
+			basic_si_reference_part<T> part1; ///< Reference data part 1 (P1)
+			basic_si_reference_part<T> part2; ///< Reference data part 2 (P2)
+			basic_si_reference_part<T> part3; ///< Reference data part 3 (P3)
+			bool is_valid;                    ///< Is reference valid
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -5441,26 +5428,10 @@ namespace stdex
 				return true;
 
 			error:
-				this->model[0] = 0;
-				this->part1.interval.start = (this->part1.interval.end = start) + 1;
-				this->part2.interval.start = (this->part2.interval.end = start) + 1;
-				this->part3.interval.start = (this->part3.interval.end = start) + 1;
-				this->is_valid = false;
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				this->model[0] = 0;
-				this->part1.invalidate();
-				this->part2.invalidate();
-				this->part3.invalidate();
-				this->is_valid = false;
-				basic_parser<T>::invalidate();
-			}
-
-		protected:
 			static bool check11(
 				_In_count_(num_part1) const T* part1, _In_ size_t num_part1)
 			{
@@ -5512,14 +5483,6 @@ namespace stdex
 				return control == part2[num_part3 - 1] - '0';
 			}
 
-		public:
-			T model[3];                       ///< Reference model
-			basic_si_reference_part<T> part1; ///< Reference data part 1 (P1)
-			basic_si_reference_part<T> part2; ///< Reference data part 2 (P2)
-			basic_si_reference_part<T> part3; ///< Reference data part 3 (P3)
-			bool is_valid;                    ///< Is reference valid
-
-		protected:
 			std::shared_ptr<basic_parser<T>> m_space;
 			basic_si_reference_delimiter<T> m_delimiter;
 		};
@@ -5553,7 +5516,18 @@ namespace stdex
 				has_charge(false)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				has_digits = false;
+				has_charge = false;
+				basic_parser<T>::invalidate();
+			}
+
+			bool has_digits;
+			bool has_charge;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -5589,18 +5563,6 @@ namespace stdex
 				}
 			}
 
-			virtual void invalidate()
-			{
-				has_digits = false;
-				has_charge = false;
-				basic_parser<T>::invalidate();
-			}
-
-		public:
-			bool has_digits;
-			bool has_charge;
-
-		protected:
 			std::shared_ptr<basic_parser<T>> m_element;
 			std::shared_ptr<basic_parser<T>> m_digit;
 			std::shared_ptr<basic_parser<T>> m_sign;
@@ -5620,8 +5582,8 @@ namespace stdex
 		///
 		class http_line_break : public parser
 		{
-		public:
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -5656,8 +5618,8 @@ namespace stdex
 		///
 		class http_space : public parser
 		{
-		public:
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -5684,7 +5646,6 @@ namespace stdex
 				return false;
 			}
 
-		protected:
 			http_line_break m_line_break;
 		};
 
@@ -5693,8 +5654,8 @@ namespace stdex
 		///
 		class http_text_char : public parser
 		{
-		public:
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -5718,7 +5679,6 @@ namespace stdex
 				return false;
 			}
 
-		protected:
 			http_space m_space;
 		};
 
@@ -5727,8 +5687,8 @@ namespace stdex
 		///
 		class http_token : public parser
 		{
-		public:
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -5782,7 +5742,17 @@ namespace stdex
 		class http_quoted_string : public parser
 		{
 		public:
-			virtual bool match(
+			virtual void invalidate()
+			{
+				content.start = 1;
+				content.end = 0;
+				parser::invalidate();
+			}
+
+			stdex::interval<size_t> content; ///< String content (without quotes)
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -5822,23 +5792,10 @@ namespace stdex
 				return true;
 
 			error:
-				content.start = 1;
-				content.end = 0;
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				content.start = 1;
-				content.end = 0;
-				parser::invalidate();
-			}
-
-		public:
-			stdex::interval<size_t> content; ///< String content (without quotes)
-
-		protected:
 			http_text_char m_chr;
 		};
 
@@ -5848,7 +5805,18 @@ namespace stdex
 		class http_value : public parser
 		{
 		public:
-			virtual bool match(
+			virtual void invalidate()
+			{
+				string.invalidate();
+				token.invalidate();
+				parser::invalidate();
+			}
+
+			http_quoted_string string; ///< Value when matched as quoted string
+			http_token token; ///< Value when matched as token
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -5873,17 +5841,6 @@ namespace stdex
 					return false;
 				}
 			}
-
-			virtual void invalidate()
-			{
-				string.invalidate();
-				token.invalidate();
-				parser::invalidate();
-			}
-
-		public:
-			http_quoted_string string; ///< Value when matched as quoted string
-			http_token token; ///< Value when matched as token
 		};
 
 		///
@@ -5892,7 +5849,18 @@ namespace stdex
 		class http_parameter : public parser
 		{
 		public:
-			virtual bool match(
+			virtual void invalidate()
+			{
+				name.invalidate();
+				value.invalidate();
+				parser::invalidate();
+			}
+
+			http_token name; ///< Parameter name
+			http_value value; ///< Parameter value
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -5920,24 +5888,10 @@ namespace stdex
 				return true;
 
 			error:
-				name.invalidate();
-				value.invalidate();
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				name.invalidate();
-				value.invalidate();
-				parser::invalidate();
-			}
-
-		public:
-			http_token name; ///< Parameter name
-			http_value value; ///< Parameter value
-
-		protected:
 			http_space m_space;
 		};
 
@@ -5946,8 +5900,8 @@ namespace stdex
 		///
 		class http_any_type : public parser
 		{
-		public:
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -5979,7 +5933,18 @@ namespace stdex
 		class http_media_range : public parser
 		{
 		public:
-			virtual bool match(
+			virtual void invalidate()
+			{
+				type.invalidate();
+				subtype.invalidate();
+				parser::invalidate();
+			}
+
+			http_token type;
+			http_token subtype;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -6007,24 +5972,10 @@ namespace stdex
 				return true;
 
 			error:
-				type.invalidate();
-				subtype.invalidate();
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				type.invalidate();
-				subtype.invalidate();
-				parser::invalidate();
-			}
-
-		public:
-			http_token type;
-			http_token subtype;
-
-		protected:
 			http_space m_space;
 		};
 
@@ -6034,7 +5985,16 @@ namespace stdex
 		class http_media_type : public http_media_range
 		{
 		public:
-			virtual bool match(
+			virtual void invalidate()
+			{
+				params.clear();
+				http_media_range::invalidate();
+			}
+
+			std::list<http_parameter> params;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -6070,20 +6030,9 @@ namespace stdex
 				return true;
 
 			error:
-				http_media_range::invalidate();
-				params.clear();
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
-
-			virtual void invalidate()
-			{
-				params.clear();
-				http_media_range::invalidate();
-			}
-
-		public:
-			std::list<http_parameter> params;
 		};
 
 		///
@@ -6091,8 +6040,8 @@ namespace stdex
 		///
 		class http_url_server : public parser
 		{
-		public:
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -6134,7 +6083,16 @@ namespace stdex
 				value(0)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				value = 0;
+				parser::invalidate();
+			}
+
+			uint16_t value;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -6168,15 +6126,6 @@ namespace stdex
 				this->interval.invalidate();
 				return false;
 			}
-
-			virtual void invalidate()
-			{
-				value = 0;
-				parser::invalidate();
-			}
-
-		public:
-			uint16_t value;
 		};
 
 		///
@@ -6184,8 +6133,8 @@ namespace stdex
 		///
 		class http_url_path_segment : public parser
 		{
-		public:
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -6218,7 +6167,16 @@ namespace stdex
 		class http_url_path : public parser
 		{
 		public:
-			virtual bool match(
+			virtual void invalidate()
+			{
+				segments.clear();
+				parser::invalidate();
+			}
+
+			std::vector<http_url_path_segment> segments; ///< Path segments
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -6253,19 +6211,9 @@ namespace stdex
 				return true;
 
 			error:
-				segments.clear();
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
-
-			virtual void invalidate()
-			{
-				segments.clear();
-				parser::invalidate();
-			}
-
-		public:
-			std::vector<http_url_path_segment> segments; ///< Path segments
 		};
 
 		///
@@ -6274,7 +6222,20 @@ namespace stdex
 		class http_url_parameter : public parser
 		{
 		public:
-			virtual bool match(
+			virtual void invalidate()
+			{
+				name.start = 1;
+				name.end = 0;
+				value.start = 1;
+				value.end = 0;
+				parser::invalidate();
+			}
+
+			stdex::interval<size_t> name;
+			stdex::interval<size_t> value;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -6327,26 +6288,9 @@ namespace stdex
 				return true;
 
 			error:
-				name.start = 1;
-				name.end = 0;
-				value.start = 1;
-				value.end = 0;
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
-
-			virtual void invalidate()
-			{
-				name.start = 1;
-				name.end = 0;
-				value.start = 1;
-				value.end = 0;
-				parser::invalidate();
-			}
-
-		public:
-			stdex::interval<size_t> name;
-			stdex::interval<size_t> value;
 		};
 
 		///
@@ -6360,7 +6304,22 @@ namespace stdex
 				port(locale)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				server.invalidate();
+				port.invalidate();
+				path.invalidate();
+				params.clear();
+				parser::invalidate();
+			}
+
+			http_url_server server;
+			http_url_port port;
+			http_url_path path;
+			std::list<http_url_parameter> params;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -6427,28 +6386,9 @@ namespace stdex
 				return true;
 
 			error:
-				server.invalidate();
-				port.invalidate();
-				path.invalidate();
-				params.clear();
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
-
-			virtual void invalidate()
-			{
-				server.invalidate();
-				port.invalidate();
-				path.invalidate();
-				params.clear();
-				parser::invalidate();
-			}
-
-		public:
-			http_url_server server;
-			http_url_port port;
-			http_url_path path;
-			std::list<http_url_parameter> params;
 		};
 
 		///
@@ -6457,7 +6397,16 @@ namespace stdex
 		class http_language : public parser
 		{
 		public:
-			virtual bool match(
+			virtual void invalidate()
+			{
+				components.clear();
+				parser::invalidate();
+			}
+
+			std::vector<stdex::interval<size_t>> components;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -6503,15 +6452,6 @@ namespace stdex
 				this->interval.invalidate();
 				return false;
 			}
-
-			virtual void invalidate()
-			{
-				components.clear();
-				parser::invalidate();
-			}
-
-		public:
-			std::vector<stdex::interval<size_t>> components;
 		};
 
 		///
@@ -6525,7 +6465,16 @@ namespace stdex
 				value(1.0f)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				value = 1.0f;
+				parser::invalidate();
+			}
+
+			float value; ///< Calculated value of the weight factor
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -6572,15 +6521,6 @@ namespace stdex
 				this->interval.invalidate();
 				return false;
 			}
-
-			virtual void invalidate()
-			{
-				value = 1.0f;
-				parser::invalidate();
-			}
-
-		public:
-			float value; ///< Calculated value of the weight factor
 		};
 
 		///
@@ -6588,8 +6528,8 @@ namespace stdex
 		///
 		class http_asterisk : public parser
 		{
-		public:
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -6617,7 +6557,20 @@ namespace stdex
 				factor(locale)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				asterisk.invalidate();
+				value.invalidate();
+				factor.invalidate();
+				parser::invalidate();
+			}
+
+			T_asterisk asterisk;
+			T value;
+			http_weight factor;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -6663,19 +6616,6 @@ namespace stdex
 				this->interval.start = start;
 				return true;
 			}
-
-			virtual void invalidate()
-			{
-				asterisk.invalidate();
-				value.invalidate();
-				factor.invalidate();
-				parser::invalidate();
-			}
-
-		public:
-			T_asterisk asterisk;
-			T value;
-			http_weight factor;
 		};
 
 		///
@@ -6684,7 +6624,18 @@ namespace stdex
 		class http_cookie_parameter : public parser
 		{
 		public:
-			virtual bool match(
+			virtual void invalidate()
+			{
+				name.invalidate();
+				value.invalidate();
+				parser::invalidate();
+			}
+
+			http_token name;
+			http_value value;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -6716,24 +6667,10 @@ namespace stdex
 				return true;
 
 			error:
-				name.invalidate();
-				value.invalidate();
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				name.invalidate();
-				value.invalidate();
-				parser::invalidate();
-			}
-
-		public:
-			http_token name;
-			http_value value;
-
-		protected:
 			http_space m_space;
 		};
 
@@ -6743,7 +6680,20 @@ namespace stdex
 		class http_cookie : public parser
 		{
 		public:
-			virtual bool match(
+			virtual void invalidate()
+			{
+				name.invalidate();
+				value.invalidate();
+				params.clear();
+				parser::invalidate();
+			}
+
+			http_token name; ///< Cookie name
+			http_value value; ///< Cookie value
+			std::list<http_cookie_parameter> params; ///< List of cookie parameters
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -6795,27 +6745,10 @@ namespace stdex
 				return true;
 
 			error:
-				name.invalidate();
-				value.invalidate();
-				params.clear();
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				name.invalidate();
-				value.invalidate();
-				params.clear();
-				parser::invalidate();
-			}
-
-		public:
-			http_token name; ///< Cookie name
-			http_value value; ///< Cookie value
-			std::list<http_cookie_parameter> params; ///< List of cookie parameters
-
-		protected:
 			http_space m_space;
 		};
 
@@ -6825,7 +6758,20 @@ namespace stdex
 		class http_agent : public parser
 		{
 		public:
-			virtual bool match(
+			virtual void invalidate()
+			{
+				type.start = 1;
+				type.end = 0;
+				version.start = 1;
+				version.end = 0;
+				parser::invalidate();
+			}
+
+			stdex::interval<size_t> type;
+			stdex::interval<size_t> version;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -6879,19 +6825,6 @@ namespace stdex
 				this->interval.invalidate();
 				return false;
 			}
-
-			virtual void invalidate()
-			{
-				type.start = 1;
-				type.end = 0;
-				version.start = 1;
-				version.end = 0;
-				parser::invalidate();
-			}
-
-		public:
-			stdex::interval<size_t> type;
-			stdex::interval<size_t> version;
 		};
 
 		///
@@ -6905,7 +6838,25 @@ namespace stdex
 				version(0x009)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				type.start = 1;
+				type.end = 0;
+				version_maj.start = 1;
+				version_maj.end = 0;
+				version_min.start = 1;
+				version_min.end = 0;
+				version = 0x009;
+				parser::invalidate();
+			}
+
+			stdex::interval<size_t> type;
+			stdex::interval<size_t> version_maj;
+			stdex::interval<size_t> version_min;
+			uint16_t version; ///< HTTP protocol version: 0x100 = 1.0, 0x101 = 1.1...
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -6972,34 +6923,9 @@ namespace stdex
 				return true;
 
 			error:
-				type.start = 1;
-				type.end = 0;
-				version_maj.start = 1;
-				version_maj.end = 0;
-				version_min.start = 1;
-				version_min.end = 0;
-				version = 0x009;
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
-
-			virtual void invalidate()
-			{
-				type.start = 1;
-				type.end = 0;
-				version_maj.start = 1;
-				version_maj.end = 0;
-				version_min.start = 1;
-				version_min.end = 0;
-				version = 0x009;
-				parser::invalidate();
-			}
-
-		public:
-			stdex::interval<size_t> type;
-			stdex::interval<size_t> version_maj;
-			stdex::interval<size_t> version_min;
-			uint16_t version; ///< HTTP protocol version: 0x100 = 1.0, 0x101 = 1.1...
 		};
 
 		///
@@ -7014,7 +6940,21 @@ namespace stdex
 				protocol(locale)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				verb.start = 1;
+				verb.end = 0;
+				url.invalidate();
+				protocol.invalidate();
+				parser::invalidate();
+			}
+
+			stdex::interval<size_t> verb;
+			http_url url;
+			http_protocol protocol;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -7113,29 +7053,10 @@ namespace stdex
 				return true;
 
 			error:
-				verb.start = 1;
-				verb.end = 0;
-				url.invalidate();
-				protocol.invalidate();
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				verb.start = 1;
-				verb.end = 0;
-				url.invalidate();
-				protocol.invalidate();
-				parser::invalidate();
-			}
-
-		public:
-			stdex::interval<size_t> verb;
-			http_url url;
-			http_protocol protocol;
-
-		protected:
 			http_line_break m_line_break;
 		};
 
@@ -7145,7 +7066,20 @@ namespace stdex
 		class http_header : public parser
 		{
 		public:
-			virtual bool match(
+			virtual void invalidate()
+			{
+				name.start = 1;
+				name.end = 0;
+				value.start = 1;
+				value.end = 0;
+				parser::invalidate();
+			}
+
+			stdex::interval<size_t> name;
+			stdex::interval<size_t> value;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_(end) const char* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -7222,28 +7156,10 @@ namespace stdex
 				return true;
 
 			error:
-				name.start = 1;
-				name.end = 0;
-				value.start = 1;
-				value.end = 0;
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				name.start = 1;
-				name.end = 0;
-				value.start = 1;
-				value.end = 0;
-				parser::invalidate();
-			}
-
-		public:
-			stdex::interval<size_t> name;
-			stdex::interval<size_t> value;
-
-		protected:
 			http_line_break m_line_break;
 		};
 
@@ -7325,7 +7241,16 @@ namespace stdex
 				m_hex(hex)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				value.clear();
+				basic_parser<T>::invalidate();
+			}
+
+			std::basic_string<T> value;
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -7413,16 +7338,6 @@ namespace stdex
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				value.clear();
-				basic_parser<T>::invalidate();
-			}
-
-		public:
-			std::basic_string<T> value;
-
-		protected:
 			std::shared_ptr<basic_parser<T>> m_quote;
 			std::shared_ptr<basic_parser<T>> m_chr;
 			std::shared_ptr<basic_parser<T>> m_escape;
@@ -7451,7 +7366,16 @@ namespace stdex
 		class basic_css_comment : public basic_parser<T>
 		{
 		public:
-			virtual bool match(
+			virtual void invalidate()
+			{
+				this->content.invalidate();
+				basic_parser::invalidate();
+			}
+
+			stdex::interval<size_t> content; ///< content position in source
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -7485,15 +7409,6 @@ namespace stdex
 				this->interval.invalidate();
 				return false;
 			}
-
-			virtual void invalidate()
-			{
-				this->content.invalidate();
-				basic_parser::invalidate();
-			}
-
-		public:
-			stdex::interval<size_t> content; ///< content position in source
 		};
 
 		using css_comment = basic_css_comment<char>;
@@ -7510,8 +7425,8 @@ namespace stdex
 		template <class T>
 		class basic_css_cdo : public basic_parser<T>
 		{
-		public:
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -7548,8 +7463,8 @@ namespace stdex
 		template <class T>
 		class basic_css_cdc : public basic_parser<T>
 		{
-		public:
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -7586,7 +7501,16 @@ namespace stdex
 		class basic_css_string : public basic_parser<T>
 		{
 		public:
-			virtual bool match(
+			virtual void invalidate()
+			{
+				this->content.invalidate();
+				basic_parser::invalidate();
+			}
+
+			stdex::interval<size_t> content; ///< content position in source
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -7627,15 +7551,6 @@ namespace stdex
 				this->interval.invalidate();
 				return false;
 			}
-
-			virtual void invalidate()
-			{
-				this->content.invalidate();
-				basic_parser::invalidate();
-			}
-
-		public:
-			stdex::interval<size_t> content; ///< content position in source
 		};
 
 		using css_string = basic_css_string<char>;
@@ -7653,7 +7568,16 @@ namespace stdex
 		class basic_css_uri : public basic_parser<T>
 		{
 		public:
-			virtual bool match(
+			virtual void invalidate()
+			{
+				this->content.invalidate();
+				basic_parser::invalidate();
+			}
+
+			stdex::interval<size_t> content; ///< content position in source
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -7734,19 +7658,9 @@ namespace stdex
 				}
 
 			error:
-				this->content.invalidate();
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
-
-			virtual void invalidate()
-			{
-				this->content.invalidate();
-				basic_parser::invalidate();
-			}
-
-		public:
-			stdex::interval<size_t> content; ///< content position in source
 		};
 
 		using css_uri = basic_css_uri<char>;
@@ -7764,7 +7678,16 @@ namespace stdex
 		class basic_css_import : public basic_parser<T>
 		{
 		public:
-			virtual bool match(
+			virtual void invalidate()
+			{
+				this->content.invalidate();
+				basic_parser::invalidate();
+			}
+
+			stdex::interval<size_t> content; ///< content position in source
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -7819,19 +7742,9 @@ namespace stdex
 				}
 
 			error:
-				this->content.invalidate();
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
-
-			virtual void invalidate()
-			{
-				this->content.invalidate();
-				basic_parser::invalidate();
-			}
-
-		public:
-			stdex::interval<size_t> content; ///< content position in source
 		};
 
 		using css_import = basic_css_import<char>;
@@ -7849,7 +7762,20 @@ namespace stdex
 		class basic_mime_type : public basic_parser<T>
 		{
 		public:
-			virtual bool match(
+			virtual void invalidate()
+			{
+				this->base_type.invalidate();
+				this->sub_type.invalidate();
+				this->charset.invalidate();
+				basic_parser::invalidate();
+			}
+
+			stdex::interval<size_t> base_type; ///< basic type position in source
+			stdex::interval<size_t> sub_type;  ///< sub-type position in source
+			stdex::interval<size_t> charset;   ///< charset position in source
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -7949,25 +7875,9 @@ namespace stdex
 				return true;
 
 			error:
-				this->base_type.invalidate();
-				this->sub_type.invalidate();
-				this->charset.invalidate();
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
-
-			virtual void invalidate()
-			{
-				this->base_type.invalidate();
-				this->sub_type.invalidate();
-				this->charset.invalidate();
-				basic_parser::invalidate();
-			}
-
-		public:
-			stdex::interval<size_t> base_type; ///< basic type position in source
-			stdex::interval<size_t> sub_type;  ///< sub-type position in source
-			stdex::interval<size_t> charset;   ///< charset position in source
 		};
 
 		using mime_type = basic_mime_type<char>;
@@ -7984,8 +7894,8 @@ namespace stdex
 		template <class T>
 		class basic_html_ident : public basic_parser<T>
 		{
-		public:
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -8032,7 +7942,16 @@ namespace stdex
 		class basic_html_value : public basic_parser<T>
 		{
 		public:
-			virtual bool match(
+			virtual void invalidate()
+			{
+				this->content.invalidate();
+				basic_parser::invalidate();
+			}
+
+			stdex::interval<size_t> content; ///< content position in source
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -8086,15 +8005,6 @@ namespace stdex
 					this->interval.end++;
 				}
 			}
-
-			virtual void invalidate()
-			{
-				this->content.invalidate();
-				basic_parser::invalidate();
-			}
-
-		public:
-			stdex::interval<size_t> content; ///< content position in source
 		};
 
 		using html_value = basic_html_value<char>;
@@ -8142,7 +8052,20 @@ namespace stdex
 				type(html_sequence_t::unknown)
 			{}
 
-			virtual bool match(
+			virtual void invalidate()
+			{
+				this->type = html_sequence_t::unknown;
+				this->name.invalidate();
+				this->attributes.clear();
+				basic_parser::invalidate();
+			}
+
+			html_sequence_t type;                   ///< tag type
+			stdex::interval<size_t> name;           ///< tag name position in source
+			std::vector<html_attribute> attributes; ///< tag attributes
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -8335,27 +8258,10 @@ namespace stdex
 				return true;
 
 			error:
-				this->type = html_sequence_t::unknown;
-				this->name.invalidate();
-				this->attributes.clear();
-				this->interval.invalidate();
+				invalidate();
 				return false;
 			}
 
-			virtual void invalidate()
-			{
-				this->type = html_sequence_t::unknown;
-				this->name.invalidate();
-				this->attributes.clear();
-				basic_parser::invalidate();
-			}
-
-		public:
-			html_sequence_t type;                   ///< tag type
-			stdex::interval<size_t> name;           ///< tag name position in source
-			std::vector<html_attribute> attributes; ///< tag attributes
-
-		protected:
 			basic_html_ident<T> m_ident;
 			basic_html_value<T> m_value;
 		};
@@ -8375,7 +8281,16 @@ namespace stdex
 		class basic_html_declaration_condition_start : public basic_parser<T>
 		{
 		public:
-			virtual bool match(
+			virtual void invalidate()
+			{
+				this->condition.invalidate();
+				basic_parser::invalidate();
+			}
+
+			stdex::interval<size_t> condition; /// condition position in source
+
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
@@ -8415,15 +8330,6 @@ namespace stdex
 				this->interval.invalidate();
 				return false;
 			}
-
-			virtual void invalidate()
-			{
-				this->condition.invalidate();
-				basic_parser::invalidate();
-			}
-
-		public:
-			stdex::interval<size_t> condition; /// condition position in source
 		};
 
 		using html_declaration_condition_start = basic_html_declaration_condition_start<char>;
@@ -8440,8 +8346,8 @@ namespace stdex
 		template <class T>
 		class basic_html_declaration_condition_end : public basic_parser<T>
 		{
-		public:
-			virtual bool match(
+		protected:
+			virtual bool do_match(
 				_In_reads_or_z_opt_(end) const T* text,
 				_In_ size_t start = 0,
 				_In_ size_t end = SIZE_MAX,
