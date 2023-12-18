@@ -57,6 +57,6 @@ namespace stdex
 		bool operator!=(const mapping& other) const { return !operator==(other); }
 	};
 
-	template <class T, class _Alloc = std::allocator<mapping<T>>>
-	using mapping_vector = std::vector<mapping<T>, _Alloc>;
+	template <class T, class AX = std::allocator<mapping<T>>>
+	using mapping_vector = std::vector<mapping<T>, AX>;
 }

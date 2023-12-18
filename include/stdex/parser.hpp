@@ -7166,7 +7166,7 @@ namespace stdex
 		///
 		/// Collection of HTTP values
 		///
-		template <class _Key, class T>
+		template <class KEY, class T>
 		class http_value_collection : public T
 		{
 		public:
@@ -7182,7 +7182,7 @@ namespace stdex
 						start++;
 						while (start < end&& text[start] && stdex::isspace(text[start])) start++;
 					}
-					_Key el;
+					KEY el;
 					if (el.match(text, start, end, flags)) {
 						start = el.interval.end;
 						T::insert(std::move(el));
@@ -7204,8 +7204,8 @@ namespace stdex
 		///
 		/// Collection of weighted HTTP values
 		///
-		template <class T, class _Alloc = std::allocator<T>>
-		using http_weighted_collection = http_value_collection<T, std::multiset<T, http_factor_more<T>, _Alloc>>;
+		template <class T, class AX = std::allocator<T>>
+		using http_weighted_collection = http_value_collection<T, std::multiset<T, http_factor_more<T>, AX>>;
 
 		///
 		/// Test for JSON string

@@ -39,9 +39,9 @@ namespace stdex
 		/// \param[in]     src        Source string
 		/// \param[in]     num_chars  Code unit limit in string `src`
 		///
-		template<class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
+		template<class TR = std::char_traits<char>, class AX = std::allocator<char>>
 		void escape(
-			_Inout_ std::basic_string<char, _Traits, _Alloc>& dst,
+			_Inout_ std::basic_string<char, TR, AX>& dst,
 			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars)
 		{
 			_Assume_(src || !num_chars);
@@ -66,9 +66,9 @@ namespace stdex
 		/// \param[in]     src        Source string
 		/// \param[in]     num_chars  Code unit limit in string `src`
 		///
-		template<class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
+		template<class TR = std::char_traits<wchar_t>, class AX = std::allocator<wchar_t>>
 		void escape(
-			_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst,
+			_Inout_ std::basic_string<wchar_t, TR, AX>& dst,
 			_In_reads_or_z_opt_(num_chars) const wchar_t* src, _In_ size_t num_chars)
 		{
 			_Assume_(src || !num_chars);
@@ -92,12 +92,12 @@ namespace stdex
 		/// \param[in,out] dst  String to append to
 		/// \param[in]     src  Source string
 		///
-		template<class _Elem, size_t _Size, class _Traits = std::char_traits<_Elem>, class _Alloc = std::allocator<_Elem>>
+		template<class T, size_t N, class TR = std::char_traits<T>, class AX = std::allocator<T>>
 		void escape(
-			_Inout_ std::basic_string<_Elem, _Traits, _Alloc>& dst,
-			_In_ const _Elem (&src)[_Size])
+			_Inout_ std::basic_string<T, TR, AX>& dst,
+			_In_ const T (&src)[N])
 		{
-			escape(dst, src, _Size);
+			escape(dst, src, N);
 		}
 
 		///
@@ -106,10 +106,10 @@ namespace stdex
 		/// \param[in,out] dst  String to append to
 		/// \param[in]     src  Source string
 		///
-		template<class _Elem, class _Traits_dst = std::char_traits<_Elem>, class _Alloc_dst = std::allocator<_Elem>, class _Traits_src = std::char_traits<_Elem>, class _Alloc_src = std::allocator<_Elem>>
+		template<class T, class TR_dst = std::char_traits<T>, class AX_dst = std::allocator<T>, class TR_src = std::char_traits<T>, class AX_src = std::allocator<T>>
 		void escape(
-			_Inout_ std::basic_string<_Elem, _Traits_dst, _Alloc_dst>& dst,
-			_In_ const std::basic_string<_Elem, _Traits_src, _Alloc_src>& src)
+			_Inout_ std::basic_string<T, TR_dst, AX_dst>& dst,
+			_In_ const std::basic_string<T, TR_src, AX_src>& src)
 		{
 			escape(dst, src.data(), src.size());
 		}
@@ -120,8 +120,8 @@ namespace stdex
 		/// \param[in,out] dst  String to append to
 		/// \param[in]     chr  Source character
 		///
-		template<class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
-		void escape_min(_Inout_ std::basic_string<char, _Traits, _Alloc>& dst, _In_ char chr)
+		template<class TR = std::char_traits<char>, class AX = std::allocator<char>>
+		void escape_min(_Inout_ std::basic_string<char, TR, AX>& dst, _In_ char chr)
 		{
 			switch (chr) {
 			case '&': dst += "&amp;"; break;
@@ -138,8 +138,8 @@ namespace stdex
 		/// \param[in,out] dst  String to append to
 		/// \param[in]     chr  Source character
 		///
-		template<class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
-		void escape_min(_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst, _In_ wchar_t chr)
+		template<class TR = std::char_traits<wchar_t>, class AX = std::allocator<wchar_t>>
+		void escape_min(_Inout_ std::basic_string<wchar_t, TR, AX>& dst, _In_ wchar_t chr)
 		{
 			switch (chr) {
 			case L'&': dst += L"&amp;"; break;
@@ -157,9 +157,9 @@ namespace stdex
 		/// \param[in]     src        Source string
 		/// \param[in]     num_chars  Code unit limit in string `src`
 		///
-		template<class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
+		template<class TR = std::char_traits<char>, class AX = std::allocator<char>>
 		void escape_min(
-			_Inout_ std::basic_string<char, _Traits, _Alloc>& dst,
+			_Inout_ std::basic_string<char, TR, AX>& dst,
 			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars)
 		{
 			_Assume_(src || !num_chars);
@@ -181,9 +181,9 @@ namespace stdex
 		/// \param[in]     src        Source string
 		/// \param[in]     num_chars  Code unit limit in string `src`
 		///
-		template<class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
+		template<class TR = std::char_traits<wchar_t>, class AX = std::allocator<wchar_t>>
 		void escape_min(
-			_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst,
+			_Inout_ std::basic_string<wchar_t, TR, AX>& dst,
 			_In_reads_or_z_opt_(num_chars) const wchar_t* src, _In_ size_t num_chars)
 		{
 			_Assume_(src || !num_chars);
@@ -204,12 +204,12 @@ namespace stdex
 		/// \param[in,out] dst  String to append to
 		/// \param[in]     src  Source string
 		///
-		template<class _Elem, size_t _Size, class _Traits = std::char_traits<_Elem>, class _Alloc = std::allocator<_Elem>>
+		template<class T, size_t N, class TR = std::char_traits<T>, class AX = std::allocator<T>>
 		void escape_min(
-			_Inout_ std::basic_string<_Elem, _Traits, _Alloc>& dst,
-			_In_ const _Elem (&src)[_Size])
+			_Inout_ std::basic_string<T, TR, AX>& dst,
+			_In_ const T (&src)[N])
 		{
-			escape_min(dst, src, _Size);
+			escape_min(dst, src, N);
 		}
 
 		///
@@ -218,10 +218,10 @@ namespace stdex
 		/// \param[in,out] dst  String to append to
 		/// \param[in]     src  Source string
 		///
-		template<class _Elem, class _Traits_dst = std::char_traits<_Elem>, class _Alloc_dst = std::allocator<_Elem>, class _Traits_src = std::char_traits<_Elem>, class _Alloc_src = std::allocator<_Elem>>
+		template<class T, class TR_dst = std::char_traits<T>, class AX_dst = std::allocator<T>, class TR_src = std::char_traits<T>, class AX_src = std::allocator<T>>
 		void escape_min(
-			_Inout_ std::basic_string<_Elem, _Traits_dst, _Alloc_dst>& dst,
-			_In_ const std::basic_string<_Elem, _Traits_src, _Alloc_src>& src)
+			_Inout_ std::basic_string<T, TR_dst, AX_dst>& dst,
+			_In_ const std::basic_string<T, TR_src, AX_src>& src)
 		{
 			escape_min(dst, src.data(), src.size());
 		}
@@ -233,9 +233,9 @@ namespace stdex
 		/// \param[in]     src        Source string
 		/// \param[in]     num_chars  Code unit limit in string `src`
 		///
-		template<class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
+		template<class TR = std::char_traits<char>, class AX = std::allocator<char>>
 		void url_unescape(
-			_Inout_ std::basic_string<char, _Traits, _Alloc>& dst,
+			_Inout_ std::basic_string<char, TR, AX>& dst,
 			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars)
 		{
 			_Assume_(src || !num_chars);
@@ -274,12 +274,12 @@ namespace stdex
 		/// \param[in,out] dst  String to append to
 		/// \param[in]     src  Source string
 		///
-		template<size_t _Size, class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
+		template<size_t N, class TR = std::char_traits<char>, class AX = std::allocator<char>>
 		void url_unescape(
-			_Inout_ std::basic_string<char, _Traits, _Alloc>& dst,
-			_In_ const char (&src)[_Size])
+			_Inout_ std::basic_string<char, TR, AX>& dst,
+			_In_ const char (&src)[N])
 		{
-			url_unescape(dst, src, _Size);
+			url_unescape(dst, src, N);
 		}
 
 		///
@@ -288,10 +288,10 @@ namespace stdex
 		/// \param[in,out] dst  String to append to
 		/// \param[in]     src  Source string
 		///
-		template<class _Traits_dst = std::char_traits<char>, class _Alloc_dst = std::allocator<char>>
+		template<class TR_dst = std::char_traits<char>, class AX_dst = std::allocator<char>>
 		void url_unescape(
-			_Inout_ std::basic_string<char, _Traits_dst, _Alloc_dst>& dst,
-			_In_ const std::string_view src)
+			_Inout_ std::basic_string<char, TR_dst, AX_dst>& dst,
+			_In_ const std::basic_string_view<char, std::char_traits<char>> src)
 		{
 			url_unescape(dst, src.data(), src.size());
 		}
@@ -303,9 +303,9 @@ namespace stdex
 		/// \param[in]     src        Source string
 		/// \param[in]     num_chars  Code unit limit in string `src`
 		///
-		template<class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
+		template<class TR = std::char_traits<char>, class AX = std::allocator<char>>
 		void url_escape(
-			_Inout_ std::basic_string<char, _Traits, _Alloc>& dst,
+			_Inout_ std::basic_string<char, TR, AX>& dst,
 			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars)
 		{
 			_Assume_(src || !num_chars);
@@ -353,12 +353,12 @@ namespace stdex
 		/// \param[in,out] dst  String to append to
 		/// \param[in]     src  Source string
 		///
-		template<size_t _Size, class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
+		template<size_t N, class TR = std::char_traits<char>, class AX = std::allocator<char>>
 		void url_escape(
-			_Inout_ std::basic_string<char, _Traits, _Alloc>& dst,
-			_In_ const char (&src)[_Size])
+			_Inout_ std::basic_string<char, TR, AX>& dst,
+			_In_ const char (&src)[N])
 		{
-			url_escape(dst, src, _Size);
+			url_escape(dst, src, N);
 		}
 
 		///
@@ -367,10 +367,10 @@ namespace stdex
 		/// \param[in,out] dst  String to append to
 		/// \param[in]     src  Source string
 		///
-		template<class _Traits_dst = std::char_traits<char>, class _Alloc_dst = std::allocator<char>>
+		template<class TR_dst = std::char_traits<char>, class AX_dst = std::allocator<char>>
 		void url_escape(
-			_Inout_ std::basic_string<char, _Traits_dst, _Alloc_dst>& dst,
-			_In_ const std::string_view src)
+			_Inout_ std::basic_string<char, TR_dst, AX_dst>& dst,
+			_In_ const std::basic_string_view<char, std::char_traits<char>> src)
 		{
 			url_escape(dst, src.data(), src.size());
 		}
@@ -382,10 +382,10 @@ namespace stdex
 		/// \param[in]     src        Source string
 		/// \param[in]     num_chars  Code unit limit in string `src`
 		///
-		template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Alloc = std::allocator<_Elem>>
+		template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
 		void css_unescape(
-			_Inout_ std::basic_string<_Elem, _Traits, _Alloc>& dst,
-			_In_reads_or_z_opt_(num_chars) const _Elem* src, _In_ size_t num_chars)
+			_Inout_ std::basic_string<T, TR, AX>& dst,
+			_In_reads_or_z_opt_(num_chars) const T* src, _In_ size_t num_chars)
 		{
 			_Assume_(src || !num_chars);
 			for (size_t i = 0; i < num_chars && src[i];) {
@@ -430,7 +430,7 @@ namespace stdex
 							else break;
 						}
 
-						dst += static_cast<_Elem>(chr);
+						dst += static_cast<T>(chr);
 
 						if (i < end && src[i] == ' ') {
 							// Skip space after `\nnnn`.
@@ -451,12 +451,12 @@ namespace stdex
 		/// \param[in,out] dst  String to append to
 		/// \param[in]     src  Source string
 		///
-		template<class _Elem, size_t _Size, class _Traits = std::char_traits<_Elem>, class _Alloc = std::allocator<_Elem>>
+		template<class T, size_t N, class TR = std::char_traits<T>, class AX = std::allocator<T>>
 		void css_unescape(
-			_Inout_ std::basic_string<_Elem, _Traits, _Alloc>& dst,
-			_In_ const _Elem (&src)[_Size])
+			_Inout_ std::basic_string<T, TR, AX>& dst,
+			_In_ const T (&src)[N])
 		{
-			css_unescape(dst, src, _Size);
+			css_unescape(dst, src, N);
 		}
 
 		///
@@ -465,10 +465,10 @@ namespace stdex
 		/// \param[in,out] dst  String to append to
 		/// \param[in]     src  Source string
 		///
-		template<class _Elem, class _Traits_dst = std::char_traits<_Elem>, class _Alloc_dst = std::allocator<_Elem>, class _Traits_src = std::char_traits<_Elem>, class _Alloc_src = std::allocator<_Elem>>
+		template<class T, class TR_dst = std::char_traits<T>, class AX_dst = std::allocator<T>, class TR_src = std::char_traits<T>, class AX_src = std::allocator<T>>
 		void css_unescape(
-			_Inout_ std::basic_string<_Elem, _Traits_dst, _Alloc_dst>& dst,
-			_In_ const std::basic_string<_Elem, _Traits_src, _Alloc_src>& src)
+			_Inout_ std::basic_string<T, TR_dst, AX_dst>& dst,
+			_In_ const std::basic_string<T, TR_src, AX_src>& src)
 		{
 			css_unescape(dst, src.data(), src.size());
 		}
@@ -480,9 +480,9 @@ namespace stdex
 		/// \param[in]     src        Source string
 		/// \param[in]     num_chars  Code unit limit in string `src`
 		///
-		template<class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
+		template<class TR = std::char_traits<char>, class AX = std::allocator<char>>
 		void css_escape(
-			_Inout_ std::basic_string<char, _Traits, _Alloc>& dst,
+			_Inout_ std::basic_string<char, TR, AX>& dst,
 			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars)
 		{
 			_Assume_(src || !num_chars);
@@ -506,9 +506,9 @@ namespace stdex
 		/// \param[in]     src        Source string
 		/// \param[in]     num_chars  Code unit limit in string `src`
 		///
-		template<class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
+		template<class TR = std::char_traits<wchar_t>, class AX = std::allocator<wchar_t>>
 		void css_escape(
-			_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst,
+			_Inout_ std::basic_string<wchar_t, TR, AX>& dst,
 			_In_reads_or_z_opt_(num_chars) const wchar_t* src, _In_ size_t num_chars)
 		{
 			_Assume_(src || !num_chars);
@@ -531,12 +531,12 @@ namespace stdex
 		/// \param[in,out] dst  String to append to
 		/// \param[in]     src  Source string
 		///
-		template<class _Elem, size_t _Size, class _Traits = std::char_traits<_Elem>, class _Alloc = std::allocator<_Elem>>
+		template<class T, size_t N, class TR = std::char_traits<T>, class AX = std::allocator<T>>
 		void css_escape(
-			_Inout_ std::basic_string<_Elem, _Traits, _Alloc>& dst,
-			_In_ const _Elem (&src)[_Size])
+			_Inout_ std::basic_string<T, TR, AX>& dst,
+			_In_ const T (&src)[N])
 		{
-			css_escape(dst, src, _Size);
+			css_escape(dst, src, N);
 		}
 
 		///
@@ -545,10 +545,10 @@ namespace stdex
 		/// \param[in,out] dst  String to append to
 		/// \param[in]     src  Source string
 		///
-		template<class _Elem, class _Traits_dst = std::char_traits<_Elem>, class _Alloc_dst = std::allocator<_Elem>, class _Traits_src = std::char_traits<_Elem>, class _Alloc_src = std::allocator<_Elem>>
+		template<class T, class TR_dst = std::char_traits<T>, class AX_dst = std::allocator<T>, class TR_src = std::char_traits<T>, class AX_src = std::allocator<T>>
 		void css_escape(
-			_Inout_ std::basic_string<_Elem, _Traits_dst, _Alloc_dst>& dst,
-			_In_ const std::basic_string<_Elem, _Traits_src, _Alloc_src>& src)
+			_Inout_ std::basic_string<T, TR_dst, AX_dst>& dst,
+			_In_ const std::basic_string<T, TR_src, AX_src>& src)
 		{
 			css_escape(dst, src.data(), src.size());
 		}
@@ -1581,23 +1581,23 @@ namespace stdex
 		///
 		/// HTML entity
 		///
-		template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Alloc = std::allocator<_Elem>>
+		template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
 		struct entity
 		{
 			stdex::interval<size_t> name;                    ///< Name position in source
-			std::basic_string<_Elem, _Traits, _Alloc> value; ///< Entity value
+			std::basic_string<T, TR, AX> value; ///< Entity value
 		};
 
 		///
 		/// HTML parser
 		///
-		template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Alloc = std::allocator<_Elem>>
+		template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
 		class parser;
 
 		///
 		/// HTML document
 		///
-		template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Alloc = std::allocator<_Elem>>
+		template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
 		class document
 		{
 		public:
@@ -1639,7 +1639,7 @@ namespace stdex
 			///
 			/// Parses HTML source code by chunks
 			///
-			void append(_In_reads_or_z_opt_(num_chars) const _Elem* source, _In_ size_t num_chars)
+			void append(_In_reads_or_z_opt_(num_chars) const T* source, _In_ size_t num_chars)
 			{
 				_Assume_(source || !num_chars);
 				m_source.append(source, stdex::strnlen(source, num_chars));
@@ -1770,7 +1770,7 @@ namespace stdex
 								}
 								if (is_content_type && content_attr) {
 									// <meta http-equiv="Content-Type" content="..."> found.
-									stdex::parser::basic_mime_type<_Elem> content;
+									stdex::parser::basic_mime_type<T> content;
 									if (content.match(source, content_attr->value.start, content_attr->value.end) &&
 										content.charset)
 									{
@@ -1814,7 +1814,7 @@ namespace stdex
 									stdex::strncmp(source + m_tag.attributes[3].name.start, m_tag.attributes[3].name.size(), "SYSTEM", SIZE_MAX) &&
 									stdex::strncmp(source + m_tag.attributes[3].name.start, m_tag.attributes[3].name.size(), "PUBLIC", SIZE_MAX))
 								{
-									std::unique_ptr<entity<_Elem, _Traits, _Alloc>> e(new entity<_Elem, _Traits, _Alloc>());
+									std::unique_ptr<entity<T, TR, AX>> e(new entity<T, TR, AX>());
 									e->name = m_tag.attributes[2].name;
 									e->value = std::move(replace_entities(source + m_tag.attributes[3].name.start, m_tag.attributes[3].name.size()));
 									m_entities.push_back(std::move(e));
@@ -1862,7 +1862,7 @@ namespace stdex
 			///
 			/// Parses HTML document source code
 			///
-			void assign(_In_reads_or_z_opt_(num_chars) const _Elem* source, _In_ size_t num_chars)
+			void assign(_In_reads_or_z_opt_(num_chars) const T* source, _In_ size_t num_chars)
 			{
 				clear();
 				append(source, num_chars);
@@ -1872,9 +1872,9 @@ namespace stdex
 			///
 			/// Returns document HTML source code
 			///
-			const std::basic_string<_Elem, _Traits, _Alloc>& source() const { return m_source; }
+			const std::basic_string<T, TR, AX>& source() const { return m_source; }
 
-			friend class parser<_Elem, _Traits, _Alloc>;
+			friend class parser<T, TR, AX>;
 
 		protected:
 			///
@@ -1888,12 +1888,12 @@ namespace stdex
 			///
 			/// Replaces entities with their content
 			///
-			std::basic_string<_Elem, _Traits, _Alloc> replace_entities(_In_reads_or_z_opt_(num_chars) const _Elem* input, _In_ size_t num_chars) const
+			std::basic_string<T, TR, AX> replace_entities(_In_reads_or_z_opt_(num_chars) const T* input, _In_ size_t num_chars) const
 			{
 				_Assume_(input || !num_chars);
 				const size_t num_entities = m_entities.size();
-				const _Elem* source = m_source.data();
-				std::basic_string<_Elem, _Traits, _Alloc> output;
+				const T* source = m_source.data();
+				std::basic_string<T, TR, AX> output;
 				for (size_t i = 0; i < num_chars && input[i];) {
 					if (input[i] == '%') {
 						for (size_t j = 0; j < num_entities; j++) {
@@ -1917,7 +1917,7 @@ namespace stdex
 			}
 
 		protected:
-			std::basic_string<_Elem, _Traits, _Alloc> m_source; ///< Document HTML source code
+			std::basic_string<T, TR, AX> m_source; ///< Document HTML source code
 			size_t m_num_parsed;                                ///< Number of characters already parsed
 			stdex::charset_id m_charset;                        ///< Document charset
 
@@ -1926,13 +1926,13 @@ namespace stdex
 			size_t m_num_invalid_conditions; ///< Number of started invalid conditions
 			bool m_is_cdata;                 ///< Inside of CDATA?
 			bool m_is_rcdata;                ///< Inside of RCDATA?
-			stdex::parser::basic_html_declaration_condition_start<_Elem> m_condition_start;
-			stdex::parser::basic_html_declaration_condition_end<_Elem> m_condition_end;
-			stdex::parser::basic_any_cu<_Elem> m_any_char;
-			std::vector<std::unique_ptr<entity<_Elem, _Traits, _Alloc>>> m_entities; ///< Array of entities
+			stdex::parser::basic_html_declaration_condition_start<T> m_condition_start;
+			stdex::parser::basic_html_declaration_condition_end<T> m_condition_end;
+			stdex::parser::basic_any_cu<T> m_any_char;
+			std::vector<std::unique_ptr<entity<T, TR, AX>>> m_entities; ///< Array of entities
 
 			// Element parsing data
-			stdex::parser::basic_html_tag<_Elem> m_tag;
+			stdex::parser::basic_html_tag<T> m_tag;
 			sequence_store m_sequences;                         ///< Store of sequences
 			std::vector<element_start*> m_element_stack;        ///< LIFO stack of started elements
 			bool m_is_special_element;                          ///< Inside of a special element (<SCRIPT>, <STYLE>, ...)?
@@ -1981,7 +1981,7 @@ namespace stdex
 				data(_data)
 			{}
 
-			template<class _Elem, class _Traits, class _Alloc>
+			template<class T, class TR, class AX>
 			friend class parser;
 
 		public:
@@ -1994,8 +1994,8 @@ namespace stdex
 			///
 			/// \returns Number of code units appended
 			///
-			template<class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
-			size_t append_tag(_Inout_ std::basic_string<char, _Traits, _Alloc>& str) const
+			template<class TR = std::char_traits<char>, class AX = std::allocator<char>>
+			size_t append_tag(_Inout_ std::basic_string<char, TR, AX>& str) const
 			{
 				size_t n = str.size();
 				// Use %X instead of %p to ommit leading zeros and save space.
@@ -2010,8 +2010,8 @@ namespace stdex
 			///
 			/// \returns Number of code units appended
 			///
-			template<class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
-			size_t append_tag(_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& str) const
+			template<class TR = std::char_traits<wchar_t>, class AX = std::allocator<wchar_t>>
+			size_t append_tag(_Inout_ std::basic_string<wchar_t, TR, AX>& str) const
 			{
 				// Use %X instead of %p to ommit leading zeros and save space.
 				return stdex::appendf(str, L"%c%zX%c", stdex::locale_C.get(), static_cast<wchar_t>(token_tag_start), reinterpret_cast<uintptr_t>(this), static_cast<wchar_t>(token_tag_end));
@@ -2062,13 +2062,13 @@ namespace stdex
 		///
 		/// Token representing part of HTML text
 		///
-		template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Alloc = std::allocator<_Elem>>
+		template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
 		class text_token : public token
 		{
 		protected:
 			text_token(
 				_In_ token_t type = token_t::complete,
-				_In_reads_or_z_opt_(num_chars) const _Elem* _text = nullptr, _In_ size_t num_chars = 0,
+				_In_reads_or_z_opt_(num_chars) const T* _text = nullptr, _In_ size_t num_chars = 0,
 				_In_ uint32_t _text_type = 0,
 				_In_opt_ stdex::html::sequence* sequence = nullptr, _In_ uintptr_t data = 0) :
 				token(type, sequence, data),
@@ -2076,10 +2076,10 @@ namespace stdex
 				text_type(_text_type)
 			{}
 
-			friend class parser<_Elem, _Traits, _Alloc>;
+			friend class parser<T, TR, AX>;
 
 		public:
-			std::basic_string<_Elem, _Traits, _Alloc> text; ///< Token text
+			std::basic_string<T, TR, AX> text; ///< Token text
 			uint32_t text_type;                             ///< Mask of text_type_flag_t to specify text content
 			stdex::mapping_vector<size_t> mapping;          ///< Mapping between source and text positions
 		};
@@ -2087,13 +2087,13 @@ namespace stdex
 		///
 		/// Token representing start HTML tag
 		///
-		template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Alloc = std::allocator<_Elem>>
-		class starting_token : public text_token<_Elem, _Traits, _Alloc>
+		template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
+		class starting_token : public text_token<T, TR, AX>
 		{
 		protected:
 			starting_token(
-				_In_reads_or_z_opt_(num_chars_text) const _Elem* _text = nullptr, _In_ size_t num_chars_text = 0,
-				_In_reads_or_z_opt_(num_chars_name) const _Elem* _name = nullptr, _In_ size_t num_chars_name = 0,
+				_In_reads_or_z_opt_(num_chars_text) const T* _text = nullptr, _In_ size_t num_chars_text = 0,
+				_In_reads_or_z_opt_(num_chars_name) const T* _name = nullptr, _In_ size_t num_chars_name = 0,
 				_In_ uint32_t text_type = 0,
 				_In_opt_ stdex::html::sequence* sequence = nullptr,
 				_In_opt_ stdex::html::sequence* _end_sequence = nullptr,
@@ -2103,10 +2103,10 @@ namespace stdex
 				end_sequence(_end_sequence)
 			{}
 
-			friend class parser<_Elem, _Traits, _Alloc>;
+			friend class parser<T, TR, AX>;
 
 		public:
-			std::basic_string<_Elem, _Traits, _Alloc> name; ///< Element name allowing later recreation of ending </tag>
+			std::basic_string<T, TR, AX> name; ///< Element name allowing later recreation of ending </tag>
 			stdex::html::sequence* end_sequence;            ///< Ending tag sequence
 		};
 
@@ -2122,12 +2122,12 @@ namespace stdex
 		///
 		/// HTTP token representing an URL
 		///
-		template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Alloc = std::allocator<_Elem>>
+		template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
 		class url_token : public token
 		{
 		protected:
 			url_token(
-				_In_reads_or_z_opt_(num_chars) const _Elem* _url = nullptr, _In_ size_t num_chars = 0,
+				_In_reads_or_z_opt_(num_chars) const T* _url = nullptr, _In_ size_t num_chars = 0,
 				token_url_t _encoding = token_url_t::plain,
 				_In_opt_ stdex::html::sequence* sequence = nullptr, _In_ uintptr_t data = 0) :
 				token(token_t::url, sequence, data),
@@ -2135,10 +2135,10 @@ namespace stdex
 				encoding(_encoding)
 			{}
 
-			friend class parser<_Elem, _Traits, _Alloc>;
+			friend class parser<T, TR, AX>;
 
 		public:
-			std::basic_string<_Elem, _Traits, _Alloc> url; ///< URL
+			std::basic_string<T, TR, AX> url; ///< URL
 			token_url_t encoding;                          ///< URL encoding
 		};
 
@@ -2154,12 +2154,12 @@ namespace stdex
 
 		using inserted_token_list = std::list<inserted_token>;
 
-		template<class _Elem, class _Traits, class _Alloc>
+		template<class T, class TR, class AX>
 		class parser
 		{
 		public:
 			parser(
-				_In_ const document<_Elem, _Traits, _Alloc>& document,
+				_In_ const document<T, TR, AX>& document,
 				_In_reads_or_z_opt_(num_chars) const stdex::schar_t* url = nullptr, _In_ size_t num_chars = 0,
 				_In_ bool parse_frames = false, _In_ stdex::progress<size_t>* progress = nullptr) :
 				m_document(document),
@@ -2172,7 +2172,7 @@ namespace stdex
 			///
 			/// Parses HTML document
 			///
-			text_token<_Elem, _Traits, _Alloc>* parse()
+			text_token<T, TR, AX>* parse()
 			{
 				_Assume_(m_tokens.empty());
 
@@ -2192,7 +2192,7 @@ namespace stdex
 			/// \param[in,out] source  String to append source code to
 			/// \param[in    ] t       Document root token
 			///
-			static void link(_Inout_ std::basic_string<_Elem, _Traits, _Alloc>& source, _In_ const text_token<_Elem, _Traits, _Alloc>* t)
+			static void link(_Inout_ std::basic_string<T, TR, AX>& source, _In_ const text_token<T, TR, AX>* t)
 			{
 				_Assume_(t);
 				_Assume_(
@@ -2202,7 +2202,7 @@ namespace stdex
 					t->type == token_t::root);
 
 				if (t->text_type & has_tokens) {
-					const _Elem* root = t->text.data();
+					const T* root = t->text.data();
 					for (size_t i = 0, num_chars = t->text.size(); i < num_chars && root[i];) {
 						_Assume_(root[i] != token_tag_end);
 						const token* t2 = token::parse_tag(root, i);
@@ -2212,10 +2212,10 @@ namespace stdex
 							case token_t::starting:
 							case token_t::ending:
 							case token_t::root:
-								link(source, dynamic_cast<const text_token<_Elem, _Traits, _Alloc>*>(t2));
+								link(source, dynamic_cast<const text_token<T, TR, AX>*>(t2));
 								break;
 							case token_t::url: {
-								auto t2_url = dynamic_cast<const url_token<_Elem, _Traits, _Alloc>*>(t2);
+								auto t2_url = dynamic_cast<const url_token<T, TR, AX>*>(t2);
 								switch (t2_url->encoding) {
 								case token_url_t::plain:
 									source += t2_url->url;
@@ -2259,7 +2259,7 @@ namespace stdex
 			/// \param[in]     new_tokens     New tokens to add
 			/// \param[in]     from           Token from `new_tokens` to start adding at
 			///
-			static void start_tokens(_Inout_ std::basic_string<_Elem, _Traits, _Alloc>& source, _Inout_ token_list& active_tokens, _In_ const token_list& new_tokens, _In_ token_list::const_iterator from)
+			static void start_tokens(_Inout_ std::basic_string<T, TR, AX>& source, _Inout_ token_list& active_tokens, _In_ const token_list& new_tokens, _In_ token_list::const_iterator from)
 			{
 				for (; from != new_tokens.cend(); ++from) {
 					auto t = *from;
@@ -2277,7 +2277,7 @@ namespace stdex
 			///
 			/// \returns Position in `new_tokens` specifying where the cut was made
 			///
-			token_list::const_iterator end_tokens(_Inout_ std::basic_string<_Elem, _Traits, _Alloc>& source, _Inout_ token_list& active_tokens, _In_ const token_list& new_tokens)
+			token_list::const_iterator end_tokens(_Inout_ std::basic_string<T, TR, AX>& source, _Inout_ token_list& active_tokens, _In_ const token_list& new_tokens)
 			{
 				// Skip matching tokens in active_tokens and new_tokens.
 				token_list::const_iterator i1, i2;
@@ -2286,10 +2286,10 @@ namespace stdex
 						// Got two tokens, where lists don't match anymore, or new_tokens list is out.
 						// End tokens not relevant anymore in reverse order of starting.
 						for (auto i = active_tokens.cend(); i != active_tokens.cbegin(); ) {
-							auto t1 = dynamic_cast<starting_token<_Elem, _Traits, _Alloc>*>(*(--i));
+							auto t1 = dynamic_cast<starting_token<T, TR, AX>*>(*(--i));
 							_Assume_(t1 && t1->type == token_t::starting);
 
-							std::unique_ptr<text_token<_Elem, _Traits, _Alloc>> t2(new text_token<_Elem, _Traits, _Alloc>(token_t::ending));
+							std::unique_ptr<text_token<T, TR, AX>> t2(new text_token<T, TR, AX>(token_t::ending));
 							t2->text.reserve(t1->name.size() + 3);
 							t2->text += '<';
 							t2->text += '/';
@@ -2320,7 +2320,7 @@ namespace stdex
 			/// \param[in]     after_word       `false` if source code is before the word; `true` if after the word
 			/// \param[in,out] active_tokens    Stack of active tokens
 			///
-			void append_inserted_tokens(_Inout_ std::basic_string<_Elem, _Traits, _Alloc>& source, _Inout_ inserted_token_list& inserted_tokens,
+			void append_inserted_tokens(_Inout_ std::basic_string<T, TR, AX>& source, _Inout_ inserted_token_list& inserted_tokens,
 				_In_ size_t word_index, _In_ bool after_word,
 				_Inout_ token_list& active_tokens)
 			{
@@ -2363,7 +2363,7 @@ namespace stdex
 			///
 			/// Converts URL to absolute
 			///
-			void make_absolute_url(std::basic_string<_Elem, _Traits, _Alloc>& rel)
+			void make_absolute_url(std::basic_string<T, TR, AX>& rel)
 			{
 				_Unreferenced_(rel);
 
@@ -2405,7 +2405,7 @@ namespace stdex
 			/// \returns Number of code units appended to the source code
 			///
 			template <class T>
-			size_t append_token(_Inout_ std::unique_ptr<T>&& token, _Inout_ std::basic_string<_Elem, _Traits, _Alloc>& source)
+			size_t append_token(_Inout_ std::unique_ptr<T>&& token, _Inout_ std::basic_string<T, TR, AX>& source)
 			{
 				if (!token)
 					return 0;
@@ -2422,10 +2422,10 @@ namespace stdex
 			///
 			/// \returns Token represening sequences parsed
 			///
-			text_token<_Elem, _Traits, _Alloc>* parse(_In_ const sequence_store::const_iterator& end, _In_ uint32_t text_type = 0)
+			text_token<T, TR, AX>* parse(_In_ const sequence_store::const_iterator& end, _In_ uint32_t text_type = 0)
 			{
 				stdex::mapping<size_t> rel;
-				std::unique_ptr<text_token<_Elem, _Traits, _Alloc>> token(new text_token<_Elem, _Traits, _Alloc>(
+				std::unique_ptr<text_token<T, TR, AX>> token(new text_token<T, TR, AX>(
 					token_t::complete,
 					nullptr, 0,
 					text_type,
@@ -2442,8 +2442,8 @@ namespace stdex
 
 					// No token_tag_start and token_tag_end chars, please.
 					_Assume_(
-						stdex::strnchr(m_source + s->interval.start, s->interval.size(), static_cast<_Elem>(token_tag_start)) == stdex::npos &&
-						stdex::strnchr(m_source + s->interval.start, s->interval.size(), static_cast<_Elem>(token_tag_end)) == stdex::npos);
+						stdex::strnchr(m_source + s->interval.start, s->interval.size(), static_cast<T>(token_tag_start)) == stdex::npos &&
+						stdex::strnchr(m_source + s->interval.start, s->interval.size(), static_cast<T>(token_tag_end)) == stdex::npos);
 
 					if (s->type == stdex::parser::html_sequence_t::text) {
 						rel.from = s->interval.start;
@@ -2464,9 +2464,9 @@ namespace stdex
 
 						{
 							size_t offset = s->interval.start;
-							std::unique_ptr<text_token<_Elem, _Traits, _Alloc>> t(s->type == stdex::parser::html_sequence_t::element || element_traits::span(s_el_start->code) == element_span_t::immediate ?
-								new text_token<_Elem, _Traits, _Alloc>(token_t::complete, nullptr, 0, 0, s.get()) :
-								new starting_token<_Elem, _Traits, _Alloc>(nullptr, 0, m_source + s_el_start->name.start, s_el_start->name.size(), 0, s.get(), s_el_start->end));
+							std::unique_ptr<text_token<T, TR, AX>> t(s->type == stdex::parser::html_sequence_t::element || element_traits::span(s_el_start->code) == element_span_t::immediate ?
+								new text_token<T, TR, AX>(token_t::complete, nullptr, 0, 0, s.get()) :
+								new starting_token<T, TR, AX>(nullptr, 0, m_source + s_el_start->name.start, s_el_start->name.size(), 0, s.get(), s_el_start->end));
 
 							// Copy the tag contents, but mind any attributes containing localizable text.
 							for (auto& a : s_el->attributes) {
@@ -2476,7 +2476,7 @@ namespace stdex
 
 								if (element_traits::is_uri(s_el->code, m_source + a.name.start, a.name.size())) {
 									t->text.append(m_source + offset, a.value.start - offset);
-									std::unique_ptr<url_token<_Elem, _Traits, _Alloc>> t_url(new url_token<_Elem, _Traits, _Alloc>(
+									std::unique_ptr<url_token<T, TR, AX>> t_url(new url_token<T, TR, AX>(
 										nullptr, 0,
 										token_url_t::sgml,
 										s.get()));
@@ -2487,7 +2487,7 @@ namespace stdex
 								}
 								else if (element_traits::is_localizable(s_el->code, m_source + a.name.start, a.name.size())) {
 									t->text.append(m_source + offset, a.value.start - offset);
-									std::unique_ptr<text_token<_Elem, _Traits, _Alloc>> t_value(new text_token<_Elem, _Traits, _Alloc>(
+									std::unique_ptr<text_token<T, TR, AX>> t_value(new text_token<T, TR, AX>(
 										token_t::complete,
 										nullptr, 0,
 										has_text | is_title,
@@ -2527,8 +2527,8 @@ namespace stdex
 									if (s_el_start->code != element_t::style) {
 										rel.from = s->interval.start;
 										token->mapping.push_back(rel);
-										rel.to += append_token(std::move(std::unique_ptr<text_token<_Elem, _Traits, _Alloc>>(
-											new text_token<_Elem, _Traits, _Alloc>(
+										rel.to += append_token(std::move(std::unique_ptr<text_token<T, TR, AX>>(
+											new text_token<T, TR, AX>(
 												token_t::complete,
 												m_source + s->interval.end, s_end->interval.start - s->interval.end,
 												0,
@@ -2565,8 +2565,8 @@ namespace stdex
 					else if (s->type == stdex::parser::html_sequence_t::element_end) {
 						rel.from = s->interval.start;
 						token->mapping.push_back(rel);
-						rel.to += append_token(std::move(std::unique_ptr<text_token<_Elem, _Traits, _Alloc>>(
-							new text_token<_Elem, _Traits, _Alloc>(
+						rel.to += append_token(std::move(std::unique_ptr<text_token<T, TR, AX>>(
+							new text_token<T, TR, AX>(
 								token_t::ending,
 								m_source + s->interval.start, s->interval.size(),
 								0,
@@ -2579,8 +2579,8 @@ namespace stdex
 						// Declaration, instruction, (P)CDATA section, comment...
 						rel.from = s->interval.start;
 						token->mapping.push_back(rel);
-						rel.to += append_token(std::move(std::unique_ptr<text_token<_Elem, _Traits, _Alloc>>(
-							new text_token<_Elem, _Traits, _Alloc>(
+						rel.to += append_token(std::move(std::unique_ptr<text_token<T, TR, AX>>(
+							new text_token<T, TR, AX>(
 								token_t::complete,
 								m_source + s->interval.start, s->interval.size(),
 								0,
@@ -2597,11 +2597,11 @@ namespace stdex
 			///
 			/// Parses CSS
 			///
-			text_token<_Elem, _Traits, _Alloc>* parse_css(size_t start, size_t end)
+			text_token<T, TR, AX>* parse_css(size_t start, size_t end)
 			{
 				stdex::interval<size_t> section, content;
-				std::unique_ptr<text_token<_Elem, _Traits, _Alloc>> token(
-					new text_token<_Elem, _Traits, _Alloc>(
+				std::unique_ptr<text_token<T, TR, AX>> token(
+					new text_token<T, TR, AX>(
 						token_t::complete,
 						nullptr, 0,
 						0,
@@ -2624,8 +2624,8 @@ namespace stdex
 						m_css_import.match(m_source, start, end) && (section = m_css_import.interval, content = m_css_import.content, true) ||
 						m_css_uri.match(m_source, start, end) && (section = m_css_uri.interval, content = m_css_uri.content, true))
 					{
-						std::unique_ptr<url_token<_Elem, _Traits, _Alloc>> t_url(
-							new url_token<_Elem, _Traits, _Alloc>(
+						std::unique_ptr<url_token<T, TR, AX>> t_url(
+							new url_token<T, TR, AX>(
 								nullptr, 0,
 								token_url_t::css,
 								m_offset->get()));
@@ -2648,22 +2648,22 @@ namespace stdex
 			}
 
 		protected:
-			const document<_Elem, _Traits, _Alloc>& m_document;        ///< Document being analyzed
+			const document<T, TR, AX>& m_document;        ///< Document being analyzed
 			const stdex::sstring m_url;              ///< Absolute document URL
 			const bool m_parse_frames;               ///< Parse frames
 			stdex::progress<size_t>* m_progress;     ///< Progress indicator
-			const _Elem* m_source;                   ///< HTML source code
+			const T* m_source;                   ///< HTML source code
 			token_vector m_tokens;                   ///< HTML token storage
 			sequence_store::const_iterator m_offset; ///< Index of active section
 
 			// For detecting URLs in CSS
-			stdex::parser::basic_css_cdo<_Elem> m_css_cdo;
-			stdex::parser::basic_css_cdc<_Elem> m_css_cdc;
-			stdex::parser::basic_css_comment<_Elem> m_css_comment;
-			stdex::parser::basic_css_string<_Elem> m_css_string;
-			stdex::parser::basic_css_uri<_Elem> m_css_uri;
-			stdex::parser::basic_css_import<_Elem> m_css_import;
-			stdex::parser::basic_any_cu<_Elem> m_any_char;
+			stdex::parser::basic_css_cdo<T> m_css_cdo;
+			stdex::parser::basic_css_cdc<T> m_css_cdc;
+			stdex::parser::basic_css_comment<T> m_css_comment;
+			stdex::parser::basic_css_string<T> m_css_string;
+			stdex::parser::basic_css_uri<T> m_css_uri;
+			stdex::parser::basic_css_import<T> m_css_import;
+			stdex::parser::basic_any_cu<T> m_any_char;
 		};
 	}
 }

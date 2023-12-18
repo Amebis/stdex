@@ -62,11 +62,13 @@ namespace stdex
 	constexpr charset_id system_charset = charset_id::system;
 #endif
 
-	/// <summary>
+	///
 	/// Parses charset name and returns matching charset code
-	/// </summary>
-	/// <param name="name">Charset name</param>
-	/// <returns>Charset code or `charset_id::system` if match not found</returns>
+	///
+	/// \param[in] name  Charset name
+	///
+	/// \returns Charset code or `charset_id::system` if match not found
+	///
 	inline charset_id charset_from_name(_In_z_ const char* name)
 	{
 		struct charset_less {
@@ -114,13 +116,15 @@ namespace stdex
 		return charset_id::system;
 	}
 
-	/// <summary>
+	///
 	/// Parses charset name and returns matching charset code
-	/// </summary>
-	/// <param name="name">Charset name</param>
-	/// <returns>Charset code or `charset_id::system` if match not found</returns>
-	template <class _Traits = std::char_traits<char>, class _Alloc = std::allocator<char>>
-	charset_id charset_from_name(_In_ const std::basic_string<char, _Traits, _Alloc>& name)
+	///
+	/// \param[in] name  Charset name
+	///
+	/// \returns Charset code or `charset_id::system` if match not found
+	///
+	template <class TR = std::char_traits<char>, class AX = std::allocator<char>>
+	charset_id charset_from_name(_In_ const std::basic_string<char, TR, AX>& name)
 	{
 		return charset_from_name(name.c_str());
 	}
@@ -166,9 +170,9 @@ namespace stdex
 		/// \param[in]     src        String to convert
 		/// \param[in]     count_src  String to convert code unit limit
 		///
-		template <class _Traits_to = std::char_traits<T_to>, class _Alloc_to = std::allocator<T_to>>
+		template <class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>>
 		void strcat(
-			_Inout_ std::basic_string<T_to, _Traits_to, _Alloc_to>& dst,
+			_Inout_ std::basic_string<T_to, TR_to, AX_to>& dst,
 			_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src)
 		{
 			_Assume_(src || !count_src);
@@ -308,9 +312,9 @@ namespace stdex
 		/// \param[in,out] dst        String to append converted string to
 		/// \param[in]     src        Zero-terminated string to convert
 		///
-		template <class _Traits_to = std::char_traits<T_to>, class _Alloc_to = std::allocator<T_to>>
+		template <class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>>
 		void strcat(
-			_Inout_ std::basic_string<T_to, _Traits_to, _Alloc_to>& dst,
+			_Inout_ std::basic_string<T_to, TR_to, AX_to>& dst,
 			_In_z_ const T_from* src)
 		{
 			strcat(dst, src, SIZE_MAX);
@@ -322,10 +326,10 @@ namespace stdex
 		/// \param[in,out] dst        String to append converted string to
 		/// \param[in]     src        String to convert
 		///
-		template <class _Traits_to = std::char_traits<T_to>, class _Alloc_to = std::allocator<T_to>, class _Traits_from = std::char_traits<T_from>, class _Alloc_from = std::allocator<T_from>>
+		template <class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>>
 		void strcat(
-			_Inout_ std::basic_string<T_to, _Traits_to, _Alloc_to>& dst,
-			_In_ const std::basic_string<T_from, _Traits_from, _Alloc_from>& src)
+			_Inout_ std::basic_string<T_to, TR_to, AX_to>& dst,
+			_In_ const std::basic_string_view<T_from, std::char_traits<T_from>> src)
 		{
 			strcat(dst, src.data(), src.size());
 		}
@@ -337,9 +341,9 @@ namespace stdex
 		/// \param[in]     src        String to convert
 		/// \param[in]     count_src  String to convert code unit limit
 		///
-		template <class _Traits_to = std::char_traits<T_to>, class _Alloc_to = std::allocator<T_to>>
+		template <class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>>
 		void strcpy(
-			_Inout_ std::basic_string<T_to, _Traits_to, _Alloc_to>& dst,
+			_Inout_ std::basic_string<T_to, TR_to, AX_to>& dst,
 			_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src)
 		{
 			dst.clear();
@@ -352,9 +356,9 @@ namespace stdex
 		/// \param[in,out] dst        String to write converted string to
 		/// \param[in]     src        Zero-terminated string to convert
 		///
-		template <class _Traits_to = std::char_traits<T_to>, class _Alloc_to = std::allocator<T_to>>
+		template <class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>>
 		void strcpy(
-			_Inout_ std::basic_string<T_to, _Traits_to, _Alloc_to>& dst,
+			_Inout_ std::basic_string<T_to, TR_to, AX_to>& dst,
 			_In_z_ const T_from* src)
 		{
 			strcpy(dst, src, SIZE_MAX);
@@ -366,10 +370,10 @@ namespace stdex
 		/// \param[in,out] dst        String to write converted string to
 		/// \param[in]     src        String to convert
 		///
-		template <class _Traits_to = std::char_traits<T_to>, class _Alloc_to = std::allocator<T_to>, class _Traits_from = std::char_traits<T_from>, class _Alloc_from = std::allocator<T_from>>
+		template <class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>>
 		void strcpy(
-			_Inout_ std::basic_string<T_to, _Traits_to, _Alloc_to>& dst,
-			_In_ const std::basic_string<T_from, _Traits_from, _Alloc_from>& src)
+			_Inout_ std::basic_string<T_to, TR_to, AX_to>& dst,
+			_In_ const std::basic_string_view<T_from, std::char_traits<T_from>> src)
 		{
 			strcpy(dst, src.data(), src.size());
 		}
@@ -380,10 +384,10 @@ namespace stdex
 		/// \param[in]     src        String to convert
 		/// \param[in]     count_src  String to convert code unit limit
 		///
-		template <class _Traits_to = std::char_traits<T_to>, class _Alloc_to = std::allocator<T_to>>
-		std::basic_string<T_to, _Traits_to, _Alloc_to> convert(_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src)
+		template <class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>>
+		std::basic_string<T_to, TR_to, AX_to> convert(_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src)
 		{
-			std::basic_string<T_to, _Traits_to, _Alloc_to> dst;
+			std::basic_string<T_to, TR_to, AX_to> dst;
 			strcat(dst, src, count_src);
 			return dst;
 		}
@@ -393,8 +397,8 @@ namespace stdex
 		///
 		/// \param[in]     src        Zero-terminated string to convert
 		///
-		template <class _Traits_to = std::char_traits<T_to>, class _Alloc_to = std::allocator<T_to>>
-		std::basic_string<T_to, _Traits_to, _Alloc_to> convert(_In_z_ const T_from* src)
+		template <class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>>
+		std::basic_string<T_to, TR_to, AX_to> convert(_In_z_ const T_from* src)
 		{
 			return convert(src, SIZE_MAX);
 		}
@@ -404,8 +408,8 @@ namespace stdex
 		///
 		/// \param[in]     src        String to convert
 		///
-		template <class _Traits_to = std::char_traits<T_to>, class _Alloc_to = std::allocator<T_to>, class _Traits_from = std::char_traits<T_from>, class _Alloc_from = std::allocator<T_from>>
-		std::basic_string<T_to, _Traits_to, _Alloc_to> convert(_In_ const std::basic_string<T_from, _Traits_from, _Alloc_from>& src)
+		template <class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>>
+		std::basic_string<T_to, TR_to, AX_to> convert(_In_ const std::basic_string_view<T_from, std::char_traits<T_from>> src)
 		{
 			return convert(src.data(), src.size());
 		}
@@ -477,20 +481,22 @@ namespace stdex
 	/// \param[in]     count_src  String character count limit
 	/// \param[in]     charset    Charset (stdex::charset_id::system - system default)
 	///
+	template <class TR_to = std::char_traits<wchar_t>, class AX_to = std::allocator<wchar_t>>
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
 		inline void strcat(
-			_Inout_ std::wstring& dst,
+			_Inout_ std::basic_string<wchar_t, TR_to, AX_to>& dst,
 			_In_reads_or_z_opt_(count_src) const char* src, _In_ size_t count_src,
 			_In_ charset_id charset = charset_id::system)
 	{
 		charset_encoder<char, wchar_t>(charset, wchar_t_charset).strcat(dst, src, count_src);
 	}
 
+	template <class TR_to = std::char_traits<wchar_t>, class AX_to = std::allocator<wchar_t>>
 	_Deprecated_("Use stdex::strcat")
 		inline void str2wstr(
-			_Inout_ std::wstring& dst,
+			_Inout_ std::basic_string<wchar_t, TR_to, AX_to>& dst,
 			_In_reads_or_z_opt_(count_src) const char* src, _In_ size_t count_src,
 			_In_ charset_id charset = charset_id::system)
 	{
@@ -506,21 +512,23 @@ namespace stdex
 	/// \param[in]     src        String
 	/// \param[in]     charset    Charset (stdex::charset_id::system - system default)
 	///
+	template <class TR_to = std::char_traits<wchar_t>, class AX_to = std::allocator<wchar_t>>
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
 		inline void strcat(
-			_Inout_ std::wstring& dst,
-			_In_ const std::string_view src,
+			_Inout_ std::basic_string<wchar_t, TR_to, AX_to>& dst,
+			_In_ const std::basic_string_view<char, std::char_traits<char>> src,
 			_In_ charset_id charset = charset_id::system)
 	{
 		strcat(dst, src.data(), src.size(), charset);
 	}
 
+	template <class TR_to = std::char_traits<wchar_t>, class AX_to = std::allocator<wchar_t>>
 	_Deprecated_("Use stdex::strcat")
 		inline void str2wstr(
-			_Inout_ std::wstring& dst,
-			_In_ const std::string_view src,
+			_Inout_ std::basic_string<wchar_t, TR_to, AX_to>& dst,
+			_In_ const std::basic_string_view<char, std::char_traits<char>> src,
 			_In_ charset_id charset = charset_id::system)
 	{
 		strcat(dst, src, charset);
@@ -536,11 +544,12 @@ namespace stdex
 	/// \param[in]     count_src  String character count limit
 	/// \param[in]     charset    Charset (stdex::charset_id::system - system default)
 	///
+	template <class TR_to = std::char_traits<wchar_t>, class AX_to = std::allocator<wchar_t>>
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
 		inline void strcpy(
-			_Inout_ std::wstring& dst,
+			_Inout_ std::basic_string<wchar_t, TR_to, AX_to>& dst,
 			_In_reads_or_z_opt_(count_src) const char* src, _In_ size_t count_src,
 			_In_ charset_id charset = charset_id::system)
 	{
@@ -557,12 +566,13 @@ namespace stdex
 	/// \param[in]     src        String
 	/// \param[in]     charset    Charset (stdex::charset_id::system - system default)
 	///
+	template <class TR_to = std::char_traits<wchar_t>, class AX_to = std::allocator<wchar_t>>
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
 		inline void strcpy(
-			_Inout_ std::wstring& dst,
-			_In_ const std::string_view src,
+			_Inout_ std::basic_string<wchar_t, TR_to, AX_to>& dst,
+			_In_ const std::basic_string_view<char, std::char_traits<char>> src,
 			_In_ charset_id charset = charset_id::system)
 	{
 		strcpy(dst, src.data(), src.size(), charset);
@@ -627,7 +637,7 @@ namespace stdex
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
 		inline std::wstring str2wstr(
-			_In_ const std::string_view src,
+			_In_ const std::basic_string_view<char, std::char_traits<char>> src,
 			_In_ charset_id charset = charset_id::system)
 	{
 		return str2wstr(src.data(), src.size(), charset);
@@ -643,20 +653,22 @@ namespace stdex
 	/// \param[in]     count_src  Unicode string character count limit
 	/// \param[in]     charset    Charset (stdex::charset_id::system - system default)
 	///
+	template <class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>>
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
 		inline void strcat(
-			_Inout_ std::string& dst,
+			_Inout_ std::basic_string<char, TR_to, AX_to>& dst,
 			_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
 			_In_ charset_id charset = charset_id::system)
 	{
 		charset_encoder<wchar_t, char>(wchar_t_charset, charset).strcat(dst, src, count_src);
 	}
 
+	template <class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>>
 	_Deprecated_("Use stdex::strcat")
 		inline void wstr2str(
-			_Inout_ std::string& dst,
+			_Inout_ std::basic_string<char, TR_to, AX_to>& dst,
 			_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
 			_In_ charset_id charset = charset_id::system)
 	{
@@ -672,21 +684,23 @@ namespace stdex
 	/// \param[in]     src        Unicode string
 	/// \param[in]     charset    Charset (stdex::charset_id::system - system default)
 	///
+	template <class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>>
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
 		inline void strcat(
-			_Inout_ std::string& dst,
-			_In_ const std::wstring_view src,
+			_Inout_ std::basic_string<char, TR_to, AX_to>& dst,
+			_In_ const std::basic_string_view<wchar_t, std::char_traits<wchar_t>> src,
 			_In_ charset_id charset = charset_id::system)
 	{
 		strcat(dst, src.data(), src.size(), charset);
 	}
 
+	template <class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>>
 	_Deprecated_("Use stdex::strcat")
 		inline void wstr2str(
-			_Inout_ std::string& dst,
-			_In_ const std::wstring_view src,
+			_Inout_ std::basic_string<char, TR_to, AX_to>& dst,
+			_In_ const std::basic_string_view<wchar_t, std::char_traits<wchar_t>> src,
 			_In_ charset_id charset = charset_id::system)
 	{
 		strcat(dst, src, charset);
@@ -702,11 +716,12 @@ namespace stdex
 	/// \param[in]     count_src  Unicode string character count limit
 	/// \param[in]     charset    Charset (stdex::charset_id::system - system default)
 	///
+	template <class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>>
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
 		inline void strcpy(
-			_Inout_ std::string& dst,
+			_Inout_ std::basic_string<char, TR_to, AX_to>& dst,
 			_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
 			_In_ charset_id charset = charset_id::system)
 	{
@@ -723,12 +738,13 @@ namespace stdex
 	/// \param[in]     src        Unicode string
 	/// \param[in]     charset    Charset (stdex::charset_id::system - system default)
 	///
+	template <class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>>
 #ifndef _WIN32
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
 		inline void strcpy(
-			_Inout_ std::string& dst,
-			_In_ const std::wstring_view src,
+			_Inout_ std::basic_string<char, TR_to, AX_to>& dst,
+			_In_ const std::basic_string_view<wchar_t, std::char_traits<wchar_t>> src,
 			_In_ charset_id charset = charset_id::system)
 	{
 		strcpy(dst, src.data(), src.size(), charset);
@@ -793,7 +809,7 @@ namespace stdex
 	_Deprecated_("For better performance, consider a reusable charset_encoder")
 #endif
 		inline std::string wstr2str(
-			_In_ const std::wstring_view src,
+			_In_ const std::basic_string_view<wchar_t, std::char_traits<wchar_t>> src,
 			_In_ charset_id charset = charset_id::system)
 	{
 		return wstr2str(src.data(), src.size(), charset);
@@ -809,9 +825,9 @@ namespace stdex
 	///
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
-	template <class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
+	template <class TR = std::char_traits<wchar_t>, class AX = std::allocator<wchar_t>>
 	size_t normalizecat(
-		_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst,
+		_Inout_ std::basic_string<wchar_t, TR, AX>& dst,
 		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src)
 	{
 		count_src = strnlen(src, count_src);
@@ -836,12 +852,12 @@ namespace stdex
 	///
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
-	template <size_t _Size, class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
+	template <size_t N, class TR = std::char_traits<wchar_t>, class AX = std::allocator<wchar_t>>
 	size_t normalizecat(
-		_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst,
-		_In_ const wchar_t (&src)[_Size])
+		_Inout_ std::basic_string<wchar_t, TR, AX>& dst,
+		_In_ const wchar_t (&src)[N])
 	{
-		return normalizecat(dst, src, _Size);
+		return normalizecat(dst, src, N);
 	}
 
 	///
@@ -852,10 +868,10 @@ namespace stdex
 	///
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
-	template <class _Traits_dst = std::char_traits<wchar_t>, class _Alloc_dst = std::allocator<wchar_t>>
+	template <class TR_dst = std::char_traits<wchar_t>, class AX_dst = std::allocator<wchar_t>>
 	size_t normalizecat(
-		_Inout_ std::basic_string<wchar_t, _Traits_dst, _Alloc_dst>& dst,
-		_In_ const std::wstring_view src)
+		_Inout_ std::basic_string<wchar_t, TR_dst, AX_dst>& dst,
+		_In_ const std::basic_string_view<wchar_t, std::char_traits<wchar_t>> src)
 	{
 		return normalizecat(dst, src.data(), src.size());
 	}
@@ -869,9 +885,9 @@ namespace stdex
 	///
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
-	template <class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
+	template <class TR = std::char_traits<wchar_t>, class AX = std::allocator<wchar_t>>
 	size_t normalize(
-		_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst,
+		_Inout_ std::basic_string<wchar_t, TR, AX>& dst,
 		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src)
 	{
 		dst.clear();
@@ -886,12 +902,12 @@ namespace stdex
 	///
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
-	template <size_t _Size, class _Traits = std::char_traits<wchar_t>, class _Alloc = std::allocator<wchar_t>>
+	template <size_t N, class TR = std::char_traits<wchar_t>, class AX = std::allocator<wchar_t>>
 	size_t normalize(
-		_Inout_ std::basic_string<wchar_t, _Traits, _Alloc>& dst,
-		_In_ const wchar_t(&src)[_Size])
+		_Inout_ std::basic_string<wchar_t, TR, AX>& dst,
+		_In_ const wchar_t(&src)[N])
 	{
-		return normalize(dst, src, _Size);
+		return normalize(dst, src, N);
 	}
 
 	///
@@ -902,10 +918,10 @@ namespace stdex
 	///
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
-	template <class _Traits_dst = std::char_traits<wchar_t>, class _Alloc_dst = std::allocator<wchar_t>>
+	template <class TR_dst = std::char_traits<wchar_t>, class AX_dst = std::allocator<wchar_t>>
 	size_t normalize(
-		_Inout_ std::basic_string<wchar_t, _Traits_dst, _Alloc_dst>& dst,
-		_In_ const std::wstring_view src)
+		_Inout_ std::basic_string<wchar_t, TR_dst, AX_dst>& dst,
+		_In_ const std::basic_string_view<wchar_t, std::char_traits<wchar_t>> src)
 	{
 		return normalize(dst, src.data(), src.size());
 	}
@@ -932,11 +948,11 @@ namespace stdex
 	///
 	/// \return Normalized string
 	///
-	template <size_t _Size>
-	std::wstring normalize(_In_ const wchar_t(&src)[_Size])
+	template <size_t N>
+	std::wstring normalize(_In_ const wchar_t(&src)[N])
 	{
 		std::wstring dst;
-		normalizecat(dst, src, _Size);
+		normalizecat(dst, src, N);
 		return dst;
 	}
 
@@ -947,7 +963,7 @@ namespace stdex
 	///
 	/// \return Normalized string
 	///
-	inline std::wstring normalize(_In_ const std::wstring_view src)
+	inline std::wstring normalize(_In_ const std::basic_string_view<wchar_t, std::char_traits<wchar_t>> src)
 	{
 		std::wstring dst;
 		normalizecat(dst, src.data(), src.size());

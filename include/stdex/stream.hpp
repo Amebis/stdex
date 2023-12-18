@@ -302,8 +302,8 @@ namespace stdex
 			///
 			/// \return Number of read characters
 			///
-			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-			size_t readln(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& str)
+			template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
+			size_t readln(_Inout_ std::basic_string<T, TR, AX>& str)
 			{
 				str.clear();
 				return readln_and_attach(str);
@@ -314,8 +314,8 @@ namespace stdex
 			///
 			/// \return Number of read characters
 			///
-			template<class T_from, class T_to, class _Traits = std::char_traits<T_to>, class _Ax = std::allocator<T_to>>
-			size_t readln(_Inout_ std::basic_string<T_to, _Traits, _Ax>& str, _In_ charset_encoder<T_from, T_to>& encoder)
+			template<class T_from, class T_to, class TR = std::char_traits<T_to>, class AX = std::allocator<T_to>>
+			size_t readln(_Inout_ std::basic_string<T_to, TR, AX>& str, _In_ charset_encoder<T_from, T_to>& encoder)
 			{
 				if (encoder.from_encoding() == encoder.to_encoding())
 					return readln(str);
@@ -330,19 +330,19 @@ namespace stdex
 			///
 			/// \return Total number of chars in str
 			///
-			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-			size_t readln_and_attach(_Inout_ std::basic_string<_Elem, _Traits, _Ax>& str)
+			template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
+			size_t readln_and_attach(_Inout_ std::basic_string<T, TR, AX>& str)
 			{
 				bool initial = true;
-				_Elem chr, previous = (_Elem)0;
+				T chr, previous = (T)0;
 				do {
-					read_array(&chr, sizeof(_Elem), 1);
-					if (!initial && !(previous == static_cast<_Elem>('\r') && chr == static_cast<_Elem>('\n')))
+					read_array(&chr, sizeof(T), 1);
+					if (!initial && !(previous == static_cast<T>('\r') && chr == static_cast<T>('\n')))
 						str += previous;
 					else
 						initial = false;
 					previous = chr;
-				} while (ok() && chr != static_cast<_Elem>('\n'));
+				} while (ok() && chr != static_cast<T>('\n'));
 				return str.size();
 			}
 
@@ -351,8 +351,8 @@ namespace stdex
 			///
 			/// \return Total number of chars in str
 			///
-			template<class T_from, class T_to, class _Traits = std::char_traits<T_to>, class _Ax = std::allocator<T_to>>
-			size_t readln_and_attach(_Inout_ std::basic_string<T_to, _Traits, _Ax>& str, _In_ charset_encoder<T_from, T_to>& encoder)
+			template<class T_from, class T_to, class TR = std::char_traits<T_to>, class AX = std::allocator<T_to>>
+			size_t readln_and_attach(_Inout_ std::basic_string<T_to, TR, AX>& str, _In_ charset_encoder<T_from, T_to>& encoder)
 			{
 				if (encoder.from_encoding() == encoder.to_encoding())
 					return readln_and_attach(str);
@@ -439,8 +439,8 @@ namespace stdex
 			///
 			/// \return Number of code units written
 			///
-			template<class T_from, class T_to, class _Traits = std::char_traits<T_from>, class _Ax = std::allocator<T_from>>
-			size_t write_array(_In_ const std::basic_string<T_from, _Traits, _Ax>& str, _In_ charset_encoder<T_from, T_to>& encoder)
+			template<class T_from, class T_to, class TR = std::char_traits<T_from>, class AX = std::allocator<T_from>>
+			size_t write_array(_In_ const std::basic_string<T_from, TR, AX>& str, _In_ charset_encoder<T_from, T_to>& encoder)
 			{
 				if (!ok()) _Unlikely_
 					return 0;
@@ -461,8 +461,8 @@ namespace stdex
 			///
 			/// \return This stream
 			///
-			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-			basic& read_str(_Out_ std::basic_string<_Elem, _Traits, _Ax>& data)
+			template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
+			basic& read_str(_Out_ std::basic_string<T, TR, AX>& data)
 			{
 				data.clear();
 				if (!ok()) _Unlikely_
@@ -473,8 +473,8 @@ namespace stdex
 					return *this;
 				data.reserve(num_chars);
 				for (;;) {
-					_Elem buf[0x400];
-					uint32_t num_read = static_cast<uint32_t>(read_array(buf, sizeof(_Elem), std::min<uint32_t>(num_chars, _countof(buf))));
+					T buf[0x400];
+					uint32_t num_read = static_cast<uint32_t>(read_array(buf, sizeof(T), std::min<uint32_t>(num_chars, _countof(buf))));
 					data.append(buf, num_read);
 					num_chars -= num_read;
 					if (!num_chars || !ok())
@@ -518,8 +518,8 @@ namespace stdex
 			///
 			/// \return This stream
 			///
-			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-			basic& write_str(_In_ const std::basic_string<_Elem, _Traits, _Ax>& data)
+			template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
+			basic& write_str(_In_ const std::basic_string<T, TR, AX>& data)
 			{
 				// Stream state will be checked in write_data.
 				size_t num_chars = data.size();
@@ -528,7 +528,7 @@ namespace stdex
 				write_data(static_cast<uint32_t>(num_chars));
 				if (!ok()) _Unlikely_
 					return *this;
-				write_array(data.data(), sizeof(_Elem), num_chars);
+				write_array(data.data(), sizeof(T), num_chars);
 				return *this;
 			}
 
@@ -669,15 +669,15 @@ namespace stdex
 			basic& operator >>(_Out_ wchar_t& data) { return read_data(data); }
 			basic& operator <<(_In_ const wchar_t data) { return write_data(data); }
 #endif
-			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-			basic& operator >>(_Out_ std::basic_string<_Elem, _Traits, _Ax>& data) { return read_str(data); }
+			template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
+			basic& operator >>(_Out_ std::basic_string<T, TR, AX>& data) { return read_str(data); }
 			template <class T>
 			basic& operator <<(_In_ const T* data) { return write_str(data); }
-			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-			basic& operator <<(_In_ const std::basic_string<_Elem, _Traits, _Ax>& data) { return write_str(data); }
+			template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
+			basic& operator <<(_In_ const std::basic_string<T, TR, AX>& data) { return write_str(data); }
 
-			template <class _Ty, class _Alloc = std::allocator<_Ty>>
-			basic& operator <<(_In_ const std::vector<_Ty, _Alloc>& data)
+			template <class T, class AX = std::allocator<T>>
+			basic& operator <<(_In_ const std::vector<T, AX>& data)
 			{
 				size_t num = data.size();
 				if (num > UINT32_MAX) _Unlikely_
@@ -688,8 +688,8 @@ namespace stdex
 				return *this;
 			}
 
-			template <class _Ty, class _Alloc = std::allocator<_Ty>>
-			basic& operator >>(_Out_ std::vector<_Ty, _Alloc>& data)
+			template <class T, class AX = std::allocator<T>>
+			basic& operator >>(_Out_ std::vector<T, AX>& data)
 			{
 				data.clear();
 				uint32_t num;
@@ -698,7 +698,7 @@ namespace stdex
 					return *this;
 				data.reserve(num);
 				for (uint32_t i = 0; i < num; ++i) {
-					_Ty el;
+					T el;
 					*this >> el;
 					if (!ok()) _Unlikely_
 						return *this;
@@ -706,8 +706,8 @@ namespace stdex
 				}
 			}
 
-			template <class _Kty, class _Pr = std::less<_Kty>, class _Alloc = std::allocator<_Kty>>
-			basic& operator <<(_In_ const std::set<_Kty, _Pr, _Alloc>& data)
+			template <class KEY, class PR = std::less<KEY>, class AX = std::allocator<KEY>>
+			basic& operator <<(_In_ const std::set<KEY, PR, AX>& data)
 			{
 				size_t num = data.size();
 				if (num > UINT32_MAX) _Unlikely_
@@ -718,8 +718,8 @@ namespace stdex
 				return *this;
 			}
 
-			template <class _Kty, class _Pr = std::less<_Kty>, class _Alloc = std::allocator<_Kty>>
-			basic& operator >>(_Out_ std::set<_Kty, _Pr, _Alloc>& data)
+			template <class KEY, class PR = std::less<KEY>, class AX = std::allocator<KEY>>
+			basic& operator >>(_Out_ std::set<KEY, PR, AX>& data)
 			{
 				data.clear();
 				uint32_t num;
@@ -727,7 +727,7 @@ namespace stdex
 				if (!ok()) _Unlikely_
 					return *this;
 				for (uint32_t i = 0; i < num; ++i) {
-					_Kty el;
+					KEY el;
 					*this >> el;
 					if (!ok()) _Unlikely_
 						return *this;
@@ -735,8 +735,8 @@ namespace stdex
 				}
 			}
 
-			template <class _Kty, class _Pr = std::less<_Kty>, class _Alloc = std::allocator<_Kty>>
-			basic& operator <<(_In_ const std::multiset<_Kty, _Pr, _Alloc>& data)
+			template <class KEY, class PR = std::less<KEY>, class AX = std::allocator<KEY>>
+			basic& operator <<(_In_ const std::multiset<KEY, PR, AX>& data)
 			{
 				size_t num = data.size();
 				if (num > UINT32_MAX) _Unlikely_
@@ -747,8 +747,8 @@ namespace stdex
 				return *this;
 			}
 
-			template <class _Kty, class _Pr = std::less<_Kty>, class _Alloc = std::allocator<_Kty>>
-			basic& operator >>(_Out_ std::multiset<_Kty, _Pr, _Alloc>& data)
+			template <class KEY, class PR = std::less<KEY>, class AX = std::allocator<KEY>>
+			basic& operator >>(_Out_ std::multiset<KEY, PR, AX>& data)
 			{
 				data.clear();
 				uint32_t num;
@@ -756,7 +756,7 @@ namespace stdex
 				if (!ok()) _Unlikely_
 					return *this;
 				for (uint32_t i = 0; i < num; ++i) {
-					_Kty el;
+					KEY el;
 					*this >> el;
 					if (!ok()) _Unlikely_
 						return *this;
@@ -1237,9 +1237,9 @@ namespace stdex
 		///
 		/// Provides read-ahead stream capability
 		///
-		/// @tparam CAPACITY  Read-ahead buffer size
+		/// \tparam N_cap  Read-ahead buffer size
 		///
-		template <size_t CAPACITY = default_async_limit>
+		template <size_t N_cap = default_async_limit>
 		class async_reader : public converter
 		{
 		public:
@@ -1297,16 +1297,16 @@ namespace stdex
 			}
 
 		protected:
-			ring<uint8_t, CAPACITY> m_ring;
+			ring<uint8_t, N_cap> m_ring;
 			std::thread m_worker;
 		};
 
 		///
 		/// Provides write-back stream capability
 		///
-		/// @tparam CAPACITY  Write-back buffer size
+		/// \tparam N_cap  Write-back buffer size
 		///
-		template <size_t CAPACITY = default_async_limit>
+		template <size_t N_cap = default_async_limit>
 		class async_writer : public converter
 		{
 		public:
@@ -1369,7 +1369,7 @@ namespace stdex
 			}
 
 		protected:
-			ring<uint8_t, CAPACITY> m_ring;
+			ring<uint8_t, N_cap> m_ring;
 			std::thread m_worker;
 		};
 
@@ -2707,7 +2707,8 @@ namespace stdex
 			/// \param[in] filename  Filename
 			/// \param[in] mode      Bitwise combination of mode_t flags
 			///
-			file(_In_ const stdex::sstring& filename, _In_ int mode) : file(filename.c_str(), mode) {}
+			template <class TR = std::char_traits<schar_t>, class AX = std::allocator<schar_t>>
+			file(_In_ const std::basic_string<TR, AX>& filename, _In_ int mode) : file(filename.c_str(), mode) {}
 
 			///
 			/// Opens file
@@ -2788,7 +2789,8 @@ namespace stdex
 			/// \param[in] filename  Filename
 			/// \param[in] mode      Bitwise combination of mode_t flags
 			///
-			void open(_In_ const stdex::sstring& filename, _In_ int mode)
+			template <class TR = std::char_traits<schar_t>, class AX = std::allocator<schar_t>>
+			void open(_In_ const std::basic_string<TR, AX>& filename, _In_ int mode)
 			{
 				open(filename.c_str(), mode);
 			}
@@ -3049,7 +3051,8 @@ namespace stdex
 			///
 			/// \param[in] filename  Filename
 			///
-			static bool exists(_In_ const stdex::sstring& filename)
+			template <class TR = std::char_traits<schar_t>, class AX = std::allocator<schar_t>>
+			static bool exists(_In_ const std::basic_string<TR, AX>& filename)
 			{
 				return exists(filename.c_str());
 			}
@@ -3079,7 +3082,8 @@ namespace stdex
 			///
 			/// \param[in] filename  Filename
 			///
-			static bool readonly(_In_ const stdex::sstring& filename)
+			template <class TR = std::char_traits<schar_t>, class AX = std::allocator<schar_t>>
+			static bool readonly(_In_ const std::basic_string<TR, AX>& filename)
 			{
 				return readonly(filename.c_str());
 			}
@@ -3120,7 +3124,8 @@ namespace stdex
 			/// \param[in] mode        Bitwise combination of mode_t flags
 			/// \param[in] cache_size  Size of the cache block
 			///
-			cached_file(_In_ const stdex::sstring& filename, _In_ int mode, _In_ size_t cache_size = default_cache_size) : cached_file(filename.c_str(), mode, cache_size) {}
+			template <class TR = std::char_traits<schar_t>, class AX = std::allocator<schar_t>>
+			cached_file(_In_ const std::basic_string<TR, AX>& filename, _In_ int mode, _In_ size_t cache_size = default_cache_size) : cached_file(filename.c_str(), mode, cache_size) {}
 
 			virtual ~cached_file()
 			{
@@ -3154,7 +3159,8 @@ namespace stdex
 			/// \param[in] filename    Filename
 			/// \param[in] mode        Bitwise combination of mode_t flags
 			///
-			void open(_In_ const stdex::sstring& filename, _In_ int mode)
+			template <class TR = std::char_traits<schar_t>, class AX = std::allocator<schar_t>>
+			void open(_In_ const std::basic_string<TR, AX>& filename, _In_ int mode)
 			{
 				open(filename.c_str(), mode);
 			}
@@ -3263,7 +3269,8 @@ namespace stdex
 			/// \param[in] filename  Filename
 			/// \param[in] mode      Bitwise combination of mode_t flags
 			///
-			memory_file(_In_ const stdex::sstring& filename, _In_ int mode) : memory_file(filename.c_str(), mode) {}
+			template <class TR = std::char_traits<schar_t>, class AX = std::allocator<schar_t>>
+			memory_file(_In_ const std::basic_string<TR, AX>& filename, _In_ int mode) : memory_file(filename.c_str(), mode) {}
 
 			///
 			/// Copies content from another file
@@ -3454,7 +3461,8 @@ namespace stdex
 			/// \param[in] filename  Filename
 			/// \param[in] mode      Bitwise combination of mode_t flags
 			///
-			void load(_In_ const stdex::sstring& filename, _In_ int mode)
+			template <class TR = std::char_traits<schar_t>, class AX = std::allocator<schar_t>>
+			void load(_In_ const std::basic_string<TR, AX>& filename, _In_ int mode)
 			{
 				load(filename.c_str(), mode);
 			}
@@ -3491,7 +3499,8 @@ namespace stdex
 			/// \param[in] filename  Filename
 			/// \param[in] mode      Bitwise combination of mode_t flags
 			///
-			void save(_In_ const stdex::sstring& filename, _In_ int mode)
+			template <class TR = std::char_traits<schar_t>, class AX = std::allocator<schar_t>>
+			void save(_In_ const std::basic_string<TR, AX>& filename, _In_ int mode)
 			{
 				save(filename.c_str(), mode);
 			}
@@ -3579,8 +3588,8 @@ namespace stdex
 			///
 			/// \return This stream
 			///
-			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-			memory_file& read_str(_Inout_ std::basic_string<_Elem, _Traits, _Ax>&data)
+			template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
+			memory_file& read_str(_Inout_ std::basic_string<T, TR, AX>&data)
 			{
 #if SET_FILE_OP_TIMES
 				m_atime = time_point::now();
@@ -3593,8 +3602,8 @@ namespace stdex
 				if (end_offset <= m_size) {
 					uint32_t num_chars = LE2HE(*reinterpret_cast<uint32_t*>(m_data + m_offset));
 					m_offset = end_offset;
-					end_offset = stdex::add(m_offset, stdex::mul(num_chars, sizeof(_Elem)));
-					_Elem* start = reinterpret_cast<_Elem*>(m_data + m_offset);
+					end_offset = stdex::add(m_offset, stdex::mul(num_chars, sizeof(T)));
+					T* start = reinterpret_cast<T*>(m_data + m_offset);
 					if (end_offset <= m_size) {
 						data.assign(start, start + num_chars);
 						m_offset = end_offset;
@@ -3604,7 +3613,7 @@ namespace stdex
 						return *this;
 					}
 					if (end_offset <= m_size)
-						data.assign(start, reinterpret_cast<_Elem*>(m_data + m_size));
+						data.assign(start, reinterpret_cast<T*>(m_data + m_size));
 				}
 				m_offset = m_size;
 				m_state = state_t::eof;
@@ -3750,8 +3759,8 @@ namespace stdex
 			///
 			/// \return This stream
 			///
-			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-			memory_file& write_str(_In_ const std::basic_string<_Elem, _Traits, _Ax>& data)
+			template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
+			memory_file& write_str(_In_ const std::basic_string<T, TR, AX>& data)
 			{
 #if SET_FILE_OP_TIMES
 				m_atime = m_mtime = time_point::now();
@@ -3761,7 +3770,7 @@ namespace stdex
 				size_t num_chars = data.size();
 				if (num_chars > UINT32_MAX)
 					throw std::invalid_argument("string too long");
-				size_t size_chars = num_chars * sizeof(_Elem);
+				size_t size_chars = num_chars * sizeof(T);
 				size_t size = sizeof(uint32_t) + size_chars;
 				size_t end_offset = m_offset + size;
 				if (end_offset > m_reserved) {
@@ -4012,12 +4021,12 @@ namespace stdex
 			memory_file& operator <<(_In_ const wchar_t data) { return write_data(data); }
 			memory_file& operator >>(_Out_ wchar_t& data) { return read_data(data); }
 #endif
-			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-			memory_file& operator >>(_Out_ std::basic_string<_Elem, _Traits, _Ax>&data) { return read_str(data); }
+			template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
+			memory_file& operator >>(_Out_ std::basic_string<T, TR, AX>&data) { return read_str(data); }
 			template <class T>
 			memory_file& operator <<(_In_ const T * data) { return write_str(data); }
-			template<class _Elem, class _Traits = std::char_traits<_Elem>, class _Ax = std::allocator<_Elem>>
-			memory_file& operator <<(_In_ const std::basic_string<_Elem, _Traits, _Ax>& data) { return write_str(data); }
+			template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
+			memory_file& operator <<(_In_ const std::basic_string<T, TR, AX>& data) { return write_str(data); }
 
 		protected:
 			uint8_t* m_data; ///< file data

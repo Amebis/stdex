@@ -201,6 +201,6 @@ namespace stdex
 		}
 	};
 
-	template <class T, class _Alloc = std::allocator<interval<T>>>
-	using interval_vector = std::vector<interval<T>, _Alloc>;
+	template <class T, class AX = std::allocator<interval<T>>>
+	using interval_vector = std::vector<interval<T>, AX>;
 }

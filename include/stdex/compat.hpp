@@ -185,7 +185,7 @@
 #endif
 
 #ifndef _WIN32
-template <typename T, size_t N>
+template <class T, size_t N>
 size_t _countof(const T (&arr)[N])
 {
 	return std::extent<T[N]>::value;

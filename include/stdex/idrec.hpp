@@ -24,8 +24,8 @@ namespace stdex {
 		/// - \c true when succeeded
 		/// - \c false otherwise
 		///
-		template <class T_ID>
-		_Success_(return) bool read_id(_In_ std::istream& stream, _Out_ T_ID &id, _In_opt_ std::streamoff end = (std::streamoff)-1)
+		template <class T_id>
+		_Success_(return) bool read_id(_In_ std::istream& stream, _Out_ T_id &id, _In_opt_ std::streamoff end = (std::streamoff)-1)
 		{
 			if (end == (std::streamoff)-1 || stream.tellg() < end) {
 				stream.read((char*)&id, sizeof(id));
@@ -45,8 +45,8 @@ namespace stdex {
 		/// - \c true when succeeded
 		/// - \c false otherwise
 		///
-		template <class T_ID>
-		_Success_(return) bool read_id(_In_ stdex::stream::basic_file& stream, _Out_ T_ID &id, _In_opt_ stdex::stream::fpos_t end = stdex::stream::fpos_max)
+		template <class T_id>
+		_Success_(return) bool read_id(_In_ stdex::stream::basic_file& stream, _Out_ T_id &id, _In_opt_ stdex::stream::fpos_t end = stdex::stream::fpos_max)
 		{
 			if (end == stdex::stream::fpos_max || stream.tell() < end) {
 				stream >> id;
@@ -60,12 +60,12 @@ namespace stdex {
 		///
 		/// \param[in] size  Actual data size
 		///
-		/// \return Number of bytes needed to add to the data to align it on `ALIGN` boundary
+		/// \return Number of bytes needed to add to the data to align it on `N_align` boundary
 		///
-		template <class T_SIZE, T_SIZE ALIGN>
-		T_SIZE padding(_In_ T_SIZE size)
+		template <class T_size, T_size N_align>
+		T_size padding(_In_ T_size size)
 		{
-			return (ALIGN - (size % ALIGN)) % ALIGN;
+			return (N_align - (size % N_align)) % N_align;
 		}
 
 		///
@@ -77,16 +77,16 @@ namespace stdex {
 		/// - \c true when successful
 		/// - \c false otherwise
 		///
-		template <class T_SIZE, T_SIZE ALIGN>
+		template <class T_size, T_size N_align>
 		bool ignore(_In_ std::istream& stream)
 		{
 			// Read record size.
-			T_SIZE size;
+			T_size size;
 			stream.read((char*)&size, sizeof(size));
 			if (!stream.good()) _Unlikely_ return false;
 
 			// Skip the record data.
-			size += padding<T_SIZE, ALIGN>(size);
+			size += padding<T_size, N_align>(size);
 			stream.ignore(size);
 			if (!stream.good()) _Unlikely_ return false;
 
@@ -102,16 +102,16 @@ namespace stdex {
 		/// - \c true when successful
 		/// - \c false otherwise
 		///
-		template <class T_SIZE, T_SIZE ALIGN>
+		template <class T_size, T_size N_align>
 		bool ignore(_In_ stdex::stream::basic& stream)
 		{
 			// Read record size.
-			T_SIZE size;
+			T_size size;
 			stream >> size;
 			if (!stream.ok()) _Unlikely_ return false;
 
 			// Skip the record data.
-			size += padding<T_SIZE, ALIGN>(size);
+			size += padding<T_size, N_align>(size);
 			stream.skip(size);
 			if (!stream.ok()) _Unlikely_ return false;
 
@@ -129,10 +129,10 @@ namespace stdex {
 		/// - \c true when found
 		/// - \c false otherwise
 		///
-		template <class T_ID, class T_SIZE, T_SIZE ALIGN>
-		bool find(_In_ std::istream& stream, _In_ T_ID id, _In_opt_ std::streamoff end = (std::streamoff)-1)
+		template <class T_id, class T_size, T_size N_align>
+		bool find(_In_ std::istream& stream, _In_ T_id id, _In_opt_ std::streamoff end = (std::streamoff)-1)
 		{
-			T_ID _id;
+			T_id _id;
 			while (end == (std::streamoff)-1 || stream.tellg() < end) {
 				stream.read((char*)&_id, sizeof(_id));
 				if (!stream.good()) _Unlikely_ return false;
@@ -140,7 +140,7 @@ namespace stdex {
 					// The record was found.
 					return true;
 				} else
-					ignore<T_SIZE, ALIGN>(stream);
+					ignore<T_size, N_align>(stream);
 			}
 			return false;
 		}
@@ -156,10 +156,10 @@ namespace stdex {
 		/// - \c true when found
 		/// - \c false otherwise
 		///
-		template <class T_ID, class T_SIZE, T_SIZE ALIGN>
-		bool find(_In_ stdex::stream::basic_file& stream, _In_ T_ID id, _In_opt_ stdex::stream::fpos_t end = stdex::stream::fpos_max)
+		template <class T_id, class T_size, T_size N_align>
+		bool find(_In_ stdex::stream::basic_file& stream, _In_ T_id id, _In_opt_ stdex::stream::fpos_t end = stdex::stream::fpos_max)
 		{
-			T_ID _id;
+			T_id _id;
 			while (end == stdex::stream::fpos_max || stream.tell() < end) {
 				stream >> _id;
 				if (!stream.ok()) _Unlikely_ return false;
@@ -167,7 +167,7 @@ namespace stdex {
 					// The record was found.
 					return true;
 				} else
-					ignore<T_SIZE, ALIGN>(stream);
+					ignore<T_size, N_align>(stream);
 			}
 			return false;
 		}
@@ -180,8 +180,8 @@ namespace stdex {
 		///
 		/// \returns  Position of the record header start in \p stream. Save for later \c close call.
 		///
-		template <class T_ID, class T_SIZE>
-		std::streamoff open(_In_ std::ostream& stream, _In_ T_ID id)
+		template <class T_id, class T_size>
+		std::streamoff open(_In_ std::ostream& stream, _In_ T_id id)
 		{
 			std::streamoff start = stream.tellp();
 
@@ -191,7 +191,7 @@ namespace stdex {
 
 			// Write 0 as a placeholder for data size.
 			if (stream.fail()) _Unlikely_ return (std::streamoff)-1;
-			T_SIZE size = 0;
+			T_size size = 0;
 			stream.write((const char*)&size, sizeof(size));
 
 			return start;
@@ -205,8 +205,8 @@ namespace stdex {
 		///
 		/// \returns  Position of the record header start in \p stream. Save for later \c close call.
 		///
-		template <class T_ID, class T_SIZE>
-		stdex::stream::fpos_t open(_In_ stdex::stream::basic_file& stream, _In_ T_ID id)
+		template <class T_id, class T_size>
+		stdex::stream::fpos_t open(_In_ stdex::stream::basic_file& stream, _In_ T_id id)
 		{
 			auto start = stream.tell();
 
@@ -214,7 +214,7 @@ namespace stdex {
 			stream << id;
 
 			// Write 0 as a placeholder for data size.
-			stream << static_cast<T_SIZE>(0);
+			stream << static_cast<T_size>(0);
 
 			return start;
 		}
@@ -227,24 +227,24 @@ namespace stdex {
 		///
 		/// \returns  Position of the record end in \p stream
 		///
-		template <class T_ID, class T_SIZE, T_SIZE ALIGN>
+		template <class T_id, class T_size, T_size N_align>
 		std::streamoff close(_In_ std::ostream& stream, _In_ std::streamoff start)
 		{
 			std::streamoff end = stream.tellp();
-			T_SIZE
-				size      = static_cast<T_SIZE>(end - start - sizeof(T_ID) - sizeof(T_SIZE)),
-				remainder = padding<T_SIZE, ALIGN>(size);
+			T_size
+				size      = static_cast<T_size>(end - start - sizeof(T_id) - sizeof(T_size)),
+				remainder = padding<T_size, N_align>(size);
 
 			if (remainder) {
 				// Append padding.
-				static const char padding[ALIGN] = {};
+				static const char padding[N_align] = {};
 				stream.write(padding, remainder);
 				end += remainder;
 			}
 
 			// Update the data size.
 			if (stream.fail()) _Unlikely_ return (std::streamoff)-1;
-			stream.seekp(start + sizeof(T_ID));
+			stream.seekp(start + sizeof(T_id));
 			stream.write(reinterpret_cast<const char*>(&size), sizeof(size));
 			stream.seekp(end);
 
@@ -259,24 +259,24 @@ namespace stdex {
 		///
 		/// \returns  Position of the record end in \p stream
 		///
-		template <class T_ID, class T_SIZE, T_SIZE ALIGN>
+		template <class T_id, class T_size, T_size N_align>
 		stdex::stream::fpos_t close(_In_ stdex::stream::basic_file& stream, _In_ stdex::stream::fpos_t start)
 		{
 			auto end = stream.tell();
-			T_SIZE
-				size      = static_cast<T_SIZE>(end - start - sizeof(T_ID) - sizeof(T_SIZE)),
-				remainder = padding<T_SIZE, ALIGN>(size);
+			T_size
+				size      = static_cast<T_size>(end - start - sizeof(T_id) - sizeof(T_size)),
+				remainder = padding<T_size, N_align>(size);
 
 			if (remainder) {
 				// Append padding.
-				static const char padding[ALIGN] = {};
+				static const char padding[N_align] = {};
 				stream.write_array(padding, sizeof(char), remainder);
 				end += remainder;
 			}
 
 			// Update the data size.
 			if (!stream.ok()) _Unlikely_ return stdex::stream::fpos_max;
-			stream.seek(start + sizeof(T_ID));
+			stream.seek(start + sizeof(T_id));
 			stream << size;
 			stream.seek(end);
 
@@ -286,7 +286,7 @@ namespace stdex {
 		///
 		/// Helper class for read/write of records to/from memory
 		///
-		template <class T, class T_ID, const T_ID ID, class T_SIZE, T_SIZE ALIGN>
+		template <class T, class T_id, const T_id ID, class T_size, T_size N_align>
 		class record
 		{
 		public:
@@ -307,7 +307,7 @@ namespace stdex {
 			///
 			/// Returns record id
 			///
-			static constexpr T_ID id()
+			static constexpr T_id id()
 			{
 				return ID;
 			}
@@ -319,7 +319,7 @@ namespace stdex {
 			///
 			/// \returns A const reference to this struct
 			///
-			const record<T, T_ID, ID, T_SIZE, ALIGN>& operator =(_In_ const record<T, T_ID, ID, T_SIZE, ALIGN> &r)
+			const record<T, T_id, ID, T_size, N_align>& operator =(_In_ const record<T, T_id, ID, T_size, N_align> &r)
 			{
 				data = r.data;
 				return *this;
@@ -334,7 +334,7 @@ namespace stdex {
 			///
 			static std::streamoff open(_In_ std::ostream& stream)
 			{
-				return stdex::idrec::open<T_ID, T_SIZE>(stream, ID);
+				return stdex::idrec::open<T_id, T_size>(stream, ID);
 			}
 
 			///
@@ -346,7 +346,7 @@ namespace stdex {
 			///
 			static stdex::stream::foff_t open(_In_ stdex::stream::basic_file& stream)
 			{
-				return stdex::idrec::open<T_ID, T_SIZE>(stream, ID);
+				return stdex::idrec::open<T_id, T_size>(stream, ID);
 			}
 
 			///
@@ -359,7 +359,7 @@ namespace stdex {
 			///
 			static std::streamoff close(_In_ std::ostream& stream, _In_ std::streamoff start)
 			{
-				return stdex::idrec::close<T_ID, T_SIZE, ALIGN>(stream, start);
+				return stdex::idrec::close<T_id, T_size, N_align>(stream, start);
 			}
 
 			///
@@ -372,7 +372,7 @@ namespace stdex {
 			///
 			static stdex::stream::foff_t close(_In_ stdex::stream::basic_file& stream, _In_ stdex::stream::foff_t start)
 			{
-				return stdex::idrec::close<T_ID, T_SIZE, ALIGN>(stream, start);
+				return stdex::idrec::close<T_id, T_size, N_align>(stream, start);
 			}
 
 			///
@@ -387,7 +387,7 @@ namespace stdex {
 			///
 			static bool find(_In_ std::istream& stream, _In_opt_ std::streamoff end = (std::streamoff)-1)
 			{
-				return stdex::idrec::find<T_ID, T_SIZE, ALIGN>(stream, ID, end);
+				return stdex::idrec::find<T_id, T_size, N_align>(stream, ID, end);
 			}
 
 			///
@@ -402,7 +402,7 @@ namespace stdex {
 			///
 			static bool find(_In_ stdex::stream::basic_file& stream, _In_opt_ stdex::stream::foff_t end = stdex::stream::foff_max)
 			{
-				return stdex::idrec::find<T_ID, T_SIZE, ALIGN>(stream, ID, end);
+				return stdex::idrec::find<T_id, T_size, N_align>(stream, ID, end);
 			}
 
 			T &data; ///< Record data reference
@@ -415,7 +415,7 @@ namespace stdex {
 			///
 			/// \returns The stream \p stream
 			///
-			friend std::ostream& operator <<(_In_ std::ostream& stream, _In_ const record<T, T_ID, ID, T_SIZE, ALIGN> r)
+			friend std::ostream& operator <<(_In_ std::ostream& stream, _In_ const record<T, T_id, ID, T_size, N_align> r)
 			{
 				// Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already.
 
@@ -435,7 +435,7 @@ namespace stdex {
 			///
 			/// \returns The stream \p stream
 			///
-			friend stdex::stream::basic_file& operator <<(_In_ stdex::stream::basic_file& stream, _In_ const record<T, T_ID, ID, T_SIZE, ALIGN> r)
+			friend stdex::stream::basic_file& operator <<(_In_ stdex::stream::basic_file& stream, _In_ const record<T, T_id, ID, T_size, N_align> r)
 			{
 				// Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already.
 
@@ -455,7 +455,7 @@ namespace stdex {
 			///
 			/// \returns The stream \p stream
 			///
-			friend stdex::stream::basic& operator <<(_In_ stdex::stream::basic& stream, _In_ const record<T, T_ID, ID, T_SIZE, ALIGN> r)
+			friend stdex::stream::basic& operator <<(_In_ stdex::stream::basic& stream, _In_ const record<T, T_id, ID, T_size, N_align> r)
 			{
 				// Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already.
 
@@ -478,12 +478,12 @@ namespace stdex {
 			///
 			/// \returns The stream \p stream
 			///
-			friend std::istream& operator >>(_In_ std::istream& stream, _In_ record<T, T_ID, ID, T_SIZE, ALIGN> r)
+			friend std::istream& operator >>(_In_ std::istream& stream, _In_ record<T, T_id, ID, T_size, N_align> r)
 			{
 				// Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already.
 
 				// Read data size.
-				T_SIZE size;
+				T_size size;
 				stream.read((char*)&size, sizeof(size));
 				if (!stream.good()) _Unlikely_ return stream;
 
@@ -492,7 +492,7 @@ namespace stdex {
 				stream >> r.data; // TODO: operator >> should not read past the record data! Make a size limited stream and read from it instead.
 				if (!stream.good()) _Unlikely_ return stream;
 
-				size += padding<T_SIZE, ALIGN>(size);
+				size += padding<T_size, N_align>(size);
 				stream.seekg(start + size);
 
 				return stream;
@@ -506,12 +506,12 @@ namespace stdex {
 			///
 			/// \returns The stream \p stream
 			///
-			friend stdex::stream::basic_file& operator >>(_In_ stdex::stream::basic_file& stream, _In_ record<T, T_ID, ID, T_SIZE, ALIGN> r)
+			friend stdex::stream::basic_file& operator >>(_In_ stdex::stream::basic_file& stream, _In_ record<T, T_id, ID, T_size, N_align> r)
 			{
 				// Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already.
 
 				// Read data size.
-				T_SIZE size;
+				T_size size;
 				stream >> size;
 				if (!stream.ok()) _Unlikely_ return stream;
 
@@ -523,7 +523,7 @@ namespace stdex {
 					if (limiter.state() == stdex::stream::state_t::fail) _Unlikely_ return stream;
 				}
 
-				size += padding<T_SIZE, ALIGN>(size);
+				size += padding<T_size, N_align>(size);
 				stream.seek(start + size);
 
 				return stream;
@@ -537,12 +537,12 @@ namespace stdex {
 			///
 			/// \returns The stream \p stream
 			///
-			friend stdex::stream::basic& operator >>(_In_ stdex::stream::basic& stream, _In_ record<T, T_ID, ID, T_SIZE, ALIGN> r)
+			friend stdex::stream::basic& operator >>(_In_ stdex::stream::basic& stream, _In_ record<T, T_id, ID, T_size, N_align> r)
 			{
 				// Parameter r does not need to be passed by reference. It has only one field (data), which is a reference itself already.
 
 				// Read data size.
-				T_SIZE size;
+				T_size size;
 				stream >> size;
 				if (!stream.ok()) _Unlikely_ return stream;
 
@@ -552,7 +552,7 @@ namespace stdex {
 					if (limiter.state() == stdex::stream::state_t::fail) _Unlikely_ return stream;
 					limiter.skip(limiter.read_limit);
 				}
-				stream.skip(padding<T_SIZE, ALIGN>(size));
+				stream.skip(padding<T_size, N_align>(size));
 
 				return stream;
 			}

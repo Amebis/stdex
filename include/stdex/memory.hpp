@@ -30,11 +30,11 @@ namespace stdex
 	struct no_delete<T[]> {
 		constexpr no_delete() noexcept = default;
 
-		template <class _Uty, std::enable_if_t<std::is_convertible_v<_Uty(*)[], T(*)[]>, int> = 0>
-		no_delete(const no_delete<_Uty[]>&) noexcept {}
+		template <class T2, std::enable_if_t<std::is_convertible_v<T2(*)[], T(*)[]>, int> = 0>
+		no_delete(const no_delete<T2[]>&) noexcept {}
 
-		template <class _Uty, std::enable_if_t<std::is_convertible_v<_Uty(*)[], T(*)[]>, int> = 0>
-		void operator()(_Uty* p) const noexcept { p; }
+		template <class T2, std::enable_if_t<std::is_convertible_v<T2(*)[], T(*)[]>, int> = 0>
+		void operator()(T2* p) const noexcept { p; }
 	};
 
 	///

@@ -323,12 +323,12 @@ namespace stdex {
 				if (hour) *hour = static_cast<uint8_t>(u);
 			}
 
-			template<class _Traits = std::char_traits<char>, class _Ax = std::allocator<char>>
-			static std::basic_string<char, _Traits, _Ax> to_str(_In_ const time_point tp, _In_z_ const char* format, _In_opt_ locale_t locale)
+			template<class TR = std::char_traits<char>, class AX = std::allocator<char>>
+			static std::basic_string<char, TR, AX> to_str(_In_ const time_point tp, _In_z_ const char* format, _In_opt_ locale_t locale)
 			{
 				struct tm date;
 				to_system(tp, date);
-				std::basic_string<char, _Traits, _Ax> str;
+				std::basic_string<char, TR, AX> str;
 				char stack_buffer[1024 / sizeof(char)];
 				size_t n;
 #if _WIN32
@@ -356,12 +356,12 @@ namespace stdex {
 				}
 			}
 
-			template<class _Traits = std::char_traits<wchar_t>, class _Ax = std::allocator<wchar_t>>
-			static std::basic_string<wchar_t, _Traits, _Ax> to_str(_In_ const time_point tp, _In_z_ const wchar_t* format, _In_opt_ locale_t locale)
+			template<class TR = std::char_traits<wchar_t>, class AX = std::allocator<wchar_t>>
+			static std::basic_string<wchar_t, TR, AX> to_str(_In_ const time_point tp, _In_z_ const wchar_t* format, _In_opt_ locale_t locale)
 			{
 				struct tm date;
 				to_system(tp, date);
-				std::basic_string<wchar_t, _Traits, _Ax> str;
+				std::basic_string<wchar_t, TR, AX> str;
 				wchar_t stack_buffer[1024 / sizeof(wchar_t)];
 				size_t n;
 #if _WIN32
@@ -389,8 +389,8 @@ namespace stdex {
 				}
 			}
 
-			template<class _Traits = std::char_traits<char>, class _Ax = std::allocator<char>>
-			static std::basic_string<char, _Traits, _Ax> to_rfc822(_In_ const time_point tp)
+			template<class TR = std::char_traits<char>, class AX = std::allocator<char>>
+			static std::basic_string<char, TR, AX> to_rfc822(_In_ const time_point tp)
 			{
 				return to_str(tp, "%a, %d %b %Y %H:%M:%S GMT", locale_C.get());
 			}

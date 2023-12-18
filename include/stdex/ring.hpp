@@ -15,10 +15,10 @@ namespace stdex
 	///
 	/// Ring buffer
 	///
-	/// \tparam T         Ring element type
-	/// \tparam CAPACITY  Ring capacity (in number of elements)
+	/// \tparam T      Ring element type
+	/// \tparam N_cap  Ring capacity (in number of elements)
 	///
-	template <class T, size_t CAPACITY>
+	template <class T, size_t N_cap>
 	class ring
 	{
 	public:
@@ -43,7 +43,7 @@ namespace stdex
 					return { nullptr, 0 };
 			}
 			size_t tail = wrap(m_head + m_size);
-			return { &m_data[tail], m_head <= tail ? CAPACITY - tail : m_head - tail };
+			return { &m_data[tail], m_head <= tail ? N_cap - tail : m_head - tail };
 		}
 
 		///
@@ -57,7 +57,7 @@ namespace stdex
 				const std::lock_guard<std::mutex> lg(m_mutex);
 #ifdef _DEBUG
 				size_t tail = wrap(m_head + m_size);
-				_Assume_(size <= (m_head <= tail ? CAPACITY - tail : m_head - tail));
+				_Assume_(size <= (m_head <= tail ? N_cap - tail : m_head - tail));
 #endif
 				m_size += size;
 			}
@@ -78,7 +78,7 @@ namespace stdex
 					return { nullptr, 0 };
 			}
 			size_t tail = wrap(m_head + m_size);
-			return { &m_data[m_head], m_head < tail ? m_size : CAPACITY - m_head };
+			return { &m_data[m_head], m_head < tail ? m_size : N_cap - m_head };
 		}
 
 		///
@@ -92,7 +92,7 @@ namespace stdex
 				const std::lock_guard<std::mutex> lg(m_mutex);
 #ifdef _DEBUG
 				size_t tail = wrap(m_head + m_size);
-				_Assume_(size <= (m_head < tail ? m_size : CAPACITY - m_head));
+				_Assume_(size <= (m_head < tail ? m_size : N_cap - m_head));
 #endif
 				m_head = wrap(m_head + size);
 				m_size -= size;
@@ -125,13 +125,13 @@ namespace stdex
 	protected:
 		size_t wrap(_In_ size_t idx) const
 		{
-			// TODO: When CAPACITY is power of 2, use & ~(CAPACITY - 1) instead.
-			return idx % CAPACITY;
+			// TODO: When N_cap is power of 2, use & ~(N_cap - 1) instead.
+			return idx % N_cap;
 		}
 
 		size_t space() const
 		{
-			return CAPACITY - m_size;
+			return N_cap - m_size;
 		}
 
 		bool empty() const
@@ -144,6 +144,6 @@ namespace stdex
 		std::condition_variable m_head_moved, m_tail_moved;
 		size_t m_head, m_size;
 		bool m_quit;
-		T m_data[CAPACITY];
+		T m_data[N_cap];
 	};
 }

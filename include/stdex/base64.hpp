@@ -66,8 +66,8 @@ namespace stdex
 		/// \param[in]     size     Length of `data` in bytes
 		/// \param[in]     is_last  Is this the last block of data?
 		///
-		template<class _Elem, class _Traits, class _Ax>
-		void encode(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &out, _In_bytecount_(size) const void *data, _In_ size_t size, _In_opt_ bool is_last = true)
+		template<class T, class TR, class AX>
+		void encode(_Inout_ std::basic_string<T, TR, AX> &out, _In_bytecount_(size) const void *data, _In_ size_t size, _In_opt_ bool is_last = true)
 		{
 			_Assume_(data || !size);
 
@@ -118,8 +118,8 @@ namespace stdex
 		///
 		/// Encodes one complete internal buffer of data
 		///
-		template<class _Elem, class _Traits, class _Ax>
-		void encode(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &out)
+		template<class T, class TR, class AX>
+		void encode(_Inout_ std::basic_string<T, TR, AX> &out)
 		{
 			out += base64_enc_lookup[                    m_buf[0] >> 2         ];
 			out += base64_enc_lookup[((m_buf[0] << 4) | (m_buf[1] >> 4)) & 0x3f];
@@ -130,8 +130,8 @@ namespace stdex
 		///
 		/// Encodes partial internal buffer of data
 		///
-		template<class _Elem, class _Traits, class _Ax>
-		void encode(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &out, _In_ size_t size)
+		template<class T, class TR, class AX>
+		void encode(_Inout_ std::basic_string<T, TR, AX> &out, _In_ size_t size)
 		{
 			if (size > 0) {
 				out += base64_enc_lookup[m_buf[0] >> 2];
@@ -287,8 +287,8 @@ namespace stdex
 		/// \param[in]     data     Data to decode
 		/// \param[in]     size     Length of `data` in bytes
 		///
-		template<class _Ty, class _Ax, class _Tchr>
-		void decode(_Inout_ std::vector<_Ty, _Ax> &out, _Out_ bool &is_last, _In_z_count_(size) const _Tchr *data, _In_ size_t size)
+		template<class T_to, class AX, class T_from>
+		void decode(_Inout_ std::vector<T_to, AX> &out, _Out_ bool &is_last, _In_z_count_(size) const T_from *data, _In_ size_t size)
 		{
 			is_last = false;
 
@@ -342,15 +342,15 @@ namespace stdex
 		///
 		/// Decodes one complete internal buffer of data
 		///
-		template<class _Ty, class _Ax>
-		size_t decode(_Inout_ std::vector<_Ty, _Ax> &out)
+		template<class T, class AX>
+		size_t decode(_Inout_ std::vector<T, AX> &out)
 		{
 			m_num = 0;
-			out.push_back((_Ty)(((m_buf[0] << 2) | (m_buf[1] >> 4)) & 0xff));
+			out.push_back((T)(((m_buf[0] << 2) | (m_buf[1] >> 4)) & 0xff));
 			if (m_buf[2] < 64) {
-				out.push_back((_Ty)(((m_buf[1] << 4) | (m_buf[2] >> 2)) & 0xff));
+				out.push_back((T)(((m_buf[1] << 4) | (m_buf[2] >> 2)) & 0xff));
 				if (m_buf[3] < 64) {
-					out.push_back((_Ty)(((m_buf[2] << 6) | m_buf[3]) & 0xff));
+					out.push_back((T)(((m_buf[2] << 6) | m_buf[3]) & 0xff));
 					return 3;
 				} else
 					return 2;

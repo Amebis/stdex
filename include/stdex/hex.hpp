@@ -34,8 +34,8 @@ namespace stdex
 		/// \param[in]     data  Data to encode
 		/// \param[in]     size  Length of `data` in bytes
 		///
-		template<class _Elem, class _Traits, class _Ax>
-		void encode(_Inout_ std::basic_string<_Elem, _Traits, _Ax> &out, _In_bytecount_(size) const void *data, _In_ size_t size)
+		template<class T, class TR, class AX>
+		void encode(_Inout_ std::basic_string<T, TR, AX> &out, _In_bytecount_(size) const void *data, _In_ size_t size)
 		{
 			_Assume_(data || !size);
 
@@ -93,8 +93,8 @@ namespace stdex
 		/// \param[in]     data     Data to decode
 		/// \param[in]     size     Length of `data` in bytes
 		///
-		template<class _Ty, class _Ax, class _Tchr>
-		void decode(_Inout_ std::vector<_Ty, _Ax> &out, _Out_ bool &is_last, _In_z_count_(size) const _Tchr *data, _In_ size_t size)
+		template<class T_to, class AX, class T_from>
+		void decode(_Inout_ std::vector<T_to, AX> &out, _Out_ bool &is_last, _In_z_count_(size) const T_from *data, _In_ size_t size)
 		{
 			is_last = false;
 
