@@ -197,8 +197,10 @@ size_t _countof(const T (&arr)[N])
 #endif
 #ifdef NDEBUG
 #define _Assume_(p) _Analysis_assume_(p)
+#define _Verify_(p) ((void)(p))
 #else
 #define _Assume_(p) assert(p)
+#define _Verify_(p) assert(p)
 #endif
 
 #ifdef __APPLE__
