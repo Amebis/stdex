@@ -2066,6 +2066,60 @@ namespace stdex
 		return strtoui<T>(str, N, end, radix);
 	}
 
+	///
+	/// Parse string for a floating-point number
+	///
+	/// \param[in]  str     String
+	/// \param[in]  count   String code unit count limit
+	/// \param[out] end     On return, count of code units processed
+	/// \param[in ] locale  Stdlib locale used to parse string. Use `NULL` to use locale globally set by `setlocale()`.
+	///
+	/// \return Binary floating-point number value
+	///
+	inline double strtod(
+		_In_reads_or_z_opt_(count) const char* str, _In_ size_t count,
+		_Out_opt_ size_t* end,
+		_In_opt_ locale_t locale)
+	{
+		std::string tmp(str, strnlen(str, count));
+		char* _end;
+		double r;
+#if _WIN32
+		r = _strtod_l(tmp.c_str(), &_end, locale);
+#else
+		r = strtod_l(tmp.c_str(), &_end, locale);
+#endif
+		if (end) *end = (size_t)(_end - tmp.c_str());
+		return r;
+	}
+
+	///
+	/// Parse string for a floating-point number
+	///
+	/// \param[in]  str     String
+	/// \param[in]  count   String code unit count limit
+	/// \param[out] end     On return, count of code units processed
+	/// \param[in ] locale  Stdlib locale used to parse string. Use `NULL` to use locale globally set by `setlocale()`.
+	///
+	/// \return Binary floating-point number value
+	///
+	inline double strtod(
+		_In_reads_or_z_opt_(count) const wchar_t* str, _In_ size_t count,
+		_Out_opt_ size_t* end,
+		_In_opt_ locale_t locale)
+	{
+		std::wstring tmp(str, strnlen(str, count));
+		wchar_t* _end;
+		double r;
+#if _WIN32
+		r = _wcstod_l(tmp.c_str(), &_end, locale);
+#else
+		r = wcstod_l(tmp.c_str(), &_end, locale);
+#endif
+		if (end) *end = (size_t)(_end - tmp.c_str());
+		return r;
+	}
+
 	/// \cond internal
 	inline int vsnprintf(_Out_z_cap_(capacity) char* str, _In_ size_t capacity, _In_z_ _Printf_format_string_params_(2) const char* format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
