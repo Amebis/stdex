@@ -392,7 +392,7 @@ namespace stdex {
 			template<class TR = std::char_traits<char>, class AX = std::allocator<char>>
 			static std::basic_string<char, TR, AX> to_rfc822(_In_ const time_point tp)
 			{
-				return to_str(tp, "%a, %d %b %Y %H:%M:%S GMT", locale_C.get());
+				return to_str(tp, "%a, %d %b %Y %H:%M:%S GMT", stdex::locale_C);
 			}
 		};
 	}

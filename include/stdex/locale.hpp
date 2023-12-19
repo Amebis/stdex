@@ -89,4 +89,24 @@ namespace stdex
 	/// Reusable C-locale
 	///
 	const inline locale locale_C(create_locale(LC_ALL, "C"));
+
+	///
+	/// Reusable UTF-8 locale
+	///
+	const inline locale locale_utf8(create_locale(LC_ALL, ".UTF-8"));
+
+	///
+	/// Reusable default charset locale
+	///
+	const inline locale locale_default(create_locale(LC_ALL,
+#ifdef WIN32
+#ifdef _CONSOLE
+		".OCP"
+#else
+		".ACP"
+#endif
+#else
+		""
+#endif
+		));
 }

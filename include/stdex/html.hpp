@@ -1999,7 +1999,7 @@ namespace stdex
 			{
 				size_t n = str.size();
 				// Use %X instead of %p to ommit leading zeros and save space.
-				stdex::appendf(str, "%c%zX%c", stdex::locale_C.get(), token_tag_start, reinterpret_cast<uintptr_t>(this), token_tag_end);
+				stdex::appendf(str, "%c%zX%c", stdex::locale_C, token_tag_start, reinterpret_cast<uintptr_t>(this), token_tag_end);
 				return str.size() - n;
 			}
 
@@ -2014,7 +2014,7 @@ namespace stdex
 			size_t append_tag(_Inout_ std::basic_string<wchar_t, TR, AX>& str) const
 			{
 				// Use %X instead of %p to ommit leading zeros and save space.
-				return stdex::appendf(str, L"%c%zX%c", stdex::locale_C.get(), static_cast<wchar_t>(token_tag_start), reinterpret_cast<uintptr_t>(this), static_cast<wchar_t>(token_tag_end));
+				return stdex::appendf(str, L"%c%zX%c", stdex::locale_C, static_cast<wchar_t>(token_tag_start), reinterpret_cast<uintptr_t>(this), static_cast<wchar_t>(token_tag_end));
 			}
 
 			template<class T>
