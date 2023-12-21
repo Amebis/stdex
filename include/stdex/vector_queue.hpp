@@ -59,8 +59,7 @@ namespace stdex
 			m_head(0),
 			m_count(0),
 			m_size_max(size_max)
-		{
-		}
+		{}
 
 		///
 		/// Copies existing queue.

@@ -10,7 +10,6 @@
 #include <string>
 #include <vector>
 
-
 namespace stdex
 {
 	///
@@ -23,9 +22,7 @@ namespace stdex
 		/// Constructs blank encoding session
 		///
 		hex_enc() noexcept
-		{
-		}
-
+		{}
 
 		///
 		/// Encodes one block of information, and _appends_ it to the output
@@ -54,7 +51,6 @@ namespace stdex
 			}
 		}
 
-
 		///
 		/// Returns maximum encoded size
 		///
@@ -68,7 +64,6 @@ namespace stdex
 		}
 	};
 
-
 	///
 	/// Hexadecimal decoding session
 	///
@@ -81,9 +76,7 @@ namespace stdex
 		hex_dec() noexcept :
 			buf(0),
 			num(0)
-		{
-		}
-
+		{}
 
 		///
 		/// Decodes one block of information, and _appends_ it to the output
@@ -131,7 +124,6 @@ namespace stdex
 			}
 		}
 
-
 		///
 		/// Resets decoding session
 		///
@@ -139,7 +131,6 @@ namespace stdex
 		{
 			num = 0;
 		}
-
 
 		///
 		/// Returns maximum decoded size
@@ -152,7 +143,6 @@ namespace stdex
 		{
 			return (size + 1)/2;
 		}
-
 
 	protected:
 		uint8_t buf;    ///< Internal buffer
