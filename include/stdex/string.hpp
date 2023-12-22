@@ -210,6 +210,27 @@ namespace stdex
 	}
 
 	///
+	/// Return number of code units the last glyph in the string represents
+	///
+	/// \param[in] str    Start of a string
+	/// \param[in] count  Length of a string in code units
+	///
+	inline size_t glyphrlen(_In_reads_or_z_opt_(count) const wchar_t* str, _In_ size_t count)
+	{
+		_Assume_(count && str && str[count - 1]);
+		for (size_t i = count; i--;) {
+			if (!iscombining(str[i])) {
+#ifdef _WIN32
+				return count - (!is_low_surrogate(str[i]) || i == 0 || !is_high_surrogate(str[i - 1]) ? i : i - 1);
+#else
+				return count - i;
+#endif
+			}
+		}
+		return count;
+	}
+
+	///
 	/// Convert to ASCII-lower-case
 	///
 	/// \param[in] chr  Code unit
