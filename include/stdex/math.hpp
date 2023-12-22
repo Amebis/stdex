@@ -83,4 +83,60 @@ namespace stdex
 		return (value << bits) | (value >> (32 - bits));
 #endif
 	}
+
+	///
+	/// Calculate n*k/q
+	///
+	/// \param[in] n  Number
+	/// \param[in] k  Numerator
+	/// \param[in] q  Denominator
+	///
+	/// \return n*k/q
+	///
+	inline constexpr int32_t muldiv(int32_t n, int32_t k, int32_t q)
+	{
+		return static_cast<int32_t>(static_cast<int64_t>(n) * k / q);
+	}
+
+	///
+	/// Calculate n*k/q
+	///
+	/// \param[in] n  Number
+	/// \param[in] k  Numerator
+	/// \param[in] q  Denominator
+	///
+	/// \return n*k/q
+	///
+	inline constexpr uint32_t muldiv(uint32_t n, uint32_t k, uint32_t q)
+	{
+		return static_cast<uint32_t>(static_cast<uint64_t>(n) * k / q);
+	}
+
+	///
+	/// Calculate n*k/q
+	///
+	/// \param[in] n  Number
+	/// \param[in] k  Numerator
+	/// \param[in] q  Denominator
+	///
+	/// \return n*k/q
+	///
+	inline constexpr int64_t muldiv(int64_t n, int64_t k, int64_t q)
+	{
+		return n * k / q;
+	}
+
+	///
+	/// Calculate n*k/q
+	///
+	/// \param[in] n  Number
+	/// \param[in] k  Numerator
+	/// \param[in] q  Denominator
+	///
+	/// \return n*k/q
+	///
+	inline constexpr uint64_t muldiv(uint64_t n, uint64_t k, uint64_t q)
+	{
+		return n * k / q;
+	}
 }
