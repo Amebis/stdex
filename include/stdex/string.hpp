@@ -2020,15 +2020,15 @@ namespace stdex
 	/// \return Binary integer value
 	///
 	template <class T>
-	inline intptr_t strtoi(
+	inline ptrdiff_t strtoi(
 		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
 		_Out_opt_ size_t* end,
 		_In_ int radix)
 	{
 #if defined(_WIN64) || defined(__LP64__)
-		return static_cast<intptr_t>(strto64(str, count, end, radix));
+		return static_cast<ptrdiff_t>(strto64(str, count, end, radix));
 #else
-		return static_cast<intptr_t>(strto32(str, count, end, radix));
+		return static_cast<ptrdiff_t>(strto32(str, count, end, radix));
 #endif
 	}
 
@@ -2043,7 +2043,7 @@ namespace stdex
 	/// \return Binary integer value
 	///
 	template <class T, size_t N>
-	inline intptr_t strtoi(
+	inline ptrdiff_t strtoi(
 		_In_ const T (&str)[N],
 		_Out_opt_ size_t* end,
 		_In_ int radix)
