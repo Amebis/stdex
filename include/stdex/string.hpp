@@ -848,6 +848,108 @@ namespace stdex
 	}
 
 	///
+	/// Binary compare two strings in reverse direction
+	///
+	/// \param[in] str1  String 1
+	/// \param[in] str2  String 2
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T1, class T2>
+	inline int strrcmp(_In_z_ const T1* str1, _In_z_ const T2* str2)
+	{
+		size_t
+			i = strlen(str1),
+			j = strlen(str2);
+		_Assume_(str1 || !i);
+		_Assume_(str2 || !j);
+		size_t k; T1 a; T2 b;
+		for (k = 1; i && j; k++) {
+			i--; j--;
+			if ((a = str1[i]) > (b = str2[j])) return +1;
+			if (a < b) return -1;
+		}
+		if (i && !j) return +1;
+		if (!i && j) return -1;
+		return 0;
+	}
+
+	///
+	/// Binary compare two strings in reverse direction
+	///
+	/// \param[in] str1   String 1
+	/// \param[in] str2   String 2
+	/// \param[in] count  String 1 and 2 code unit count limit
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T1, class T2>
+	inline int strrncmp(_In_reads_or_z_opt_(count) const T1* str1, _In_reads_or_z_opt_(count) const T2* str2, _In_ size_t count)
+	{
+		size_t
+			i = strnlen(str1, count),
+			j = strnlen(str2, count);
+		_Assume_(str1 || !i);
+		_Assume_(str2 || !j);
+		size_t k; T1 a; T2 b;
+		for (k = 1; i && j; k++) {
+			i--; j--;
+			if ((a = str1[i]) > (b = str2[j])) return +1;
+			if (a < b) return -1;
+		}
+		if (i && !j) return +1;
+		if (!i && j) return -1;
+		return 0;
+	}
+
+	///
+	/// Binary compare two strings in reverse direction
+	///
+	/// \param[in] str1    String 1
+	/// \param[in] count1  String 1 code unit count limit
+	/// \param[in] str2    String 2
+	/// \param[in] count2  String 2 code unit count limit
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T1, class T2>
+	inline int strrncmp(
+		_In_reads_or_z_opt_(count1) const T1* str1, _In_ size_t count1,
+		_In_reads_or_z_opt_(count2) const T2* str2, _In_ size_t count2)
+	{
+		size_t
+			i = strnlen(str1, count1),
+			j = strnlen(str2, count2);
+		_Assume_(str1 || !i);
+		_Assume_(str2 || !j);
+		size_t k; T1 a; T2 b;
+		for (k = 1; i && j; k++) {
+			i--; j--;
+			if ((a = str1[i]) > (b = str2[j])) return +1;
+			if (a < b) return -1;
+		}
+		if (i && !j) return +1;
+		if (!i && j) return -1;
+		return 0;
+	}
+
+	///
+	/// Binary compare two strings
+	///
+	/// \param[in] str1  String 1
+	/// \param[in] str2  String 2
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <class T1, size_t N1, class T2, size_t N2>
+	inline int strrncmp(
+		_In_ const T1 (&str1)[N1],
+		_In_ const T2 (&str2)[N2])
+	{
+		return strrncmp(str1, N1, str2, N2);
+	}
+
+	///
 	/// Binary compare two strings ASCII-case-insensitive
 	///
 	/// \param[in] str1  String 1
