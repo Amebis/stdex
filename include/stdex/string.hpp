@@ -1504,6 +1504,22 @@ namespace stdex
 	}
 
 	///
+	/// Copy zero-terminated string
+	///
+	/// \param[in] dst  Destination string
+	/// \param[in] src  Source string
+	///
+	/// \return Number of code units excluding zero terminator in the dst string after the operation.
+	///
+	template <class T1, size_t N1, class T2, size_t N2>
+	inline size_t strncpy(
+		_Out_ _Post_maybez_ T1 (&dst)[N1],
+		_In_ const T2 (&src)[N2])
+	{
+		return strncpy(dst, N1, src, N2);
+	}
+
+	///
 	/// Append zero-terminated string
 	///
 	/// \param[in] dst  Destination string
