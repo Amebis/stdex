@@ -79,6 +79,79 @@ namespace stdex
 	// constexpr int sgml_kolos      = sgml_amp | sgml_quot | sgml_dollar | sgml_percnt | sgml_lt_gt | sgml_bsol/* | sgml_commat | sgml_num*/ | sgml_lpar_rpar | sgml_lcub_rcub | sgml_lsqb_rsqb;
 
 	///
+	/// Checks SGML string for error
+	///
+	/// \param[in]     src        SGML string
+	/// \param[in]     count_src  SGML string character count limit
+	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra checks. Currently, only stdex::sgml_full is used, which enforces 7-bit/ASCII checking.
+	///
+	/// \return Index of error; or stdex::npos if no error detected.
+	///
+	template <class T_from>
+	size_t sgmlerr(
+		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
+		_In_ int what = 0)
+	{
+		_Assume_(src || !count_src);
+
+		const bool
+			do_ascii = (what & sgml_full) == 0;
+
+		for (size_t i = 0; i < count_src && src[i];) {
+			if (src[i] == '&') {
+				auto end = sgmlend(src + i + 1, count_src - i - 1);
+				if (end) {
+					const wchar_t* entity_w;
+					wchar_t chr[3];
+					size_t n = end - src - i - 1;
+					if (n >= 2 && src[i + 1] == '#') {
+						uint32_t unicode;
+						if (src[i + 2] == 'x' || src[i + 2] == 'X')
+							unicode = strtou32(src + i + 3, n - 2, nullptr, 16);
+						else
+							unicode = strtou32(src + i + 2, n - 1, nullptr, 10);
+#ifdef _WIN32
+						if (unicode < 0x10000) {
+							chr[0] = (wchar_t)unicode;
+							chr[1] = 0;
+						}
+						else {
+							ucs4_to_surrogate_pair(chr, unicode);
+							chr[2] = 0;
+						}
+#else
+						chr[0] = (wchar_t)unicode;
+						chr[1] = 0;
+#endif
+						entity_w = chr;
+					}
+					else
+						entity_w = sgml2uni(src + i + 1, n);
+
+					if (entity_w) {
+						i = end - src + 1;
+						continue;
+					}
+
+					// Unknown entity.
+					return i;
+				}
+
+				// Unterminated entity.
+				return i;
+			}
+
+			if (do_ascii && !is7bit(src[i])) {
+				// Non-ASCII character
+				return i;
+			}
+			i++;
+		}
+
+		return npos;
+	}
+
+	///
 	/// Convert SGML string to Unicode (UTF-16 on Windows) and append to string
 	///
 	/// \param[in,out] dst        String to append Unicode to
