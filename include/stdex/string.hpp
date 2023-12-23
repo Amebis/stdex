@@ -189,6 +189,17 @@ namespace stdex
 	}
 
 	///
+	/// Test if the given code unit is ASCII
+	///
+	/// \param[in] chr  Code unit
+	///
+	template <class T>
+	inline bool is7bit(_In_ T chr)
+	{
+		return '\x00' <= chr && chr <= '\x7f';
+	}
+
+	///
 	/// Return number of code units the glyph represents
 	///
 	/// \param[in] glyph  Start of a glyph
@@ -737,8 +748,7 @@ namespace stdex
 	///
 	template <class T>
 	inline bool isblank(
-		_In_reads_or_z_opt_(count) const T* str,
-		_In_ size_t count,
+		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
 		_In_ const std::locale& locale)
 	{
 		_Assume_(str || !count);
@@ -776,6 +786,54 @@ namespace stdex
 		_In_ const std::locale& locale)
 	{
 		return isblank(str, N, locale);
+	}
+
+	// ///
+	// /// Checks if string contains all-ASCII characters
+	// ///
+	// /// \param[in] str  String
+	// ///
+	// /// \return `true` if all characters are ASCII or `false` when any non-ASCII character is found in string.
+	// ///
+	// template <class T>
+	// inline bool is7bit(_In_z_ const T* str)
+	// {
+	// 	_Assume_(str);
+	// 	for (size_t i = 0; str[i]; i++)
+	// 		if (!is7bit(str[i]))
+	// 			return false;
+	// 	return true;
+	// }
+
+	///
+	/// Checks if string contains all-ASCII characters
+	///
+	/// \param[in] str    String
+	/// \param[in] count  Code unit count limit
+	///
+	/// \return `true` if all characters are ASCII or `false` when any non-ASCII character is found in string.
+	///
+	template <class T>
+	inline bool is7bit(_In_reads_or_z_opt_(count) const T* str, _In_ size_t count)
+	{
+		_Assume_(str || !count);
+		for (size_t i = 0; i < count && str[i]; i++)
+			if (!is7bit(str[i]))
+				return false;
+		return true;
+	}
+
+	///
+	/// Checks if string contains all-ASCII characters
+	///
+	/// \param[in] str    String
+	///
+	/// \return `true` if all characters are ASCII or `false` when any non-ASCII character is found in string.
+	///
+	template <class T, size_t N>
+	inline bool is7bit(_In_ const T (&str)[N])
+	{
+		return is7bit(str, N);
 	}
 
 	///
@@ -1465,7 +1523,7 @@ namespace stdex
 		_Assume_(dst);
 		_Assume_(src);
 		for (size_t i = 0; ; ++i) {
-			if ((dst[i] = src[i]) == 0)
+			if ((dst[i] = static_cast<T1>(src[i])) == 0)
 				return i;
 		}
 	}
@@ -1489,7 +1547,7 @@ namespace stdex
 		for (size_t i = 0; ; ++i) {
 			if (i >= count)
 				return i;
-			if ((dst[i] = src[i]) == 0)
+			if ((dst[i] = static_cast<T1>(src[i])) == 0)
 				return i;
 		}
 	}
@@ -1519,7 +1577,7 @@ namespace stdex
 				dst[i] = 0;
 				return i;
 			}
-			if ((dst[i] = src[i]) == 0)
+			if ((dst[i] = static_cast<T1>(src[i])) == 0)
 				return i;
 		}
 	}
@@ -1556,7 +1614,7 @@ namespace stdex
 		_Assume_(dst);
 		_Assume_(src);
 		for (size_t i = 0, j = stdex::strlen<T1>(dst); ; ++i, ++j) {
-			if ((dst[j] = src[i]) == 0)
+			if ((dst[j] = static_cast<T1>(src[i])) == 0)
 				return j;
 		}
 	}
@@ -1580,7 +1638,7 @@ namespace stdex
 		for (size_t i = 0, j = stdex::strlen<T1>(dst); ; ++i, ++j) {
 			if (i >= count)
 				return j;
-			if ((dst[j] = src[i]) == 0)
+			if ((dst[j] = static_cast<T1>(src[i])) == 0)
 				return j;
 		}
 	}
@@ -1610,7 +1668,7 @@ namespace stdex
 				dst[j] = 0;
 				return j;
 			}
-			if ((dst[j] = src[i]) == 0)
+			if ((dst[j] = static_cast<T1>(src[i])) == 0)
 				return j;
 		}
 	}

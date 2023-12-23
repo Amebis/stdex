@@ -478,7 +478,7 @@ namespace stdex
 		for (size_t i = 0; i < count_src;) {
 			size_t n = glyphlen(src + i, count_src - i);
 			if (n == 1 &&
-				do_ascii && (unsigned int)src[i] < 128 &&
+				do_ascii && is7bit(src[i]) &&
 				src[i] != L'&' &&
 				(do_quot || (src[i] != L'"')) &&
 				(do_apos || (src[i] != L'\'')) &&
@@ -505,7 +505,7 @@ namespace stdex
 				}
 				else if (n == 1) {
 					// Trivial character (1 code unit, 1 glyph), no entity available.
-					if ((unsigned int)src[i] < 128)
+					if (is7bit(src[i]))
 						dst.append(1, static_cast<char>(src[i++]));
 					else {
 						char tmp[3 + 8 + 1 + 1];
@@ -523,7 +523,7 @@ namespace stdex
 							dst.append(1, ';');
 							i++;
 						}
-						else if ((unsigned int)src[i] < 128)
+						else if (is7bit(src[i]))
 							dst.append(1, static_cast<char>(src[i++]));
 						else {
 							uint32_t unicode;
@@ -602,7 +602,7 @@ namespace stdex
 		for (size_t i = 0; i < count_src;) {
 			size_t n = glyphlen(src + i, count_src - i);
 			if (n == 1 &&
-				do_ascii && (unsigned int)src[i] < 128 &&
+				do_ascii && is7bit(src[i]) &&
 				src[i] != L'&' &&
 				(do_quot || (src[i] != L'"')) &&
 				(do_apos || (src[i] != L'\'')) &&
@@ -634,7 +634,7 @@ namespace stdex
 				}
 				else if (n == 1) {
 					// Trivial character (1 code unit, 1 glyph), no entity available.
-					if ((unsigned int)src[i] < 128) {
+					if (is7bit(src[i])) {
 						if (j + 1 >= count_dst)
 							throw buffer_overrun;
 						dst[j++] = static_cast<char>(src[i++]);
@@ -661,7 +661,7 @@ namespace stdex
 							dst[j++] = ';';
 							i++;
 						}
-						else if ((unsigned int)src[i] < 128) {
+						else if (is7bit(src[i])) {
 							if (j + 1 >= count_dst)
 								throw buffer_overrun;
 							dst[j++] = static_cast<char>(src[i++]);
