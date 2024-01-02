@@ -4,5 +4,6 @@ var searchData=
   ['lazy_5fprogress_1',['lazy_progress',['../classstdex_1_1lazy__progress.html',1,'stdex']]],
   ['limiter_2',['limiter',['../classstdex_1_1stream_1_1limiter.html',1,'stdex::stream']]],
   ['list_3',['list',['../structstdex_1_1wav_1_1list.html',1,'stdex::wav']]],
-  ['ltxt_4',['ltxt',['../structstdex_1_1wav_1_1ltxt.html',1,'stdex::wav']]]
+  ['locale_4',['locale',['../classstdex_1_1locale.html',1,'stdex']]],
+  ['ltxt_5',['ltxt',['../structstdex_1_1wav_1_1ltxt.html',1,'stdex::wav']]]
 ];

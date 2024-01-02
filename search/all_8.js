@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['id_0',['id',['../classstdex_1_1idrec_1_1record.html#a19ef062ee06dbc1ca3d4fddc756ac4d6',1,'stdex::idrec::record::id()'],['../structstdex_1_1wav_1_1note.html#aab98257fb2764c523b4f68d0d8255fc4',1,'stdex::wav::note::id'],['../structstdex_1_1wav_1_1label.html#a848c639ef4fe05139938455d80fdd7e5',1,'stdex::wav::label::id'],['../structstdex_1_1wav_1_1cue.html#a2348ff6997191585c1419335314cd5ad',1,'stdex::wav::cue::id'],['../structstdex_1_1wav_1_1ltxt.html#a1136c4e64b75d45013ca612e36bf66e7',1,'stdex::wav::ltxt::id']]],
+  ['id_0',['id',['../structstdex_1_1wav_1_1cue.html#a2348ff6997191585c1419335314cd5ad',1,'stdex::wav::cue::id'],['../structstdex_1_1wav_1_1ltxt.html#a1136c4e64b75d45013ca612e36bf66e7',1,'stdex::wav::ltxt::id'],['../structstdex_1_1wav_1_1label.html#a848c639ef4fe05139938455d80fdd7e5',1,'stdex::wav::label::id'],['../structstdex_1_1wav_1_1note.html#aab98257fb2764c523b4f68d0d8255fc4',1,'stdex::wav::note::id'],['../classstdex_1_1idrec_1_1record.html#aade8ebd8670982f05cc890c750627365',1,'stdex::idrec::record::id()']]],
   ['ima_5fadpcm_1',['ima_adpcm',['../structstdex_1_1wav_1_1format.html#a9e48aadca63b92583abda67513aa4553a04984c51e6d66d2a85c2f5741f528c62',1,'stdex::wav::format']]],
   ['inserted_5ftoken_2',['inserted_token',['../structstdex_1_1html_1_1inserted__token.html',1,'stdex::html']]],
   ['instruction_3',['instruction',['../classstdex_1_1html_1_1instruction.html',1,'stdex::html']]],
