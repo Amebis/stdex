@@ -6001,7 +6001,7 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				_Assume_(text || start >= end);
-				if (!http_media_range::match(text, start, end, flags))
+				if (!http_media_range::do_match(text, start, end, flags))
 					goto error;
 				params.clear();
 				for (;;) {
