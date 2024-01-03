@@ -1680,13 +1680,13 @@ namespace stdex
 
 					if (m_condition_start.match(source, i, num_chars)) {
 						auto condition_src(replace_entities(source + m_condition_start.condition.start, m_condition_start.condition.size()));
-						if (condition_src == "CDATA")
+						if (stdex::strncmp(condition_src.data(), condition_src.size(), "CDATA", SIZE_MAX) == 0)
 							m_is_cdata = true;
-						else if (condition_src == "RCDATA")
+						else if (stdex::strncmp(condition_src.data(), condition_src.size(), "RCDATA", SIZE_MAX) == 0)
 							m_is_rcdata = true;
 						if (m_num_invalid_conditions)
 							m_num_invalid_conditions++;
-						else if (condition_src == "IGNORE")
+						else if (stdex::strncmp(condition_src.data(), condition_src.size(), "IGNORE", SIZE_MAX) == 0)
 							m_num_invalid_conditions++;
 						else
 							m_num_valid_conditions++;
@@ -2386,8 +2386,8 @@ namespace stdex
 			///
 			/// \returns Pointer to the token for non-owning references
 			///
-			template <class T>
-			T* append_token(_Inout_ std::unique_ptr<T>&& token)
+			template <class T_token>
+			T_token* append_token(_Inout_ std::unique_ptr<T_token>&& token)
 			{
 				if (!token)
 					return nullptr;
@@ -2404,8 +2404,8 @@ namespace stdex
 			///
 			/// \returns Number of code units appended to the source code
 			///
-			template <class T>
-			size_t append_token(_Inout_ std::unique_ptr<T>&& token, _Inout_ std::basic_string<T, TR, AX>& source)
+			template <class T_token>
+			size_t append_token(_Inout_ std::unique_ptr<T_token>&& token, _Inout_ std::basic_string<T, TR, AX>& source)
 			{
 				if (!token)
 					return 0;
