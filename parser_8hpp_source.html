@@ -5996,7 +5996,7 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l06001" name="l06001"></a><span class="lineno"> 6001</span>                <a class="code hl_class" href="classstdex_1_1parser_1_1basic__string.html">_In_</a> <span class="keywordtype">int</span> <a class="code hl_class" href="classstdex_1_1parser_1_1basic__string.html">flags</a> = match_default)</div>
 <div class="line"><a id="l06002" name="l06002"></a><span class="lineno"> 6002</span>            {</div>
 <div class="line"><a id="l06003" name="l06003"></a><span class="lineno"> 6003</span>                _Assume_(text || start &gt;= end);</div>
-<div class="line"><a id="l06004" name="l06004"></a><span class="lineno"> 6004</span>                <span class="keywordflow">if</span> (!http_media_range::match(text, start, end, <a class="code hl_class" href="classstdex_1_1parser_1_1basic__string.html">flags</a>))</div>
+<div class="line"><a id="l06004" name="l06004"></a><span class="lineno"> 6004</span>                <span class="keywordflow">if</span> (!http_media_range::do_match(text, start, end, <a class="code hl_class" href="classstdex_1_1parser_1_1basic__string.html">flags</a>))</div>
 <div class="line"><a id="l06005" name="l06005"></a><span class="lineno"> 6005</span>                    <span class="keywordflow">goto</span> <a class="code hl_class" href="classstdex_1_1parser_1_1basic__string.html">error</a>;</div>
 <div class="line"><a id="l06006" name="l06006"></a><span class="lineno"> 6006</span>                params.clear();</div>
 <div class="line"><a id="l06007" name="l06007"></a><span class="lineno"> 6007</span>                <span class="keywordflow">for</span> (;;) {</div>
@@ -8548,7 +8548,7 @@ $(function() { codefold.init(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jan 2 2024 11:12:54 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+Generated on Wed Jan 3 2024 16:35:16 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
 </small></address>
 </body>
 </html>
