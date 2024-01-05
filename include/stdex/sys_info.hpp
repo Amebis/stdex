@@ -207,6 +207,19 @@ namespace stdex
 #endif
 		}
 
+		///
+		/// Is screen reader currently active?
+		///
+		static bool is_screen_reader()
+		{
+#ifdef _WIN32
+			BOOL b;
+			return SystemParametersInfo(SPI_GETSCREENREADER, 0, &b, 0) && b;
+#else
+			return false;
+#endif
+		}
+
 	protected:
 #ifndef _WIN32
 		struct utsname m_utsn;
