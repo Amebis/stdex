@@ -2278,7 +2278,9 @@ namespace stdex
 		_Out_opt_ size_t* end,
 		_In_opt_ locale_t locale)
 	{
-		std::string tmp(str, strnlen(str, count));
+		count = strnlen(str, count);
+		_Assume_(str || !count);
+		std::string tmp(str, count);
 		char* _end;
 		double r;
 #if _WIN32
@@ -2305,7 +2307,9 @@ namespace stdex
 		_Out_opt_ size_t* end,
 		_In_opt_ locale_t locale)
 	{
-		std::wstring tmp(str, strnlen(str, count));
+		count = strnlen(str, count);
+		_Assume_(str || !count);
+		std::wstring tmp(str, count);
 		wchar_t* _end;
 		double r;
 #if _WIN32
