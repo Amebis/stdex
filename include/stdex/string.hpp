@@ -2320,42 +2320,24 @@ namespace stdex
 	/// \cond internal
 	inline int vsnprintf(_Out_z_cap_(capacity) char* str, _In_ size_t capacity, _In_z_ _Printf_format_string_params_(2) const char* format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
-		int r;
 #ifdef _WIN32
 		// Don't use _vsnprintf_s(). It terminates the string even if we want to print to the edge of the buffer.
 #pragma warning(suppress: 4996)
-		r = _vsnprintf_l(str, capacity, format, locale, arg);
+		return _vsnprintf_l(str, capacity, format, locale, arg);
 #else
-		r = ::vsnprintf(str, capacity, format, arg);
+		return ::vsnprintf(str, capacity, format, arg);
 #endif
-		if (r == -1 && strnlen(str, capacity) == capacity) {
-			// Buffer overrun. Estimate buffer size for the next iteration.
-			capacity += std::max<size_t>(capacity / 8, 0x80);
-			if (capacity > INT_MAX)
-				throw std::invalid_argument("string too big");
-			return (int)capacity;
-		}
-		return r;
 	}
 
 	inline int vsnprintf(_Out_z_cap_(capacity) wchar_t* str, _In_ size_t capacity, _In_z_ _Printf_format_string_params_(2) const wchar_t* format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
-		int r;
 #ifdef _WIN32
 		// Don't use _vsnwprintf_s(). It terminates the string even if we want to print to the edge of the buffer.
 #pragma warning(suppress: 4996)
-		r = _vsnwprintf_l(str, capacity, format, locale, arg);
+		return _vsnwprintf_l(str, capacity, format, locale, arg);
 #else
-		r = vswprintf(str, capacity, format, arg);
+		return vswprintf(str, capacity, format, arg);
 #endif
-		if (r == -1 && strnlen(str, capacity) == capacity) {
-			// Buffer overrun. Estimate buffer size for the next iteration.
-			capacity += std::max<size_t>(capacity / 8, 0x80);
-			if (capacity > INT_MAX)
-				throw std::invalid_argument("string too big");
-			return (int)capacity;
-		}
-		return r;
 	}
 	/// \endcond
 
@@ -2375,21 +2357,28 @@ namespace stdex
 		T buf[1024 / sizeof(T)];
 
 		// Try with stack buffer first.
-		int count = vsnprintf(buf, _countof(buf) - 1, format, locale, arg);
-		if (count >= 0) {
+		int count = vsnprintf(buf, _countof(buf), format, locale, arg);
+		if (0 <= count && count < _countof(buf)) {
 			// Copy from stack.
 			str.append(buf, count);
 			return count;
 		}
-		for (size_t capacity = 2 * 1024 / sizeof(T);; capacity *= 2) {
-			// Allocate on heap and retry.
-			auto buf_dyn = std::make_unique<T[]>(capacity);
-			count = vsnprintf(buf_dyn.get(), capacity - 1, format, locale, arg);
-			if (count >= 0) {
-				str.append(buf_dyn.get(), count);
-				return count;
+		if (count < 0) {
+			switch (errno) {
+			case 0:
+				count = vsnprintf(NULL, 0, format, locale, arg);
+				break;
+			case EINVAL: throw std::invalid_argument("invalid vsnprintf arguments");
+			case EILSEQ: throw std::runtime_error("encoding error");
+			default: throw std::runtime_error("failed to format string");
 			}
 		}
+		auto buf_dyn = std::make_unique<T[]>(count + 1);
+		count = vsnprintf(buf_dyn.get(), count + 1, format, locale, arg);
+		if (count < 0) _Unlikely_
+			throw std::runtime_error("failed to format string");
+		str.append(buf_dyn.get(), count);
+		return count;
 	}
 
 	///
