@@ -207,9 +207,10 @@ namespace stdex
 					if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
 						// Query the required output size. Allocate buffer. Then convert again.
 						cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), NULL, 0);
-						std::unique_ptr<WCHAR[]> szBuffer(new WCHAR[cch]);
-						cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), szBuffer.get(), cch);
-						dst.append(reinterpret_cast<const T_to*>(szBuffer.get()), count_src != SIZE_MAX ? wcsnlen(szBuffer.get(), cch) : static_cast<size_t>(cch) - 1);
+						size_t offset = dst.size();
+						dst.resize(offset + static_cast<size_t>(cch));
+						cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), &dst[offset], cch);
+						dst.resize(offset + (count_src != SIZE_MAX ? wcsnlen(&dst[offset], cch) : static_cast<size_t>(cch) - 1));
 						return;
 					}
 					throw std::system_error(GetLastError(), std::system_category(), "MultiByteToWideChar failed");
@@ -231,9 +232,10 @@ namespace stdex
 				if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
 					// Query the required output size. Allocate buffer. Then convert again.
 					cch = WideCharToMultiByte(static_cast<UINT>(m_to_wincp), dwFlagsWCMB, reinterpret_cast<LPCWCH>(src), static_cast<int>(count_src), NULL, 0, lpDefaultChar, NULL);
-					std::unique_ptr<CHAR[]> szBuffer(new CHAR[cch]);
-					cch = WideCharToMultiByte(static_cast<UINT>(m_to_wincp), dwFlagsWCMB, reinterpret_cast<LPCWCH>(src), static_cast<int>(count_src), szBuffer.get(), cch, lpDefaultChar, NULL);
-					dst.append(reinterpret_cast<const T_to*>(szBuffer.get()), count_src != SIZE_MAX ? strnlen(szBuffer.get(), cch) : static_cast<size_t>(cch) - 1);
+					size_t offset = dst.size();
+					dst.resize(offset + static_cast<size_t>(cch));
+					cch = WideCharToMultiByte(static_cast<UINT>(m_to_wincp), dwFlagsWCMB, reinterpret_cast<LPCWCH>(src), static_cast<int>(count_src), &dst[offset], cch, lpDefaultChar, NULL);
+					dst.resize(offset + (count_src != SIZE_MAX ? strnlen(&dst[offset], cch) : static_cast<size_t>(cch) - 1));
 					return;
 				}
 				throw std::system_error(GetLastError(), std::system_category(), "WideCharToMultiByte failed");
@@ -264,9 +266,10 @@ namespace stdex
 					if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
 						// Query the required output size. Allocate buffer. Then convert again.
 						cch = WideCharToMultiByte(static_cast<UINT>(m_to_wincp), dwFlagsWCMB, szStackBufferMBWC, static_cast<int>(count_inter), NULL, 0, lpDefaultChar, NULL);
-						std::unique_ptr<CHAR[]> szBufferWCMB(new CHAR[cch]);
-						cch = WideCharToMultiByte(static_cast<UINT>(m_to_wincp), dwFlagsWCMB, szStackBufferMBWC, static_cast<int>(count_inter), szBufferWCMB.get(), cch, lpDefaultChar, NULL);
-						dst.append(reinterpret_cast<const T_to*>(szBufferWCMB.get()), strnlen(szBufferWCMB.get(), cch));
+						size_t offset = dst.size();
+						dst.resize(offset + cch);
+						cch = WideCharToMultiByte(static_cast<UINT>(m_to_wincp), dwFlagsWCMB, szStackBufferMBWC, static_cast<int>(count_inter), &dst[offset], cch, lpDefaultChar, NULL);
+						dst.resize(offset + strnlen(&dst[offset], cch));
 						return;
 					}
 					throw std::system_error(GetLastError(), std::system_category(), "WideCharToMultiByte failed");
@@ -280,9 +283,10 @@ namespace stdex
 
 					// Query the required output size. Allocate buffer. Then convert again.
 					cch = WideCharToMultiByte(static_cast<UINT>(m_to_wincp), dwFlagsWCMB, szBufferMBWC.get(), static_cast<int>(count_inter), NULL, 0, lpDefaultChar, NULL);
-					std::unique_ptr<CHAR[]> szBufferWCMB(new CHAR[cch]);
-					cch = WideCharToMultiByte(static_cast<UINT>(m_to_wincp), dwFlagsWCMB, szBufferMBWC.get(), static_cast<int>(count_inter), szBufferWCMB.get(), cch, lpDefaultChar, NULL);
-					dst.append(reinterpret_cast<const T_to*>(szBufferWCMB.get()), strnlen(szBufferWCMB.get(), cch));
+					size_t offset = dst.size();
+					dst.resize(offset + cch);
+					cch = WideCharToMultiByte(static_cast<UINT>(m_to_wincp), dwFlagsWCMB, szBufferMBWC.get(), static_cast<int>(count_inter), &dst[offset], cch, lpDefaultChar, NULL);
+					dst.resize(offset + strnlen(&dst[offset], cch));
 					return;
 				}
 				throw std::system_error(GetLastError(), std::system_category(), "MultiByteToWideChar failed");
