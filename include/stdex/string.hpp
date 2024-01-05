@@ -2367,17 +2367,17 @@ namespace stdex
 			switch (errno) {
 			case 0:
 				count = vsnprintf(NULL, 0, format, locale, arg);
+				_Assume_(count >= 0);
 				break;
 			case EINVAL: throw std::invalid_argument("invalid vsnprintf arguments");
 			case EILSEQ: throw std::runtime_error("encoding error");
 			default: throw std::runtime_error("failed to format string");
 			}
 		}
-		auto buf_dyn = std::make_unique<T[]>(count + 1);
-		count = vsnprintf(buf_dyn.get(), count + 1, format, locale, arg);
-		if (count < 0) _Unlikely_
+		size_t offset = str.size();
+		str.resize(offset + count);
+		if (vsnprintf(&str[offset], count + 1, format, locale, arg) != count) _Unlikely_
 			throw std::runtime_error("failed to format string");
-		str.append(buf_dyn.get(), count);
 		return count;
 	}
 
@@ -2504,16 +2504,16 @@ namespace stdex
 		if (count) {
 			// Copy from stack.
 			str.append(buf, count);
+			return;
 		}
-		else {
-			for (size_t capacity = 2 * 1024 / sizeof(T);; capacity *= 2) {
-				// Allocate on heap and retry.
-				auto buf_dyn = std::make_unique<T[]>(capacity);
-				count = strftime(buf_dyn.get(), capacity, format, time, locale);
-				if (count) {
-					str.append(buf_dyn.get(), count);
-					break;
-				}
+		size_t offset = str.size();
+		for (size_t capacity = 2 * 1024 / sizeof(T);; capacity *= 2) {
+			// Allocate on heap and retry.
+			str.resize(offset + capacity);
+			count = strftime(&str[offset], capacity + 1, format, time, locale);
+			if (count) {
+				str.resize(offset + count);
+				return;
 			}
 		}
 	}
