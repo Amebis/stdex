@@ -31,6 +31,7 @@
 #include <stdex/vector_queue.hpp>
 #include <stdex/watchdog.hpp>
 #include <stdex/wav.hpp>
+#include <stdex/zlib.hpp>
 
 #include "compat.hpp"
 

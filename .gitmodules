@@ -1,0 +1,3 @@
+[submodule "UnitTests/zlib"]
+	path = UnitTests/zlib
+	url = https://github.com/madler/zlib.git
