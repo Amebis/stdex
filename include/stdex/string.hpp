@@ -2325,7 +2325,6 @@ namespace stdex
 	inline int vsnprintf(_Out_z_cap_(capacity) char* str, _In_ size_t capacity, _In_z_ _Printf_format_string_params_(2) const char* format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
 #ifdef _WIN32
-		// Don't use _vsnprintf_s(). It terminates the string even if we want to print to the edge of the buffer.
 #pragma warning(suppress: 4996)
 		return _vsnprintf_l(str, capacity, format, locale, arg);
 #else
@@ -2336,7 +2335,6 @@ namespace stdex
 	inline int vsnprintf(_Out_z_cap_(capacity) wchar_t* str, _In_ size_t capacity, _In_z_ _Printf_format_string_params_(2) const wchar_t* format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
 #ifdef _WIN32
-		// Don't use _vsnwprintf_s(). It terminates the string even if we want to print to the edge of the buffer.
 #pragma warning(suppress: 4996)
 		return _vsnwprintf_l(str, capacity, format, locale, arg);
 #else
