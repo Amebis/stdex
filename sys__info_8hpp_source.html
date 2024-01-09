@@ -270,24 +270,37 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>        }</div>
 <div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span> </div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>    <span class="keyword">protected</span>:</div>
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span><span class="preprocessor">#ifndef _WIN32</span></div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>        <span class="keyword">struct </span>utsname m_utsn;</div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>    } sys_info;</div>
+<div class="foldopen" id="foldopen00213" data-start="{" data-end="}">
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno"><a class="line" href="structstdex_1_1sys__info__t.html#ada3ef18ed3f09107acfe02fbcb4623fe">  213</a></span>        <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="structstdex_1_1sys__info__t.html#ada3ef18ed3f09107acfe02fbcb4623fe">is_screen_reader</a>()</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>        {</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span><span class="preprocessor">#ifdef _WIN32</span></div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>            BOOL b;</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>            <span class="keywordflow">return</span> SystemParametersInfo(SPI_GETSCREENREADER, 0, &amp;b, 0) &amp;&amp; b;</div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>        }</div>
 </div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>}</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span> </div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>    <span class="keyword">protected</span>:</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span><span class="preprocessor">#ifndef _WIN32</span></div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>        <span class="keyword">struct </span>utsname m_utsn;</div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>    } sys_info;</div>
+</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>}</div>
 <div class="ttc" id="aclassstdex_1_1sys__object_html"><div class="ttname"><a href="classstdex_1_1sys__object.html">stdex::sys_object</a></div><div class="ttdoc">Operating system object (file, pipe, anything with an OS handle etc.)</div><div class="ttdef"><b>Definition</b> system.hpp:99</div></div>
 <div class="ttc" id="aclassstdex_1_1sys__object_html_a68edd83d50aee1dd85645aa0506c8769"><div class="ttname"><a href="classstdex_1_1sys__object.html#a68edd83d50aee1dd85645aa0506c8769">stdex::sys_object::get</a></div><div class="ttdeci">sys_handle get() const noexcept</div><div class="ttdoc">Returns object handle.</div><div class="ttdef"><b>Definition</b> system.hpp:156</div></div>
 <div class="ttc" id="astructstdex_1_1sys__info__t_html"><div class="ttname"><a href="structstdex_1_1sys__info__t.html">stdex::sys_info_t</a></div><div class="ttdoc">System information.</div><div class="ttdef"><b>Definition</b> sys_info.hpp:52</div></div>
 <div class="ttc" id="astructstdex_1_1sys__info__t_html_a31d755b61ee96cc3f1174a7c6cbd509c"><div class="ttname"><a href="structstdex_1_1sys__info__t.html#a31d755b61ee96cc3f1174a7c6cbd509c">stdex::sys_info_t::admin</a></div><div class="ttdeci">bool admin</div><div class="ttdoc">Is member of local group Administrators (Windows) or member of group wheel/sudoers (others)?</div><div class="ttdef"><b>Definition</b> sys_info.hpp:94</div></div>
 <div class="ttc" id="astructstdex_1_1sys__info__t_html_a5ab4199ac9092bd900eabd5a1361b0f7"><div class="ttname"><a href="structstdex_1_1sys__info__t.html#a5ab4199ac9092bd900eabd5a1361b0f7">stdex::sys_info_t::elevated</a></div><div class="ttdeci">bool elevated</div><div class="ttdoc">Is elevated process (Windows) or running as root (others)?</div><div class="ttdef"><b>Definition</b> sys_info.hpp:99</div></div>
 <div class="ttc" id="astructstdex_1_1sys__info__t_html_acd4a96851f4100095f812dc945b1d7d0"><div class="ttname"><a href="structstdex_1_1sys__info__t.html#acd4a96851f4100095f812dc945b1d7d0">stdex::sys_info_t::os_platform</a></div><div class="ttdeci">platform_id os_platform</div><div class="ttdoc">The platform this process was compiled for.</div><div class="ttdef"><b>Definition</b> sys_info.hpp:77</div></div>
+<div class="ttc" id="astructstdex_1_1sys__info__t_html_ada3ef18ed3f09107acfe02fbcb4623fe"><div class="ttname"><a href="structstdex_1_1sys__info__t.html#ada3ef18ed3f09107acfe02fbcb4623fe">stdex::sys_info_t::is_screen_reader</a></div><div class="ttdeci">static bool is_screen_reader()</div><div class="ttdoc">Is screen reader currently active?</div><div class="ttdef"><b>Definition</b> sys_info.hpp:213</div></div>
 <div class="ttc" id="astructstdex_1_1sys__info__t_html_ae2a466655022e5df25ddbe56eec8b54f"><div class="ttname"><a href="structstdex_1_1sys__info__t.html#ae2a466655022e5df25ddbe56eec8b54f">stdex::sys_info_t::interactive_process</a></div><div class="ttdeci">bool interactive_process</div><div class="ttdoc">Is interactive process?</div><div class="ttdef"><b>Definition</b> sys_info.hpp:89</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jan 9 2024 18:47:04 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+Generated on Tue Jan 9 2024 21:02:08 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
 </small></address>
 </body>
 </html>

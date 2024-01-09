@@ -26,12 +26,13 @@ var searchData=
   ['is_5fphrase_23',['is_phrase',['../structstdex_1_1html_1_1element__traits.html#af6edbc4ce42e7c1c97c6165815800f7d',1,'stdex::html::element_traits']]],
   ['is_5fpre_5fexclusion_24',['is_pre_exclusion',['../structstdex_1_1html_1_1element__traits.html#a97325ffcd684944b657a0a9534500a7b',1,'stdex::html::element_traits']]],
   ['is_5fpreformatted_25',['is_preformatted',['../structstdex_1_1html_1_1element__traits.html#a84579168ef712dcc0370002df6169577',1,'stdex::html::element_traits']]],
-  ['is_5fspecial_26',['is_special',['../structstdex_1_1html_1_1element__traits.html#a8f5aaba431313aa40635183032be2393',1,'stdex::html::element_traits']]],
-  ['is_5furi_27',['is_uri',['../structstdex_1_1html_1_1element__traits.html#a792db042e15102a8269e2e15f591c7cc',1,'stdex::html::element_traits']]],
-  ['is_5fvalid_28',['is_valid',['../classstdex_1_1parser_1_1basic__iban.html#acfc23c46ecbeef921e7b39a812c07ec7',1,'stdex::parser::basic_iban::is_valid'],['../classstdex_1_1parser_1_1basic__creditor__reference.html#aee8d302b914c5d7d64d2f7ace18d74cc',1,'stdex::parser::basic_creditor_reference::is_valid'],['../classstdex_1_1parser_1_1basic__si__reference.html#a75ec581785b9cfbab1c26ca9e4787b10',1,'stdex::parser::basic_si_reference::is_valid']]],
-  ['it_20into_20std_20c_29',['stdex - Random stuff that didn&apos;t made it into std C++',['../index.html',1,'']]],
-  ['itu_5fg711_5fa_5flaw_30',['itu_g711_a_law',['../structstdex_1_1wav_1_1format.html#a9e48aadca63b92583abda67513aa4553a49aa00965cc0b1ff88d30355744ebf2c',1,'stdex::wav::format']]],
-  ['itu_5fg711_5fmu_5flaw_31',['itu_g711_mu_law',['../structstdex_1_1wav_1_1format.html#a9e48aadca63b92583abda67513aa4553a67888b7069da4d83bebe88c0e4f41fc8',1,'stdex::wav::format']]],
-  ['itu_5fg_5f721_5fadpcm_32',['itu_g_721_adpcm',['../structstdex_1_1wav_1_1format.html#a9e48aadca63b92583abda67513aa4553aaf9fbf9c2fa9d447e7c297c0ce6aa1bc',1,'stdex::wav::format']]],
-  ['itu_5fg_5f723_5fadpcm_33',['itu_g_723_adpcm',['../structstdex_1_1wav_1_1format.html#a9e48aadca63b92583abda67513aa4553a4f4918e9489ba6475c99ee45b29d0ae5',1,'stdex::wav::format']]]
+  ['is_5fscreen_5freader_26',['is_screen_reader',['../structstdex_1_1sys__info__t.html#ada3ef18ed3f09107acfe02fbcb4623fe',1,'stdex::sys_info_t']]],
+  ['is_5fspecial_27',['is_special',['../structstdex_1_1html_1_1element__traits.html#a8f5aaba431313aa40635183032be2393',1,'stdex::html::element_traits']]],
+  ['is_5furi_28',['is_uri',['../structstdex_1_1html_1_1element__traits.html#a792db042e15102a8269e2e15f591c7cc',1,'stdex::html::element_traits']]],
+  ['is_5fvalid_29',['is_valid',['../classstdex_1_1parser_1_1basic__iban.html#acfc23c46ecbeef921e7b39a812c07ec7',1,'stdex::parser::basic_iban::is_valid'],['../classstdex_1_1parser_1_1basic__creditor__reference.html#aee8d302b914c5d7d64d2f7ace18d74cc',1,'stdex::parser::basic_creditor_reference::is_valid'],['../classstdex_1_1parser_1_1basic__si__reference.html#a75ec581785b9cfbab1c26ca9e4787b10',1,'stdex::parser::basic_si_reference::is_valid']]],
+  ['it_20into_20std_20c_30',['stdex - Random stuff that didn&apos;t made it into std C++',['../index.html',1,'']]],
+  ['itu_5fg711_5fa_5flaw_31',['itu_g711_a_law',['../structstdex_1_1wav_1_1format.html#a9e48aadca63b92583abda67513aa4553a49aa00965cc0b1ff88d30355744ebf2c',1,'stdex::wav::format']]],
+  ['itu_5fg711_5fmu_5flaw_32',['itu_g711_mu_law',['../structstdex_1_1wav_1_1format.html#a9e48aadca63b92583abda67513aa4553a67888b7069da4d83bebe88c0e4f41fc8',1,'stdex::wav::format']]],
+  ['itu_5fg_5f721_5fadpcm_33',['itu_g_721_adpcm',['../structstdex_1_1wav_1_1format.html#a9e48aadca63b92583abda67513aa4553aaf9fbf9c2fa9d447e7c297c0ce6aa1bc',1,'stdex::wav::format']]],
+  ['itu_5fg_5f723_5fadpcm_34',['itu_g_723_adpcm',['../structstdex_1_1wav_1_1format.html#a9e48aadca63b92583abda67513aa4553a4f4918e9489ba6475c99ee45b29d0ae5',1,'stdex::wav::format']]]
 ];
