@@ -1681,7 +1681,7 @@ namespace stdex
 	///
 	/// \param[in] str  String to duplicate. Must be zero-terminated.
 	/// 
-	/// \return Pointer to duplicated string; or nullptr if str is nullptr. Use delete operator to free the memory.
+	/// \return Pointer to duplicated string; or nullptr if str is nullptr. Use delete[] operator to free the memory.
 	///
 	template <class T>
 	inline _Check_return_ _Ret_maybenull_z_ T* strdup(_In_opt_z_ const T* str)
@@ -1703,7 +1703,7 @@ namespace stdex
 	/// \param[in] str    String to duplicate.
 	/// \param[in] count  Number of code units in str.
 	/// 
-	/// \return Pointer to duplicated string. Use delete operator to free the memory.
+	/// \return Pointer to duplicated string. Use delete[] operator to free the memory.
 	///
 	template <class T>
 	inline _Ret_z_ T* strndup(
@@ -1723,7 +1723,7 @@ namespace stdex
 	///
 	/// \param[in] str  String to duplicate. Must be zero-terminated.
 	/// 
-	/// \return Pointer to duplicated string; or nullptr if str is nullptr. Use delete operator to free the memory.
+	/// \return Pointer to duplicated string; or nullptr if str is nullptr. Use delete[] operator to free the memory.
 	///
 	template <class T, size_t N>
 	inline _Check_return_ _Ret_maybenull_z_ T* strndup(_In_ const T (&str)[N])
