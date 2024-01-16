@@ -540,11 +540,11 @@ namespace stdex
 			///
 			size_t write_sa(_In_ LPSAFEARRAY sa)
 			{
-				safearray_accessor<void> a(sa);
 				long ubound, lbound;
 				if (FAILED(SafeArrayGetUBound(sa, 1, &ubound)) ||
 					FAILED(SafeArrayGetLBound(sa, 1, &lbound)))
 					throw std::invalid_argument("SafeArrayGet[UL]Bound failed");
+				safearray_accessor<void> a(sa);
 				return write(a.data(), static_cast<size_t>(ubound) - lbound + 1);
 			}
 #endif
@@ -954,13 +954,15 @@ namespace stdex
 			LPSAFEARRAY read_sa()
 			{
 				_Assume_(size() <= SIZE_MAX);
-				size_t length = static_cast<size_t>(size());
-				std::unique_ptr<SAFEARRAY, SafeArrayDestroy_delete> sa(SafeArrayCreateVector(VT_UI1, 0, (ULONG)length));
+				if (size() > ULONG_MAX)
+					throw std::range_error("data too big");
+				ULONG length = static_cast<ULONG>(size());
+				std::unique_ptr<SAFEARRAY, SafeArrayDestroy_delete> sa(SafeArrayCreateVector(VT_UI1, 0, length));
 				if (!sa) _Unlikely_
 					throw std::runtime_error("SafeArrayCreateVector failed");
-				safearray_accessor<void> a(sa.get());
 				if (seek(0) != 0) _Unlikely_
 					throw std::system_error(sys_error(), std::system_category(), "failed to seek");
+				safearray_accessor<void> a(sa.get());
 				if (read_array(a.data(), 1, length) != length)
 					throw std::system_error(sys_error(), std::system_category(), "failed to read");
 				return sa.release();
