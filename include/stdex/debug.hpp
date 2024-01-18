@@ -8,7 +8,9 @@
 #include "compat.hpp"
 #include "string.hpp"
 #include <stdarg.h>
+#include <stdint.h>
 #include <stdio.h>
+#include <chrono>
 
 namespace stdex
 {
@@ -115,4 +117,34 @@ namespace stdex
 #endif
 		}
 	}
+
+	///
+	/// Measures time between initialization and going out of scope
+	///
+	class benchmark
+	{
+	public:
+		///
+		/// Starts the measurement
+		///
+		/// \param[in] task_name  Name of the task. The string must remain resident for the lifetime of this object
+		///
+		benchmark(_In_z_ const char* task_name) :
+			m_task_name(task_name),
+			m_start(std::chrono::high_resolution_clock::now())
+		{}
+
+		///
+		/// Stops the measurement and outputs the result to the diagnostic console
+		///
+		~benchmark()
+		{
+			auto duration(std::chrono::high_resolution_clock::now() - m_start);
+			stdex::diag::printf("%s took %I64i ns\n", m_task_name, static_cast<int64_t>(duration.count()));
+		}
+
+	protected:
+		const char* m_task_name;
+		std::chrono::time_point<std::chrono::high_resolution_clock> m_start;
+	};
 }
