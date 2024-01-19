@@ -66,16 +66,26 @@ namespace stdex
 	protected:
 		void run()
 		{
+			size_t phase;
 			for (;;) {
-				std::unique_lock<std::mutex> lk(m_mutex);
-				auto phase = m_phase;
-				if (m_cv.wait_for(lk, m_timeout, [&] {return m_quit || phase != m_phase; })) {
+				{
+					std::unique_lock<std::mutex> lk(m_mutex);
+					phase = m_phase;
+					if (m_cv.wait_for(lk, m_timeout, [&] {return m_quit || phase != m_phase; })) {
+						if (m_quit)
+							break;
+						// reset() called in time.
+						continue;
+					}
+				}
+				// Timeout
+				m_callback();
+				{
+					// Sleep until next reset().
+					std::unique_lock<std::mutex> lk(m_mutex);
+					m_cv.wait(lk, [&] {return m_quit || phase != m_phase; });
 					if (m_quit)
 						break;
-				}
-				else {
-					m_callback();
-					break;
 				}
 			}
 		}
