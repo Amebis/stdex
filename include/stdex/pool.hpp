@@ -87,5 +87,18 @@ namespace stdex
 			const std::lock_guard<spinlock> guard(ne.lock);
 			ne.list.push_front(std::move(r));
 		}
+
+		///
+		/// Removes all items from the pool
+		///
+		void clear()
+		{
+			const std::lock_guard<std::mutex> guard_m(m_mutex);
+			for (auto& ne : m_available) {
+				const std::lock_guard<spinlock> guard_l(ne.second.lock);
+				while (!ne.second.list.empty())
+					ne.second.list.pop_front();
+			}
+		}
 	};
 }
