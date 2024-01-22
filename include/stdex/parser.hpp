@@ -6,6 +6,7 @@
 #pragma once
 
 #include "compat.hpp"
+#include "endian.hpp"
 #include "interval.hpp"
 #include "memory.hpp"
 #include "sgml.hpp"
@@ -2457,7 +2458,7 @@ namespace stdex
 				if (i < 4)
 					goto error;
 
-				value.s_addr = htonl(value.s_addr);
+				HE2BE(reinterpret_cast<uint32_t&>(value.s_addr));
 				this->interval.start = start;
 				return true;
 
@@ -2721,7 +2722,7 @@ namespace stdex
 						goto error;
 					}
 					components[i].end = this->interval.end;
-					this->value.s6_words[i] = htons((uint16_t)x);
+					HE2BE(reinterpret_cast<uint16_t&>(this->value.s6_words[i]));
 				}
 
 				if (compaction_i != SIZE_MAX) {
