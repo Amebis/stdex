@@ -2457,6 +2457,7 @@ namespace stdex
 				if (i < 4)
 					goto error;
 
+				value.s_addr = htonl(value.s_addr);
 				this->interval.start = start;
 				return true;
 
@@ -2720,7 +2721,7 @@ namespace stdex
 						goto error;
 					}
 					components[i].end = this->interval.end;
-					this->value.s6_words[i] = (uint16_t)x;
+					this->value.s6_words[i] = htons((uint16_t)x);
 				}
 
 				if (compaction_i != SIZE_MAX) {
