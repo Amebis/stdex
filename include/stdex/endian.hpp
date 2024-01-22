@@ -43,7 +43,7 @@
 
 namespace stdex
 {
-	inline uint8_t byteswap(_In_ const uint8_t value)
+	inline constexpr uint8_t byteswap(_In_ const uint8_t value)
 	{
 		return value;
 	}
@@ -95,8 +95,8 @@ namespace stdex
 #endif
 	}
 
-	inline int8_t byteswap(_In_ const char value) { return byteswap(static_cast<uint8_t>(value)); }
-	inline int8_t byteswap(_In_ const int8_t value) { return byteswap(static_cast<uint8_t>(value)); }
+	inline constexpr int8_t byteswap(_In_ const char value) { return byteswap(static_cast<uint8_t>(value)); }
+	inline constexpr int8_t byteswap(_In_ const int8_t value) { return byteswap(static_cast<uint8_t>(value)); }
 	inline int16_t byteswap(_In_ const int16_t value) { return byteswap(static_cast<uint16_t>(value)); }
 	inline int32_t byteswap(_In_ const int32_t value) { return byteswap(static_cast<uint32_t>(value)); }
 	inline int64_t byteswap(_In_ const int64_t value) { return byteswap(static_cast<uint64_t>(value)); }
