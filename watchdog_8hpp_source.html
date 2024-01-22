@@ -142,43 +142,53 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <span class="keyword">protected</span>:</div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>        <span class="keywordtype">void</span> run()</div>
 <div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>        {</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>            <span class="keywordflow">for</span> (;;) {</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>                std::unique_lock&lt;std::mutex&gt; lk(m_mutex);</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>                <span class="keyword">auto</span> phase = <a class="code hl_variable" href="classstdex_1_1watchdog.html#a301e35d22b11f6ea6ffbe94ffa22fc3e">m_phase</a>;</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>                <span class="keywordflow">if</span> (m_cv.wait_for(lk, <a class="code hl_variable" href="classstdex_1_1watchdog.html#a816c03499d71d1fe73410d979744c817">m_timeout</a>, [&amp;] {return m_quit || phase != m_phase; })) {</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>                    <span class="keywordflow">if</span> (<a class="code hl_variable" href="classstdex_1_1watchdog.html#aaa7759c46dc8632b3f26d17291ca9483">m_quit</a>)</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>                        <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>                }</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>                <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>                    <a class="code hl_variable" href="classstdex_1_1watchdog.html#af1d34b845b80a49997e82f50bb13f839">m_callback</a>();</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>                    <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>                }</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>            }</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>        }</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    <span class="keyword">protected</span>:</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno"><a class="line" href="classstdex_1_1watchdog.html#a301e35d22b11f6ea6ffbe94ffa22fc3e">   84</a></span>        <span class="keywordtype">size_t</span> <a class="code hl_variable" href="classstdex_1_1watchdog.html#a301e35d22b11f6ea6ffbe94ffa22fc3e">m_phase</a>;                    </div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno"><a class="line" href="classstdex_1_1watchdog.html#aaa7759c46dc8632b3f26d17291ca9483">   85</a></span>        <span class="keywordtype">bool</span> <a class="code hl_variable" href="classstdex_1_1watchdog.html#aaa7759c46dc8632b3f26d17291ca9483">m_quit</a>;                       </div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno"><a class="line" href="classstdex_1_1watchdog.html#a816c03499d71d1fe73410d979744c817">   86</a></span>        _Duration <a class="code hl_variable" href="classstdex_1_1watchdog.html#a816c03499d71d1fe73410d979744c817">m_timeout</a>;               </div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno"><a class="line" href="classstdex_1_1watchdog.html#af1d34b845b80a49997e82f50bb13f839">   87</a></span>        std::function&lt;void()&gt; <a class="code hl_variable" href="classstdex_1_1watchdog.html#af1d34b845b80a49997e82f50bb13f839">m_callback</a>;  </div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        std::mutex m_mutex;</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>        std::condition_variable m_cv;</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>        std::thread m_thread;</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    };</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>            <span class="keywordtype">size_t</span> phase;</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>            <span class="keywordflow">for</span> (;;) {</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>                {</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>                    std::unique_lock&lt;std::mutex&gt; lk(m_mutex);</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>                    phase = <a class="code hl_variable" href="classstdex_1_1watchdog.html#a301e35d22b11f6ea6ffbe94ffa22fc3e">m_phase</a>;</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>                    <span class="keywordflow">if</span> (m_cv.wait_for(lk, <a class="code hl_variable" href="classstdex_1_1watchdog.html#a816c03499d71d1fe73410d979744c817">m_timeout</a>, [&amp;] {return m_quit || phase != m_phase; })) {</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>                        <span class="keywordflow">if</span> (<a class="code hl_variable" href="classstdex_1_1watchdog.html#aaa7759c46dc8632b3f26d17291ca9483">m_quit</a>)</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>                            <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>                        <span class="comment">// reset() called in time.</span></div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>                        <span class="keywordflow">continue</span>;</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>                    }</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>                }</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>                <span class="comment">// Timeout</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>                <a class="code hl_variable" href="classstdex_1_1watchdog.html#af1d34b845b80a49997e82f50bb13f839">m_callback</a>();</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>                {</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>                    <span class="comment">// Sleep until next reset().</span></div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>                    std::unique_lock&lt;std::mutex&gt; lk(m_mutex);</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>                    m_cv.wait(lk, [&amp;] {<span class="keywordflow">return</span> <a class="code hl_variable" href="classstdex_1_1watchdog.html#aaa7759c46dc8632b3f26d17291ca9483">m_quit</a> || phase != <a class="code hl_variable" href="classstdex_1_1watchdog.html#a301e35d22b11f6ea6ffbe94ffa22fc3e">m_phase</a>; });</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>                    <span class="keywordflow">if</span> (<a class="code hl_variable" href="classstdex_1_1watchdog.html#aaa7759c46dc8632b3f26d17291ca9483">m_quit</a>)</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>                        <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>                }</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>            }</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>        }</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span> </div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    <span class="keyword">protected</span>:</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno"><a class="line" href="classstdex_1_1watchdog.html#a301e35d22b11f6ea6ffbe94ffa22fc3e">   94</a></span>        <span class="keywordtype">size_t</span> <a class="code hl_variable" href="classstdex_1_1watchdog.html#a301e35d22b11f6ea6ffbe94ffa22fc3e">m_phase</a>;                    </div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno"><a class="line" href="classstdex_1_1watchdog.html#aaa7759c46dc8632b3f26d17291ca9483">   95</a></span>        <span class="keywordtype">bool</span> <a class="code hl_variable" href="classstdex_1_1watchdog.html#aaa7759c46dc8632b3f26d17291ca9483">m_quit</a>;                       </div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno"><a class="line" href="classstdex_1_1watchdog.html#a816c03499d71d1fe73410d979744c817">   96</a></span>        _Duration <a class="code hl_variable" href="classstdex_1_1watchdog.html#a816c03499d71d1fe73410d979744c817">m_timeout</a>;               </div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno"><a class="line" href="classstdex_1_1watchdog.html#af1d34b845b80a49997e82f50bb13f839">   97</a></span>        std::function&lt;void()&gt; <a class="code hl_variable" href="classstdex_1_1watchdog.html#af1d34b845b80a49997e82f50bb13f839">m_callback</a>;  </div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>        std::mutex m_mutex;</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>        std::condition_variable m_cv;</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>        std::thread m_thread;</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    };</div>
 </div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>}</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>}</div>
 <div class="ttc" id="aclassstdex_1_1watchdog_html"><div class="ttname"><a href="classstdex_1_1watchdog.html">stdex::watchdog</a></div><div class="ttdoc">Triggers callback if not reset frequently enough.</div><div class="ttdef"><b>Definition</b> watchdog.hpp:22</div></div>
 <div class="ttc" id="aclassstdex_1_1watchdog_html_a045c86421267f195c45d7fa01c6147c0"><div class="ttname"><a href="classstdex_1_1watchdog.html#a045c86421267f195c45d7fa01c6147c0">stdex::watchdog::watchdog</a></div><div class="ttdeci">watchdog(_Duration timeout, std::function&lt; void()&gt; callback)</div><div class="ttdoc">Starts the watchdog.</div><div class="ttdef"><b>Definition</b> watchdog.hpp:30</div></div>
-<div class="ttc" id="aclassstdex_1_1watchdog_html_a301e35d22b11f6ea6ffbe94ffa22fc3e"><div class="ttname"><a href="classstdex_1_1watchdog.html#a301e35d22b11f6ea6ffbe94ffa22fc3e">stdex::watchdog::m_phase</a></div><div class="ttdeci">size_t m_phase</div><div class="ttdoc">A counter we are incrementing to keep the watchdog happy.</div><div class="ttdef"><b>Definition</b> watchdog.hpp:84</div></div>
-<div class="ttc" id="aclassstdex_1_1watchdog_html_a816c03499d71d1fe73410d979744c817"><div class="ttname"><a href="classstdex_1_1watchdog.html#a816c03499d71d1fe73410d979744c817">stdex::watchdog::m_timeout</a></div><div class="ttdeci">_Duration m_timeout</div><div class="ttdoc">How long the watchdog is waiting for a reset.</div><div class="ttdef"><b>Definition</b> watchdog.hpp:86</div></div>
+<div class="ttc" id="aclassstdex_1_1watchdog_html_a301e35d22b11f6ea6ffbe94ffa22fc3e"><div class="ttname"><a href="classstdex_1_1watchdog.html#a301e35d22b11f6ea6ffbe94ffa22fc3e">stdex::watchdog::m_phase</a></div><div class="ttdeci">size_t m_phase</div><div class="ttdoc">A counter we are incrementing to keep the watchdog happy.</div><div class="ttdef"><b>Definition</b> watchdog.hpp:94</div></div>
+<div class="ttc" id="aclassstdex_1_1watchdog_html_a816c03499d71d1fe73410d979744c817"><div class="ttname"><a href="classstdex_1_1watchdog.html#a816c03499d71d1fe73410d979744c817">stdex::watchdog::m_timeout</a></div><div class="ttdeci">_Duration m_timeout</div><div class="ttdoc">How long the watchdog is waiting for a reset.</div><div class="ttdef"><b>Definition</b> watchdog.hpp:96</div></div>
 <div class="ttc" id="aclassstdex_1_1watchdog_html_a8ecedd7cd51129b3dc6775b638c91b16"><div class="ttname"><a href="classstdex_1_1watchdog.html#a8ecedd7cd51129b3dc6775b638c91b16">stdex::watchdog::~watchdog</a></div><div class="ttdeci">~watchdog()</div><div class="ttdoc">Stops the watchdog.</div><div class="ttdef"><b>Definition</b> watchdog.hpp:41</div></div>
-<div class="ttc" id="aclassstdex_1_1watchdog_html_aaa7759c46dc8632b3f26d17291ca9483"><div class="ttname"><a href="classstdex_1_1watchdog.html#aaa7759c46dc8632b3f26d17291ca9483">stdex::watchdog::m_quit</a></div><div class="ttdeci">bool m_quit</div><div class="ttdoc">Quit the watchdog.</div><div class="ttdef"><b>Definition</b> watchdog.hpp:85</div></div>
+<div class="ttc" id="aclassstdex_1_1watchdog_html_aaa7759c46dc8632b3f26d17291ca9483"><div class="ttname"><a href="classstdex_1_1watchdog.html#aaa7759c46dc8632b3f26d17291ca9483">stdex::watchdog::m_quit</a></div><div class="ttdeci">bool m_quit</div><div class="ttdoc">Quit the watchdog.</div><div class="ttdef"><b>Definition</b> watchdog.hpp:95</div></div>
 <div class="ttc" id="aclassstdex_1_1watchdog_html_ac9d5d1c1b17425f47f3892deec4d31db"><div class="ttname"><a href="classstdex_1_1watchdog.html#ac9d5d1c1b17425f47f3892deec4d31db">stdex::watchdog::reset</a></div><div class="ttdeci">void reset()</div><div class="ttdoc">Resets the watchdog.</div><div class="ttdef"><b>Definition</b> watchdog.hpp:57</div></div>
-<div class="ttc" id="aclassstdex_1_1watchdog_html_af1d34b845b80a49997e82f50bb13f839"><div class="ttname"><a href="classstdex_1_1watchdog.html#af1d34b845b80a49997e82f50bb13f839">stdex::watchdog::m_callback</a></div><div class="ttdeci">std::function&lt; void()&gt; m_callback</div><div class="ttdoc">The function watchdog calls on timeout.</div><div class="ttdef"><b>Definition</b> watchdog.hpp:87</div></div>
+<div class="ttc" id="aclassstdex_1_1watchdog_html_af1d34b845b80a49997e82f50bb13f839"><div class="ttname"><a href="classstdex_1_1watchdog.html#af1d34b845b80a49997e82f50bb13f839">stdex::watchdog::m_callback</a></div><div class="ttdeci">std::function&lt; void()&gt; m_callback</div><div class="ttdoc">The function watchdog calls on timeout.</div><div class="ttdef"><b>Definition</b> watchdog.hpp:97</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jan 16 2024 15:12:01 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+Generated on Mon Jan 22 2024 10:41:12 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
 </small></address>
 </body>
 </html>

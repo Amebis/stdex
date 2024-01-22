@@ -84,10 +84,11 @@ var searchData=
   ['basic_5furl_5fpath_5fchar_3c_20char_20_3e_81',['basic_url_path_char&lt; char &gt;',['../classstdex_1_1parser_1_1basic__url__path__char.html',1,'stdex::parser']]],
   ['basic_5furl_5fusername_5fchar_82',['basic_url_username_char',['../classstdex_1_1parser_1_1basic__url__username__char.html',1,'stdex::parser']]],
   ['basic_5furl_5fusername_5fchar_3c_20char_20_3e_83',['basic_url_username_char&lt; char &gt;',['../classstdex_1_1parser_1_1basic__url__username__char.html',1,'stdex::parser']]],
-  ['block_5fhash_84',['block_hash',['../classstdex_1_1block__hash.html',1,'stdex']]],
-  ['block_5fhash_3c_20md5_5ft_20_3e_85',['block_hash&lt; md5_t &gt;',['../classstdex_1_1block__hash.html',1,'stdex']]],
-  ['block_5fhash_3c_20sha1_5ft_20_3e_86',['block_hash&lt; sha1_t &gt;',['../classstdex_1_1block__hash.html',1,'stdex']]],
-  ['buffer_87',['buffer',['../classstdex_1_1stream_1_1buffer.html',1,'stdex::stream']]],
-  ['buffer_5ft_88',['buffer_t',['../structstdex_1_1stream_1_1buffer_1_1buffer__t.html',1,'stdex::stream::buffer']]],
-  ['buffered_5fsys_89',['buffered_sys',['../classstdex_1_1stream_1_1buffered__sys.html',1,'stdex::stream']]]
+  ['benchmark_84',['benchmark',['../classstdex_1_1benchmark.html',1,'stdex']]],
+  ['block_5fhash_85',['block_hash',['../classstdex_1_1block__hash.html',1,'stdex']]],
+  ['block_5fhash_3c_20md5_5ft_20_3e_86',['block_hash&lt; md5_t &gt;',['../classstdex_1_1block__hash.html',1,'stdex']]],
+  ['block_5fhash_3c_20sha1_5ft_20_3e_87',['block_hash&lt; sha1_t &gt;',['../classstdex_1_1block__hash.html',1,'stdex']]],
+  ['buffer_88',['buffer',['../classstdex_1_1stream_1_1buffer.html',1,'stdex::stream']]],
+  ['buffer_5ft_89',['buffer_t',['../structstdex_1_1stream_1_1buffer_1_1buffer__t.html',1,'stdex::stream::buffer']]],
+  ['buffered_5fsys_90',['buffered_sys',['../classstdex_1_1stream_1_1buffered__sys.html',1,'stdex::stream']]]
 ];

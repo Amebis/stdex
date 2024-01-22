@@ -162,17 +162,30 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>            ne.list.push_front(std::move(r));</div>
 <div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>        }</div>
 </div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    };</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span> </div>
+<div class="foldopen" id="foldopen00094" data-start="{" data-end="}">
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno"><a class="line" href="classstdex_1_1pool.html#a96acba9575913aa2c1a4179f84673c77">   94</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classstdex_1_1pool.html#a96acba9575913aa2c1a4179f84673c77">clear</a>()</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>        {</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>            <span class="keyword">const</span> std::lock_guard&lt;std::mutex&gt; guard_m(m_mutex);</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>            <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; ne : m_available) {</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>                <span class="keyword">const</span> std::lock_guard&lt;spinlock&gt; guard_l(ne.second.lock);</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>                <span class="keywordflow">while</span> (!ne.second.list.empty())</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>                    ne.second.list.pop_front();</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>            }</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>        }</div>
 </div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>}</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    };</div>
+</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>}</div>
 <div class="ttc" id="aclassstdex_1_1pool_html"><div class="ttname"><a href="classstdex_1_1pool.html">stdex::pool</a></div><div class="ttdoc">Per-NUMA pool of items.</div><div class="ttdef"><b>Definition</b> pool.hpp:22</div></div>
+<div class="ttc" id="aclassstdex_1_1pool_html_a96acba9575913aa2c1a4179f84673c77"><div class="ttname"><a href="classstdex_1_1pool.html#a96acba9575913aa2c1a4179f84673c77">stdex::pool::clear</a></div><div class="ttdeci">void clear()</div><div class="ttdoc">Removes all items from the pool.</div><div class="ttdef"><b>Definition</b> pool.hpp:94</div></div>
 <div class="ttc" id="aclassstdex_1_1pool_html_a9731f8edc72b43f5a4c4622ce6a51aeb"><div class="ttname"><a href="classstdex_1_1pool.html#a9731f8edc72b43f5a4c4622ce6a51aeb">stdex::pool::pop</a></div><div class="ttdeci">T pop(numaid_t numa=numa_node())</div><div class="ttdoc">Removes an item from the pool.</div><div class="ttdef"><b>Definition</b> pool.hpp:66</div></div>
 <div class="ttc" id="aclassstdex_1_1pool_html_aa60ba8cd95b3d28977ae9a9e36005108"><div class="ttname"><a href="classstdex_1_1pool.html#aa60ba8cd95b3d28977ae9a9e36005108">stdex::pool::push</a></div><div class="ttdeci">void push(T &amp;&amp;r, numaid_t numa=numa_node())</div><div class="ttdoc">Adds an item to the pool.</div><div class="ttdef"><b>Definition</b> pool.hpp:84</div></div>
 <div class="ttc" id="aclassstdex_1_1spinlock_html"><div class="ttname"><a href="classstdex_1_1spinlock.html">stdex::spinlock</a></div><div class="ttdoc">Spin-lock.</div><div class="ttdef"><b>Definition</b> spinlock.hpp:22</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jan 16 2024 15:12:01 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+Generated on Mon Jan 22 2024 10:41:12 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
 </small></address>
 </body>
 </html>
