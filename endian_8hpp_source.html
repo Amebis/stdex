@@ -129,7 +129,7 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="keyword">namespace </span>stdex</div>
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>{</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="keyword">inline</span> uint8_t byteswap(_In_ <span class="keyword">const</span> uint8_t value)</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="keyword">inline</span> <span class="keyword">constexpr</span> uint8_t byteswap(_In_ <span class="keyword">const</span> uint8_t value)</div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    {</div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        <span class="keywordflow">return</span> value;</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    }</div>
@@ -181,8 +181,8 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    }</div>
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span> </div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    <span class="keyword">inline</span> int8_t byteswap(_In_ <span class="keyword">const</span> <span class="keywordtype">char</span> value) { <span class="keywordflow">return</span> byteswap(<span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(value)); }</div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>    <span class="keyword">inline</span> int8_t byteswap(_In_ <span class="keyword">const</span> int8_t value) { <span class="keywordflow">return</span> byteswap(<span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(value)); }</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    <span class="keyword">inline</span> <span class="keyword">constexpr</span> int8_t byteswap(_In_ <span class="keyword">const</span> <span class="keywordtype">char</span> value) { <span class="keywordflow">return</span> byteswap(<span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(value)); }</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>    <span class="keyword">inline</span> <span class="keyword">constexpr</span> int8_t byteswap(_In_ <span class="keyword">const</span> int8_t value) { <span class="keywordflow">return</span> byteswap(<span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(value)); }</div>
 <div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    <span class="keyword">inline</span> int16_t byteswap(_In_ <span class="keyword">const</span> int16_t value) { <span class="keywordflow">return</span> byteswap(<span class="keyword">static_cast&lt;</span>uint16_t<span class="keyword">&gt;</span>(value)); }</div>
 <div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    <span class="keyword">inline</span> int32_t byteswap(_In_ <span class="keyword">const</span> int32_t value) { <span class="keywordflow">return</span> byteswap(<span class="keyword">static_cast&lt;</span>uint32_t<span class="keyword">&gt;</span>(value)); }</div>
 <div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>    <span class="keyword">inline</span> int64_t byteswap(_In_ <span class="keyword">const</span> int64_t value) { <span class="keywordflow">return</span> byteswap(<span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(value)); }</div>
@@ -227,7 +227,7 @@ $(function() { codefold.init(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jan 22 2024 10:41:12 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+Generated on Tue Jan 23 2024 09:21:18 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
 </small></address>
 </body>
 </html>
