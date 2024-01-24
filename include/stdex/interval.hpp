@@ -85,9 +85,9 @@ namespace stdex
 		///
 		/// \returns Resulting interval
 		///
-		interval<T> operator+(_In_ const interval<T>& other) const
+		interval operator+(_In_ const interval& other) const
 		{
-			return interval<T>(start + other.start, end + other.end);
+			return interval(start + other.start, end + other.end);
 		}
 
 		///
@@ -97,9 +97,23 @@ namespace stdex
 		///
 		/// \returns Moved interval
 		///
-		interval<T> operator+(_In_ const T x) const
+		interval operator+(_In_ const T x) const
 		{
-			return interval<T>(start + x, end + x);
+			return interval(start + x, end + x);
+		}
+
+		///
+		/// Moves interval towards the end by a number
+		///
+		/// \param[in] x  Amount to move for
+		///
+		/// \returns Resulting interval
+		///
+		interval operator+=(_In_ const T x)
+		{
+			start += x;
+			end += x;
+			return *this;
 		}
 
 		///
@@ -107,7 +121,7 @@ namespace stdex
 		///
 		/// \returns Moved interval
 		///
-		interval<T> operator++()
+		interval operator++()
 		{
 			++start;
 			++end;
@@ -119,9 +133,9 @@ namespace stdex
 		///
 		/// \returns Original interval
 		///
-		interval<T> operator++(int) // Postfix increment operator.
+		interval operator++(int) // Postfix increment operator.
 		{
-			interval<T> r = *this;
+			interval r = *this;
 			++start;
 			++end;
 			return r;
@@ -134,9 +148,9 @@ namespace stdex
 		///
 		/// \returns Resulting interval
 		///
-		interval<T> operator-(_In_ const interval<T>& other) const
+		interval operator-(_In_ const interval& other) const
 		{
-			return interval<T>(start - other.start, end - other.end);
+			return interval(start - other.start, end - other.end);
 		}
 
 		///
@@ -146,17 +160,31 @@ namespace stdex
 		///
 		/// \returns Moved interval
 		///
-		interval<T> operator-(_In_ const T x) const
+		interval operator-(_In_ const T x) const
 		{
-			return interval<T>(start - x, end - x);
+			return interval(start - x, end - x);
 		}
 
 		///
-		/// Moves interval towards the begginning by one
+		/// Moves interval towards the beginning by a number
+		///
+		/// \param[in] x  Amount to move for
+		///
+		/// \returns Resulting interval
+		///
+		interval operator-=(_In_ const T x)
+		{
+			start -= x;
+			end -= x;
+			return *this;
+		}
+
+		///
+		/// Moves interval towards the beginning by one
 		///
 		/// \returns Moved interval
 		///
-		interval<T> operator--()
+		interval operator--()
 		{
 			--start;
 			--end;
@@ -168,9 +196,9 @@ namespace stdex
 		///
 		/// \returns Original interval
 		///
-		interval<T> operator--(int) // Postfix decrement operator.
+		interval operator--(int) // Postfix decrement operator.
 		{
-			interval<T> r = *this;
+			interval r = *this;
 			--start;
 			--end;
 			return r;
@@ -183,7 +211,7 @@ namespace stdex
 		///
 		/// \returns true if intervals are identical or false otherwise
 		///
-		bool operator==(_In_ const interval<T>& other) const
+		bool operator==(_In_ const interval& other) const
 		{
 			return start == other.start && end == other.end;
 		}
@@ -195,7 +223,7 @@ namespace stdex
 		///
 		/// \returns true if intervals are different or false otherwise
 		///
-		bool operator!=(_In_ const interval<T>& other) const
+		bool operator!=(_In_ const interval& other) const
 		{
 			return !operator ==(other);
 		}
