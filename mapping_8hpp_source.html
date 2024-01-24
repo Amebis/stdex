@@ -111,22 +111,30 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="structstdex_1_1mapping.html#a6d9fa746849e2ea27f53e40b8b44fb46">   48</a></span>        <span class="keywordtype">bool</span> <a class="code hl_function" href="structstdex_1_1mapping.html#a6d9fa746849e2ea27f53e40b8b44fb46">operator==</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structstdex_1_1mapping.html">mapping</a>&amp; other)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> from == other.from &amp;&amp; to == other.to; }</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="structstdex_1_1mapping.html#a99e44b5840a155e5ce366d440cbe234b">   57</a></span>        <span class="keywordtype">bool</span> <a class="code hl_function" href="structstdex_1_1mapping.html#a99e44b5840a155e5ce366d440cbe234b">operator!=</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structstdex_1_1mapping.html">mapping</a>&amp; other)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> !<a class="code hl_function" href="structstdex_1_1mapping.html#a6d9fa746849e2ea27f53e40b8b44fb46">operator==</a>(other); }</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    };</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
+<div class="foldopen" id="foldopen00066" data-start="{" data-end="}">
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="structstdex_1_1mapping.html#aae8f3e1dfb76f608f4be0e12999ed37e">   66</a></span>        <a class="code hl_struct" href="structstdex_1_1mapping.html">mapping</a> <a class="code hl_function" href="structstdex_1_1mapping.html#aae8f3e1dfb76f608f4be0e12999ed37e">operator+</a>(_In_ <span class="keyword">const</span> <a class="code hl_struct" href="structstdex_1_1mapping.html">mapping</a>&amp; other)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span><span class="keyword">        </span>{</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>            <span class="keywordflow">return</span> <a class="code hl_function" href="structstdex_1_1mapping.html#a9634b5ef182398e24b61c2ca78cc8e46">mapping</a>(from + other.from, to + other.to);</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>        }</div>
 </div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T, <span class="keyword">class</span> AX = std::allocator&lt;mapping&lt;T&gt;&gt;&gt;</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    <span class="keyword">using </span>mapping_vector = std::vector&lt;mapping&lt;T&gt;, AX&gt;;</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>}</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    };</div>
+</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T, <span class="keyword">class</span> AX = std::allocator&lt;mapping&lt;T&gt;&gt;&gt;</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    <span class="keyword">using </span>mapping_vector = std::vector&lt;mapping&lt;T&gt;, AX&gt;;</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>}</div>
 <div class="ttc" id="astructstdex_1_1mapping_html"><div class="ttname"><a href="structstdex_1_1mapping.html">stdex::mapping</a></div><div class="ttdoc">Maps index in source string to index in destination string.</div><div class="ttdef"><b>Definition</b> mapping.hpp:17</div></div>
 <div class="ttc" id="astructstdex_1_1mapping_html_a48069d4eb38c276e856d650075f6c3bd"><div class="ttname"><a href="structstdex_1_1mapping.html#a48069d4eb38c276e856d650075f6c3bd">stdex::mapping::mapping</a></div><div class="ttdeci">mapping(T x)</div><div class="ttdoc">Constructs an id mapping.</div><div class="ttdef"><b>Definition</b> mapping.hpp:31</div></div>
 <div class="ttc" id="astructstdex_1_1mapping_html_a6d9fa746849e2ea27f53e40b8b44fb46"><div class="ttname"><a href="structstdex_1_1mapping.html#a6d9fa746849e2ea27f53e40b8b44fb46">stdex::mapping::operator==</a></div><div class="ttdeci">bool operator==(const mapping &amp;other) const</div><div class="ttdoc">Are mappings identical?</div><div class="ttdef"><b>Definition</b> mapping.hpp:48</div></div>
 <div class="ttc" id="astructstdex_1_1mapping_html_a9634b5ef182398e24b61c2ca78cc8e46"><div class="ttname"><a href="structstdex_1_1mapping.html#a9634b5ef182398e24b61c2ca78cc8e46">stdex::mapping::mapping</a></div><div class="ttdeci">mapping()</div><div class="ttdoc">Constructs a zero to zero mapping.</div><div class="ttdef"><b>Definition</b> mapping.hpp:24</div></div>
 <div class="ttc" id="astructstdex_1_1mapping_html_a99e44b5840a155e5ce366d440cbe234b"><div class="ttname"><a href="structstdex_1_1mapping.html#a99e44b5840a155e5ce366d440cbe234b">stdex::mapping::operator!=</a></div><div class="ttdeci">bool operator!=(const mapping &amp;other) const</div><div class="ttdoc">Are mappings different?</div><div class="ttdef"><b>Definition</b> mapping.hpp:57</div></div>
+<div class="ttc" id="astructstdex_1_1mapping_html_aae8f3e1dfb76f608f4be0e12999ed37e"><div class="ttname"><a href="structstdex_1_1mapping.html#aae8f3e1dfb76f608f4be0e12999ed37e">stdex::mapping::operator+</a></div><div class="ttdeci">mapping operator+(const mapping &amp;other) const</div><div class="ttdoc">Adds two mappings by components.</div><div class="ttdef"><b>Definition</b> mapping.hpp:66</div></div>
 <div class="ttc" id="astructstdex_1_1mapping_html_ae72436dbc2b54e2062822cd7772de830"><div class="ttname"><a href="structstdex_1_1mapping.html#ae72436dbc2b54e2062822cd7772de830">stdex::mapping::mapping</a></div><div class="ttdeci">mapping(T _from, T _to)</div><div class="ttdoc">Constructs a mapping.</div><div class="ttdef"><b>Definition</b> mapping.hpp:39</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Jan 23 2024 10:01:31 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+Generated on Wed Jan 24 2024 18:00:27 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
 </small></address>
 </body>
 </html>
