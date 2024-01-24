@@ -55,6 +55,18 @@ namespace stdex
 		/// \returns true if mappings are different or false otherwise
 		///
 		bool operator!=(const mapping& other) const { return !operator==(other); }
+
+		///
+		/// Adds two mappings by components
+		///
+		/// \param[in] other  Second mapping
+		///
+		/// \returns Resulting mapping
+		///
+		mapping operator+(_In_ const mapping& other) const
+		{
+			return mapping(from + other.from, to + other.to);
+		}
 	};
 
 	template <class T, class AX = std::allocator<mapping<T>>>
