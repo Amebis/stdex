@@ -1584,7 +1584,7 @@ namespace stdex
 		template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
 		struct entity
 		{
-			stdex::interval<size_t> name;                    ///< Name position in source
+			stdex::interval<size_t> name;       ///< Name position in source
 			std::basic_string<T, TR, AX> value; ///< Entity value
 		};
 
@@ -1917,15 +1917,15 @@ namespace stdex
 			}
 
 		protected:
-			std::basic_string<T, TR, AX> m_source; ///< Document HTML source code
-			size_t m_num_parsed;                                ///< Number of characters already parsed
-			stdex::charset_id m_charset;                        ///< Document charset
+			std::basic_string<T, TR, AX> m_source;       ///< Document HTML source code
+			size_t m_num_parsed;                         ///< Number of characters already parsed
+			stdex::charset_id m_charset;                 ///< Document charset
 
 			// Declaration parsing data
-			size_t m_num_valid_conditions;   ///< Number of started valid conditions
-			size_t m_num_invalid_conditions; ///< Number of started invalid conditions
-			bool m_is_cdata;                 ///< Inside of CDATA?
-			bool m_is_rcdata;                ///< Inside of RCDATA?
+			size_t m_num_valid_conditions;               ///< Number of started valid conditions
+			size_t m_num_invalid_conditions;             ///< Number of started invalid conditions
+			bool m_is_cdata;                             ///< Inside of CDATA?
+			bool m_is_rcdata;                            ///< Inside of RCDATA?
 			stdex::parser::basic_html_declaration_condition_start<T> m_condition_start;
 			stdex::parser::basic_html_declaration_condition_end<T> m_condition_end;
 			stdex::parser::basic_any_cu<T> m_any_char;
@@ -1933,9 +1933,9 @@ namespace stdex
 
 			// Element parsing data
 			stdex::parser::basic_html_tag<T> m_tag;
-			sequence_store m_sequences;                         ///< Store of sequences
-			std::vector<element_start*> m_element_stack;        ///< LIFO stack of started elements
-			bool m_is_special_element;                          ///< Inside of a special element (<SCRIPT>, <STYLE>, ...)?
+			sequence_store m_sequences;                  ///< Store of sequences
+			std::vector<element_start*> m_element_stack; ///< LIFO stack of started elements
+			bool m_is_special_element;                   ///< Inside of a special element (<SCRIPT>, <STYLE>, ...)?
 		};
 
 		///
@@ -1998,7 +1998,7 @@ namespace stdex
 			size_t append_tag(_Inout_ std::basic_string<char, TR, AX>& str) const
 			{
 				size_t n = str.size();
-				// Use %X instead of %p to ommit leading zeros and save space.
+				// Use %X instead of %p to omit leading zeros and save space.
 				stdex::appendf(str, "%c%zX%c", stdex::locale_C, token_tag_start, reinterpret_cast<uintptr_t>(this), token_tag_end);
 				return str.size() - n;
 			}
@@ -2013,7 +2013,7 @@ namespace stdex
 			template<class TR = std::char_traits<wchar_t>, class AX = std::allocator<wchar_t>>
 			size_t append_tag(_Inout_ std::basic_string<wchar_t, TR, AX>& str) const
 			{
-				// Use %X instead of %p to ommit leading zeros and save space.
+				// Use %X instead of %p to omit leading zeros and save space.
 				return stdex::appendf(str, L"%c%zX%c", stdex::locale_C, static_cast<wchar_t>(token_tag_start), reinterpret_cast<uintptr_t>(this), static_cast<wchar_t>(token_tag_end));
 			}
 
@@ -2079,9 +2079,9 @@ namespace stdex
 			friend class parser<T, TR, AX>;
 
 		public:
-			std::basic_string<T, TR, AX> text; ///< Token text
-			uint32_t text_type;                             ///< Mask of text_type_flag_t to specify text content
-			stdex::mapping_vector<size_t> mapping;          ///< Mapping between source and text positions
+			std::basic_string<T, TR, AX> text;     ///< Token text
+			uint32_t text_type;                    ///< Mask of text_type_flag_t to specify text content
+			stdex::mapping_vector<size_t> mapping; ///< Mapping between source and text positions
 		};
 
 		///
@@ -2106,8 +2106,8 @@ namespace stdex
 			friend class parser<T, TR, AX>;
 
 		public:
-			std::basic_string<T, TR, AX> name; ///< Element name allowing later recreation of ending </tag>
-			stdex::html::sequence* end_sequence;            ///< Ending tag sequence
+			std::basic_string<T, TR, AX> name;   ///< Element name allowing later recreation of ending </tag>
+			stdex::html::sequence* end_sequence; ///< Ending tag sequence
 		};
 
 		///
@@ -2139,7 +2139,7 @@ namespace stdex
 
 		public:
 			std::basic_string<T, TR, AX> url; ///< URL
-			token_url_t encoding;                          ///< URL encoding
+			token_url_t encoding;             ///< URL encoding
 		};
 
 		///
@@ -2420,7 +2420,7 @@ namespace stdex
 			/// \param[in] end        Parse sequences on [`m_offset`, `end`) interval
 			/// \param[in] text_type  Text flags of the sequences being parsed
 			///
-			/// \returns Token represening sequences parsed
+			/// \returns Token representing sequences parsed
 			///
 			text_token<T, TR, AX>* parse(_In_ const sequence_store::const_iterator& end, _In_ uint32_t text_type = 0)
 			{
@@ -2648,11 +2648,11 @@ namespace stdex
 			}
 
 		protected:
-			const document<T, TR, AX>& m_document;        ///< Document being analyzed
+			const document<T, TR, AX>& m_document;   ///< Document being analyzed
 			const stdex::sstring m_url;              ///< Absolute document URL
 			const bool m_parse_frames;               ///< Parse frames
 			stdex::progress<size_t>* m_progress;     ///< Progress indicator
-			const T* m_source;                   ///< HTML source code
+			const T* m_source;                       ///< HTML source code
 			token_vector m_tokens;                   ///< HTML token storage
 			sequence_store::const_iterator m_offset; ///< Index of active section
 
