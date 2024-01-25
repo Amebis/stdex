@@ -129,7 +129,7 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        {</div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>            {</div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>                <span class="keyword">const</span> std::lock_guard&lt;std::mutex&gt; lg(m_mutex);</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="preprocessor">#ifdef _DEBUG</span></div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="preprocessor">#ifndef NDEBUG</span></div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>                <span class="keywordtype">size_t</span> tail = wrap(m_head + m_size);</div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>                _Assume_(size &lt;= (m_head &lt;= tail ? N_cap - tail : m_head - tail));</div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="preprocessor">#endif</span></div>
@@ -158,7 +158,7 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>        {</div>
 <div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>            {</div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>                <span class="keyword">const</span> std::lock_guard&lt;std::mutex&gt; lg(m_mutex);</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="preprocessor">#ifdef _DEBUG</span></div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="preprocessor">#ifndef NDEBUG</span></div>
 <div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>                <span class="keywordtype">size_t</span> tail = wrap(m_head + m_size);</div>
 <div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>                _Assume_(size &lt;= (m_head &lt; tail ? m_size : N_cap - m_head));</div>
 <div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span><span class="preprocessor">#endif</span></div>
@@ -225,7 +225,7 @@ $(function() { codefold.init(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 25 2024 09:08:37 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+Generated on Thu Jan 25 2024 12:31:00 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
 </small></address>
 </body>
 </html>
