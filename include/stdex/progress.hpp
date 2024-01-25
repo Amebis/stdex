@@ -85,7 +85,7 @@ namespace stdex
 		///
 		/// \param[in] timeout  Timeout to wait before forwarding progress
 		///
-		lazy_progress(_In_ const std::chrono::nanoseconds& timeout = std::chrono::nanoseconds(500000)) :
+		lazy_progress(_In_ const std::chrono::nanoseconds& timeout = std::chrono::milliseconds(500)) :
 			m_timeout(timeout),
 			m_start(0),
 			m_end(0),
@@ -135,6 +135,85 @@ namespace stdex
 		std::chrono::nanoseconds m_timeout;
 		std::chrono::system_clock::time_point m_last;
 		T m_start, m_end, m_value;
+	};
+
+	///
+	/// Timeout progress indicator
+	///
+	/// Use to cancel long running jobs after the deadline.
+	///
+	template <class T>
+	class timeout_progress : public progress<T>
+	{
+	public:
+		///
+		/// Constructs a timeout progress indicator
+		///
+		/// \param[in] timeout  Timeout when to cancel the progress
+		///
+		timeout_progress(_In_ const std::chrono::nanoseconds& timeout = std::chrono::seconds(60), _In_opt_ progress<T>* host = nullptr) :
+			m_host(host),
+			m_deadline(std::chrono::high_resolution_clock::now() + timeout)
+		{}
+
+		///
+		/// Set progress indicator text
+		///
+		/// \param[in] msg  Text to display
+		///
+		virtual void set_text(_In_z_ const char* msg)
+		{
+			if (m_host)
+				m_host->set_text(msg);
+		}
+
+		///
+		/// Set progress range extent
+		///
+		/// \param[in] start  Minimum value of the progress
+		/// \param[in] end    Maximum value of the progress
+		///
+		virtual void set_range(_In_ T start, _In_ T end)
+		{
+			if (m_host)
+				m_host->set_range(start, end);
+		}
+
+		///
+		/// Set current progress
+		///
+		/// \param[in] value  Current value of the progress. Must be between start and end parameters provided in set_range() call.
+		///
+		virtual void set(_In_ T value)
+		{
+			if (m_host)
+				m_host->set(value);
+		}
+
+		///
+		/// Show or hide progress
+		///
+		/// \param[in] show  Shows or hides progress indicator
+		///
+		virtual void show(_In_ bool show = true)
+		{
+			if (m_host)
+				m_host->show(show);
+		}
+
+		///
+		/// Query whether user requested abort
+		///
+		virtual bool cancel()
+		{
+			return
+				m_host && m_host->cancel() ||
+				m_deadline < std::chrono::high_resolution_clock::now();
+		}
+
+	protected:
+		progress<T>* m_host;
+		std::chrono::high_resolution_clock::time_point m_deadline;
 	};
 
 	///
