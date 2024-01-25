@@ -1440,7 +1440,7 @@ namespace stdex
 					{ "wbr",        element_t::wbr,        },
 					{ "xmp",        element_t::xmp,        },
 				};
-#ifdef _DEBUG
+#ifndef NDEBUG
 				// The mapping table MUST be sorted and all names in lowercase.
 				for (size_t i = 1; i < _countof(mapping); i++)
 					_Assume_(stdex::strcmp(mapping[i - 1].name, mapping[i].name) <= 0);

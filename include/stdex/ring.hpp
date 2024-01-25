@@ -55,7 +55,7 @@ namespace stdex
 		{
 			{
 				const std::lock_guard<std::mutex> lg(m_mutex);
-#ifdef _DEBUG
+#ifndef NDEBUG
 				size_t tail = wrap(m_head + m_size);
 				_Assume_(size <= (m_head <= tail ? N_cap - tail : m_head - tail));
 #endif
@@ -90,7 +90,7 @@ namespace stdex
 		{
 			{
 				const std::lock_guard<std::mutex> lg(m_mutex);
-#ifdef _DEBUG
+#ifndef NDEBUG
 				size_t tail = wrap(m_head + m_size);
 				_Assume_(size <= (m_head < tail ? m_size : N_cap - m_head));
 #endif
