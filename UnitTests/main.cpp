@@ -4,17 +4,6 @@
 */
 
 #include "pch.hpp"
-#include "hash.cpp"
-#include "math.cpp"
-#include "pool.cpp"
-#include "parser.cpp"
-#include "ring.cpp"
-#include "sgml.cpp"
-#include "stream.cpp"
-#include "string.cpp"
-#include "unicode.cpp"
-#include "watchdog.cpp"
-#include "zlib.cpp"
 #include <iostream>
 
 int main(int argc, const char * argv[])

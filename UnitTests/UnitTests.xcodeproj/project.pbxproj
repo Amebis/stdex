@@ -17,6 +17,17 @@
 		F421D4802B750EAE004ECBB0 /* trees.c in Sources */ = {isa = PBXBuildFile; fileRef = F421D4792B750EAE004ECBB0 /* trees.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		F421D4812B750EAE004ECBB0 /* inftrees.c in Sources */ = {isa = PBXBuildFile; fileRef = F421D47A2B750EAE004ECBB0 /* inftrees.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		F421D4822B750EAE004ECBB0 /* uncompr.c in Sources */ = {isa = PBXBuildFile; fileRef = F421D47B2B750EAE004ECBB0 /* uncompr.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		F421D4832B7511FA004ECBB0 /* hash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F437AA902AC1BB64001E2230 /* hash.cpp */; };
+		F421D4842B7514B5004ECBB0 /* math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4C07F4E2AB059300044EDC0 /* math.cpp */; };
+		F421D4852B751551004ECBB0 /* parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4C07F562AB08E690044EDC0 /* parser.cpp */; };
+		F421D4862B751707004ECBB0 /* pool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4CCA3B72B73B940007B857B /* pool.cpp */; };
+		F421D4872B751739004ECBB0 /* ring.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4C07F592AB08E690044EDC0 /* ring.cpp */; };
+		F421D4882B751774004ECBB0 /* sgml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4C07F582AB08E690044EDC0 /* sgml.cpp */; };
+		F421D4892B751777004ECBB0 /* stream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4C07F5A2AB08E690044EDC0 /* stream.cpp */; };
+		F421D48A2B75177B004ECBB0 /* string.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4CCA3B82B73D2E2007B857B /* string.cpp */; };
+		F421D48B2B75177E004ECBB0 /* unicode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4C07F572AB08E690044EDC0 /* unicode.cpp */; };
+		F421D48C2B751780004ECBB0 /* watchdog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4CCA3B62B73B912007B857B /* watchdog.cpp */; };
+		F421D48D2B751783004ECBB0 /* zlib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F421D46B2B750BFD004ECBB0 /* zlib.cpp */; };
 		F4C07F522AB059580044EDC0 /* pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4C07F512AB059580044EDC0 /* pch.cpp */; };
 		F4C07F552AB05B5B0044EDC0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4C07F542AB05B5B0044EDC0 /* main.cpp */; };
 /* End PBXBuildFile section */
@@ -231,17 +242,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F421D4892B751777004ECBB0 /* stream.cpp in Sources */,
+				F421D48B2B75177E004ECBB0 /* unicode.cpp in Sources */,
 				F421D47F2B750EAE004ECBB0 /* zutil.c in Sources */,
 				F4C07F552AB05B5B0044EDC0 /* main.cpp in Sources */,
+				F421D4882B751774004ECBB0 /* sgml.cpp in Sources */,
 				F4C07F522AB059580044EDC0 /* pch.cpp in Sources */,
+				F421D4862B751707004ECBB0 /* pool.cpp in Sources */,
 				F421D4802B750EAE004ECBB0 /* trees.c in Sources */,
+				F421D48D2B751783004ECBB0 /* zlib.cpp in Sources */,
 				F421D47D2B750EAE004ECBB0 /* deflate.c in Sources */,
 				F421D4702B750E0F004ECBB0 /* adler32.c in Sources */,
 				F421D4822B750EAE004ECBB0 /* uncompr.c in Sources */,
 				F421D4742B750E21004ECBB0 /* crc32.c in Sources */,
 				F421D47E2B750EAE004ECBB0 /* inffast.c in Sources */,
 				F421D4722B750E18004ECBB0 /* compress.c in Sources */,
+				F421D4872B751739004ECBB0 /* ring.cpp in Sources */,
+				F421D4852B751551004ECBB0 /* parser.cpp in Sources */,
 				F421D4812B750EAE004ECBB0 /* inftrees.c in Sources */,
+				F421D4842B7514B5004ECBB0 /* math.cpp in Sources */,
+				F421D4832B7511FA004ECBB0 /* hash.cpp in Sources */,
+				F421D48A2B75177B004ECBB0 /* string.cpp in Sources */,
+				F421D48C2B751780004ECBB0 /* watchdog.cpp in Sources */,
 				F421D47C2B750EAE004ECBB0 /* inflate.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023-2024 Amebis
 */
@@ -34,34 +34,30 @@ namespace Microsoft {
 
 namespace UnitTests
 {
-	TEST_CLASS(hash)
+	void hash::crc32()
 	{
-	public:
-		TEST_METHOD(crc32)
-		{
-			stdex::crc32_hash h;
-			static const char data[] = "This is a test.";
-			h.hash(data, sizeof(data) - sizeof(*data));
-			h.finalize();
-			Assert::AreEqual<stdex::crc32_t>(0xc6c3c95d, h);
-		}
+		stdex::crc32_hash h;
+		static const char data[] = "This is a test.";
+		h.hash(data, sizeof(data) - sizeof(*data));
+		h.finalize();
+		Assert::AreEqual<stdex::crc32_t>(0xc6c3c95d, h);
+	}
 
-		TEST_METHOD(md5)
-		{
-			stdex::md5_hash h;
-			static const char data[] = "This is a test.";
-			h.hash(data, sizeof(data) - sizeof(*data));
-			h.finalize();
-			Assert::AreEqual<stdex::md5_t>({0x12,0x0e,0xa8,0xa2,0x5e,0x5d,0x48,0x7b,0xf6,0x8b,0x5f,0x70,0x96,0x44,0x00,0x19}, h);
-		}
+	void hash::md5()
+	{
+		stdex::md5_hash h;
+		static const char data[] = "This is a test.";
+		h.hash(data, sizeof(data) - sizeof(*data));
+		h.finalize();
+		Assert::AreEqual<stdex::md5_t>({0x12,0x0e,0xa8,0xa2,0x5e,0x5d,0x48,0x7b,0xf6,0x8b,0x5f,0x70,0x96,0x44,0x00,0x19}, h);
+	}
 
-		TEST_METHOD(sha1)
-		{
-			stdex::sha1_hash h;
-			static const char data[] = "This is a test.";
-			h.hash(data, sizeof(data) - sizeof(*data));
-			h.finalize();
-			Assert::AreEqual<stdex::sha1_t>({0xaf,0xa6,0xc8,0xb3,0xa2,0xfa,0xe9,0x57,0x85,0xdc,0x7d,0x96,0x85,0xa5,0x78,0x35,0xd7,0x03,0xac,0x88}, h);
-		}
-	};
+	void hash::sha1()
+	{
+		stdex::sha1_hash h;
+		static const char data[] = "This is a test.";
+		h.hash(data, sizeof(data) - sizeof(*data));
+		h.finalize();
+		Assert::AreEqual<stdex::sha1_t>({0xaf,0xa6,0xc8,0xb3,0xa2,0xfa,0xe9,0x57,0x85,0xdc,0x7d,0x96,0x85,0xa5,0x78,0x35,0xd7,0x03,0xac,0x88}, h);
+	}
 }

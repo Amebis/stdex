@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023-2024 Amebis
 */
@@ -12,21 +12,17 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTests
 {
-	TEST_CLASS(watchdog)
+	void watchdog::test()
 	{
-	public:
-		TEST_METHOD(test)
-		{
-			volatile bool wd_called = false;
-			stdex::watchdog<std::chrono::steady_clock> wd(
-				std::chrono::milliseconds(100), [&] { wd_called = true; });
-			for (int i = 0; i < 100; ++i) {
-				std::this_thread::sleep_for(std::chrono::milliseconds(10));
-				Assert::IsFalse(wd_called);
-				wd.reset();
-			}
-			std::this_thread::sleep_for(std::chrono::milliseconds(300));
-			Assert::IsTrue(wd_called);
+		volatile bool wd_called = false;
+		stdex::watchdog<std::chrono::steady_clock> wd(
+			std::chrono::milliseconds(100), [&] { wd_called = true; });
+		for (int i = 0; i < 100; ++i) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+			Assert::IsFalse(wd_called);
+			wd.reset();
 		}
-	};
+		std::this_thread::sleep_for(std::chrono::milliseconds(300));
+		Assert::IsTrue(wd_called);
+	}
 }
