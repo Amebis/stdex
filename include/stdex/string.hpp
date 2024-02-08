@@ -2328,7 +2328,9 @@ namespace stdex
 #pragma warning(suppress: 4996)
 		return _vsnprintf_l(str, capacity, format, locale, arg);
 #else
-		return ::vsnprintf_l(str, capacity, locale, format, arg);
+		va_list arg_mutable;
+		va_copy(arg_mutable, arg);
+		return ::vsnprintf_l(str, capacity, locale, format, arg_mutable);
 #endif
 	}
 
@@ -2338,7 +2340,9 @@ namespace stdex
 #pragma warning(suppress: 4996)
 		return _vsnwprintf_l(str, capacity, format, locale, arg);
 #else
-		return ::vswprintf_l(str, capacity, locale, format, arg);
+		va_list arg_mutable;
+		va_copy(arg_mutable, arg);
+		return ::vswprintf_l(str, capacity, locale, format, arg_mutable);
 #endif
 	}
 	/// \endcond
