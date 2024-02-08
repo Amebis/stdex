@@ -21,30 +21,48 @@ namespace stdex
 	///
 	/// Platform ID
 	///
+	enum class platform_id : uint16_t {
 #ifdef _WIN32
-	typedef uint16_t platform_id;
+		unknown = IMAGE_FILE_MACHINE_UNKNOWN,
+		i386 = IMAGE_FILE_MACHINE_I386,
+		x86_64 = IMAGE_FILE_MACHINE_AMD64,
+		arm = IMAGE_FILE_MACHINE_ARMNT,
+		aarch64 = IMAGE_FILE_MACHINE_ARM64,
 #else
-	typedef const char* platform_id;
+		unknown = 0,
+		i386 = 0x014c,
+		x86_64 = 0x8664,
+		arm = 0x01c4,
+		aarch64 = 0xaa64,
 #endif
-}
+	};
 
-#ifndef _WIN32
-constexpr stdex::platform_id IMAGE_FILE_MACHINE_UNKNOWN = nullptr;
-constexpr stdex::platform_id IMAGE_FILE_MACHINE_I386 = "i386";
-constexpr stdex::platform_id IMAGE_FILE_MACHINE_AMD64 = "x86_64";
-constexpr stdex::platform_id IMAGE_FILE_MACHINE_ARMNT = "arm";
-constexpr stdex::platform_id IMAGE_FILE_MACHINE_ARM64 = "aarch64";
+	///
+	/// Parses platform name and returns matching platform code
+	///
+	/// \param[in] name  Platform name
+	///
+	/// \returns Platform code or `platform_id::unknown` if match not found
+	///
+	inline platform_id platform_from_name(_In_z_ const char* name)
+	{
+		struct platform_less {
+			bool operator()(_In_z_ const char* a, _In_z_ const char* b) const
+			{
+				return stricmp(a, b) < 0;
+			}
+		};
+		static const std::map<const char*, platform_id, platform_less> platforms = {
+			{ "aarch64", platform_id::aarch64 },
+			{ "arm", platform_id::arm },
+			{ "i386", platform_id::i386 },
+			{ "x86_64", platform_id::x86_64 },
+		};
+		if (auto el = platforms.find(name); el != platforms.end())
+			return el->second;
+		return platform_id::unknown;
+	}
 
-//inline bool operator ==(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return a == b; }
-//inline bool operator !=(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return a != b; }
-//inline bool operator <(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return (a == IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN) || (a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) < 0); }
-//inline bool operator <=(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return a == IMAGE_FILE_MACHINE_UNKNOWN || (a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) <= 0); }
-//inline bool operator >(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return (a != IMAGE_FILE_MACHINE_UNKNOWN && b == IMAGE_FILE_MACHINE_UNKNOWN) || (a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) > 0); }
-//inline bool operator >=(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return b == IMAGE_FILE_MACHINE_UNKNOWN || (a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) >= 0); }
-#endif
-
-namespace stdex
-{
 	///
 	/// System information
 	///
@@ -53,20 +71,14 @@ namespace stdex
 		///
 		/// The platform this process was compiled for
 		///
-#if _M_IX86
-		static constexpr platform_id process_platform = IMAGE_FILE_MACHINE_I386;
-#elif _M_X64 // _M_ARM64EC is introducing as x64
-		static constexpr platform_id process_platform = IMAGE_FILE_MACHINE_AMD64;
-#elif _M_ARM
-		static constexpr platform_id process_platform = IMAGE_FILE_MACHINE_ARMNT;
-#elif _M_ARM64
-		static constexpr platform_id process_platform = IMAGE_FILE_MACHINE_ARM64;
-#elif __i386__
-		static constexpr platform_id process_platform = "i386";
-#elif __x86_64__
-		static constexpr platform_id process_platform = "x86_64";
-#elif __aarch64__
-		static constexpr platform_id process_platform = "aarch64";
+#if _M_IX86 || __i386__
+		static constexpr platform_id process_platform = platform_id::i386;
+#elif _M_X64 /* _M_ARM64EC is introducing as x64 */ || __x86_64__
+		static constexpr platform_id process_platform = platform_id::x86_64;
+#elif _M_ARM || __arm__
+		static constexpr platform_id process_platform = platform_id::arm;
+#elif _M_ARM64 || __aarch64__
+		static constexpr platform_id process_platform = platform_id::aarch64;
 #else
 		#error Unknown platform
 #endif
@@ -99,7 +111,7 @@ namespace stdex
 		bool elevated;
 
 		sys_info_t() :
-			os_platform(IMAGE_FILE_MACHINE_UNKNOWN),
+			os_platform(platform_id::unknown),
 #ifdef _WIN32
 			wow64(false),
 #endif
@@ -142,7 +154,7 @@ namespace stdex
 #else
 			memset(&m_utsn, 0, sizeof(m_utsn));
 			if (uname(&m_utsn) != -1)
-				os_platform = reinterpret_cast<platform_id>(m_utsn.machine);
+				os_platform = platform_from_name(m_utsn.machine);
 #endif
 
 #ifdef _WIN32
