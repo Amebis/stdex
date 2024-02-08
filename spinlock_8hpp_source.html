@@ -123,7 +123,7 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="preprocessor">#elif _M_IX86 || _M_X64</span></div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>                    _mm_pause();</div>
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="preprocessor">#elif __aarch64__</span></div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>                    __yield();</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>                    <span class="keyword">asm</span> <span class="keyword">volatile</span>(<span class="stringliteral">&quot;yield&quot;</span>);</div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="preprocessor">#elif __i386__ || __x86_64__</span></div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>                    __builtin_ia32_pause();</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="preprocessor">#endif</span></div>
@@ -159,7 +159,7 @@ $(function() { codefold.init(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 25 2024 12:31:00 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+Generated on Thu Feb 8 2024 11:12:05 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
 </small></address>
 </body>
 </html>

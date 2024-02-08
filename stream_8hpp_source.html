@@ -2360,8 +2360,8 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l02408" name="l02408"></a><span class="lineno"> 2408</span>                _Assume_(data || !length);</div>
 <div class="line"><a id="l02409" name="l02409"></a><span class="lineno"> 2409</span>                <span class="keyword">constexpr</span> <span class="keywordtype">int</span> block_size = 0x10000000;</div>
 <div class="line"><a id="l02410" name="l02410"></a><span class="lineno"> 2410</span>                <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> to_read = length;;) {</div>
-<div class="line"><a id="l02411" name="l02411"></a><span class="lineno"> 2411</span>                    <span class="keywordtype">int</span> num_read = recv(m_h, <span class="keyword">reinterpret_cast&lt;</span><span class="keywordtype">char</span>*<span class="keyword">&gt;</span>(data), <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(std::min&lt;size_t&gt;(to_read, block_size)), 0);</div>
-<div class="line"><a id="l02412" name="l02412"></a><span class="lineno"> 2412</span>                    <span class="keywordflow">if</span> (num_read == SOCKET_ERROR) _Unlikely_ {</div>
+<div class="line"><a id="l02411" name="l02411"></a><span class="lineno"> 2411</span>                    <span class="keyword">auto</span> num_read = recv(m_h, <span class="keyword">reinterpret_cast&lt;</span><span class="keywordtype">char</span>*<span class="keyword">&gt;</span>(data), <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(std::min&lt;size_t&gt;(to_read, block_size)), 0);</div>
+<div class="line"><a id="l02412" name="l02412"></a><span class="lineno"> 2412</span>                    <span class="keywordflow">if</span> (num_read == -1) _Unlikely_ {</div>
 <div class="line"><a id="l02413" name="l02413"></a><span class="lineno"> 2413</span>                        m_state = to_read &lt; length ? state_t::ok : state_t::fail;</div>
 <div class="line"><a id="l02414" name="l02414"></a><span class="lineno"> 2414</span>                        <span class="keywordflow">return</span> length - to_read;</div>
 <div class="line"><a id="l02415" name="l02415"></a><span class="lineno"> 2415</span>                    }</div>
@@ -2386,8 +2386,8 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l02432" name="l02432"></a><span class="lineno"> 2432</span>                _Assume_(data || !length);</div>
 <div class="line"><a id="l02433" name="l02433"></a><span class="lineno"> 2433</span>                <span class="keyword">constexpr</span> <span class="keywordtype">int</span> block_size = 0x10000000;</div>
 <div class="line"><a id="l02434" name="l02434"></a><span class="lineno"> 2434</span>                <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> to_write = length;;) {</div>
-<div class="line"><a id="l02435" name="l02435"></a><span class="lineno"> 2435</span>                    <span class="keywordtype">int</span> num_written = send(m_h, <span class="keyword">reinterpret_cast&lt;</span><span class="keyword">const </span><span class="keywordtype">char</span>*<span class="keyword">&gt;</span>(data), <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(std::min&lt;size_t&gt;(to_write, block_size)), 0);</div>
-<div class="line"><a id="l02436" name="l02436"></a><span class="lineno"> 2436</span>                    <span class="keywordflow">if</span> (num_written == SOCKET_ERROR) _Unlikely_ {</div>
+<div class="line"><a id="l02435" name="l02435"></a><span class="lineno"> 2435</span>                    <span class="keyword">auto</span> num_written = send(m_h, <span class="keyword">reinterpret_cast&lt;</span><span class="keyword">const </span><span class="keywordtype">char</span>*<span class="keyword">&gt;</span>(data), <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(std::min&lt;size_t&gt;(to_write, block_size)), 0);</div>
+<div class="line"><a id="l02436" name="l02436"></a><span class="lineno"> 2436</span>                    <span class="keywordflow">if</span> (num_written == -1) _Unlikely_ {</div>
 <div class="line"><a id="l02437" name="l02437"></a><span class="lineno"> 2437</span>                        m_state = state_t::fail;</div>
 <div class="line"><a id="l02438" name="l02438"></a><span class="lineno"> 2438</span>                        <span class="keywordflow">return</span> length - to_write;</div>
 <div class="line"><a id="l02439" name="l02439"></a><span class="lineno"> 2439</span>                    }</div>
@@ -4345,7 +4345,7 @@ $(function() { codefold.init(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 25 2024 12:31:00 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+Generated on Thu Feb 8 2024 11:12:05 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
 </small></address>
 </body>
 </html>
