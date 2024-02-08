@@ -186,7 +186,7 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span><span class="preprocessor">#ifndef _WIN64</span></div>
 <div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>            BOOL Wow64Process;</div>
 <div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>            <span class="keywordflow">if</span> (IsWow64Process2 &amp;&amp; IsWow64Process2(process, &amp;process_machine, &amp;<a class="code hl_variable" href="structstdex_1_1sys__info__t.html#acd4a96851f4100095f812dc945b1d7d0">os_platform</a>)) {</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>            <span class="keywordflow">if</span> (IsWow64Process2 &amp;&amp; IsWow64Process2(process, &amp;process_machine, <span class="keyword">reinterpret_cast&lt;</span>USHORT*<span class="keyword">&gt;</span>(&amp;<a class="code hl_variable" href="structstdex_1_1sys__info__t.html#acd4a96851f4100095f812dc945b1d7d0">os_platform</a>))) {</div>
 <div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>                wow64 = process_machine != IMAGE_FILE_MACHINE_UNKNOWN;</div>
 <div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>            }</div>
 <div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span><span class="preprocessor">#ifdef _WIN64</span></div>
@@ -305,7 +305,7 @@ $(function() { codefold.init(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Feb 8 2024 14:21:12 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+Generated on Thu Feb 8 2024 14:26:40 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
 </small></address>
 </body>
 </html>
