@@ -100,15 +100,15 @@ namespace stdex
 	///
 	/// Reusable default charset locale
 	///
-	const inline locale locale_default(create_locale(LC_ALL,
+	const inline locale locale_default(
 #ifdef WIN32
 #ifdef _CONSOLE
-		".OCP"
+		create_locale(LC_ALL, ".OCP")
 #else
-		".ACP"
+		create_locale(LC_ALL, ".ACP")
 #endif
 #else
-		""
+		nullptr
 #endif
-		));
+		);
 }
