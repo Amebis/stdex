@@ -14,6 +14,7 @@
 #include "string.cpp"
 #include "unicode.cpp"
 #include "watchdog.cpp"
+#include "zlib.cpp"
 #include <iostream>
 
 int main(int argc, const char * argv[])
@@ -41,6 +42,7 @@ int main(int argc, const char * argv[])
 		UnitTests::unicode::charset_encoder();
 		UnitTests::unicode::normalize();
 		UnitTests::watchdog::test();
+		UnitTests::zlib::test();
 		std::cout << "PASS\n";
 		return 0;
 	}
@@ -49,3 +51,4 @@ int main(int argc, const char * argv[])
 		return 1;
 	}
 }
+
