@@ -18,7 +18,7 @@
 #include <memory>
 #include <string>
 
-#ifndef _WIN32
+#ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
@@ -976,6 +976,6 @@ namespace stdex
 #endif
 }
 
-#ifndef _WIN32
+#ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif

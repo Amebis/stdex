@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2016-2024 Amebis
 */
@@ -820,8 +820,9 @@ namespace stdex
 				case element_t::big:
 				case element_t::small:
 					return true;
+				default:
+					return false;
 				};
-				return false;
 			}
 
 			///
@@ -844,8 +845,9 @@ namespace stdex
 				case element_t::acronym:
 				case element_t::xmp:
 					return true;
+				default:
+					return false;
 				};
-				return false;
 			}
 
 			///
@@ -877,8 +879,9 @@ namespace stdex
 				case element_t::iframe:
 				case element_t::nobr:
 					return true;
+				default:
+					return false;
 				};
-				return false;
 			}
 
 			///
@@ -895,8 +898,9 @@ namespace stdex
 				case element_t::label:
 				case element_t::button:
 					return true;
+				default:
+					return false;
 				};
-				return false;
 			}
 
 			///
@@ -929,8 +933,9 @@ namespace stdex
 				case element_t::h5:
 				case element_t::h6:
 					return true;
+				default:
+					return false;
 				};
-				return false;
 			}
 
 			///
@@ -946,8 +951,9 @@ namespace stdex
 				case element_t::dir:
 				case element_t::menu:
 					return true;
+				default:
+					return false;
 				};
-				return false;
 			}
 
 			///
@@ -961,8 +967,9 @@ namespace stdex
 				case element_t::pre:
 				case element_t::listing:
 					return true;
+				default:
+					return false;
 				}
-				return false;
 			}
 
 			///
@@ -992,8 +999,9 @@ namespace stdex
 				case element_t::fieldset:
 				case element_t::address:
 					return true;
+				default:
+					return false;
 				};
-				return false;
 			}
 
 			///
@@ -1019,8 +1027,9 @@ namespace stdex
 				case element_t::base:
 				case element_t::nextid:
 					return true;
+				default:
+					return false;
 				};
-				return false;
 			}
 
 			///
@@ -1037,12 +1046,13 @@ namespace stdex
 				case element_t::link:
 				case element_t::object:
 					return true;
+				default:
+					return false;
 				};
-				return false;
 			}
 
 			///
-			/// May element be a part of <pre>?
+			/// May element be a part of `<pre></pre>`?
 			///
 			/// \param[in] code  Element code
 			///
@@ -1062,8 +1072,9 @@ namespace stdex
 				case element_t::basefont:
 				case element_t::nobr:
 					return true;
+				default:
+					return false;
 				};
-				return false;
 			}
 
 			///
@@ -1078,8 +1089,9 @@ namespace stdex
 				case element_t::body:
 				case element_t::frameset:
 					return true;
+				default:
+					return false;
 				};
-				return false;
 			}
 
 			///
@@ -1105,8 +1117,9 @@ namespace stdex
 				case element_t::th:
 				case element_t::tr:
 					return true;
+				default:
+					return false;
 				};
-				return false;
 			}
 
 			///
@@ -1205,8 +1218,8 @@ namespace stdex
 				case element_t::ul:            return child == element_t::li;
 				case element_t::wbr:           return false;
 				case element_t::unknown:       return true;
+				default:                       return false;
 				}
-				return false;
 			}
 
 			///
@@ -1260,8 +1273,8 @@ namespace stdex
 				case element_t::table:      return !stdex::strnicmp(attr_name, num_chars, "background", SIZE_MAX);
 				case element_t::td:         return !stdex::strnicmp(attr_name, num_chars, "background", SIZE_MAX);
 				case element_t::th:         return !stdex::strnicmp(attr_name, num_chars, "background", SIZE_MAX);
+				default:                    return false;
 				}
-				return false;
 			}
 
 			///
@@ -1286,8 +1299,8 @@ namespace stdex
 				case element_t::table:  return !stdex::strnicmp(attr_name, num_chars, "summary", SIZE_MAX);
 				case element_t::td:     return !stdex::strnicmp(attr_name, num_chars, "abbr", SIZE_MAX);
 				case element_t::th:     return !stdex::strnicmp(attr_name, num_chars, "abbr", SIZE_MAX);
+				default:                return false;
 				}
-				return false;
 			}
 		};
 
@@ -1754,6 +1767,7 @@ namespace stdex
 									case element_t::style:
 										m_is_special_element = true;
 										break;
+									default:;
 									}
 								}
 							}
@@ -1793,7 +1807,7 @@ namespace stdex
 								auto starting_tag = m_element_stack[j];
 								_Assume_(starting_tag && starting_tag->type == stdex::parser::html_sequence_t::element_start);
 								if (starting_tag->code == e->code ||
-									starting_tag->code == element_t::unknown && e->code == element_t::unknown && !stdex::strnicmp(source + starting_tag->name.start, starting_tag->name.size(), source + e->name.start, e->name.size()))
+									(starting_tag->code == element_t::unknown && e->code == element_t::unknown && !stdex::strnicmp(source + starting_tag->name.start, starting_tag->name.size(), source + e->name.start, e->name.size())))
 								{
 									e->start = starting_tag;
 									e->parent = starting_tag->parent;
@@ -2098,7 +2112,7 @@ namespace stdex
 				_In_opt_ stdex::html::sequence* sequence = nullptr,
 				_In_opt_ stdex::html::sequence* _end_sequence = nullptr,
 				_In_ uintptr_t data = 0) :
-				text_token(token_t::starting, _text, num_chars_text, text_type, sequence, data),
+				text_token<T, TR, AX>(token_t::starting, _text, num_chars_text, text_type, sequence, data),
 				name(_name, num_chars_name),
 				end_sequence(_end_sequence)
 			{}
@@ -2621,8 +2635,8 @@ namespace stdex
 						start = m_css_cdc.interval.end;
 					}
 					else if (
-						m_css_import.match(m_source, start, end) && (section = m_css_import.interval, content = m_css_import.content, true) ||
-						m_css_uri.match(m_source, start, end) && (section = m_css_uri.interval, content = m_css_uri.content, true))
+						(m_css_import.match(m_source, start, end) && ((void)(section = m_css_import.interval), (void)(content = m_css_import.content), true)) ||
+						(m_css_uri.match(m_source, start, end) && ((void)(section = m_css_uri.interval), (void)(content = m_css_uri.content), true)))
 					{
 						std::unique_ptr<url_token<T, TR, AX>> t_url(
 							new url_token<T, TR, AX>(

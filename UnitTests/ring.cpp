@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023-2024 Amebis
 */
@@ -12,20 +12,20 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTests
 {
-	constexpr size_t capacity = 50;
+	constexpr size_t ring_capacity = 50;
 
 	TEST_CLASS(ring)
 	{
 	public:
 		TEST_METHOD(test)
 		{
-			using ring_t = stdex::ring<int, capacity>;
+			using ring_t = stdex::ring<int, ring_capacity>;
 			ring_t ring;
 			thread writer([](_Inout_ ring_t& ring)
 				{
 					int seed = 0;
 					for (size_t retries = 1000; retries--;) {
-						for (auto to_write = static_cast<size_t>(static_cast<uint64_t>(::rand()) * capacity / 5 / RAND_MAX); to_write;) {
+						for (auto to_write = static_cast<size_t>(static_cast<uint64_t>(::rand()) * ring_capacity / 5 / RAND_MAX); to_write;) {
 							int* ptr; size_t num_write;
 							tie(ptr, num_write) = ring.back();
 							if (to_write < num_write)

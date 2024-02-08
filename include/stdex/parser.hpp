@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023-2024 Amebis
 */
@@ -7371,7 +7371,7 @@ namespace stdex
 			virtual void invalidate()
 			{
 				this->content.invalidate();
-				basic_parser::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 			stdex::interval<size_t> content; ///< content position in source
@@ -7506,7 +7506,7 @@ namespace stdex
 			virtual void invalidate()
 			{
 				this->content.invalidate();
-				basic_parser::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 			stdex::interval<size_t> content; ///< content position in source
@@ -7573,7 +7573,7 @@ namespace stdex
 			virtual void invalidate()
 			{
 				this->content.invalidate();
-				basic_parser::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 			stdex::interval<size_t> content; ///< content position in source
@@ -7598,7 +7598,7 @@ namespace stdex
 					this->interval.end = this->interval.end + 4;
 
 					// Skip whitespace.
-					const auto& ctype = std::use_facet<std::ctype<T>>(m_locale);
+					const auto& ctype = std::use_facet<std::ctype<T>>(this->m_locale);
 					for (; this->interval.end < end && text[this->interval.end] && ctype.is(ctype.space, text[this->interval.end]); this->interval.end++);
 
 					if (this->interval.end < end &&
@@ -7683,7 +7683,7 @@ namespace stdex
 			virtual void invalidate()
 			{
 				this->content.invalidate();
-				basic_parser::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 			stdex::interval<size_t> content; ///< content position in source
@@ -7711,7 +7711,7 @@ namespace stdex
 					this->interval.end = this->interval.end + 7;
 
 					// Skip whitespace.
-					const auto& ctype = std::use_facet<std::ctype<T>>(m_locale);
+					const auto& ctype = std::use_facet<std::ctype<T>>(this->m_locale);
 					for (; this->interval.end < end && text[this->interval.end] && ctype.is(ctype.space, text[this->interval.end]); this->interval.end++);
 
 					if (this->interval.end < end &&
@@ -7769,7 +7769,7 @@ namespace stdex
 				this->base_type.invalidate();
 				this->sub_type.invalidate();
 				this->charset.invalidate();
-				basic_parser::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 			stdex::interval<size_t> base_type; ///< basic type position in source
@@ -7784,7 +7784,7 @@ namespace stdex
 				_In_ int flags = match_multiline)
 			{
 				_Unreferenced_(flags);
-				const auto& ctype = std::use_facet<std::ctype<T>>(m_locale);
+				const auto& ctype = std::use_facet<std::ctype<T>>(this->m_locale);
 
 				this->interval.end = start;
 				this->base_type.start = this->interval.end;
@@ -7904,7 +7904,7 @@ namespace stdex
 				_In_ int flags = match_default)
 			{
 				_Unreferenced_(flags);
-				const auto& ctype = std::use_facet<std::ctype<T>>(m_locale);
+				const auto& ctype = std::use_facet<std::ctype<T>>(this->m_locale);
 				this->interval.end = start;
 				for (;;) {
 					_Assume_(text || this->interval.end >= end);
@@ -7918,7 +7918,7 @@ namespace stdex
 					}
 					if (text[this->interval.end] == '>' ||
 						text[this->interval.end] == '=' ||
-						text[this->interval.end] == '/' && this->interval.end + 1 < end && text[this->interval.end + 1] == '>' ||
+						(text[this->interval.end] == '/' && this->interval.end + 1 < end && text[this->interval.end + 1] == '>') ||
 						ctype.is(ctype.space, text[this->interval.end]))
 					{
 						this->interval.start = start;
@@ -7947,7 +7947,7 @@ namespace stdex
 			virtual void invalidate()
 			{
 				this->content.invalidate();
-				basic_parser::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 			stdex::interval<size_t> content; ///< content position in source
@@ -7988,7 +7988,7 @@ namespace stdex
 
 				// Nonquoted
 				this->content.start = this->interval.end;
-				const auto& ctype = std::use_facet<std::ctype<T>>(m_locale);
+				const auto& ctype = std::use_facet<std::ctype<T>>(this->m_locale);
 				for (;;) {
 					_Assume_(text || this->interval.end >= end);
 					if (this->interval.end >= end || !text[this->interval.end]) {
@@ -7997,7 +7997,7 @@ namespace stdex
 						return true;
 					}
 					if (text[this->interval.end] == '>' ||
-						text[this->interval.end] == '/' && this->interval.end + 1 < end && text[this->interval.end + 1] == '>' ||
+						(text[this->interval.end] == '/' && this->interval.end + 1 < end && text[this->interval.end + 1] == '>') ||
 						ctype.is(ctype.space, text[this->interval.end]))
 					{
 						this->content.end = this->interval.end;
@@ -8050,7 +8050,7 @@ namespace stdex
 		{
 		public:
 			basic_html_tag(_In_ const std::locale& locale = std::locale()) :
-				basic_parser(locale),
+				basic_parser<T>(locale),
 				type(html_sequence_t::unknown)
 			{}
 
@@ -8059,7 +8059,7 @@ namespace stdex
 				this->type = html_sequence_t::unknown;
 				this->name.invalidate();
 				this->attributes.clear();
-				basic_parser::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 			html_sequence_t type;                   ///< tag type
@@ -8157,102 +8157,104 @@ namespace stdex
 				else
 					goto error;
 
-				// Skip whitespace.
-				const auto& ctype = std::use_facet<std::ctype<T>>(m_locale);
-				for (; this->interval.end < end && text[this->interval.end] && ctype.is(ctype.space, text[this->interval.end]); this->interval.end++);
-
-				this->attributes.clear();
-				for (;;) {
-					if (this->type == html_sequence_t::element_start &&
-						this->interval.end + 1 < end &&
-						text[this->interval.end] == '/' &&
-						text[this->interval.end + 1] == '>')
-					{
-						// <tag .../>
-						this->type = html_sequence_t::element;
-						this->interval.end = this->interval.end + 2;
-						break;
-					}
-					if (this->interval.end < end &&
-						text[this->interval.end] == '>')
-					{
-						// <tag ...>
-						this->interval.end++;
-						break;
-					}
-					if (this->type == html_sequence_t::declaration &&
-						this->interval.end + 1 < end &&
-						text[this->interval.end] == '!' &&
-						text[this->interval.end + 1] == '>')
-					{
-						// "<!...!>".
-						this->interval.end = this->interval.end + 2;
-						break;
-					}
-					if (this->type == html_sequence_t::declaration &&
-						this->interval.end + 1 < end &&
-						text[this->interval.end] == '-' &&
-						text[this->interval.end + 1] == '-')
-					{
-						// "<! ... --...".
-						this->interval.end = this->interval.end + 2;
-						for (;;) {
-							if (this->interval.end >= end || !text[this->interval.end])
-								goto error;
-							if (this->interval.end + 1 < end &&
-								text[this->interval.end] == '-' &&
-								text[this->interval.end + 1] == '-')
-							{
-								// "<! ... --...--".
-								this->interval.end = this->interval.end + 2;
-								break;
-							}
-							this->interval.end++;
-						}
-
-						// Skip whitespace.
-						for (; this->interval.end < end && text[this->interval.end] && ctype.is(ctype.space, text[this->interval.end]); this->interval.end++);
-						continue;
-					}
-
-					if (this->interval.end >= end || !text[this->interval.end])
-						goto error;
-
-					// Attributes follow...
-					html_attribute* a = nullptr;
-					if (this->m_ident.match(text, this->interval.end, end, flags)) {
-						this->attributes.push_back(std::move(html_attribute{ this->m_ident.interval }));
-						a = &this->attributes.back();
-						_Assume_(a);
-						this->interval.end = this->m_ident.interval.end;
-					}
-					else {
-						// What was that?! Skip.
-						this->interval.end++;
-						continue;
-					}
-
+				{
 					// Skip whitespace.
+					const auto& ctype = std::use_facet<std::ctype<T>>(this->m_locale);
 					for (; this->interval.end < end && text[this->interval.end] && ctype.is(ctype.space, text[this->interval.end]); this->interval.end++);
 
-					if (this->interval.end < end && text[this->interval.end] == '=') {
-						this->interval.end++;
-
-						// Skip whitespace.
-						for (; this->interval.end < end && text[this->interval.end] && ctype.is(ctype.space, text[this->interval.end]); this->interval.end++);
-
-						if (this->m_value.match(text, this->interval.end, end, flags)) {
-							// This attribute has value.
-							a->value = this->m_value.content;
-							this->interval.end = this->m_value.interval.end;
+					this->attributes.clear();
+					for (;;) {
+						if (this->type == html_sequence_t::element_start &&
+							this->interval.end + 1 < end &&
+							text[this->interval.end] == '/' &&
+							text[this->interval.end + 1] == '>')
+						{
+							// <tag .../>
+							this->type = html_sequence_t::element;
+							this->interval.end = this->interval.end + 2;
+							break;
+						}
+						if (this->interval.end < end &&
+							text[this->interval.end] == '>')
+						{
+							// <tag ...>
+							this->interval.end++;
+							break;
+						}
+						if (this->type == html_sequence_t::declaration &&
+							this->interval.end + 1 < end &&
+							text[this->interval.end] == '!' &&
+							text[this->interval.end + 1] == '>')
+						{
+							// "<!...!>".
+							this->interval.end = this->interval.end + 2;
+							break;
+						}
+						if (this->type == html_sequence_t::declaration &&
+							this->interval.end + 1 < end &&
+							text[this->interval.end] == '-' &&
+							text[this->interval.end + 1] == '-')
+						{
+							// "<! ... --...".
+							this->interval.end = this->interval.end + 2;
+							for (;;) {
+								if (this->interval.end >= end || !text[this->interval.end])
+									goto error;
+								if (this->interval.end + 1 < end &&
+									text[this->interval.end] == '-' &&
+									text[this->interval.end + 1] == '-')
+								{
+									// "<! ... --...--".
+									this->interval.end = this->interval.end + 2;
+									break;
+								}
+								this->interval.end++;
+							}
 
 							// Skip whitespace.
 							for (; this->interval.end < end && text[this->interval.end] && ctype.is(ctype.space, text[this->interval.end]); this->interval.end++);
+							continue;
 						}
-					}
-					else {
-						// This attribute has no value.
-						a->value.invalidate();
+
+						if (this->interval.end >= end || !text[this->interval.end])
+							goto error;
+
+						// Attributes follow...
+						html_attribute* a = nullptr;
+						if (this->m_ident.match(text, this->interval.end, end, flags)) {
+							this->attributes.push_back(std::move(html_attribute{ this->m_ident.interval }));
+							a = &this->attributes.back();
+							_Assume_(a);
+							this->interval.end = this->m_ident.interval.end;
+						}
+						else {
+							// What was that?! Skip.
+							this->interval.end++;
+							continue;
+						}
+
+						// Skip whitespace.
+						for (; this->interval.end < end && text[this->interval.end] && ctype.is(ctype.space, text[this->interval.end]); this->interval.end++);
+
+						if (this->interval.end < end && text[this->interval.end] == '=') {
+							this->interval.end++;
+
+							// Skip whitespace.
+							for (; this->interval.end < end && text[this->interval.end] && ctype.is(ctype.space, text[this->interval.end]); this->interval.end++);
+
+							if (this->m_value.match(text, this->interval.end, end, flags)) {
+								// This attribute has value.
+								a->value = this->m_value.content;
+								this->interval.end = this->m_value.interval.end;
+
+								// Skip whitespace.
+								for (; this->interval.end < end && text[this->interval.end] && ctype.is(ctype.space, text[this->interval.end]); this->interval.end++);
+							}
+						}
+						else {
+							// This attribute has no value.
+							a->value.invalidate();
+						}
 					}
 				}
 
@@ -8286,7 +8288,7 @@ namespace stdex
 			virtual void invalidate()
 			{
 				this->condition.invalidate();
-				basic_parser::invalidate();
+				basic_parser<T>::invalidate();
 			}
 
 			stdex::interval<size_t> condition; /// condition position in source
@@ -8308,7 +8310,7 @@ namespace stdex
 					this->interval.end = start + 3;
 
 					// Skip whitespace.
-					const auto& ctype = std::use_facet<std::ctype<T>>(m_locale);
+					const auto& ctype = std::use_facet<std::ctype<T>>(this->m_locale);
 					for (; this->interval.end < end && text[this->interval.end] && ctype.is(ctype.space, text[this->interval.end]); this->interval.end++);
 
 					this->condition.start = this->condition.end = this->interval.end;

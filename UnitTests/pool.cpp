@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023-2024 Amebis
 */
@@ -12,7 +12,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTests
 {
-	constexpr size_t capacity = 50;
+	constexpr size_t pool_capacity = 50;
 
 	TEST_CLASS(pool)
 	{
@@ -24,15 +24,15 @@ namespace UnitTests
 			pool_t pool;
 			list<thread> workers;
 			for (auto n = thread::hardware_concurrency(); n--; ) {
-				workers.push_back(std::move(thread([](_Inout_ pool_t& pool)
-					{
-						for (size_t n = 10000; n--; ) {
-							worker_t el = move(pool.pop());
-							if (!el)
-								el.reset(new int(1));
-							pool.push(move(el));
-						}
-					}, ref(pool))));
+				workers.push_back(thread([](_Inout_ pool_t& pool)
+				{
+					for (size_t n = 10000; n--; ) {
+						worker_t el = pool.pop();
+						if (!el)
+							el.reset(new int(1));
+						pool.push(std::move(el));
+					}
+				}, ref(pool)));
 			}
 
 			for (auto& w : workers)

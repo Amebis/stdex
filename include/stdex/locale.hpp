@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2016-2024 Amebis
 */
@@ -75,12 +75,14 @@ namespace stdex
 		{}
 
 		locale(_In_ int category, _In_z_ const char* locale) :
-			locale(create_locale(category, locale))
+			stdex::locale(create_locale(category, locale))
 		{}
 
+#ifdef _WIN32
 		locale(_In_ int category, _In_z_ const wchar_t* locale) :
-			locale(create_locale(category, locale))
+			stdex::locale(create_locale(category, locale))
 		{}
+#endif
 
 		operator locale_t() const { return get(); }
 	};

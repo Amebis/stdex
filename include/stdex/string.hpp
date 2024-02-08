@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2016-2024 Amebis
 */
@@ -2328,7 +2328,7 @@ namespace stdex
 #pragma warning(suppress: 4996)
 		return _vsnprintf_l(str, capacity, format, locale, arg);
 #else
-		return ::vsnprintf(str, capacity, format, arg);
+		return ::vsnprintf_l(str, capacity, locale, format, arg);
 #endif
 	}
 
@@ -2338,7 +2338,7 @@ namespace stdex
 #pragma warning(suppress: 4996)
 		return _vsnwprintf_l(str, capacity, format, locale, arg);
 #else
-		return vswprintf(str, capacity, format, arg);
+		return ::vswprintf_l(str, capacity, locale, format, arg);
 #endif
 	}
 	/// \endcond
@@ -2360,11 +2360,12 @@ namespace stdex
 
 		// Try with stack buffer first.
 		int count = vsnprintf(buf, _countof(buf), format, locale, arg);
-		if (0 <= count && count < _countof(buf)) {
+		if (0 <= count && count <= _countof(buf)) {
 			// Copy from stack.
 			str.append(buf, count);
 			return count;
 		}
+#ifdef _WIN32
 		if (count < 0) {
 			switch (errno) {
 			case 0:
@@ -2380,6 +2381,25 @@ namespace stdex
 		str.resize(offset + count);
 		if (vsnprintf(&str[offset], count + 1, format, locale, arg) != count) _Unlikely_
 			throw std::runtime_error("failed to format string");
+#else
+		size_t offset = str.size();
+		for (size_t capacity = 2 * 1024 / sizeof(T);; capacity *= 2) {
+			switch (errno) {
+			case EOVERFLOW:
+				// Allocate on heap and retry.
+				str.resize(offset + capacity);
+				count = vsnprintf(&str[offset], capacity, format, locale, arg);
+				if (0 <= count && count <= capacity) {
+					str.resize(offset + count);
+					return count;
+				}
+				break;
+			case EINVAL: throw std::invalid_argument("invalid vsnprintf arguments");
+			case EILSEQ: throw std::runtime_error("encoding error");
+			default: throw std::runtime_error("failed to format string");
+			}
+		}
+#endif
 		return count;
 	}
 
@@ -2538,7 +2558,6 @@ namespace stdex
 	///
 	/// Formats a time string using `strftime()`.
 	///
-	/// \param[out] str     String to append formatted time text
 	/// \param[in ] format  String template using `strftime()` style
 	/// \param[in ] time    Time
 	/// \param[in ] locale  Stdlib locale used to perform formatting. Use `NULL` to use locale globally set by `setlocale()`.
@@ -2619,7 +2638,7 @@ namespace stdex
 	template<class T, size_t N>
 	inline void strlwr(_Inout_ T (&str)[N])
 	{
-		strlwr(str, count);
+		strlwr(str, N);
 	}
 
 	///
@@ -2631,7 +2650,7 @@ namespace stdex
 	template<class T, size_t N>
 	inline void strlwr(_Inout_ T (&str)[N], _In_ const std::locale& locale)
 	{
-		strlwr(str, count, locale);
+		strlwr(str, N, locale);
 	}
 
 	///

@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023-2024 Amebis
 */
@@ -7,7 +7,7 @@
 
 #include "compat.hpp"
 #include "system.hpp"
-#ifdef _WIN32
+#if defined(_WIN32)
 #include "windows.h"
 #include <stdlib.h>
 #include <tchar.h>
@@ -35,12 +35,12 @@ constexpr stdex::platform_id IMAGE_FILE_MACHINE_AMD64 = "x86_64";
 constexpr stdex::platform_id IMAGE_FILE_MACHINE_ARMNT = "arm";
 constexpr stdex::platform_id IMAGE_FILE_MACHINE_ARM64 = "aarch64";
 
-inline bool operator ==(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return a == b; }
-inline bool operator !=(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return a != b; }
-inline bool operator <(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return a == IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN || a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) < 0; }
-inline bool operator <=(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return a == IMAGE_FILE_MACHINE_UNKNOWN || a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) <= 0; }
-inline bool operator >(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return a != IMAGE_FILE_MACHINE_UNKNOWN && b == IMAGE_FILE_MACHINE_UNKNOWN || a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) > 0; }
-inline bool operator >=(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return b == IMAGE_FILE_MACHINE_UNKNOWN || a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) >= 0; }
+//inline bool operator ==(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return a == b; }
+//inline bool operator !=(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return a != b; }
+//inline bool operator <(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return (a == IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN) || (a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) < 0); }
+//inline bool operator <=(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return a == IMAGE_FILE_MACHINE_UNKNOWN || (a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) <= 0); }
+//inline bool operator >(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return (a != IMAGE_FILE_MACHINE_UNKNOWN && b == IMAGE_FILE_MACHINE_UNKNOWN) || (a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) > 0); }
+//inline bool operator >=(_In_ const stdex::platform_id a, _In_ const stdex::platform_id b) { return b == IMAGE_FILE_MACHINE_UNKNOWN || (a != IMAGE_FILE_MACHINE_UNKNOWN && b != IMAGE_FILE_MACHINE_UNKNOWN && strcmp(a, b) >= 0); }
 #endif
 
 namespace stdex
@@ -189,8 +189,8 @@ namespace stdex
 			}
 #elif defined(__APPLE__)
 			{
-				gid_t gids[NGROUPS + 1]; // A user cannot be member in more than NGROUPS groups, not counting the default group (hence the + 1)
-				for (int i = 0, n = getgroups(_countof(gids), gids); i < n; ++i) {
+				gid_t gids[NGROUPS_MAX];
+				for (int i = 0, n = getgroups(NGROUPS_MAX, gids); i < n; ++i) {
 					struct group* group = getgrgid(gids[i]);
 					if (!group) continue;
 					if (strcmp(group->gr_name, "admin") == 0) {

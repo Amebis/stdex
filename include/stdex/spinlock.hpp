@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023-2024 Amebis
 */
@@ -43,7 +43,7 @@ namespace stdex
 #elif _M_IX86 || _M_X64
 					_mm_pause();
 #elif __aarch64__
-					__yield();
+					asm volatile("yield");
 #elif __i386__ || __x86_64__
 					__builtin_ia32_pause();
 #endif

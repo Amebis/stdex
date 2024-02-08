@@ -58,6 +58,9 @@
 		F4C07F582AB08E690044EDC0 /* sgml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sgml.cpp; sourceTree = "<group>"; };
 		F4C07F592AB08E690044EDC0 /* ring.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ring.cpp; sourceTree = "<group>"; };
 		F4C07F5A2AB08E690044EDC0 /* stream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stream.cpp; sourceTree = "<group>"; };
+		F4CCA3B62B73B912007B857B /* watchdog.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = watchdog.cpp; sourceTree = "<group>"; };
+		F4CCA3B72B73B940007B857B /* pool.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = pool.cpp; sourceTree = "<group>"; };
+		F4CCA3B82B73D2E2007B857B /* string.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = string.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,12 +113,15 @@
 				F4C07F562AB08E690044EDC0 /* parser.cpp */,
 				F4C07F512AB059580044EDC0 /* pch.cpp */,
 				F4C07F502AB059580044EDC0 /* pch.hpp */,
+				F4CCA3B72B73B940007B857B /* pool.cpp */,
 				F4B7FBDD2AAF49BC00C6BE9F /* Products */,
 				F4C07F592AB08E690044EDC0 /* ring.cpp */,
 				F4C07F582AB08E690044EDC0 /* sgml.cpp */,
 				F4213D162ABB14AA00F72674 /* stdex */,
 				F4C07F5A2AB08E690044EDC0 /* stream.cpp */,
+				F4CCA3B82B73D2E2007B857B /* string.cpp */,
 				F4C07F572AB08E690044EDC0 /* unicode.cpp */,
+				F4CCA3B62B73B912007B857B /* watchdog.cpp */,
 			);
 			sourceTree = "<group>";
 			usesTabs = 1;

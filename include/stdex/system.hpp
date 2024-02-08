@@ -6,7 +6,7 @@
 #pragma once
 
 #include "compat.hpp"
-#ifdef _WIN32
+#if defined(_WIN32)
 #include "windows.h"
 #include <oaidl.h>
 #include <tchar.h>

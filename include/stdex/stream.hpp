@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023-2024 Amebis
 */
@@ -2408,8 +2408,8 @@ namespace stdex
 				_Assume_(data || !length);
 				constexpr int block_size = 0x10000000;
 				for (size_t to_read = length;;) {
-					int num_read = recv(m_h, reinterpret_cast<char*>(data), static_cast<int>(std::min<size_t>(to_read, block_size)), 0);
-					if (num_read == SOCKET_ERROR) _Unlikely_ {
+					auto num_read = recv(m_h, reinterpret_cast<char*>(data), static_cast<int>(std::min<size_t>(to_read, block_size)), 0);
+					if (num_read == -1) _Unlikely_ {
 						m_state = to_read < length ? state_t::ok : state_t::fail;
 						return length - to_read;
 					}
@@ -2432,8 +2432,8 @@ namespace stdex
 				_Assume_(data || !length);
 				constexpr int block_size = 0x10000000;
 				for (size_t to_write = length;;) {
-					int num_written = send(m_h, reinterpret_cast<const char*>(data), static_cast<int>(std::min<size_t>(to_write, block_size)), 0);
-					if (num_written == SOCKET_ERROR) _Unlikely_ {
+					auto num_written = send(m_h, reinterpret_cast<const char*>(data), static_cast<int>(std::min<size_t>(to_write, block_size)), 0);
+					if (num_written == -1) _Unlikely_ {
 						m_state = state_t::fail;
 						return length - to_write;
 					}

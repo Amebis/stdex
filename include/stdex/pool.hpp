@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023-2024 Amebis
 */
@@ -7,7 +7,9 @@
 
 #include "compat.hpp"
 #include "spinlock.hpp"
+#ifdef _WIN32
 #include "windows.h"
+#endif
 #include <list>
 #include <map>
 #include <mutex>
@@ -39,11 +41,13 @@ namespace stdex
 	private:
 		static numaid_t numa_node()
 		{
-#ifdef _WIN32
+#if defined(_WIN32)
 			PROCESSOR_NUMBER Processor;
 			GetCurrentProcessorNumberEx(&Processor);
 			USHORT NodeNumber = 0;
 			return GetNumaProcessorNodeEx(&Processor, &NodeNumber) ? NodeNumber : 0;
+#elif defined(__APPLE__)
+			return 0;
 #else
 			return numa_node_of_cpu(sched_getcpu());
 #endif

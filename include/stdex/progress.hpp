@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023-2024 Amebis
 */
@@ -207,7 +207,7 @@ namespace stdex
 		virtual bool cancel()
 		{
 			return
-				m_host && m_host->cancel() ||
+				(m_host && m_host->cancel()) ||
 				m_deadline < std::chrono::high_resolution_clock::now();
 		}
 

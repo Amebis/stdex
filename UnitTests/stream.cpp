@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023-2024 Amebis
 */
@@ -6,8 +6,6 @@
 #include "pch.hpp"
 
 using namespace std;
-using namespace stdex;
-using namespace stdex::stream;
 #ifdef _WIN32
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 #endif
@@ -20,9 +18,9 @@ namespace UnitTests
 		TEST_METHOD(async)
 		{
 			constexpr uint32_t total = 1000;
-			memory_file source(mul(total, sizeof(uint32_t)));
+			stdex::stream::memory_file source(stdex::mul(total, sizeof(uint32_t)));
 			{
-				async_writer<70> writer(source);
+				stdex::stream::async_writer<70> writer(source);
 				for (uint32_t i = 0; i < total; ++i) {
 					Assert::IsTrue(writer.ok());
 					writer << i;
@@ -30,7 +28,7 @@ namespace UnitTests
 			}
 			Assert::AreEqual<stdex::stream::fpos_t>(0, source.seekbeg(0));
 			{
-				async_reader<50> reader(source);
+				stdex::stream::async_reader<50> reader(source);
 				uint32_t x;
 				for (uint32_t i = 0; i < total; ++i) {
 					reader >> x;
@@ -46,24 +44,24 @@ namespace UnitTests
 		{
 			constexpr uint32_t total = 1000;
 
-			memory_file f1(mul(total, sizeof(uint32_t)));
+			stdex::stream::memory_file f1(stdex::mul(total, sizeof(uint32_t)));
 
-			sstring filename2, filename3;
+			stdex::sstring filename2, filename3;
 			filename2 = filename3 = temp_path();
 			filename2 += _T("stdex-stream-replicator-2.tmp");
-			file f2(
+			stdex::stream::file f2(
 				filename2.c_str(),
-				mode_for_reading | mode_for_writing | mode_create | mode_binary);
+				stdex::stream::mode_for_reading | stdex::stream::mode_for_writing | stdex::stream::mode_create | stdex::stream::mode_binary);
 
 			filename3 += _T("stdex-stream-replicator-3.tmp");
-			cached_file f3(
+			stdex::stream::cached_file f3(
 				filename3.c_str(),
-				mode_for_reading | mode_for_writing | mode_create | mode_binary,
+				stdex::stream::mode_for_reading | stdex::stream::mode_for_writing | stdex::stream::mode_create | stdex::stream::mode_binary,
 				128);
 
 			{
 				stdex::stream::replicator writer;
-				buffer f2_buf(f2, 0, 32);
+				stdex::stream::buffer f2_buf(f2, 0, 32);
 				writer.push_back(&f1);
 				writer.push_back(&f2_buf);
 				writer.push_back(&f3);
@@ -77,7 +75,7 @@ namespace UnitTests
 			f2.seekbeg(0);
 			f3.seekbeg(0);
 			{
-				buffer f2_buf(f2, 64, 0);
+				stdex::stream::buffer f2_buf(f2, 64, 0);
 				uint32_t x;
 				for (uint32_t i = 0; i < total; ++i) {
 					f1 >> x;
@@ -106,17 +104,17 @@ namespace UnitTests
 
 		TEST_METHOD(open_close)
 		{
-			cached_file dat(invalid_handle, state_t::fail, 4096);
-			const sstring filepath = temp_path();
+			stdex::stream::cached_file dat(stdex::invalid_handle, stdex::stream::state_t::fail, 4096);
+			const stdex::sstring filepath = temp_path();
 			constexpr uint32_t count = 3;
-			sstring filename[count];
+			stdex::sstring filename[count];
 			stdex::stream::fpos_t start[count];
 			for (uint32_t i = 0; i < count; ++i) {
-				filename[i] = filepath + sprintf(_T("stdex-stream-open_close%u.tmp"), NULL, i);
-				dat.open(filename[i].c_str(), mode_for_reading | mode_for_writing | share_none | mode_preserve_existing | mode_binary);
+				filename[i] = filepath + stdex::sprintf(_T("stdex-stream-open_close%u.tmp"), NULL, i);
+				dat.open(filename[i].c_str(), stdex::stream::mode_for_reading | stdex::stream::mode_for_writing | stdex::stream::share_none | stdex::stream::mode_preserve_existing | stdex::stream::mode_binary);
 				Assert::IsTrue(dat.ok());
 				start[i] = dat.tell();
-				Assert::AreNotEqual(fpos_max, start[i]);
+				Assert::AreNotEqual(stdex::stream::fpos_max, start[i]);
 				for (uint32_t j = 0; j < 31 + 11 * i; ++j) {
 					dat << j * count + i;
 					Assert::IsTrue(dat.ok());
@@ -124,7 +122,7 @@ namespace UnitTests
 				dat.close();
 			}
 			for (uint32_t i = 0; i < count; ++i) {
-				dat.open(filename[i].c_str(), mode_for_reading | mode_open_existing | share_none | mode_binary);
+				dat.open(filename[i].c_str(), stdex::stream::mode_for_reading | stdex::stream::mode_open_existing | stdex::stream::share_none | stdex::stream::mode_binary);
 				Assert::IsTrue(dat.ok());
 				for (;;) {
 					uint32_t x;
@@ -141,13 +139,13 @@ namespace UnitTests
 
 		TEST_METHOD(file_stat)
 		{
-			sstring path(temp_path());
+			stdex::sstring path(temp_path());
 			Assert::IsTrue(stdex::stream::file::exists(path));
 			Assert::IsFalse(stdex::stream::file::readonly(path));
 		}
 
 	protected:
-		static sstring temp_path()
+		static stdex::sstring temp_path()
 		{
 #ifdef _WIN32
 			TCHAR temp_path[MAX_PATH];

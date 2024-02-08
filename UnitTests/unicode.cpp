@@ -8,7 +8,8 @@
 using namespace std;
 #ifdef _WIN32
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-#else
+#endif
+#ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
@@ -102,6 +103,6 @@ namespace UnitTests
 	};
 }
 
-#ifndef _WIN32
+#ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif

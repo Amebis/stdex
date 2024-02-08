@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023-2024 Amebis
 */
@@ -6,15 +6,13 @@
 #include "pch.hpp"
 
 using namespace std;
-using namespace stdex;
-using namespace stdex::parser;
 #ifdef _WIN32
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace Microsoft {
 	namespace VisualStudio {
 		namespace CppUnitTestFramework {
-			static std::wstring ToString(const stdex::interval<size_t>& q)
+			static wstring ToString(const stdex::interval<size_t>& q)
 			{
 				return stdex::sprintf(L"<%zu, %zu>", nullptr, q.start, q.end);
 			}
@@ -33,22 +31,22 @@ namespace UnitTests
 			static const wchar_t text[] = L"This is a test.\nSecond line.";
 
 			{
-				wnoop p;
+				stdex::parser::wnoop p;
 				Assert::IsTrue(p.match(text));
 				Assert::AreEqual((size_t)0, p.interval.start);
 				Assert::AreEqual((size_t)0, p.interval.end);
 			}
 
 			{
-				wcu p(L't');
+				stdex::parser::wcu p(L't');
 				Assert::IsFalse(p.match(text));
-				Assert::IsTrue(p.match(text, 0, _countof(text), match_case_insensitive));
+				Assert::IsTrue(p.match(text, 0, _countof(text), stdex::parser::match_case_insensitive));
 				Assert::AreEqual((size_t)0, p.interval.start);
 				Assert::AreEqual((size_t)1, p.interval.end);
 			}
 
 			{
-				wspace_cu p;
+				stdex::parser::wspace_cu p;
 				Assert::IsFalse(p.match(text));
 				Assert::IsTrue(p.match(text, 4));
 				Assert::AreEqual((size_t)4, p.interval.start);
@@ -56,7 +54,7 @@ namespace UnitTests
 			}
 
 			{
-				wpunct_cu p;
+				stdex::parser::wpunct_cu p;
 				Assert::IsFalse(p.match(text));
 				Assert::IsTrue(p.match(text, 14));
 				Assert::AreEqual((size_t)14, p.interval.start);
@@ -64,7 +62,7 @@ namespace UnitTests
 			}
 
 			{
-				wspace_or_punct_cu p;
+				stdex::parser::wspace_or_punct_cu p;
 				Assert::IsFalse(p.match(text));
 				Assert::IsTrue(p.match(text, 4));
 				Assert::AreEqual((size_t)4, p.interval.start);
@@ -75,7 +73,7 @@ namespace UnitTests
 			}
 
 			{
-				wbol p;
+				stdex::parser::wbol p;
 				Assert::IsTrue(p.match(text));
 				Assert::AreEqual((size_t)0, p.interval.start);
 				Assert::AreEqual((size_t)0, p.interval.end);
@@ -87,7 +85,7 @@ namespace UnitTests
 			}
 
 			{
-				weol p;
+				stdex::parser::weol p;
 				Assert::IsFalse(p.match(text));
 				Assert::IsFalse(p.match(text, 1));
 				Assert::IsTrue(p.match(text, 15));
@@ -97,14 +95,14 @@ namespace UnitTests
 			}
 
 			{
-				wcu_set p(L"abcD");
+				stdex::parser::wcu_set p(L"abcD");
 				Assert::IsFalse(p.match(text));
 				Assert::IsTrue(p.match(text, 8));
 				Assert::AreEqual((size_t)8, p.interval.start);
 				Assert::AreEqual((size_t)9, p.interval.end);
 				Assert::AreEqual((size_t)0, p.hit_offset);
 				Assert::IsFalse(p.match(text, 21));
-				Assert::IsTrue(p.match(text, 21, _countof(text), match_case_insensitive));
+				Assert::IsTrue(p.match(text, 21, _countof(text), stdex::parser::match_case_insensitive));
 				Assert::AreEqual((size_t)21, p.interval.start);
 				Assert::AreEqual((size_t)22, p.interval.end);
 				Assert::AreEqual((size_t)3, p.hit_offset);
@@ -113,83 +111,83 @@ namespace UnitTests
 			{
 				stdex::parser::wstring p(L"this");
 				Assert::IsFalse(p.match(text));
-				Assert::IsTrue(p.match(text, 0, sizeof(text), match_case_insensitive));
+				Assert::IsTrue(p.match(text, 0, sizeof(text), stdex::parser::match_case_insensitive));
 				Assert::AreEqual((size_t)0, p.interval.start);
 				Assert::AreEqual((size_t)4, p.interval.end);
 			}
 
 			{
-				wany_cu chr;
-				witerations p(make_shared_no_delete(&chr), 1, 5);
+				stdex::parser::wany_cu chr;
+				stdex::parser::witerations p(stdex::make_shared_no_delete(&chr), 1, 5);
 				Assert::IsTrue(p.match(text));
 				Assert::AreEqual((size_t)0, p.interval.start);
 				Assert::AreEqual((size_t)5, p.interval.end);
 			}
 
 			{
-				wspace_cu nospace(true);
-				witerations p(make_shared_no_delete(&nospace), 1);
+				stdex::parser::wspace_cu nospace(true);
+				stdex::parser::witerations p(stdex::make_shared_no_delete(&nospace), 1);
 				Assert::IsTrue(p.match(text));
 				Assert::AreEqual((size_t)0, p.interval.start);
 				Assert::AreEqual((size_t)4, p.interval.end);
 			}
 
 			{
-				wcu chr_t(L't'), chr_h(L'h'), chr_i(L'i'), chr_s(L's');
-				wspace_cu space;
-				wsequence p({
-					make_shared_no_delete(&chr_t),
-					make_shared_no_delete(&chr_h),
-					make_shared_no_delete(&chr_i),
-					make_shared_no_delete(&chr_s),
-					make_shared_no_delete(&space) });
+				stdex::parser::wcu chr_t(L't'), chr_h(L'h'), chr_i(L'i'), chr_s(L's');
+				stdex::parser::wspace_cu space;
+				stdex::parser::wsequence p({
+					stdex::make_shared_no_delete(&chr_t),
+					stdex::make_shared_no_delete(&chr_h),
+					stdex::make_shared_no_delete(&chr_i),
+					stdex::make_shared_no_delete(&chr_s),
+					stdex::make_shared_no_delete(&space) });
 				Assert::IsFalse(p.match(text));
-				Assert::IsTrue(p.match(text, 0, _countof(text), match_case_insensitive));
+				Assert::IsTrue(p.match(text, 0, _countof(text), stdex::parser::match_case_insensitive));
 				Assert::AreEqual((size_t)0, p.interval.start);
 				Assert::AreEqual((size_t)5, p.interval.end);
 			}
 
 			{
 				stdex::parser::wstring apple(L"apple"), orange(L"orange"), _this(L"this");
-				wspace_cu space;
-				wbranch p({
-					make_shared_no_delete(&apple),
-					make_shared_no_delete(&orange),
-					make_shared_no_delete(&_this),
-					make_shared_no_delete(&space) });
+				stdex::parser::wspace_cu space;
+				stdex::parser::wbranch p({
+					stdex::make_shared_no_delete(&apple),
+					stdex::make_shared_no_delete(&orange),
+					stdex::make_shared_no_delete(&_this),
+					stdex::make_shared_no_delete(&space) });
 				Assert::IsFalse(p.match(text));
-				Assert::IsTrue(p.match(text, 0, _countof(text), match_case_insensitive));
+				Assert::IsTrue(p.match(text, 0, _countof(text), stdex::parser::match_case_insensitive));
 				Assert::AreEqual((size_t)2, p.hit_offset);
 				Assert::AreEqual((size_t)0, p.interval.start);
 				Assert::AreEqual((size_t)4, p.interval.end);
 			}
 
 			{
-				wstring_branch p(L"apple", L"orange", L"this", nullptr);
+				stdex::parser::wstring_branch p(L"apple", L"orange", L"this", nullptr);
 				Assert::IsFalse(p.match(text));
-				Assert::IsTrue(p.match(text, 0, _countof(text), match_case_insensitive));
+				Assert::IsTrue(p.match(text, 0, _countof(text), stdex::parser::match_case_insensitive));
 				Assert::AreEqual((size_t)2, p.hit_offset);
 				Assert::AreEqual((size_t)0, p.interval.start);
 				Assert::AreEqual((size_t)4, p.interval.end);
 			}
 
 			{
-				wcu chr_s(L's'), chr_h(L'h'), chr_i(L'i'), chr_t(L't');
-				wpermutation p({
-					make_shared_no_delete(&chr_s),
-					make_shared_no_delete(&chr_h),
-					make_shared_no_delete(&chr_i),
-					make_shared_no_delete(&chr_t) });
+				stdex::parser::wcu chr_s(L's'), chr_h(L'h'), chr_i(L'i'), chr_t(L't');
+				stdex::parser::wpermutation p({
+					stdex::make_shared_no_delete(&chr_s),
+					stdex::make_shared_no_delete(&chr_h),
+					stdex::make_shared_no_delete(&chr_i),
+					stdex::make_shared_no_delete(&chr_t) });
 				Assert::IsFalse(p.match(text));
-				Assert::IsTrue(p.match(text, 0, _countof(text), match_case_insensitive));
+				Assert::IsTrue(p.match(text, 0, _countof(text), stdex::parser::match_case_insensitive));
 				Assert::AreEqual((size_t)0, p.interval.start);
 				Assert::AreEqual((size_t)4, p.interval.end);
 			}
 
 			{
 				std::locale locale_slSI("sl_SI");
-				wspace_cu space(false, locale_slSI);
-				wiban p(make_shared_no_delete(&space), locale_slSI);
+				stdex::parser::wspace_cu space(false, locale_slSI);
+				stdex::parser::wiban p(stdex::make_shared_no_delete(&space), locale_slSI);
 				Assert::IsTrue(p.match(L"SI56023120015226972", 0, SIZE_MAX));
 				Assert::IsTrue(p.is_valid);
 				Assert::AreEqual(L"SI", p.country);
@@ -202,7 +200,7 @@ namespace UnitTests
 				Assert::AreEqual(L"023120015226972", p.bban);
 				Assert::IsFalse(p.match(L"si56 0231 2001 5226 972", 0, SIZE_MAX));
 				Assert::IsFalse(p.is_valid);
-				Assert::IsTrue(p.match(L"si56 0231 2001 5226 972", 0, SIZE_MAX, match_case_insensitive));
+				Assert::IsTrue(p.match(L"si56 0231 2001 5226 972", 0, SIZE_MAX, stdex::parser::match_case_insensitive));
 				Assert::IsTrue(p.is_valid);
 				Assert::IsTrue(p.match(L"SI56 0231 2001 5226 9720", 0, SIZE_MAX));
 				Assert::AreEqual(stdex::interval<size_t>(0, 23), p.interval);
@@ -250,8 +248,8 @@ namespace UnitTests
 
 			{
 				std::locale locale_slSI("sl_SI");
-				wspace_cu space(false, locale_slSI);
-				wcreditor_reference p(make_shared_no_delete(&space), locale_slSI);
+				stdex::parser::wspace_cu space(false, locale_slSI);
+				stdex::parser::wcreditor_reference p(stdex::make_shared_no_delete(&space), locale_slSI);
 				Assert::IsTrue(p.match(L"RF18539007547034", 0, SIZE_MAX));
 				Assert::IsTrue(p.is_valid);
 				Assert::AreEqual(L"18", p.check_digits);
@@ -262,7 +260,7 @@ namespace UnitTests
 				Assert::AreEqual(L"000000000539007547034", p.reference);
 				Assert::IsFalse(p.match(L"rf18 5390 0754 7034", 0, SIZE_MAX));
 				Assert::IsFalse(p.is_valid);
-				Assert::IsTrue(p.match(L"rf18 5390 0754 7034", 0, SIZE_MAX, match_case_insensitive));
+				Assert::IsTrue(p.match(L"rf18 5390 0754 7034", 0, SIZE_MAX, stdex::parser::match_case_insensitive));
 				Assert::IsTrue(p.is_valid);
 				Assert::IsTrue(p.match(L"RF18 5390 0754 70340", 0, SIZE_MAX));
 				Assert::IsFalse(p.is_valid);
@@ -274,8 +272,8 @@ namespace UnitTests
 
 			{
 				std::locale locale_slSI("sl_SI");
-				wspace_cu space(false, locale_slSI);
-				wsi_reference p(make_shared_no_delete(&space), locale_slSI);
+				stdex::parser::wspace_cu space(false, locale_slSI);
+				stdex::parser::wsi_reference p(stdex::make_shared_no_delete(&space), locale_slSI);
 				Assert::IsTrue(p.match(L"SI121234567890120", 0, SIZE_MAX));
 				Assert::IsTrue(p.is_valid);
 				Assert::AreEqual(L"12", p.model);
@@ -285,7 +283,7 @@ namespace UnitTests
 				Assert::AreEqual(L"12", p.model);
 				Assert::AreEqual(stdex::interval<size_t>(5, 18), p.part1.interval);
 				Assert::IsFalse(p.match(L"si12 1234567890120", 0, SIZE_MAX));
-				Assert::IsTrue(p.match(L"si12 1234567890120", 0, SIZE_MAX, match_case_insensitive));
+				Assert::IsTrue(p.match(L"si12 1234567890120", 0, SIZE_MAX, stdex::parser::match_case_insensitive));
 				Assert::IsTrue(p.match(L"...SI12 1234567890120...", 3, SIZE_MAX));
 				Assert::IsTrue(p.match(L"SI12 1234567890120", 0, SIZE_MAX)); // no-break space
 			}
@@ -297,30 +295,30 @@ namespace UnitTests
 			static const char text[] = "V ko&zcaron;u&scaron;&ccaron;ku zlobnega mizarja stopiclja fant\nin kli&ccaron;e&nbsp;1234567890.";
 
 			{
-				sgml_noop p;
+				stdex::parser::sgml_noop p;
 				Assert::IsTrue(p.match(text));
 				Assert::AreEqual((size_t)0, p.interval.start);
 				Assert::AreEqual((size_t)0, p.interval.end);
 			}
 
 			{
-				sgml_cp p("v");
+				stdex::parser::sgml_cp p("v");
 				Assert::IsFalse(p.match(text));
-				Assert::IsTrue(p.match(text, 0, _countof(text), match_case_insensitive));
+				Assert::IsTrue(p.match(text, 0, _countof(text), stdex::parser::match_case_insensitive));
 				Assert::AreEqual((size_t)0, p.interval.start);
 				Assert::AreEqual((size_t)1, p.interval.end);
 			}
 
 			{
-				sgml_cp p("&Zcaron;", SIZE_MAX, false, locale_slSI);
+				stdex::parser::sgml_cp p("&Zcaron;", SIZE_MAX, false, locale_slSI);
 				Assert::IsFalse(p.match(text, 4));
-				Assert::IsTrue(p.match(text, 4, _countof(text), match_case_insensitive));
+				Assert::IsTrue(p.match(text, 4, _countof(text), stdex::parser::match_case_insensitive));
 				Assert::AreEqual((size_t)4, p.interval.start);
 				Assert::AreEqual((size_t)12, p.interval.end);
 			}
 
 			{
-				sgml_space_cp p(false, locale_slSI);
+				stdex::parser::sgml_space_cp p(false, locale_slSI);
 				Assert::IsFalse(p.match(text));
 				Assert::IsTrue(p.match(text, 1));
 				Assert::AreEqual((size_t)1, p.interval.start);
@@ -331,17 +329,17 @@ namespace UnitTests
 			}
 
 			{
-				sgml_string_branch p(locale_slSI, "apple", "orange", "Ko&Zcaron;u&Scaron;&ccaron;Ku", nullptr);
+				stdex::parser::sgml_string_branch p(locale_slSI, "apple", "orange", "Ko&Zcaron;u&Scaron;&ccaron;Ku", nullptr);
 				Assert::IsFalse(p.match(text, 2));
-				Assert::IsTrue(p.match(text, 2, _countof(text), match_case_insensitive));
+				Assert::IsTrue(p.match(text, 2, _countof(text), stdex::parser::match_case_insensitive));
 				Assert::AreEqual((size_t)2, p.hit_offset);
 				Assert::AreEqual((size_t)2, p.interval.start);
 				Assert::AreEqual((size_t)31, p.interval.end);
 			}
 
 			{
-				sgml_space_cp space(false, locale_slSI);
-				sgml_iban p(make_shared_no_delete(&space), locale_slSI);
+				stdex::parser::sgml_space_cp space(false, locale_slSI);
+				stdex::parser::sgml_iban p(stdex::make_shared_no_delete(&space), locale_slSI);
 				Assert::IsTrue(p.match("SI56023120015226972", 0, SIZE_MAX));
 				Assert::IsTrue(p.is_valid);
 				Assert::AreEqual("SI", p.country);
@@ -354,7 +352,7 @@ namespace UnitTests
 				Assert::AreEqual("023120015226972", p.bban);
 				Assert::IsFalse(p.match("si56 0231 2001 5226 972", 0, SIZE_MAX));
 				Assert::IsFalse(p.is_valid);
-				Assert::IsTrue(p.match("si56 0231 2001 5226 972", 0, SIZE_MAX, match_case_insensitive));
+				Assert::IsTrue(p.match("si56 0231 2001 5226 972", 0, SIZE_MAX, stdex::parser::match_case_insensitive));
 				Assert::IsTrue(p.is_valid);
 				Assert::IsTrue(p.match("SI56 0231 2001 5226 9720", 0, SIZE_MAX));
 				Assert::AreEqual(stdex::interval<size_t>(0, 23), p.interval);
@@ -366,8 +364,8 @@ namespace UnitTests
 			}
 
 			{
-				sgml_space_cp space(false, locale_slSI);
-				sgml_creditor_reference p(make_shared_no_delete(&space), locale_slSI);
+				stdex::parser::sgml_space_cp space(false, locale_slSI);
+				stdex::parser::sgml_creditor_reference p(stdex::make_shared_no_delete(&space), locale_slSI);
 				Assert::IsTrue(p.match("RF18539007547034", 0, SIZE_MAX));
 				Assert::IsTrue(p.is_valid);
 				Assert::AreEqual("18", p.check_digits);
@@ -378,7 +376,7 @@ namespace UnitTests
 				Assert::AreEqual("000000000539007547034", p.reference);
 				Assert::IsFalse(p.match("rf18 5390 0754 7034", 0, SIZE_MAX));
 				Assert::IsFalse(p.is_valid);
-				Assert::IsTrue(p.match("rf18 5390 0754 7034", 0, SIZE_MAX, match_case_insensitive));
+				Assert::IsTrue(p.match("rf18 5390 0754 7034", 0, SIZE_MAX, stdex::parser::match_case_insensitive));
 				Assert::IsTrue(p.is_valid);
 				Assert::IsTrue(p.match("RF18 5390 0754 70340", 0, SIZE_MAX));
 				Assert::IsFalse(p.is_valid);
@@ -389,8 +387,8 @@ namespace UnitTests
 			}
 
 			{
-				sgml_space_cp space(false, locale_slSI);
-				sgml_si_reference p(make_shared_no_delete(&space), locale_slSI);
+				stdex::parser::sgml_space_cp space(false, locale_slSI);
+				stdex::parser::sgml_si_reference p(stdex::make_shared_no_delete(&space), locale_slSI);
 				Assert::IsTrue(p.match("SI121234567890120", 0, SIZE_MAX));
 				Assert::IsTrue(p.is_valid);
 				Assert::AreEqual("12", p.model);
@@ -400,7 +398,7 @@ namespace UnitTests
 				Assert::AreEqual("12", p.model);
 				Assert::AreEqual(stdex::interval<size_t>(5, 18), p.part1.interval);
 				Assert::IsFalse(p.match("si12 1234567890120", 0, SIZE_MAX));
-				Assert::IsTrue(p.match("si12 1234567890120", 0, SIZE_MAX, match_case_insensitive));
+				Assert::IsTrue(p.match("si12 1234567890120", 0, SIZE_MAX, stdex::parser::match_case_insensitive));
 				Assert::IsTrue(p.match("...SI12 1234567890120...", 3, SIZE_MAX));
 				Assert::IsTrue(p.match("SI12&nbsp;1234567890120", 0, SIZE_MAX));
 			}
@@ -429,7 +427,7 @@ namespace UnitTests
 				"\r\n";
 
 			{
-				http_request p(locale);
+				stdex::parser::http_request p(locale);
 				Assert::IsTrue(p.match(request));
 				Assert::AreEqual((size_t)0, p.interval.start);
 				Assert::AreEqual((size_t)14, p.interval.end);
@@ -443,10 +441,10 @@ namespace UnitTests
 			}
 
 			{
-				std::list<http_header> hdrs;
+				list<stdex::parser::http_header> hdrs;
 				size_t offset = 14;
 				for (;;) {
-					http_header h;
+					stdex::parser::http_header h;
 					if (h.match(request, offset)) {
 						offset = h.interval.end;
 						hdrs.push_back(std::move(h));
@@ -455,19 +453,19 @@ namespace UnitTests
 						break;
 				}
 				Assert::AreEqual((size_t)15, hdrs.size());
-				http_weighted_collection<http_weighted_value<http_language>> langs;
+				stdex::parser::http_weighted_collection<stdex::parser::http_weighted_value<stdex::parser::http_language>> langs;
 				for (const auto& h : hdrs)
-					if (strnicmp(request + h.name.start, h.name.size(), "Accept-Language", SIZE_MAX, locale) == 0)
+					if (stdex::strnicmp(request + h.name.start, h.name.size(), "Accept-Language", SIZE_MAX, locale) == 0)
 						langs.insert(request, h.value.start, h.value.end);
 				Assert::IsTrue(!langs.empty());
 				{
-					const vector<std::string> control = {
+					const vector<string> control = {
 						"sl", "en-US", "en", "de-DE", "de"
 					};
 					auto c = control.cbegin();
 					auto l = langs.cbegin();
 					for (; c != control.cend() && l != langs.cend(); ++c, ++l)
-						Assert::IsTrue(strnicmp(request + l->value.interval.start, l->value.interval.size(), c->c_str(), c->size(), locale) == 0);
+						Assert::IsTrue(stdex::strnicmp(request + l->value.interval.start, l->value.interval.size(), c->c_str(), c->size(), locale) == 0);
 					Assert::IsTrue(c == control.cend());
 					Assert::IsTrue(l == langs.cend());
 				}

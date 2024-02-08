@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023-2024 Amebis
 */
@@ -6,10 +6,12 @@
 #include "pch.hpp"
 #include "hash.cpp"
 #include "math.cpp"
+#include "pool.cpp"
 #include "parser.cpp"
 #include "ring.cpp"
 #include "sgml.cpp"
 #include "stream.cpp"
+#include "string.cpp"
 #include "unicode.cpp"
 #include "watchdog.cpp"
 #include <iostream>
@@ -25,6 +27,7 @@ int main(int argc, const char * argv[])
 		UnitTests::parser::wtest();
 		UnitTests::parser::sgml_test();
 		UnitTests::parser::http_test();
+		UnitTests::pool::test();
 		UnitTests::ring::test();
 		UnitTests::sgml::sgml2str();
 		UnitTests::sgml::str2sgml();
@@ -32,9 +35,11 @@ int main(int argc, const char * argv[])
 		UnitTests::stream::replicator();
 		UnitTests::stream::open_close();
 		UnitTests::stream::file_stat();
+		UnitTests::string::sprintf();
 		UnitTests::unicode::str2wstr();
 		UnitTests::unicode::wstr2str();
 		UnitTests::unicode::charset_encoder();
+		UnitTests::unicode::normalize();
 		UnitTests::watchdog::test();
 		std::cout << "PASS\n";
 		return 0;
