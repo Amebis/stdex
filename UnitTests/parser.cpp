@@ -7,16 +7,16 @@
 
 using namespace std;
 using namespace stdex;
-using namespace parser;
+using namespace stdex::parser;
 #ifdef _WIN32
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace Microsoft {
 	namespace VisualStudio {
 		namespace CppUnitTestFramework {
-			static wstring ToString(const interval<size_t>& q)
+			static std::wstring ToString(const stdex::interval<size_t>& q)
 			{
-				return sprintf(L"<%zu, %zu>", nullptr, q.start, q.end);
+				return stdex::sprintf(L"<%zu, %zu>", nullptr, q.start, q.end);
 			}
 		}
 	}
@@ -202,7 +202,7 @@ namespace UnitTests
 			Assert::IsTrue(p.match(L"si56 0231 2001 5226 972", 0, SIZE_MAX, match_case_insensitive));
 			Assert::IsTrue(p.is_valid);
 			Assert::IsTrue(p.match(L"SI56 0231 2001 5226 9720", 0, SIZE_MAX));
-			Assert::AreEqual(interval<size_t>(0, 23), p.interval);
+			Assert::AreEqual(stdex::interval<size_t>(0, 23), p.interval);
 			Assert::IsTrue(p.is_valid);
 			Assert::IsTrue(p.match(L"...SI56 0231 2001 5226 972...", 3, SIZE_MAX));
 			Assert::IsTrue(p.is_valid);
@@ -276,11 +276,11 @@ namespace UnitTests
 			Assert::IsTrue(p.match(L"SI121234567890120", 0, SIZE_MAX));
 			Assert::IsTrue(p.is_valid);
 			Assert::AreEqual(L"12", p.model);
-			Assert::AreEqual(interval<size_t>(4, 17), p.part1.interval);
+			Assert::AreEqual(stdex::interval<size_t>(4, 17), p.part1.interval);
 			Assert::IsTrue(p.match(L"SI12 1234567890120", 0, SIZE_MAX));
 			Assert::IsTrue(p.is_valid);
 			Assert::AreEqual(L"12", p.model);
-			Assert::AreEqual(interval<size_t>(5, 18), p.part1.interval);
+			Assert::AreEqual(stdex::interval<size_t>(5, 18), p.part1.interval);
 			Assert::IsFalse(p.match(L"si12 1234567890120", 0, SIZE_MAX));
 			Assert::IsTrue(p.match(L"si12 1234567890120", 0, SIZE_MAX, match_case_insensitive));
 			Assert::IsTrue(p.match(L"...SI12 1234567890120...", 3, SIZE_MAX));
@@ -354,7 +354,7 @@ namespace UnitTests
 			Assert::IsTrue(p.match("si56 0231 2001 5226 972", 0, SIZE_MAX, match_case_insensitive));
 			Assert::IsTrue(p.is_valid);
 			Assert::IsTrue(p.match("SI56 0231 2001 5226 9720", 0, SIZE_MAX));
-			Assert::AreEqual(interval<size_t>(0, 23), p.interval);
+			Assert::AreEqual(stdex::interval<size_t>(0, 23), p.interval);
 			Assert::IsTrue(p.is_valid);
 			Assert::IsTrue(p.match("...SI56 0231 2001 5226 972...", 3, SIZE_MAX));
 			Assert::IsTrue(p.is_valid);
@@ -391,11 +391,11 @@ namespace UnitTests
 			Assert::IsTrue(p.match("SI121234567890120", 0, SIZE_MAX));
 			Assert::IsTrue(p.is_valid);
 			Assert::AreEqual("12", p.model);
-			Assert::AreEqual(interval<size_t>(4, 17), p.part1.interval);
+			Assert::AreEqual(stdex::interval<size_t>(4, 17), p.part1.interval);
 			Assert::IsTrue(p.match("SI12 1234567890120", 0, SIZE_MAX));
 			Assert::IsTrue(p.is_valid);
 			Assert::AreEqual("12", p.model);
-			Assert::AreEqual(interval<size_t>(5, 18), p.part1.interval);
+			Assert::AreEqual(stdex::interval<size_t>(5, 18), p.part1.interval);
 			Assert::IsFalse(p.match("si12 1234567890120", 0, SIZE_MAX));
 			Assert::IsTrue(p.match("si12 1234567890120", 0, SIZE_MAX, match_case_insensitive));
 			Assert::IsTrue(p.match("...SI12 1234567890120...", 3, SIZE_MAX));

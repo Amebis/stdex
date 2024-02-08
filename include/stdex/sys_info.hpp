@@ -130,7 +130,7 @@ namespace stdex
 #ifndef _WIN64
 			BOOL Wow64Process;
 #endif
-			if (IsWow64Process2 && IsWow64Process2(process, &process_machine, &os_platform)) {
+			if (IsWow64Process2 && IsWow64Process2(process, &process_machine, reinterpret_cast<USHORT*>(&os_platform))) {
 				wow64 = process_machine != IMAGE_FILE_MACHINE_UNKNOWN;
 			}
 #ifdef _WIN64
