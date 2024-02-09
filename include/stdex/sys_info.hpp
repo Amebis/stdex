@@ -141,7 +141,7 @@ namespace stdex
 #else
 			else if (IsWow64Process(process, &Wow64Process)) {
 				if (Wow64Process) {
-					os_platform = IMAGE_FILE_MACHINE_AMD64;
+					os_platform = platform_id::x86_64;
 					wow64 = true;
 				}
 				else {
