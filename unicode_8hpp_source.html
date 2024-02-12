@@ -245,7 +245,7 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>                <span class="keywordflow">return</span>;</div>
 <div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span> </div>
 <div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span><span class="preprocessor">#ifdef _WIN32</span></div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>            <span class="keyword">constexpr</span> DWORD dwFlagsMBWC = MB_PRECOMPOSED;</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>            DWORD dwFlagsMBWC = <span class="keyword">static_cast&lt;</span>UINT<span class="keyword">&gt;</span>(m_from_wincp) &lt; CP_UTF7 ? MB_PRECOMPOSED : 0;</div>
 <div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>            <span class="keyword">constexpr</span> DWORD dwFlagsWCMB = 0;</div>
 <div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>            <span class="keyword">constexpr</span> LPCCH lpDefaultChar = NULL;</div>
 <div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span> </div>
@@ -817,7 +817,7 @@ $(function() { codefold.init(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Feb 9 2024 09:54:48 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+Generated on Mon Feb 12 2024 12:04:01 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
 </small></address>
 </body>
 </html>
