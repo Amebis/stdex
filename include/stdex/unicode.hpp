@@ -182,7 +182,6 @@ namespace stdex
 				return;
 
 #ifdef _WIN32
-			DWORD dwFlagsMBWC = static_cast<UINT>(m_from_wincp) < CP_UTF7 ? MB_PRECOMPOSED : 0;
 			constexpr DWORD dwFlagsWCMB = 0;
 			constexpr LPCCH lpDefaultChar = NULL;
 
@@ -193,29 +192,31 @@ namespace stdex
 			}
 
 #pragma warning(suppress: 4127)
-				if constexpr (sizeof(T_from) == sizeof(char) && sizeof(T_to) == sizeof(wchar_t)) {
-					_Assume_(count_src < INT_MAX || count_src == SIZE_MAX);
+			if constexpr (sizeof(T_from) == sizeof(char) && sizeof(T_to) == sizeof(wchar_t)) {
+				_Assume_(count_src < INT_MAX || count_src == SIZE_MAX);
 
-					// Try to convert to stack buffer first.
-					WCHAR szStackBuffer[1024 / sizeof(WCHAR)];
+				// Try to convert to stack buffer first.
+				DWORD dwFlagsMBWC = static_cast<UINT>(m_from_wincp) < CP_UTF7 ? MB_PRECOMPOSED : 0;
+				WCHAR szStackBuffer[1024 / sizeof(WCHAR)];
 #pragma warning(suppress: 6387) // Testing indicates src may be NULL when count_src is also 0. Is SAL of the lpMultiByteStr parameter wrong?
-					int cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), szStackBuffer, _countof(szStackBuffer));
-					if (cch) {
-						// Append from stack.
-						dst.append(reinterpret_cast<const T_to*>(szStackBuffer), count_src != SIZE_MAX ? wcsnlen(szStackBuffer, cch) : static_cast<size_t>(cch) - 1);
-						return;
-					}
-					if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
-						// Query the required output size. Allocate buffer. Then convert again.
-						cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), NULL, 0);
-						size_t offset = dst.size();
-						dst.resize(offset + static_cast<size_t>(cch));
-						cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), &dst[offset], cch);
-						dst.resize(offset + (count_src != SIZE_MAX ? wcsnlen(&dst[offset], cch) : static_cast<size_t>(cch) - 1));
-						return;
-					}
-					throw std::system_error(GetLastError(), std::system_category(), "MultiByteToWideChar failed");
+				int cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), szStackBuffer, _countof(szStackBuffer));
+				if (cch) {
+					// Append from stack.
+					dst.append(reinterpret_cast<const T_to*>(szStackBuffer), count_src != SIZE_MAX ? wcsnlen(szStackBuffer, cch) : static_cast<size_t>(cch) - 1);
+					return;
 				}
+				DWORD dwResult = GetLastError();
+				if (dwResult == ERROR_INSUFFICIENT_BUFFER) {
+					// Query the required output size. Allocate buffer. Then convert again.
+					cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), NULL, 0);
+					size_t offset = dst.size();
+					dst.resize(offset + static_cast<size_t>(cch));
+					cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), &dst[offset], cch);
+					dst.resize(offset + (count_src != SIZE_MAX ? wcsnlen(&dst[offset], cch) : static_cast<size_t>(cch) - 1));
+					return;
+				}
+				throw std::system_error(dwResult, std::system_category(), "MultiByteToWideChar failed");
+			}
 
 #pragma warning(suppress: 4127)
 			if constexpr (sizeof(T_from) == sizeof(wchar_t) && sizeof(T_to) == sizeof(char)) {
@@ -230,7 +231,8 @@ namespace stdex
 					dst.append(reinterpret_cast<const T_to*>(szStackBuffer), count_src != SIZE_MAX ? strnlen(szStackBuffer, cch) : static_cast<size_t>(cch) - 1);
 					return;
 				}
-				if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
+				DWORD dwResult = GetLastError();
+				if (dwResult == ERROR_INSUFFICIENT_BUFFER) {
 					// Query the required output size. Allocate buffer. Then convert again.
 					cch = WideCharToMultiByte(static_cast<UINT>(m_to_wincp), dwFlagsWCMB, reinterpret_cast<LPCWCH>(src), static_cast<int>(count_src), NULL, 0, lpDefaultChar, NULL);
 					size_t offset = dst.size();
@@ -239,7 +241,7 @@ namespace stdex
 					dst.resize(offset + (count_src != SIZE_MAX ? strnlen(&dst[offset], cch) : static_cast<size_t>(cch) - 1));
 					return;
 				}
-				throw std::system_error(GetLastError(), std::system_category(), "WideCharToMultiByte failed");
+				throw std::system_error(dwResult, std::system_category(), "WideCharToMultiByte failed");
 			}
 
 #pragma warning(suppress: 4127)
@@ -247,6 +249,7 @@ namespace stdex
 				_Assume_(count_src < INT_MAX || count_src == SIZE_MAX);
 
 				// Try to convert to stack buffer first.
+				DWORD dwFlagsMBWC = static_cast<UINT>(m_from_wincp) < CP_UTF7 ? MB_PRECOMPOSED : 0, dwResult;
 				WCHAR szStackBufferMBWC[512 / sizeof(WCHAR)];
 #pragma warning(suppress: 6387) // Testing indicates src may be NULL when count_src is also 0. Is SAL of the lpMultiByteStr parameter wrong?
 				int cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), szStackBufferMBWC, _countof(szStackBufferMBWC));
@@ -264,7 +267,8 @@ namespace stdex
 						dst.append(reinterpret_cast<const T_to*>(szStackBufferWCMB), strnlen(szStackBufferWCMB, cch));
 						return;
 					}
-					if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
+					dwResult = GetLastError();
+					if (dwResult == ERROR_INSUFFICIENT_BUFFER) {
 						// Query the required output size. Allocate buffer. Then convert again.
 						cch = WideCharToMultiByte(static_cast<UINT>(m_to_wincp), dwFlagsWCMB, szStackBufferMBWC, static_cast<int>(count_inter), NULL, 0, lpDefaultChar, NULL);
 						size_t offset = dst.size();
@@ -273,9 +277,10 @@ namespace stdex
 						dst.resize(offset + strnlen(&dst[offset], cch));
 						return;
 					}
-					throw std::system_error(GetLastError(), std::system_category(), "WideCharToMultiByte failed");
+					throw std::system_error(dwResult, std::system_category(), "WideCharToMultiByte failed");
 				}
-				if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
+				dwResult = GetLastError();
+				if (dwResult == ERROR_INSUFFICIENT_BUFFER) {
 					// Query the required output size. Allocate buffer. Then convert again.
 					cch = MultiByteToWideChar(static_cast<UINT>(m_from_wincp), dwFlagsMBWC, reinterpret_cast<LPCCH>(src), static_cast<int>(count_src), NULL, 0);
 					std::unique_ptr<WCHAR[]> szBufferMBWC(new WCHAR[cch]);
@@ -290,7 +295,7 @@ namespace stdex
 					dst.resize(offset + strnlen(&dst[offset], cch));
 					return;
 				}
-				throw std::system_error(GetLastError(), std::system_category(), "MultiByteToWideChar failed");
+				throw std::system_error(dwResult, std::system_category(), "MultiByteToWideChar failed");
 			}
 #else
 			dst.reserve(dst.size() + count_src);
