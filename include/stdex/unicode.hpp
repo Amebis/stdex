@@ -181,7 +181,7 @@ namespace stdex
 				return;
 
 #ifdef _WIN32
-			constexpr DWORD dwFlagsMBWC = MB_PRECOMPOSED;
+			DWORD dwFlagsMBWC = static_cast<UINT>(m_from_wincp) < CP_UTF7 ? MB_PRECOMPOSED : 0;
 			constexpr DWORD dwFlagsWCMB = 0;
 			constexpr LPCCH lpDefaultChar = NULL;
 
