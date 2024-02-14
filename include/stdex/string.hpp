@@ -27,9 +27,11 @@ namespace stdex
 	/// UTF-16 code unit
 	///
 #ifdef _WIN32
-	typedef wchar_t utf16_t;
+	using utf16_t = wchar_t;
+	using utf32_t = char32_t;
 #else
-	typedef char16_t utf16_t;
+	using utf16_t = char16_t;
+	using utf32_t = wchar_t;
 #endif
 
 	///
@@ -67,12 +69,12 @@ namespace stdex
 	///
 	/// \param[in] str  Pointer to first code unit
 	///
-	inline char32_t surrogate_pair_to_ucs4(_In_reads_(2) const utf16_t* str)
+	inline utf32_t surrogate_pair_to_ucs4(_In_reads_(2) const utf16_t* str)
 	{
 		_Assume_(is_surrogate_pair(str));
 		return
-			(static_cast<char32_t>(str[0] - 0xd800) << 10) +
-			static_cast<char32_t>(str[1] - 0xdc00) +
+			(static_cast<utf32_t>(str[0] - 0xd800) << 10) +
+			static_cast<utf32_t>(str[1] - 0xdc00) +
 			0x10000;
 	}
 
@@ -81,12 +83,12 @@ namespace stdex
 	///
 	/// \param[in] str  Pointer to first code unit
 	///
-	inline void ucs4_to_surrogate_pair(_Out_writes_(2) utf16_t* str, _In_ char32_t chr)
+	inline void ucs4_to_surrogate_pair(_Out_writes_(2) utf16_t* str, _In_ utf32_t chr)
 	{
 		_Assume_(chr >= 0x10000);
 		chr -= 0x10000;
-		str[0] = 0xd800 + static_cast<char32_t>((chr >> 10) & 0x3ff);
-		str[1] = 0xdc00 + static_cast<char32_t>(chr & 0x3ff);
+		str[0] = 0xd800 + static_cast<utf32_t>((chr >> 10) & 0x3ff);
+		str[1] = 0xdc00 + static_cast<utf32_t>(chr & 0x3ff);
 	}
 
 	///
@@ -94,7 +96,7 @@ namespace stdex
 	///
 	/// \param[in] chr  Code point to test
 	///
-	inline bool iscombining(_In_ char32_t chr)
+	inline bool iscombining(_In_ utf32_t chr)
 	{
 		return
 			(0x0300 <= chr && chr < 0x0370) ||
@@ -2364,10 +2366,10 @@ namespace stdex
 
 		// Try with stack buffer first.
 		int count = vsnprintf(buf, _countof(buf), format, locale, arg);
-		if (0 <= count && count <= _countof(buf)) {
+		if (0 <= count && static_cast<size_t>(count) <= _countof(buf)) {
 			// Copy from stack.
-			str.append(buf, count);
-			return count;
+			str.append(buf, static_cast<size_t>(count));
+			return static_cast<size_t>(count);
 		}
 #ifdef _WIN32
 		if (count < 0) {
@@ -2393,9 +2395,9 @@ namespace stdex
 				// Allocate on heap and retry.
 				str.resize(offset + capacity);
 				count = vsnprintf(&str[offset], capacity, format, locale, arg);
-				if (0 <= count && count <= capacity) {
-					str.resize(offset + count);
-					return count;
+				if (0 <= count && static_cast<size_t>(count) <= capacity) {
+					str.resize(offset + static_cast<size_t>(count));
+					return static_cast<size_t>(count);
 				}
 				break;
 			case EINVAL: throw std::invalid_argument("invalid vsnprintf arguments");
@@ -2404,7 +2406,7 @@ namespace stdex
 			}
 		}
 #endif
-		return count;
+		return static_cast<size_t>(count);
 	}
 
 	///

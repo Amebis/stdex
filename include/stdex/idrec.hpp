@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2016-2024 Amebis
 */
@@ -276,9 +276,9 @@ namespace stdex {
 
 			// Update the data size.
 			if (!stream.ok()) _Unlikely_ return stdex::stream::fpos_max;
-			stream.seek(start + sizeof(T_id));
+			stream.seekbeg(start + sizeof(T_id));
 			stream << size;
-			stream.seek(end);
+			stream.seekbeg(end);
 
 			return end;
 		}
@@ -344,7 +344,7 @@ namespace stdex {
 			///
 			/// \returns  Position of the record header start in \p stream. Save for later \c close call.
 			///
-			static stdex::stream::foff_t open(_In_ stdex::stream::basic_file& stream)
+			static stdex::stream::fpos_t open(_In_ stdex::stream::basic_file& stream)
 			{
 				return stdex::idrec::open<T_id, T_size>(stream, ID);
 			}
@@ -370,7 +370,7 @@ namespace stdex {
 			///
 			/// \returns  Position of the record end in \p stream
 			///
-			static stdex::stream::foff_t close(_In_ stdex::stream::basic_file& stream, _In_ stdex::stream::foff_t start)
+			static stdex::stream::fpos_t close(_In_ stdex::stream::basic_file& stream, _In_ stdex::stream::fpos_t start)
 			{
 				return stdex::idrec::close<T_id, T_size, N_align>(stream, start);
 			}
@@ -394,13 +394,13 @@ namespace stdex {
 			/// Finds record data
 			///
 			/// \param[in] stream  Input stream
-			/// \param[in] end     Position limit. Default is -1 (no limit).
+			/// \param[in] end     Position limit. Default is stdex::stream::fpos_max (no limit).
 			///
 			/// \returns
 			/// - \c true when found
 			/// - \c false otherwise
 			///
-			static bool find(_In_ stdex::stream::basic_file& stream, _In_opt_ stdex::stream::foff_t end = stdex::stream::foff_max)
+			static bool find(_In_ stdex::stream::basic_file& stream, _In_opt_ stdex::stream::fpos_t end = stdex::stream::fpos_max)
 			{
 				return stdex::idrec::find<T_id, T_size, N_align>(stream, ID, end);
 			}
@@ -464,7 +464,7 @@ namespace stdex {
 				if (!temp.ok()) _Unlikely_ return stream;
 				temp << r.data;
 				r.close(temp, start);
-				temp.seek(0);
+				temp.seekbeg(0);
 				stream.write_stream(temp);
 
 				return stream;
@@ -524,7 +524,7 @@ namespace stdex {
 				}
 
 				size += padding<T_size, N_align>(size);
-				stream.seek(start + size);
+				stream.seekbeg(start + static_cast<stdex::stream::fpos_t>(size));
 
 				return stream;
 			}

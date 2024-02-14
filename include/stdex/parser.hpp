@@ -141,11 +141,11 @@ namespace stdex
 							size_t n = chr_end - start - 1;
 							if (n >= 2 && text[start + 1] == '#') {
 								// Numerical entity
-								char32_t unicode;
+								utf32_t unicode;
 								if (text[start + 2] == 'x' || text[start + 2] == 'X')
-									unicode = strtou32(text + start + 3, n - 2, nullptr, 16);
+									unicode = static_cast<utf32_t>(strtou32(text + start + 3, n - 2, nullptr, 16));
 								else
-									unicode = strtou32(text + start + 2, n - 1, nullptr, 10);
+									unicode = static_cast<utf32_t>(strtou32(text + start + 2, n - 1, nullptr, 10));
 #ifdef _WIN32
 								if (unicode < 0x10000) {
 									buf[0] = (wchar_t)unicode;
@@ -4911,7 +4911,7 @@ namespace stdex
 					}
 					size_t digit_count = nominator == 0 ? 0 : nominator < 10 ? 1 : 2;
 					for (; digit_count < 9 && normalized[next]; ++next, ++digit_count)
-						nominator = nominator * 10 + (normalized[next] - '0');
+						nominator = nominator * 10 + static_cast<uint32_t>(normalized[next] - '0');
 				}
 
 				this->interval.start = start;
@@ -5059,7 +5059,7 @@ namespace stdex
 					}
 					size_t digit_count = nominator == 0 ? 0 : nominator < 10 ? 1 : 2;
 					for (; digit_count < 9 && normalized[next]; ++next, ++digit_count)
-						nominator = nominator * 10 + (normalized[next] - '0');
+						nominator = nominator * 10 + static_cast<uint32_t>(normalized[next] - '0');
 				}
 
 				this->interval.start = start;
@@ -5443,7 +5443,7 @@ namespace stdex
 				_Assume_(part1 && num_part1 >= 1);
 				uint32_t nominator = 0, ponder = 2;
 				for (size_t i = num_part1 - 1; i--; ++ponder)
-					nominator += (part1[i] - '0') * ponder;
+					nominator += static_cast<uint32_t>(part1[i] - '0') * ponder;
 				uint8_t control = 11 - static_cast<uint8_t>(nominator % 11);
 				if (control >= 10)
 					control = 0;
@@ -5458,9 +5458,9 @@ namespace stdex
 				_Assume_(part2 && num_part2 >= 1);
 				uint32_t nominator = 0, ponder = 2;
 				for (size_t i = num_part2 - 1; i--; ++ponder)
-					nominator += (part2[i] - '0') * ponder;
+					nominator += static_cast<uint32_t>(part2[i] - '0') * ponder;
 				for (size_t i = num_part1; i--; ++ponder)
-					nominator += (part1[i] - '0') * ponder;
+					nominator += static_cast<uint32_t>(part1[i] - '0') * ponder;
 				uint8_t control = 11 - static_cast<uint8_t>(nominator % 11);
 				if (control == 10)
 					control = 0;
@@ -5477,11 +5477,11 @@ namespace stdex
 				_Assume_(part3 && num_part3 >= 1);
 				uint32_t nominator = 0, ponder = 2;
 				for (size_t i = num_part3 - 1; i--; ++ponder)
-					nominator += (part3[i] - '0') * ponder;
+					nominator += static_cast<uint32_t>(part3[i] - '0') * ponder;
 				for (size_t i = num_part2; i--; ++ponder)
-					nominator += (part2[i] - '0') * ponder;
+					nominator += static_cast<uint32_t>(part2[i] - '0') * ponder;
 				for (size_t i = num_part1; i--; ++ponder)
-					nominator += (part1[i] - '0') * ponder;
+					nominator += static_cast<uint32_t>(part1[i] - '0') * ponder;
 				uint8_t control = 11 - static_cast<uint8_t>(nominator % 11);
 				if (control == 10)
 					control = 0;
@@ -6109,8 +6109,8 @@ namespace stdex
 				for (;;) {
 					if (this->interval.end < end && text[this->interval.end]) {
 						if ('0' <= text[this->interval.end] && text[this->interval.end] <= '9') {
-							size_t _value = (size_t)value * 10 + text[this->interval.end] - '0';
-							if (_value > (uint16_t)-1) {
+							size_t _value = static_cast<size_t>(value) * 10 + static_cast<size_t>(text[this->interval.end] - '0');
+							if (_value > UINT16_MAX) {
 								value = 0;
 								this->interval.invalidate();
 								return false;
@@ -6491,7 +6491,7 @@ namespace stdex
 				for (;;) {
 					if (this->interval.end < end && text[this->interval.end]) {
 						if ('0' <= text[this->interval.end] && text[this->interval.end] <= '9') {
-							celi_del = celi_del * 10 + text[this->interval.end] - '0';
+							celi_del = celi_del * 10 + static_cast<size_t>(text[this->interval.end] - '0');
 							this->interval.end++;
 						}
 						else if (text[this->interval.end] == '.') {
@@ -6499,7 +6499,7 @@ namespace stdex
 							for (;;) {
 								if (this->interval.end < end && text[this->interval.end]) {
 									if ('0' <= text[this->interval.end] && text[this->interval.end] <= '9') {
-										decimalni_del = decimalni_del * 10 + text[this->interval.end] - '0';
+										decimalni_del = decimalni_del * 10 + static_cast<size_t>(text[this->interval.end] - '0');
 										decimalni_del_n *= 10;
 										this->interval.end++;
 									}

@@ -481,7 +481,7 @@ namespace stdex
 
 				// Block was found, but sub-ID is different.
 				end += (align - end) % align;
-				dat.seek(end);
+				dat.seekbeg(end);
 			}
 			return false;
 		}
@@ -540,7 +540,7 @@ namespace stdex
 			}
 
 			// Cues are loaded. Add other data.
-			dat.seek(start);
+			dat.seekbeg(start);
 			while (dat.tell() < block_end) {
 				stdex::stream::fpos_t found_block_end;
 				if (find_first<list>(dat, *(const id_t*)"adtl", block_end, &found_block_end)) {
@@ -589,7 +589,7 @@ namespace stdex
 				}
 			}
 
-			dat.seek(start);
+			dat.seekbeg(start);
 			return true;
 		}
 
@@ -646,7 +646,7 @@ namespace stdex
 					if (end != output.tell())
 						stdex::idrec::close<id_t, length_t, align>(output, start);
 					else
-						output.seek(start);
+						output.seekbeg(start);
 				}
 			}
 

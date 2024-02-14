@@ -73,8 +73,8 @@ namespace stdex
 
 		constexpr size_t iterate_count = 0x10;
 		constexpr size_t default_block_size = 0x10000; ///< Amount of space used by copy or reallocation increments
-		constexpr char16_t utf16_bom = u'\ufeff'; ///< Byte-order-mark written at each UTF-16 file start
-		constexpr char32_t utf32_bom = U'\ufeff'; ///< Byte-order-mark written at each UTF-32 file start
+		constexpr utf16_t utf16_bom = u'\ufeff'; ///< Byte-order-mark written at each UTF-16 file start
+		constexpr utf32_t utf32_bom = U'\ufeff'; ///< Byte-order-mark written at each UTF-32 file start
 		constexpr const char utf8_bom[3] = { '\xef', '\xbb', '\xbf' }; ///> UTF-8 byte-order-mark
 
 		///
@@ -841,7 +841,10 @@ namespace stdex
 			///
 			/// \return Absolute file position after seek
 			///
-			fpos_t seekbeg(_In_ fpos_t offset) { return seek(offset, seek_t::beg); }
+			fpos_t seekbeg(_In_ fpos_t offset)
+			{
+				return seek(static_cast<foff_t>(offset), seek_t::beg);
+			}
 
 			///
 			/// Seeks to relative from current file position
@@ -859,7 +862,9 @@ namespace stdex
 
 			virtual void skip(_In_ fsize_t amount)
 			{
-				seek(amount, seek_t::cur);
+				if (amount > foff_max)
+					throw std::invalid_argument("file offset too big");
+				seek(static_cast<foff_t>(amount), seek_t::cur);
 			}
 
 			///
@@ -983,15 +988,15 @@ namespace stdex
 			{
 				if (seek(0) != 0) _Unlikely_
 					throw std::system_error(sys_error(), std::system_category(), "failed to seek");
-				char32_t id_utf32;
-				read_array(&id_utf32, sizeof(char32_t), 1);
+				utf32_t id_utf32;
+				read_array(&id_utf32, sizeof(utf32_t), 1);
 				if (ok() && id_utf32 == utf32_bom)
 					return charset_id::utf32;
 
 				if (seek(0) != 0) _Unlikely_
 					throw std::system_error(sys_error(), std::system_category(), "failed to seek");
-				char16_t id_utf16;
-				read_array(&id_utf16, sizeof(char16_t), 1);
+				utf16_t id_utf16;
+				read_array(&id_utf16, sizeof(utf16_t), 1);
 				if (ok() && id_utf16 == utf16_bom)
 					return charset_id::utf16;
 
@@ -1827,7 +1832,7 @@ namespace stdex
 					flush_cache();
 					if (!ok()) _Unlikely_
 						throw std::system_error(sys_error(), std::system_category(), "failed to flush cache"); // Data loss occured
-					m_source->seek(m_offset);
+					m_source->seekbeg(m_offset);
 #if SET_FILE_OP_TIMES
 					m_source->set_atime(m_atime);
 					m_source->set_mtime(m_mtime);
@@ -1855,7 +1860,7 @@ namespace stdex
 					flush_cache();
 					if (!ok()) _Unlikely_
 						throw std::system_error(sys_error(), std::system_category(), "failed to flush cache"); // Data loss occured
-					m_source->seek(m_offset);
+					m_source->seekbeg(m_offset);
 #if SET_FILE_OP_TIMES
 					m_source->set_atime(m_atime);
 					m_source->set_mtime(m_mtime);
@@ -1896,7 +1901,7 @@ namespace stdex
 						fpos_t end_max = m_offset + to_read;
 						if (m_offset / m_cache.capacity < end_max / m_cache.capacity) {
 							// Read spans multiple cache blocks. Bypass cache to the last block.
-							m_source->seek(m_offset);
+							m_source->seekbeg(m_offset);
 							if (!m_source->ok()) _Unlikely_ {
 								m_state = to_read < length ? state_t::ok : state_t::fail;
 								return length - to_read;
@@ -1964,7 +1969,7 @@ namespace stdex
 						fpos_t end_max = m_offset + to_write;
 						if (m_offset / m_cache.capacity < end_max / m_cache.capacity) {
 							// Write spans multiple cache blocks. Bypass cache to the last block.
-							m_source->seek(m_offset);
+							m_source->seekbeg(m_offset);
 							if (!ok()) _Unlikely_
 								return length - to_write;
 							size_t num_written = m_source->write(data, to_write - static_cast<size_t>(end_max % m_cache.capacity));
@@ -2007,20 +2012,25 @@ namespace stdex
 				m_state = state_t::ok;
 				switch (how) {
 				case seek_t::beg:
-					return m_offset = offset;
+					break;
 				case seek_t::cur:
-					return m_offset += offset;
+					offset = static_cast<foff_t>(m_offset) + offset;
+					break;
 				case seek_t::end: {
 					auto n = size();
 					if (n == fsize_max) _Unlikely_{
 						m_state = state_t::fail;
 						return fpos_max;
 					}
-					return m_offset = n + offset;
+					offset = static_cast<foff_t>(n) + offset;
+					break;
 				}
 				default:
 					throw std::invalid_argument("unknown seek origin");
 				}
+				if (offset < 0) _Unlikely_
+					throw std::invalid_argument("negative file offset");
+				return m_offset = static_cast<fpos_t>(offset);
 			}
 
 			virtual fpos_t tell() const
@@ -2052,7 +2062,7 @@ namespace stdex
 #if SET_FILE_OP_TIMES
 				m_atime = m_mtime = time_point::now();
 #endif
-				m_source->seek(m_offset);
+				m_source->seekbeg(m_offset);
 				if (m_cache.region.end <= m_offset) {
 					// Truncation does not affect cache.
 				}
@@ -2144,7 +2154,7 @@ namespace stdex
 			{
 				_Assume_(m_cache.status != cache_t::cache_t::status_t::dirty);
 				start -= start % m_cache.capacity; // Align to cache block size.
-				m_source->seek(m_cache.region.start = start);
+				m_source->seekbeg(m_cache.region.start = start);
 				if (m_source->ok()) {
 					m_cache.region.end = start + m_source->read(m_cache.data, m_cache.capacity);
 					m_cache.status = cache_t::cache_t::status_t::loaded;
@@ -2157,7 +2167,7 @@ namespace stdex
 			void write_cache()
 			{
 				_Assume_(m_cache.status == cache_t::cache_t::status_t::dirty);
-				m_source->seek(m_cache.region.start);
+				m_source->seekbeg(m_cache.region.start);
 				m_source->write(m_cache.data, static_cast<size_t>(m_cache.region.size()));
 				m_state = m_source->state();
 			}
@@ -2235,7 +2245,7 @@ namespace stdex
 					}
 					if (!succeeded) _Unlikely_
 #else
-					ssize_t num_read = ::read(m_h, data, static_cast<ssize_t>(std::min<size_t>(to_read, block_size)));
+					auto num_read = ::read(m_h, data, std::min<size_t>(to_read, block_size));
 					if (num_read < 0) _Unlikely_
 #endif
 					{
@@ -2246,7 +2256,7 @@ namespace stdex
 						m_state = to_read < length || !length ? state_t::ok : state_t::eof;
 						return length - to_read;
 					}
-					to_read -= num_read;
+					to_read -= static_cast<size_t>(num_read);
 					if (!to_read) {
 						m_state = state_t::ok;
 						return length;
@@ -2287,12 +2297,12 @@ namespace stdex
 						return length - to_write;
 					}
 #else
-					ssize_t num_written = ::write(m_h, data, static_cast<ssize_t>(std::min<size_t>(to_write, block_size)));
+					auto num_written = ::write(m_h, data, std::min<size_t>(to_write, block_size));
 					if (num_written < 0) _Unlikely_ {
 						m_state = state_t::fail;
 						return length - to_write;
 					}
-					to_write -= num_written;
+					to_write -= static_cast<size_t>(num_written);
 					if (!to_write) {
 						m_state = state_t::ok;
 						return length;
@@ -2413,8 +2423,14 @@ namespace stdex
 				_Assume_(data || !length);
 				constexpr int block_size = 0x10000000;
 				for (size_t to_read = length;;) {
-					auto num_read = recv(m_h, reinterpret_cast<char*>(data), static_cast<int>(std::min<size_t>(to_read, block_size)), 0);
-					if (num_read == -1) _Unlikely_ {
+					auto num_read = recv(m_h, reinterpret_cast<char*>(data),
+#ifdef _WIN32
+						static_cast<int>(std::min<size_t>(to_read, block_size)),
+#else
+						std::min<size_t>(to_read, block_size),
+#endif
+						0);
+					if (num_read < 0) _Unlikely_ {
 						m_state = to_read < length ? state_t::ok : state_t::fail;
 						return length - to_read;
 					}
@@ -2422,7 +2438,7 @@ namespace stdex
 						m_state = to_read < length || !length ? state_t::ok : state_t::eof;
 						return length - to_read;
 					}
-					to_read -= num_read;
+					to_read -= static_cast<size_t>(num_read);
 					if (!to_read) {
 						m_state = state_t::ok;
 						return length;
@@ -2437,12 +2453,18 @@ namespace stdex
 				_Assume_(data || !length);
 				constexpr int block_size = 0x10000000;
 				for (size_t to_write = length;;) {
-					auto num_written = send(m_h, reinterpret_cast<const char*>(data), static_cast<int>(std::min<size_t>(to_write, block_size)), 0);
-					if (num_written == -1) _Unlikely_ {
+					auto num_written = send(m_h, reinterpret_cast<const char*>(data),
+#ifdef _WIN32
+						static_cast<int>(std::min<size_t>(to_write, block_size)),
+#else
+						std::min<size_t>(to_write, block_size),
+#endif
+						0);
+					if (num_written < 0) _Unlikely_ {
 						m_state = state_t::fail;
 						return length - to_write;
 					}
-					to_write -= num_written;
+					to_write -= static_cast<size_t>(num_written);
 					if (!to_write) {
 						m_state = state_t::ok;
 						return length;
@@ -2816,7 +2838,7 @@ namespace stdex
 				off64_t result = lseek64(m_h, offset, static_cast<int>(how));
 				if (result >= 0) {
 					m_state = state_t::ok;
-					return result;
+					return static_cast<fpos_t>(result);
 				}
 #endif
 				m_state = state_t::fail;
@@ -2835,7 +2857,7 @@ namespace stdex
 #else
 					off64_t result = lseek64(m_h, 0, SEEK_CUR);
 					if (result >= 0)
-						return result;
+						return static_cast<fpos_t>(result);
 #endif
 				}
 				return fpos_max;
@@ -2855,7 +2877,11 @@ namespace stdex
 #else
 				off64_t orig = lseek64(m_h, 0, SEEK_CUR);
 				if (orig >= 0) {
-					m_state = lseek64(m_h, offset, SEEK_SET) >= 0 && lockf64(m_h, F_LOCK, length) >= 0 ? state_t::ok : state_t::fail;
+					if (offset > std::numeric_limits<off64_t>::max())
+						throw std::invalid_argument("file offset too big");
+					if (length > std::numeric_limits<off64_t>::max())
+						throw std::invalid_argument("file section length too big");
+					m_state = lseek64(m_h, static_cast<off64_t>(offset), SEEK_SET) >= 0 && lockf64(m_h, F_LOCK, static_cast<off64_t>(length)) >= 0 ? state_t::ok : state_t::fail;
 					lseek64(m_h, orig, SEEK_SET);
 					m_state = state_t::ok;
 					return;
@@ -2878,7 +2904,11 @@ namespace stdex
 #else
 				off64_t orig = lseek64(m_h, 0, SEEK_CUR);
 				if (orig >= 0) {
-					if (lseek64(m_h, offset, SEEK_SET) >= 0 && lockf64(m_h, F_ULOCK, length) >= 0) {
+					if (offset > std::numeric_limits<off64_t>::max())
+						throw std::invalid_argument("file offset too big");
+					if (length > std::numeric_limits<off64_t>::max())
+						throw std::invalid_argument("file section length too big");
+					if (lseek64(m_h, static_cast<off64_t>(offset), SEEK_SET) >= 0 && lockf64(m_h, F_ULOCK, static_cast<off64_t>(length)) >= 0) {
 						lseek64(m_h, orig, SEEK_SET);
 						m_state = state_t::ok;
 						return;
@@ -2898,12 +2928,14 @@ namespace stdex
 					li.QuadPart = -1;
 				return li.QuadPart;
 #else
-				off64_t length = -1, orig = lseek64(m_h, 0, SEEK_CUR);
+				off64_t orig = lseek64(m_h, 0, SEEK_CUR);
 				if (orig >= 0) {
-					length = lseek64(m_h, 0, SEEK_END);
+					off64_t length = lseek64(m_h, 0, SEEK_END);
 					lseek64(m_h, orig, SEEK_SET);
+					if (length >= 0)
+						return static_cast<fsize_t>(length);
 				}
-					return length;
+				return fsize_max;
 #endif
 			}
 
@@ -3868,19 +3900,18 @@ namespace stdex
 
 			virtual fpos_t seek(_In_ foff_t offset, _In_ seek_t how = seek_t::beg)
 			{
-				fpos_t target;
 				switch (how) {
-				case seek_t::beg: target = offset; break;
-				case seek_t::cur: target = static_cast<fpos_t>(m_offset) + offset; break;
-				case seek_t::end: target = static_cast<fpos_t>(m_size) + offset; break;
+				case seek_t::beg: break;
+				case seek_t::cur: offset = static_cast<foff_t>(m_offset) + offset; break;
+				case seek_t::end: offset = static_cast<foff_t>(m_size) + offset; break;
 				default: throw std::invalid_argument("unknown seek origin");
 				}
-				if (target <= SIZE_MAX) {
-					m_state = state_t::ok;
-					return m_offset = static_cast<size_t>(target);
-				}
-				m_state = state_t::fail;
-				return fpos_max;
+				if (offset < 0) _Unlikely_
+					throw std::invalid_argument("negative file offset");
+				if (static_cast<fpos_t>(offset) > SIZE_MAX) _Unlikely_
+					throw std::invalid_argument("file offset too big");
+				m_state = state_t::ok;
+				return m_offset = static_cast<size_t>(offset);
 			}
 
 			virtual fpos_t tell() const

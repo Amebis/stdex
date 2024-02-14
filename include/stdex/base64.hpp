@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2016-2024 Amebis
 */
@@ -317,7 +317,7 @@ namespace stdex
 				if (i >= size)
 					break;
 
-				int x = data[i];
+				size_t x = static_cast<size_t>(data[i]);
 				if ((m_buf[m_num] = x < _countof(base64_dec_lookup) ? base64_dec_lookup[x] : 255) != 255)
 					m_num++;
 			}
@@ -435,11 +435,11 @@ namespace stdex
 		{
 			m_num = 0;
 			m_temp_off = 0;
-			m_temp[0] = ((m_buf[0] << 2) | (m_buf[1] >> 4)) & 0xff;
+			m_temp[0] = static_cast<char>(((m_buf[0] << 2) | (m_buf[1] >> 4)) & 0xff);
 			if (m_buf[2] < 64) {
-				m_temp[1] = ((m_buf[1] << 4) | (m_buf[2] >> 2)) & 0xff;
+				m_temp[1] = static_cast<char>(((m_buf[1] << 4) | (m_buf[2] >> 2)) & 0xff);
 				if (m_buf[3] < 64) {
-					m_temp[2] = ((m_buf[2] << 6) | m_buf[3]) & 0xff;
+					m_temp[2] = static_cast<char>(((m_buf[2] << 6) | m_buf[3]) & 0xff);
 					m_temp_len = 3;
 				} else
 					m_temp_len = 2;

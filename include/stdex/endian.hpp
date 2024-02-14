@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023-2024 Amebis
 */
@@ -95,11 +95,11 @@ namespace stdex
 #endif
 	}
 
-	inline constexpr int8_t byteswap(_In_ const char value) { return byteswap(static_cast<uint8_t>(value)); }
-	inline constexpr int8_t byteswap(_In_ const int8_t value) { return byteswap(static_cast<uint8_t>(value)); }
-	inline int16_t byteswap(_In_ const int16_t value) { return byteswap(static_cast<uint16_t>(value)); }
-	inline int32_t byteswap(_In_ const int32_t value) { return byteswap(static_cast<uint32_t>(value)); }
-	inline int64_t byteswap(_In_ const int64_t value) { return byteswap(static_cast<uint64_t>(value)); }
+	inline constexpr int8_t byteswap(_In_ const char value) { return static_cast<int8_t>(byteswap(static_cast<uint8_t>(value))); }
+	inline constexpr int8_t byteswap(_In_ const int8_t value) { return static_cast<int8_t>(byteswap(static_cast<uint8_t>(value))); }
+	inline int16_t byteswap(_In_ const int16_t value) { return static_cast<int16_t>(byteswap(static_cast<uint16_t>(value))); }
+	inline int32_t byteswap(_In_ const int32_t value) { return static_cast<int32_t>(byteswap(static_cast<uint32_t>(value))); }
+	inline int64_t byteswap(_In_ const int64_t value) { return static_cast<int64_t>(byteswap(static_cast<uint64_t>(value))); }
 
 	inline float byteswap(_In_ const float value)
 	{

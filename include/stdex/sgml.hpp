@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023-2024 Amebis
 */
@@ -59,7 +59,7 @@ namespace stdex
 	}
 	/// \endcond
 
-	constexpr int sgml_full = 0x80000000;
+	constexpr int sgml_full = 0x40000000;
 	constexpr int sgml_quot = 0x00000001;
 	constexpr int sgml_apos = 0x00000002;
 	constexpr int sgml_quot_apos = sgml_quot | sgml_apos;
@@ -105,7 +105,7 @@ namespace stdex
 					wchar_t chr[3];
 					size_t n = end - src - i - 1;
 					if (n >= 2 && src[i + 1] == '#') {
-						uint32_t unicode;
+						utf32_t unicode;
 						if (src[i + 2] == 'x' || src[i + 2] == 'X')
 							unicode = strtou32(src + i + 3, n - 2, nullptr, 16);
 						else
@@ -193,13 +193,14 @@ namespace stdex
 				if (end) {
 					const wchar_t* entity_w;
 					wchar_t chr[3];
-					size_t n = end - src - i - 1;
+					_Assume_(src + i + 1 <= end);
+					size_t n = static_cast<size_t>(end - src) - i - 1;
 					if (n >= 2 && src[i + 1] == '#') {
-						uint32_t unicode;
+						utf32_t unicode;
 						if (src[i + 2] == 'x' || src[i + 2] == 'X')
-							unicode = strtou32(src + i + 3, n - 2, nullptr, 16);
+							unicode = static_cast<utf32_t>(strtou32(src + i + 3, n - 2, nullptr, 16));
 						else
-							unicode = strtou32(src + i + 2, n - 1, nullptr, 10);
+							unicode = static_cast<utf32_t>(strtou32(src + i + 2, n - 1, nullptr, 10));
 #ifdef _WIN32
 						if (unicode < 0x10000) {
 							chr[0] = (wchar_t)unicode;
@@ -234,7 +235,8 @@ namespace stdex
 					{
 						if (map) map->push_back(mapping<size_t>(offset.from + i, offset.to + dst.size()));
 						dst.append(entity_w);
-						i = end - src + 1;
+						_Assume_(src <= end);
+						i = static_cast<size_t>(end - src) + 1;
 						if (map) map->push_back(mapping<size_t>(offset.from + i, offset.to + dst.size()));
 						continue;
 					}
@@ -313,7 +315,7 @@ namespace stdex
 					wchar_t chr[3];
 					size_t n = end - src - i - 1;
 					if (n >= 2 && src[i + 1] == '#') {
-						uint32_t unicode;
+						utf32_t unicode;
 						if (src[i + 2] == 'x' || src[i + 2] == 'X')
 							unicode = strtou32(src + i + 3, n - 2, nullptr, 16);
 						else
@@ -599,7 +601,7 @@ namespace stdex
 						else if (is7bit(src[i]))
 							dst.append(1, static_cast<char>(src[i++]));
 						else {
-							uint32_t unicode;
+							utf32_t unicode;
 #ifdef _WIN32
 							if (i + 1 < end && is_surrogate_pair(src + i)) {
 								unicode = surrogate_pair_to_ucs4(src + i);
@@ -718,7 +720,8 @@ namespace stdex
 						_Assume_(m >= 0);
 						if (static_cast<size_t>(m) >= count_dst)
 							throw buffer_overrun;
-						memcpy(dst + j, tmp, m * sizeof(char)); j += m;
+						memcpy(dst + j, tmp, static_cast<size_t>(m) * sizeof(char));
+						j += static_cast<size_t>(m);
 					}
 				}
 				else {
@@ -740,7 +743,7 @@ namespace stdex
 							dst[j++] = static_cast<char>(src[i++]);
 						}
 						else {
-							uint32_t unicode;
+							utf32_t unicode;
 #ifdef _WIN32
 							if (i + 1 < end && is_surrogate_pair(src + i)) {
 								unicode = surrogate_pair_to_ucs4(src + i);
@@ -756,7 +759,8 @@ namespace stdex
 							_Assume_(m >= 0);
 							if (static_cast<size_t>(m) >= count_dst)
 								throw buffer_overrun;
-							memcpy(dst + j, tmp, m * sizeof(char)); j += m;
+							memcpy(dst + j, tmp, static_cast<size_t>(m) * sizeof(char));
+							j += static_cast<size_t>(m);
 						}
 					}
 				}
