@@ -248,17 +248,17 @@ namespace stdex
 				case '%': {
 					i++;
 
-					uint8_t chr;
-					if ('0' <= src[i] && src[i] <= '9') chr = (src[i++] - '0') << 4;
-					else if ('A' <= src[i] && src[i] <= 'F') chr = (src[i++] - 'A' + 10) << 4;
-					else if ('a' <= src[i] && src[i] <= 'f') chr = (src[i++] - 'a' + 10) << 4;
+					char chr;
+					if ('0' <= src[i] && src[i] <= '9') chr = static_cast<char>((src[i++] - '0') << 4);
+					else if ('A' <= src[i] && src[i] <= 'F') chr = static_cast<char>((src[i++] - 'A' + 10) << 4);
+					else if ('a' <= src[i] && src[i] <= 'f') chr = static_cast<char>((src[i++] - 'a' + 10) << 4);
 					else { dst += '%'; continue; }
-					if ('0' <= src[i] && src[i] <= '9') chr |= (src[i++] - '0');
-					else if ('A' <= src[i] && src[i] <= 'F') chr |= (src[i++] - 'A' + 10);
-					else if ('a' <= src[i] && src[i] <= 'f') chr |= (src[i++] - 'a' + 10);
+					if ('0' <= src[i] && src[i] <= '9') chr |= static_cast<char>((src[i++] - '0'));
+					else if ('A' <= src[i] && src[i] <= 'F') chr |= static_cast<char>((src[i++] - 'A' + 10));
+					else if ('a' <= src[i] && src[i] <= 'f') chr |= static_cast<char>((src[i++] - 'a' + 10));
 					else { dst += '%'; dst += src[i - 1]; continue; }
 
-					dst += static_cast<char>(chr);
+					dst += chr;
 					break;
 				}
 

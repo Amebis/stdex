@@ -27,6 +27,8 @@ namespace stdex
 	class basic_hash
 	{
 	public:
+		virtual ~basic_hash() {}
+
 		///
 		/// Initializes hash value and internal state
 		///

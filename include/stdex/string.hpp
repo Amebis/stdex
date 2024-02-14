@@ -87,8 +87,8 @@ namespace stdex
 	{
 		_Assume_(chr >= 0x10000);
 		chr -= 0x10000;
-		str[0] = 0xd800 + static_cast<utf32_t>((chr >> 10) & 0x3ff);
-		str[1] = 0xdc00 + static_cast<utf32_t>(chr & 0x3ff);
+		str[0] = 0xd800 + static_cast<utf16_t>((chr >> 10) & 0x3ff);
+		str[1] = 0xdc00 + static_cast<utf16_t>(chr & 0x3ff);
 	}
 
 	///

@@ -21,6 +21,8 @@ namespace stdex
 	class progress
 	{
 	public:
+		virtual ~progress() {}
+
 		///
 		/// Set progress indicator text
 		///

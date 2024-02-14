@@ -14,6 +14,11 @@
 #include <string_view>
 #include <string>
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wexit-time-destructors"
+#endif
+
 namespace stdex
 {
 	/// \cond internal
@@ -861,3 +866,7 @@ namespace stdex
 		return str2sgml(src.data(), src.size(), what);
 	}
 }
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif

@@ -3027,6 +3027,7 @@ namespace stdex
 					return;
 				throw std::system_error(GetLastError(), std::system_category(), "SetFileTime failed");
 #else
+				_Unreferenced_(date);
 				throw std::runtime_error("not supported");
 #endif
 			}
@@ -3849,7 +3850,7 @@ namespace stdex
 						return 0;
 					while (to_write) {
 						num_read = stream.read(m_data + dst_offset, to_write);
-						dst_size = dst_offset += num_read;
+						/*dst_size =*/ dst_offset += num_read;
 						num_copied += num_read;
 						to_write -= num_read;
 						if (!stream.ok()) {

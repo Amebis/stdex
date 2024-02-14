@@ -22,6 +22,10 @@ namespace Microsoft {
 	}
 }
 #endif
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wexit-time-destructors"
+#endif
 
 namespace UnitTests
 {
@@ -495,3 +499,7 @@ namespace UnitTests
 		//	"\r\n";
 	}
 }
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif

@@ -9,6 +9,11 @@
 #include <locale.h>
 #include <memory>
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wexit-time-destructors"
+#endif
+
 namespace stdex
 {
 #ifdef _WIN32
@@ -112,3 +117,7 @@ namespace stdex
 #endif
 		);
 }
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif

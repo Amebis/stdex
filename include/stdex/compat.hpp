@@ -181,13 +181,14 @@
 #ifdef _WIN32
 #define _Unreferenced_(x) UNREFERENCED_PARAMETER(x)
 #else
-#define _Unreferenced_(x)
+#define _Unreferenced_(x) (void)(x)
 #endif
 
 #ifndef _WIN32
 template <class T, size_t N>
 size_t _countof(const T (&arr)[N])
 {
+	_Unreferenced_(arr);
 	return std::extent<T[N]>::value;
 }
 #endif

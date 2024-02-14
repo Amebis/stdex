@@ -21,6 +21,7 @@
 #if defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#pragma GCC diagnostic ignored "-Wexit-time-destructors"
 #endif
 
 namespace stdex

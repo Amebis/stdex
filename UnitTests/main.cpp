@@ -6,7 +6,7 @@
 #include "pch.hpp"
 #include <iostream>
 
-int main(int argc, const char * argv[])
+int main(int, const char *[])
 {
 	try {
 		UnitTests::hash::crc32();

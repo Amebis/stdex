@@ -22,7 +22,14 @@ namespace UnitTests
 			{
 				int seed = 0;
 				for (size_t retries = 1000; retries--;) {
-					for (auto to_write = static_cast<size_t>(static_cast<uint64_t>(::rand()) * ring_capacity / 5 / RAND_MAX); to_write;) {
+					for (size_t to_write =
+#ifdef _WIN32
+						static_cast<size_t>(static_cast<uint64_t>(::rand()) * ring_capacity / 5 / RAND_MAX);
+#else
+						::arc4random_uniform(ring_capacity / 5);
+#endif
+						to_write;)
+					{
 						int* ptr; size_t num_write;
 						tie(ptr, num_write) = ring.back();
 						if (to_write < num_write)

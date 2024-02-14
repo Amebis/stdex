@@ -16,6 +16,11 @@
 #endif
 #include <memory>
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wexit-time-destructors"
+#endif
+
 namespace stdex
 {
 	///
@@ -238,3 +243,7 @@ namespace stdex
 #endif
 	} sys_info;
 }
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif

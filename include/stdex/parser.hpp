@@ -37,6 +37,7 @@
 #elif defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 #endif
 
 #define ENUM_FLAG_OPERATOR(T,X) \
@@ -377,8 +378,8 @@ namespace stdex
 					wchar_t buf[3];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					bool r = ((flags & match_case_insensitive) ?
-						stdex::strnicmp(chr, SIZE_MAX, m_chr.data(), m_chr.size(), m_locale) :
-						stdex::strncmp(chr, SIZE_MAX, m_chr.data(), m_chr.size())) == 0;
+						stdex::strnicmp(chr, stdex::strlen(chr), m_chr.data(), m_chr.size(), m_locale) :
+						stdex::strncmp(chr, stdex::strlen(chr), m_chr.data(), m_chr.size())) == 0;
 					if ((r && !m_invert) || (!r && m_invert)) {
 						this->interval.start = start;
 						return true;
