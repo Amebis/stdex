@@ -10,6 +10,11 @@
 #include <mutex>
 #include <tuple>
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+#endif
+
 namespace stdex
 {
 	///
@@ -147,3 +152,7 @@ namespace stdex
 		T m_data[N_cap];
 	};
 }
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif

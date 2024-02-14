@@ -34,6 +34,11 @@
 #include <thread>
 #include <vector>
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+#endif
+
 #if !defined(SET_FILE_OP_TIMES) && defined(RDAT_BELEZI_CAS_DOSTOPA_VER)
 #define SET_FILE_OP_TIMES 1
 #pragma message("RDAT_BELEZI_CAS_DOSTOPA_VER is deprecated. Use SET_FILE_OP_TIMES instead.")
@@ -4312,3 +4317,7 @@ namespace stdex
 		};
 	}
 }
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif

@@ -31,9 +31,12 @@
 #include <string_view>
 #include <string>
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
 #pragma warning(push)
 #pragma warning(disable: 4100)
+#elif defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunknown-pragmas"
 #endif
 
 #define ENUM_FLAG_OPERATOR(T,X) \
@@ -8386,6 +8389,8 @@ namespace stdex
 #undef ENUM_FLAG_OPERATOR
 #undef ENUM_FLAGS
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
 #pragma warning(pop)
+#elif defined(__GNUC__)
+#pragma GCC diagnostic pop
 #endif

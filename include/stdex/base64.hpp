@@ -11,6 +11,11 @@
 #include <string>
 #include <vector>
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+#endif
+
 namespace stdex
 {
 	/// \cond internal
@@ -363,10 +368,8 @@ namespace stdex
 		size_t m_num;     ///< Number of bytes used in `m_buf`
 	};
 
-#ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable: 26495)
-#endif
 
 	///
 	/// Converts from Base64 when reading from a stream
@@ -451,7 +454,9 @@ namespace stdex
 			m_temp_len; ///< Number of bytes of data in `m_temp`
 	};
 
-#ifdef _MSC_VER
 #pragma warning(pop)
-#endif
 }
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif

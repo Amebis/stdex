@@ -19,6 +19,11 @@
 #include <memory>
 #include <stdexcept>
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+#endif
+
 namespace stdex
 {
 	/// \cond internal
@@ -167,3 +172,7 @@ namespace stdex
 		std::unique_ptr<Byte[]> m_block;
 	};
 }
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif

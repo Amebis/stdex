@@ -10,12 +10,15 @@
 #include "stream.hpp"
 #include <stdint.h>
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+#endif
+
 namespace stdex
 {
-#ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable: 26495)
-#endif
 
 	///
 	/// Basic hashing operations
@@ -93,14 +96,10 @@ namespace stdex
 				memcpy(m_queue + j, data, remainder);
 				hash_block();
 				for (i = remainder; i + 64 <= length; i += 64) {
-#ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable: 6385)
-#endif
 					memcpy(m_queue, reinterpret_cast<const uint8_t*>(data) + i, 64);
-#ifdef _MSC_VER
 #pragma warning(pop)
-#endif
 					hash_block();
 				}
 
@@ -126,9 +125,7 @@ namespace stdex
 		};
 	};
 
-#ifdef _MSC_VER
 #pragma warning(pop)
-#endif
 
 	///
 	/// Hashes read to or write from data of the stream
@@ -644,3 +641,7 @@ namespace stdex
 		}
 	};
 }
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
