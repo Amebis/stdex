@@ -145,8 +145,8 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    {</div>
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        _Assume_(chr &gt;= 0x10000);</div>
 <div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>        chr -= 0x10000;</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>        str[0] = 0xd800 + <span class="keyword">static_cast&lt;</span>utf32_t<span class="keyword">&gt;</span>((chr &gt;&gt; 10) &amp; 0x3ff);</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>        str[1] = 0xdc00 + <span class="keyword">static_cast&lt;</span>utf32_t<span class="keyword">&gt;</span>(chr &amp; 0x3ff);</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>        str[0] = 0xd800 + <span class="keyword">static_cast&lt;</span>utf16_t<span class="keyword">&gt;</span>((chr &gt;&gt; 10) &amp; 0x3ff);</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>        str[1] = 0xdc00 + <span class="keyword">static_cast&lt;</span>utf16_t<span class="keyword">&gt;</span>(chr &amp; 0x3ff);</div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    }</div>
 <div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>    <span class="keyword">inline</span> <span class="keywordtype">bool</span> iscombining(_In_ utf32_t chr)</div>
@@ -2005,7 +2005,7 @@ $(function() { codefold.init(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Feb 14 2024 11:35:13 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+Generated on Wed Feb 14 2024 14:06:27 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
 </small></address>
 </body>
 </html>
