@@ -618,7 +618,7 @@ namespace stdex
 								unicode = src[i++];
 							}
 							char tmp[3 + 8 + 1 + 1];
-							snprintf(tmp, _countof(tmp), "&#x%x;", unicode);
+							snprintf(tmp, _countof(tmp), "&#x%x;", static_cast<unsigned int>(unicode));
 							dst.append(tmp);
 						}
 					}
@@ -760,7 +760,7 @@ namespace stdex
 								unicode = src[i++];
 							}
 							char tmp[3 + 8 + 1 + 1];
-							int m = snprintf(tmp, _countof(tmp), "&#x%x;", unicode);
+							int m = snprintf(tmp, _countof(tmp), "&#x%x;", static_cast<unsigned int>(unicode));
 							_Assume_(m >= 0);
 							if (static_cast<size_t>(m) >= count_dst)
 								throw buffer_overrun;
