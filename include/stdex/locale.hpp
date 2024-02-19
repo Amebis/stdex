@@ -105,17 +105,7 @@ namespace stdex
 	///
 	/// Reusable default charset locale
 	///
-	const inline locale locale_default(
-#ifdef WIN32
-#ifdef _CONSOLE
-		create_locale(LC_ALL, ".OCP")
-#else
-		create_locale(LC_ALL, ".ACP")
-#endif
-#else
-		nullptr
-#endif
-		);
+	const inline locale locale_default(nullptr);
 }
 
 #if defined(__GNUC__)
