@@ -598,7 +598,7 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span>                                unicode = src[i++];</div>
 <div class="line"><a id="l00619" name="l00619"></a><span class="lineno">  619</span>                            }</div>
 <div class="line"><a id="l00620" name="l00620"></a><span class="lineno">  620</span>                            <span class="keywordtype">char</span> tmp[3 + 8 + 1 + 1];</div>
-<div class="line"><a id="l00621" name="l00621"></a><span class="lineno">  621</span>                            snprintf(tmp, _countof(tmp), <span class="stringliteral">&quot;&amp;#x%x;&quot;</span>, unicode);</div>
+<div class="line"><a id="l00621" name="l00621"></a><span class="lineno">  621</span>                            snprintf(tmp, _countof(tmp), <span class="stringliteral">&quot;&amp;#x%x;&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">int</span><span class="keyword">&gt;</span>(unicode));</div>
 <div class="line"><a id="l00622" name="l00622"></a><span class="lineno">  622</span>                            dst.append(tmp);</div>
 <div class="line"><a id="l00623" name="l00623"></a><span class="lineno">  623</span>                        }</div>
 <div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span>                    }</div>
@@ -722,7 +722,7 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l00760" name="l00760"></a><span class="lineno">  760</span>                                unicode = src[i++];</div>
 <div class="line"><a id="l00761" name="l00761"></a><span class="lineno">  761</span>                            }</div>
 <div class="line"><a id="l00762" name="l00762"></a><span class="lineno">  762</span>                            <span class="keywordtype">char</span> tmp[3 + 8 + 1 + 1];</div>
-<div class="line"><a id="l00763" name="l00763"></a><span class="lineno">  763</span>                            <span class="keywordtype">int</span> m = snprintf(tmp, _countof(tmp), <span class="stringliteral">&quot;&amp;#x%x;&quot;</span>, unicode);</div>
+<div class="line"><a id="l00763" name="l00763"></a><span class="lineno">  763</span>                            <span class="keywordtype">int</span> m = snprintf(tmp, _countof(tmp), <span class="stringliteral">&quot;&amp;#x%x;&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">int</span><span class="keyword">&gt;</span>(unicode));</div>
 <div class="line"><a id="l00764" name="l00764"></a><span class="lineno">  764</span>                            _Assume_(m &gt;= 0);</div>
 <div class="line"><a id="l00765" name="l00765"></a><span class="lineno">  765</span>                            <span class="keywordflow">if</span> (<span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(m) &gt;= count_dst)</div>
 <div class="line"><a id="l00766" name="l00766"></a><span class="lineno">  766</span>                                <span class="keywordflow">throw</span> buffer_overrun;</div>
@@ -792,7 +792,7 @@ $(function() { codefold.init(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Feb 14 2024 14:06:27 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+Generated on Mon Feb 19 2024 08:16:30 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
 </small></address>
 </body>
 </html>
