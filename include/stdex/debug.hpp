@@ -19,8 +19,8 @@ namespace stdex
 		inline void vprintf(_In_z_ _Printf_format_string_ const char* format, _In_ va_list arg)
 		{
 #if defined(NDEBUG)
-			UNREFERENCED_PARAMETER(format);
-			UNREFERENCED_PARAMETER(arg);
+			_Unreferenced_(format);
+			_Unreferenced_(arg);
 #elif defined(_WIN32)
 			auto tmp = stdex::vsprintf(format, stdex::locale_default, arg);
 			OutputDebugStringA(tmp.c_str());
@@ -32,8 +32,8 @@ namespace stdex
 		inline void vprintf(_In_z_ _Printf_format_string_ const wchar_t* format, _In_ va_list arg)
 		{
 #if defined(NDEBUG)
-			UNREFERENCED_PARAMETER(format);
-			UNREFERENCED_PARAMETER(arg);
+			_Unreferenced_(format);
+			_Unreferenced_(arg);
 #elif defined(_WIN32)
 			auto tmp = stdex::vsprintf(format, stdex::locale_default, arg);
 			OutputDebugStringW(tmp.c_str());
@@ -56,7 +56,7 @@ namespace stdex
 		inline void printf(_In_z_ _Printf_format_string_ const T* format, ...)
 		{
 #if defined(NDEBUG)
-			UNREFERENCED_PARAMETER(format);
+			_Unreferenced_(format);
 #else
 			va_list arg;
 			va_start(arg, format);
@@ -71,8 +71,8 @@ namespace stdex
 		inline void vprintf(_In_z_ _Printf_format_string_ const char* format, _In_ va_list arg)
 		{
 #if defined(NDEBUG)
-			UNREFERENCED_PARAMETER(format);
-			UNREFERENCED_PARAMETER(arg);
+			_Unreferenced_(format);
+			_Unreferenced_(arg);
 #elif defined(_WIN32)
 			auto tmp = stdex::vsprintf(format, stdex::locale_default, arg);
 			OutputDebugStringA(tmp.c_str());
@@ -84,8 +84,8 @@ namespace stdex
 		inline void vprintf(_In_z_ _Printf_format_string_ const wchar_t* format, _In_ va_list arg)
 		{
 #if defined(NDEBUG)
-			UNREFERENCED_PARAMETER(format);
-			UNREFERENCED_PARAMETER(arg);
+			_Unreferenced_(format);
+			_Unreferenced_(arg);
 #elif defined(_WIN32)
 			auto tmp = stdex::vsprintf(format, stdex::locale_default, arg);
 			OutputDebugStringW(tmp.c_str());
@@ -108,7 +108,7 @@ namespace stdex
 		inline void printf(_In_z_ _Printf_format_string_ const T* format, ...)
 		{
 #if defined(NDEBUG)
-			UNREFERENCED_PARAMETER(format);
+			_Unreferenced_(format);
 #else
 			va_list arg;
 			va_start(arg, format);
