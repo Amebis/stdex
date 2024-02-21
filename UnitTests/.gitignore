@@ -1,5 +1,3 @@
+/.tmp
 /.vs
 /*.user
-/Debug
-/Release
-/x64
