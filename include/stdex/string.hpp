@@ -111,7 +111,7 @@ namespace stdex
 	/// \param[in] chr  Code unit
 	///
 	template <class T>
-	inline bool islbreak(_In_ T chr)
+	bool islbreak(_In_ T chr)
 	{
 		return chr == '\n' || chr == '\r';
 	}
@@ -125,7 +125,7 @@ namespace stdex
 	/// \return 0 if not line break; length of line break in code units otherwise.
 	///
 	template <class T>
-	inline size_t islbreak(_In_reads_or_z_opt_(count) const T* chr, _In_ size_t count)
+	size_t islbreak(_In_reads_or_z_opt_(count) const T* chr, _In_ size_t count)
 	{
 		_Assume_(chr || !count);
 		if (count >= 2 && ((chr[0] == '\r' && chr[1] == '\n') || (chr[0] == '\n' && chr[1] == '\r')))
@@ -141,7 +141,7 @@ namespace stdex
 	/// \param[in] chr  Code unit
 	///
 	template <class T>
-	inline bool isspace(_In_ T chr)
+	bool isspace(_In_ T chr)
 	{
 		return chr == ' ' || chr == '\t' || chr == '\n' || chr == '\r' || chr == '\v' || chr == '\f';
 	}
@@ -152,7 +152,7 @@ namespace stdex
 	/// \param[in] chr  Code unit
 	///
 	template <class T>
-	inline bool islower(_In_ T chr)
+	bool islower(_In_ T chr)
 	{
 		return 'a' <= chr && chr <= 'z';
 	}
@@ -163,7 +163,7 @@ namespace stdex
 	/// \param[in] chr  Code unit
 	///
 	template <class T>
-	inline bool isupper(_In_ T chr)
+	bool isupper(_In_ T chr)
 	{
 		return 'A' <= chr && chr <= 'Z';
 	}
@@ -174,7 +174,7 @@ namespace stdex
 	/// \param[in] chr  Code unit
 	///
 	template <class T>
-	inline bool isdigit(_In_ T chr)
+	bool isdigit(_In_ T chr)
 	{
 		return '0' <= chr && chr <= '9';
 	}
@@ -185,7 +185,7 @@ namespace stdex
 	/// \param[in] chr  Code unit
 	///
 	template <class T>
-	inline bool isalpha(_In_ T chr)
+	bool isalpha(_In_ T chr)
 	{
 		return islower(chr) || isupper(chr);
 	}
@@ -196,7 +196,7 @@ namespace stdex
 	/// \param[in] chr  Code unit
 	///
 	template <class T>
-	inline bool is7bit(_In_ T chr)
+	bool is7bit(_In_ T chr)
 	{
 		return '\x00' <= chr && chr <= '\x7f';
 	}
@@ -251,7 +251,7 @@ namespace stdex
 	/// \return Lower-case code unit
 	///
 	template <class T>
-	inline T tolower(_In_ T chr)
+	T tolower(_In_ T chr)
 	{
 		return isupper(chr) ? chr | 0x20 : chr;
 	}
@@ -264,7 +264,7 @@ namespace stdex
 	/// \return Upper-case code unit
 	///
 	template <class T>
-	inline T toupper(_In_ T chr)
+	T toupper(_In_ T chr)
 	{
 		return islower(chr) ? chr | ~0x20 : chr;
 	}
@@ -277,7 +277,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the string.
 	///
 	template <class T>
-	inline size_t strlen(_In_z_ const T* str)
+	size_t strlen(_In_z_ const T* str)
 	{
 		_Assume_(str);
 		size_t i;
@@ -294,7 +294,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the string.
 	///
 	template <class T>
-	inline size_t strnlen(_In_reads_or_z_opt_(count) const T* str, _In_ size_t count)
+	size_t strnlen(_In_reads_or_z_opt_(count) const T* str, _In_ size_t count)
 	{
 		_Assume_(str || !count);
 		size_t i;
@@ -310,7 +310,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the string.
 	///
 	template <class T, size_t N>
-	inline size_t strnlen(_In_ const T (&str)[N])
+	size_t strnlen(_In_ const T (&str)[N])
 	{
 		return strnlen(str, N);
 	}
@@ -326,7 +326,7 @@ namespace stdex
 	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T>
-	inline size_t strchr(_In_z_ const T* str, _In_ T chr)
+	size_t strchr(_In_z_ const T* str, _In_ T chr)
 	{
 		_Assume_(str);
 		for (size_t i = 0; str[i]; ++i)
@@ -344,7 +344,7 @@ namespace stdex
 	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T>
-	inline size_t strnchr(
+	size_t strnchr(
 		_In_reads_or_z_opt_(count) const T* str,
 		_In_ size_t count,
 		_In_ T chr)
@@ -364,7 +364,7 @@ namespace stdex
 	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T, size_t N>
-	inline size_t strnchr(
+	size_t strnchr(
 		_In_ const T (&str)[N],
 		_In_ T chr)
 	{
@@ -380,7 +380,7 @@ namespace stdex
 	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T>
-	inline size_t strrchr(
+	size_t strrchr(
 		_In_z_ const T* str,
 		_In_ T chr)
 	{
@@ -401,7 +401,7 @@ namespace stdex
 	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T>
-	inline size_t strrnchr(
+	size_t strrnchr(
 		_In_reads_or_z_opt_(count) const T* str,
 		_In_ size_t count,
 		_In_ T chr)
@@ -422,7 +422,7 @@ namespace stdex
 	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T, size_t N>
-	inline size_t strrnchr(
+	size_t strrnchr(
 		_In_ const T (&str)[N],
 		_In_ T chr)
 	{
@@ -438,7 +438,7 @@ namespace stdex
 	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T>
-	inline size_t strichr(
+	size_t strichr(
 		_In_z_ const T* str,
 		_In_ T chr)
 	{
@@ -459,7 +459,7 @@ namespace stdex
 	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T>
-	inline size_t strichr(
+	size_t strichr(
 		_In_z_ const T* str,
 		_In_ T chr,
 		_In_ const std::locale& locale)
@@ -482,7 +482,7 @@ namespace stdex
 	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T>
-	inline size_t strnichr(
+	size_t strnichr(
 		_In_reads_or_z_opt_(count) const T* str,
 		_In_ size_t count,
 		_In_ T chr)
@@ -505,7 +505,7 @@ namespace stdex
 	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T>
-	inline size_t strnichr(
+	size_t strnichr(
 		_In_reads_or_z_opt_(count) const T* str,
 		_In_ size_t count,
 		_In_ T chr,
@@ -528,7 +528,7 @@ namespace stdex
 	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T, size_t N>
-	inline size_t strnichr(
+	size_t strnichr(
 		_In_ const T (&str)[N],
 		_In_ T chr)
 	{
@@ -545,7 +545,7 @@ namespace stdex
 	/// \return Offset to the first occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T, size_t N>
-	inline size_t strnichr(
+	size_t strnichr(
 		_In_ const T (&str)[N],
 		_In_ T chr,
 		_In_ const std::locale& locale)
@@ -562,7 +562,7 @@ namespace stdex
 	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T>
-	inline size_t strrichr(
+	size_t strrichr(
 		_In_z_ const T* str,
 		_In_ T chr)
 	{
@@ -584,7 +584,7 @@ namespace stdex
 	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T>
-	inline size_t strrichr(
+	size_t strrichr(
 		_In_reads_or_z_opt_(count) const T* str,
 		_In_ T chr,
 		_In_ const std::locale& locale)
@@ -608,7 +608,7 @@ namespace stdex
 	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T>
-	inline size_t strrnichr(
+	size_t strrnichr(
 		_In_reads_or_z_opt_(count) const T* str,
 		_In_ size_t count,
 		_In_ T chr)
@@ -632,7 +632,7 @@ namespace stdex
 	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T>
-	inline size_t strrnichr(
+	size_t strrnichr(
 		_In_reads_or_z_opt_(count) const T* str,
 		_In_ size_t count,
 		_In_ T chr,
@@ -656,7 +656,7 @@ namespace stdex
 	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T, size_t N>
-	inline size_t strrnichr(
+	size_t strrnichr(
 		_In_ const T (&str)[N],
 		_In_ T chr)
 	{
@@ -673,7 +673,7 @@ namespace stdex
 	/// \return Offset to the last occurence of chr code unit or stdex::npos if not found.
 	///
 	template <class T, size_t N>
-	inline size_t strrnichr(
+	size_t strrnichr(
 		_In_ const T (&str)[N],
 		_In_ T chr,
 		_In_ const std::locale& locale)
@@ -689,7 +689,7 @@ namespace stdex
 	///// \return `true` if all characters are white-space or `false` when any non-white-space character is found in string.
 	/////
 	//template <class T>
-	//inline bool isblank(_In_z_ const T* str)
+	//bool isblank(_In_z_ const T* str)
 	//{
 	//	_Assume_(str);
 	//	for (size_t i = 0; str[i]; ++i)
@@ -707,7 +707,7 @@ namespace stdex
 	///// \return `true` if all characters are white-space or `false` when any non-white-space character is found in string.
 	/////
 	//template <class T>
-	//inline bool isblank(
+	//bool isblank(
 	//	_In_z_ const T* str,
 	//	_In_ const std::locale& locale)
 	//{
@@ -728,7 +728,7 @@ namespace stdex
 	/// \return `true` if all characters are white-space or `false` when any non-white-space character is found in string.
 	///
 	template <class T>
-	inline bool isblank(
+	bool isblank(
 		_In_reads_or_z_opt_(count) const T* str,
 		_In_ size_t count)
 	{
@@ -749,7 +749,7 @@ namespace stdex
 	/// \return `true` if all characters are white-space or `false` when any non-white-space character is found in string.
 	///
 	template <class T>
-	inline bool isblank(
+	bool isblank(
 		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
 		_In_ const std::locale& locale)
 	{
@@ -769,7 +769,7 @@ namespace stdex
 	/// \return `true` if all characters are white-space or `false` when any non-white-space character is found in string.
 	///
 	template <class T, size_t N>
-	inline bool isblank(_In_ const T (&str)[N])
+	bool isblank(_In_ const T (&str)[N])
 	{
 		return isblank(str, N);
 	}
@@ -783,7 +783,7 @@ namespace stdex
 	/// \return `true` if all characters are white-space or `false` when any non-white-space character is found in string.
 	///
 	template <class T, size_t N>
-	inline bool isblank(
+	bool isblank(
 		_In_ const T (&str)[N],
 		_In_ const std::locale& locale)
 	{
@@ -798,7 +798,7 @@ namespace stdex
 	// /// \return `true` if all characters are ASCII or `false` when any non-ASCII character is found in string.
 	// ///
 	// template <class T>
-	// inline bool is7bit(_In_z_ const T* str)
+	// bool is7bit(_In_z_ const T* str)
 	// {
 	// 	_Assume_(str);
 	// 	for (size_t i = 0; str[i]; i++)
@@ -816,7 +816,7 @@ namespace stdex
 	/// \return `true` if all characters are ASCII or `false` when any non-ASCII character is found in string.
 	///
 	template <class T>
-	inline bool is7bit(_In_reads_or_z_opt_(count) const T* str, _In_ size_t count)
+	bool is7bit(_In_reads_or_z_opt_(count) const T* str, _In_ size_t count)
 	{
 		_Assume_(str || !count);
 		for (size_t i = 0; i < count && str[i]; i++)
@@ -833,7 +833,7 @@ namespace stdex
 	/// \return `true` if all characters are ASCII or `false` when any non-ASCII character is found in string.
 	///
 	template <class T, size_t N>
-	inline bool is7bit(_In_ const T (&str)[N])
+	bool is7bit(_In_ const T (&str)[N])
 	{
 		return is7bit(str, N);
 	}
@@ -847,7 +847,7 @@ namespace stdex
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T1, class T2>
-	inline int strcmp(_In_z_ const T1* str1, _In_z_ const T2* str2)
+	int strcmp(_In_z_ const T1* str1, _In_z_ const T2* str2)
 	{
 		_Assume_(str1);
 		_Assume_(str2);
@@ -871,7 +871,7 @@ namespace stdex
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T1, class T2>
-	inline int strncmp(_In_reads_or_z_opt_(count) const T1* str1, _In_reads_or_z_opt_(count) const T2* str2, _In_ size_t count)
+	int strncmp(_In_reads_or_z_opt_(count) const T1* str1, _In_reads_or_z_opt_(count) const T2* str2, _In_ size_t count)
 	{
 		_Assume_(str1 || !count);
 		_Assume_(str2 || !count);
@@ -896,7 +896,7 @@ namespace stdex
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T1, class T2>
-	inline int strncmp(
+	int strncmp(
 		_In_reads_or_z_opt_(count1) const T1* str1, _In_ size_t count1,
 		_In_reads_or_z_opt_(count2) const T2* str2, _In_ size_t count2)
 	{
@@ -921,7 +921,7 @@ namespace stdex
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T1, size_t N1, class T2, size_t N2>
-	inline int strncmp(
+	int strncmp(
 		_In_ const T1 (&str1)[N1],
 		_In_ const T2 (&str2)[N2])
 	{
@@ -937,7 +937,7 @@ namespace stdex
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T1, class T2>
-	inline int strrcmp(_In_z_ const T1* str1, _In_z_ const T2* str2)
+	int strrcmp(_In_z_ const T1* str1, _In_z_ const T2* str2)
 	{
 		size_t
 			i = strlen(str1),
@@ -965,7 +965,7 @@ namespace stdex
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T1, class T2>
-	inline int strrncmp(_In_reads_or_z_opt_(count) const T1* str1, _In_reads_or_z_opt_(count) const T2* str2, _In_ size_t count)
+	int strrncmp(_In_reads_or_z_opt_(count) const T1* str1, _In_reads_or_z_opt_(count) const T2* str2, _In_ size_t count)
 	{
 		size_t
 			i = strnlen(str1, count),
@@ -994,7 +994,7 @@ namespace stdex
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T1, class T2>
-	inline int strrncmp(
+	int strrncmp(
 		_In_reads_or_z_opt_(count1) const T1* str1, _In_ size_t count1,
 		_In_reads_or_z_opt_(count2) const T2* str2, _In_ size_t count2)
 	{
@@ -1023,7 +1023,7 @@ namespace stdex
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T1, size_t N1, class T2, size_t N2>
-	inline int strrncmp(
+	int strrncmp(
 		_In_ const T1 (&str1)[N1],
 		_In_ const T2 (&str2)[N2])
 	{
@@ -1039,7 +1039,7 @@ namespace stdex
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T1, class T2>
-	inline int stricmp(_In_z_ const T1* str1, _In_z_ const T2* str2)
+	int stricmp(_In_z_ const T1* str1, _In_z_ const T2* str2)
 	{
 		_Assume_(str1);
 		_Assume_(str2);
@@ -1063,7 +1063,7 @@ namespace stdex
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T1, class T2>
-	inline int stricmp(_In_z_ const T1* str1, _In_z_ const T2* str2, _In_ const std::locale& locale)
+	int stricmp(_In_z_ const T1* str1, _In_z_ const T2* str2, _In_ const std::locale& locale)
 	{
 		_Assume_(str1);
 		_Assume_(str2);
@@ -1089,7 +1089,7 @@ namespace stdex
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T1, class T2>
-	inline int strnicmp(_In_reads_or_z_opt_(count) const T1* str1, _In_reads_or_z_opt_(count) const T2* str2, _In_ size_t count)
+	int strnicmp(_In_reads_or_z_opt_(count) const T1* str1, _In_reads_or_z_opt_(count) const T2* str2, _In_ size_t count)
 	{
 		_Assume_(str1 || !count);
 		_Assume_(str2 || !count);
@@ -1114,7 +1114,7 @@ namespace stdex
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T1, class T2>
-	inline int strnicmp(_In_reads_or_z_opt_(count) const T1* str1, _In_reads_or_z_opt_(count) const T2* str2, _In_ size_t count, _In_ const std::locale& locale)
+	int strnicmp(_In_reads_or_z_opt_(count) const T1* str1, _In_reads_or_z_opt_(count) const T2* str2, _In_ size_t count, _In_ const std::locale& locale)
 	{
 		_Assume_(str1 || !count);
 		_Assume_(str2 || !count);
@@ -1141,7 +1141,7 @@ namespace stdex
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T1, class T2>
-	inline int strnicmp(
+	int strnicmp(
 		_In_reads_or_z_opt_(count1) const T1* str1, _In_ size_t count1,
 		_In_reads_or_z_opt_(count2) const T2* str2, _In_ size_t count2)
 	{
@@ -1169,7 +1169,7 @@ namespace stdex
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T1, class T2>
-	inline int strnicmp(
+	int strnicmp(
 		_In_reads_or_z_opt_(count1) const T1* str1, _In_ size_t count1,
 		_In_reads_or_z_opt_(count2) const T2* str2, _In_ size_t count2,
 		_In_ const std::locale& locale)
@@ -1197,7 +1197,7 @@ namespace stdex
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T1, size_t N1, class T2, size_t N2>
-	inline int strnicmp(
+	int strnicmp(
 		_In_ const T1 (&str1)[N1],
 		_In_ const T2 (&str2)[N2])
 	{
@@ -1214,7 +1214,7 @@ namespace stdex
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T1, size_t N1, class T2, size_t N2>
-	inline int strnicmp(
+	int strnicmp(
 		_In_ const T1 (&str1)[N1],
 		_In_ const T2 (&str2)[N2],
 		_In_ const std::locale& locale)
@@ -1232,7 +1232,7 @@ namespace stdex
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T>
-	inline int strcoll(
+	int strcoll(
 		_In_z_ const T* str1,
 		_In_z_ const T* str2,
 		_In_ const std::locale& locale)
@@ -1255,7 +1255,7 @@ namespace stdex
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T>
-	inline int strncoll(
+	int strncoll(
 		_In_reads_or_z_opt_(count1) const T* str1, _In_ size_t count1,
 		_In_reads_or_z_opt_(count2) const T* str2, _In_ size_t count2,
 		_In_ const std::locale& locale)
@@ -1276,7 +1276,7 @@ namespace stdex
 	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
 	///
 	template <class T, size_t N1, size_t N2>
-	inline int strncoll(
+	int strncoll(
 		_In_ const T (&str1)[N1],
 		_In_ const T (&str2)[N2],
 		_In_ const std::locale& locale)
@@ -1293,7 +1293,7 @@ namespace stdex
 	/// \return Offset inside str where sample string is found; stdex::npos if not found
 	///
 	template <class T1, class T2>
-	inline size_t strstr(
+	size_t strstr(
 		_In_z_ const T1* str,
 		_In_z_ const T2* sample)
 	{
@@ -1321,7 +1321,7 @@ namespace stdex
 	/// \return Offset inside str where sample string is found; stdex::npos if not found
 	///
 	template <class T1, class T2>
-	inline size_t strnstr(
+	size_t strnstr(
 		_In_reads_or_z_opt_(count) const T1* str, _In_ size_t count,
 		_In_z_ const T2* sample)
 	{
@@ -1348,7 +1348,7 @@ namespace stdex
 	/// \return Offset inside str where sample string is found; stdex::npos if not found
 	///
 	template <class T1, size_t N1, class T2>
-	inline size_t strnstr(
+	size_t strnstr(
 		_In_ const T1 (&str)[N1],
 		_In_z_ const T2* sample)
 	{
@@ -1364,7 +1364,7 @@ namespace stdex
 	/// \return Offset inside str where sample string is found; stdex::npos if not found
 	///
 	template <class T1, class T2>
-	inline size_t stristr(
+	size_t stristr(
 		_In_z_ const T1* str,
 		_In_z_ const T2* sample)
 	{
@@ -1392,7 +1392,7 @@ namespace stdex
 	/// \return Offset inside str where sample string is found; stdex::npos if not found
 	///
 	template <class T1, class T2>
-	inline size_t stristr(
+	size_t stristr(
 		_In_z_ const T1* str,
 		_In_z_ const T2* sample,
 		_In_ const std::locale& locale)
@@ -1423,7 +1423,7 @@ namespace stdex
 	/// \return Offset inside str where sample string is found; stdex::npos if not found
 	///
 	template <class T1, class T2>
-	inline size_t strnistr(
+	size_t strnistr(
 		_In_reads_or_z_opt_(count) const T1* str,
 		_In_ size_t count,
 		_In_z_ const T2* sample)
@@ -1453,7 +1453,7 @@ namespace stdex
 	/// \return Offset inside str where sample string is found; stdex::npos if not found
 	///
 	template <class T1, class T2>
-	inline size_t strnistr(
+	size_t strnistr(
 		_In_reads_or_z_opt_(count) const T1* str,
 		_In_ size_t count,
 		_In_z_ const T2* sample,
@@ -1484,7 +1484,7 @@ namespace stdex
 	/// \return Offset inside str where sample string is found; stdex::npos if not found
 	///
 	template <class T1, size_t N1, class T2>
-	inline size_t strnistr(
+	size_t strnistr(
 		_In_ const T1 (&str)[N1],
 		_In_z_ const T2* sample)
 	{
@@ -1501,7 +1501,7 @@ namespace stdex
 	/// \return Offset inside str where sample string is found; stdex::npos if not found
 	///
 	template <class T1, size_t N1, class T2>
-	inline size_t strnistr(
+	size_t strnistr(
 		_In_ const T1 (&str)[N1],
 		_In_z_ const T2* sample,
 		_In_ const std::locale& locale)
@@ -1518,7 +1518,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
 	template <class T1, class T2>
-	inline size_t strcpy(
+	size_t strcpy(
 		_Out_writes_z_(_String_length_(src) + 1) T1* dst,
 		_In_z_ const T2* src)
 	{
@@ -1540,7 +1540,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
 	template <class T1, class T2>
-	inline size_t strncpy(
+	size_t strncpy(
 		_Out_writes_(count) _Post_maybez_ T1* dst,
 		_In_reads_or_z_opt_(count) const T2* src, _In_ size_t count)
 	{
@@ -1565,7 +1565,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
 	template <class T1, class T2>
-	inline size_t strncpy(
+	size_t strncpy(
 		_Out_writes_(count_dst) _Post_maybez_ T1* dst, _In_ size_t count_dst,
 		_In_reads_or_z_opt_(count_src) const T2* src, _In_ size_t count_src)
 	{
@@ -1593,7 +1593,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
 	template <class T1, size_t N1, class T2, size_t N2>
-	inline size_t strncpy(
+	size_t strncpy(
 		_Out_ _Post_maybez_ T1 (&dst)[N1],
 		_In_ const T2 (&src)[N2])
 	{
@@ -1609,7 +1609,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
 	template <class T1, class T2>
-	inline size_t strcat(
+	size_t strcat(
 		_In_z_ _Out_writes_z_(_String_length_(dst) + _String_length_(src) + 1) T1* dst,
 		_In_z_ const T2* src)
 	{
@@ -1631,7 +1631,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
 	template <class T1, class T2>
-	inline size_t strncat(
+	size_t strncat(
 		_Inout_z_ T1* dst,
 		_In_reads_or_z_opt_(count) const T2* src, _In_ size_t count)
 	{
@@ -1656,7 +1656,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
 	template <class T1, class T2>
-	inline size_t strncat(
+	size_t strncat(
 		_Out_writes_(count_dst) _Post_maybez_ T1* dst, _In_ size_t count_dst,
 		_In_reads_or_z_opt_(count_src) const T2* src, _In_ size_t count_src)
 	{
@@ -1686,7 +1686,7 @@ namespace stdex
 	/// \return Pointer to duplicated string; or nullptr if str is nullptr. Use delete[] operator to free the memory.
 	///
 	template <class T>
-	inline _Check_return_ _Ret_maybenull_z_ T* strdup(_In_opt_z_ const T* str)
+	_Check_return_ _Ret_maybenull_z_ T* strdup(_In_opt_z_ const T* str)
 	{
 		if (!str) _Unlikely_
 			return nullptr;
@@ -1708,7 +1708,7 @@ namespace stdex
 	/// \return Pointer to duplicated string. Use delete[] operator to free the memory.
 	///
 	template <class T>
-	inline _Ret_z_ T* strndup(
+	_Ret_z_ T* strndup(
 		_In_reads_or_z_opt_(count) const T* str,
 		_In_ size_t count)
 	{
@@ -1728,7 +1728,7 @@ namespace stdex
 	/// \return Pointer to duplicated string; or nullptr if str is nullptr. Use delete[] operator to free the memory.
 	///
 	template <class T, size_t N>
-	inline _Check_return_ _Ret_maybenull_z_ T* strndup(_In_ const T (&str)[N])
+	_Check_return_ _Ret_maybenull_z_ T* strndup(_In_ const T (&str)[N])
 	{
 		return strndup(str, N);
 	}
@@ -1743,7 +1743,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
 	template <class T>
-	inline size_t crlf2nl(_Out_writes_z_(_String_length_(src) + 1) T* dst, _In_z_ const T* src)
+	size_t crlf2nl(_Out_writes_z_(_String_length_(src) + 1) T* dst, _In_z_ const T* src)
 	{
 		_Assume_(dst);
 		_Assume_(src);
@@ -1767,7 +1767,7 @@ namespace stdex
 	/// \param[in] src  Source string. Must not be dst.data().
 	///
 	template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
-	inline void crlf2nl(_Inout_ std::basic_string<T, TR, AX>& dst, _In_z_ const T* src)
+	void crlf2nl(_Inout_ std::basic_string<T, TR, AX>& dst, _In_z_ const T* src)
 	{
 		_Assume_(src);
 		_Assume_(src != dst.data());
@@ -1789,7 +1789,7 @@ namespace stdex
 	/// \param[in] str  String to convert
 	///
 	template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
-	inline void crlf2nl(_Inout_ std::basic_string<T, TR, AX>& str)
+	void crlf2nl(_Inout_ std::basic_string<T, TR, AX>& str)
 	{
 		size_t i, j, n;
 		for (i = j = 0, n = str.size(); j < n;) {
@@ -1805,7 +1805,7 @@ namespace stdex
 
 	/// \cond internal
 	template <class T, class T_bin>
-	inline T_bin strtoint(
+	T_bin strtoint(
 		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
 		_Out_opt_ size_t* end,
 		_In_ int radix,
@@ -1991,7 +1991,7 @@ namespace stdex
 	/// \return Binary integer value
 	///
 	template <class T, class T_bin>
-	inline T_bin strtouint(
+	T_bin strtouint(
 		_In_reads_or_z_opt_(count) const T* str,
 		_In_ size_t count,
 		_Out_opt_ size_t* end,
@@ -2023,7 +2023,7 @@ namespace stdex
 	/// \return Binary integer value
 	///
 	template <class T, size_t N, class T_bin>
-	inline T_bin strtouint(
+	T_bin strtouint(
 		_In_ const T (&str)[N],
 		_Out_opt_ size_t* end,
 		_In_ int radix)
@@ -2042,7 +2042,7 @@ namespace stdex
 	/// \return Binary integer value
 	///
 	template <class T>
-	inline int32_t strto32(
+	int32_t strto32(
 		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
 		_Out_opt_ size_t* end,
 		_In_ int radix)
@@ -2060,7 +2060,7 @@ namespace stdex
 	/// \return Binary integer value
 	///
 	template <class T, size_t N>
-	inline int32_t strto32(
+	int32_t strto32(
 		_In_ const T (&str)[N],
 		_Out_opt_ size_t* end,
 		_In_ int radix)
@@ -2079,7 +2079,7 @@ namespace stdex
 	/// \return Binary integer value
 	///
 	template <class T>
-	inline int64_t strto64(
+	int64_t strto64(
 		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
 		_Out_opt_ size_t* end,
 		_In_ int radix)
@@ -2097,7 +2097,7 @@ namespace stdex
 	/// \return Binary integer value
 	///
 	template <class T, size_t N>
-	inline int64_t strto64(
+	int64_t strto64(
 		_In_ const T (&str)[N],
 		_Out_opt_ size_t* end,
 		_In_ int radix)
@@ -2117,7 +2117,7 @@ namespace stdex
 	/// \return Binary integer value
 	///
 	template <class T>
-	inline ptrdiff_t strtoi(
+	ptrdiff_t strtoi(
 		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
 		_Out_opt_ size_t* end,
 		_In_ int radix)
@@ -2140,7 +2140,7 @@ namespace stdex
 	/// \return Binary integer value
 	///
 	template <class T, size_t N>
-	inline ptrdiff_t strtoi(
+	ptrdiff_t strtoi(
 		_In_ const T (&str)[N],
 		_Out_opt_ size_t* end,
 		_In_ int radix)
@@ -2159,7 +2159,7 @@ namespace stdex
 	/// \return Binary integer value
 	///
 	template <class T>
-	inline uint32_t strtou32(
+	uint32_t strtou32(
 		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
 		_Out_opt_ size_t* end,
 		_In_ int radix)
@@ -2177,7 +2177,7 @@ namespace stdex
 	/// \return Binary integer value
 	///
 	template <class T, size_t N>
-	inline uint32_t strtou32(
+	uint32_t strtou32(
 		_In_ const T (&str)[N],
 		_Out_opt_ size_t* end,
 		_In_ int radix)
@@ -2196,7 +2196,7 @@ namespace stdex
 	/// \return Binary integer value
 	///
 	template <class T>
-	inline uint64_t strtou64(
+	uint64_t strtou64(
 		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
 		_Out_opt_ size_t* end,
 		_In_ int radix)
@@ -2214,7 +2214,7 @@ namespace stdex
 	/// \return Binary integer value
 	///
 	template <class T, size_t N>
-	inline uint64_t strtou64(
+	uint64_t strtou64(
 		_In_ const T (&str)[N],
 		_Out_opt_ size_t* end,
 		_In_ int radix)
@@ -2234,7 +2234,7 @@ namespace stdex
 	/// \return Binary integer value
 	///
 	template <class T>
-	inline size_t strtoui(
+	size_t strtoui(
 		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
 		_Out_opt_ size_t* end,
 		_In_ int radix)
@@ -2257,7 +2257,7 @@ namespace stdex
 	/// \return Binary integer value
 	///
 	template <class T, size_t N>
-	inline size_t strtoui(
+	size_t strtoui(
 		_In_ const T (&str)[N],
 		_Out_opt_ size_t* end,
 		_In_ int radix)
@@ -2360,7 +2360,7 @@ namespace stdex
 	/// \return Number of appended code units
 	///
 	template<class T, class TR, class AX>
-	inline size_t vappendf(_Inout_ std::basic_string<T, TR, AX>& str, _In_z_ _Printf_format_string_params_(2) const T* format, _In_opt_ locale_t locale, _In_ va_list arg)
+	size_t vappendf(_Inout_ std::basic_string<T, TR, AX>& str, _In_z_ _Printf_format_string_params_(2) const T* format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
 		T buf[1024 / sizeof(T)];
 
@@ -2419,7 +2419,7 @@ namespace stdex
 	/// \return Number of appended code units
 	///
 	template<class T, class TR, class AX>
-	inline size_t appendf(_Inout_ std::basic_string<T, TR, AX>& str, _In_z_ _Printf_format_string_params_(2) const T* format, _In_opt_ locale_t locale, ...)
+	size_t appendf(_Inout_ std::basic_string<T, TR, AX>& str, _In_z_ _Printf_format_string_params_(2) const T* format, _In_opt_ locale_t locale, ...)
 	{
 		va_list arg;
 		va_start(arg, locale);
@@ -2437,7 +2437,7 @@ namespace stdex
 	/// \param[in ] arg     Arguments to `format`
 	///
 	template<class T, class TR, class AX>
-	inline void vsprintf(_Inout_ std::basic_string<T, TR, AX>& str, _In_z_ _Printf_format_string_params_(2) const T* format, _In_opt_ locale_t locale, _In_ va_list arg)
+	void vsprintf(_Inout_ std::basic_string<T, TR, AX>& str, _In_z_ _Printf_format_string_params_(2) const T* format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
 		str.clear();
 		vappendf(str, format, locale, arg);
@@ -2451,7 +2451,7 @@ namespace stdex
 	/// \param[in ] locale  Stdlib locale used to perform formatting. Use `NULL` to use locale globally set by `setlocale()`.
 	///
 	template<class T, class TR, class AX>
-	inline void sprintf(_Inout_ std::basic_string<T, TR, AX>& str, _In_z_ _Printf_format_string_params_(2) const T* format, _In_opt_ locale_t locale, ...)
+	void sprintf(_Inout_ std::basic_string<T, TR, AX>& str, _In_z_ _Printf_format_string_params_(2) const T* format, _In_opt_ locale_t locale, ...)
 	{
 		va_list arg;
 		va_start(arg, locale);
@@ -2469,7 +2469,7 @@ namespace stdex
 	/// \returns Formatted string
 	///
 	template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
-	inline std::basic_string<T, TR, AX> vsprintf(_In_z_ _Printf_format_string_params_(2) const T* format, _In_opt_ locale_t locale, _In_ va_list arg)
+	std::basic_string<T, TR, AX> vsprintf(_In_z_ _Printf_format_string_params_(2) const T* format, _In_opt_ locale_t locale, _In_ va_list arg)
 	{
 		std::basic_string<T, TR, AX> str;
 		vappendf(str, format, locale, arg);
@@ -2485,7 +2485,7 @@ namespace stdex
 	/// \returns Formatted string
 	///
 	template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
-	inline std::basic_string<T, TR, AX> sprintf(_In_z_ _Printf_format_string_params_(2) const T* format, _In_opt_ locale_t locale, ...)
+	std::basic_string<T, TR, AX> sprintf(_In_z_ _Printf_format_string_params_(2) const T* format, _In_opt_ locale_t locale, ...)
 	{
 		va_list arg;
 		va_start(arg, locale);
@@ -2523,7 +2523,7 @@ namespace stdex
 	/// \param[in ] locale  Stdlib locale used to perform formatting. Use `NULL` to use locale globally set by `setlocale()`.
 	///
 	template<class T, class TR, class AX>
-	inline void strcatftime(_Inout_ std::basic_string<T, TR, AX>& str, _In_z_ _Printf_format_string_ const T* format, _In_ const struct tm* time, _In_opt_ locale_t locale)
+	void strcatftime(_Inout_ std::basic_string<T, TR, AX>& str, _In_z_ _Printf_format_string_ const T* format, _In_ const struct tm* time, _In_opt_ locale_t locale)
 	{
 		T buf[1024 / sizeof(T)];
 
@@ -2555,7 +2555,7 @@ namespace stdex
 	/// \param[in ] locale  Stdlib locale used to perform formatting. Use `NULL` to use locale globally set by `setlocale()`.
 	///
 	template<class T, class TR, class AX>
-	inline void strftime(_Inout_ std::basic_string<T, TR, AX>& str, _In_z_ _Printf_format_string_ const T* format, _In_ const struct tm* time, _In_opt_ locale_t locale)
+	void strftime(_Inout_ std::basic_string<T, TR, AX>& str, _In_z_ _Printf_format_string_ const T* format, _In_ const struct tm* time, _In_opt_ locale_t locale)
 	{
 		str.clear();
 		strcatftime(str, format, time, locale);
@@ -2571,7 +2571,7 @@ namespace stdex
 	/// \returns Formatted string
 	///
 	template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
-	inline std::basic_string<T, TR, AX> strftime(_In_z_ _Printf_format_string_ const T* format, _In_ const struct tm* time, _In_opt_ locale_t locale)
+	std::basic_string<T, TR, AX> strftime(_In_z_ _Printf_format_string_ const T* format, _In_ const struct tm* time, _In_opt_ locale_t locale)
 	{
 		std::basic_string<T, TR, AX> str;
 		strcatftime(str, format, time, locale);
@@ -2584,7 +2584,7 @@ namespace stdex
 	///// \param[in,out] str  String
 	/////
 	//template<class T>
-	//inline void strlwr(_Inout_z_ T* str)
+	//void strlwr(_Inout_z_ T* str)
 	//{
 	//	_Assume_(str);
 	//	for (size_t i = 0; str[i]; ++i)
@@ -2598,7 +2598,7 @@ namespace stdex
 	///// \param[in]     locale  C++ locale to use
 	/////
 	//template<class T>
-	//inline void strlwr(_Inout_z_ T* str, _In_ const std::locale& locale)
+	//void strlwr(_Inout_z_ T* str, _In_ const std::locale& locale)
 	//{
 	//	_Assume_(str);
 	//	const auto& ctype = std::use_facet<std::ctype<T>>(locale);
@@ -2613,7 +2613,7 @@ namespace stdex
 	/// \param[in]     count  Code unit limit
 	///
 	template<class T>
-	inline void strlwr(_Inout_updates_z_(count) T* str, _In_ size_t count)
+	void strlwr(_Inout_updates_z_(count) T* str, _In_ size_t count)
 	{
 		_Assume_(str || !count);
 		for (size_t i = 0; i < count && str[i]; ++i)
@@ -2628,7 +2628,7 @@ namespace stdex
 	/// \param[in]     locale  C++ locale to use
 	///
 	template<class T>
-	inline void strlwr(_Inout_updates_z_(count) T* str, _In_ size_t count, _In_ const std::locale& locale)
+	void strlwr(_Inout_updates_z_(count) T* str, _In_ size_t count, _In_ const std::locale& locale)
 	{
 		_Assume_(str || !count);
 		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
@@ -2642,7 +2642,7 @@ namespace stdex
 	/// \param[in,out] str  String
 	///
 	template<class T, size_t N>
-	inline void strlwr(_Inout_ T (&str)[N])
+	void strlwr(_Inout_ T (&str)[N])
 	{
 		strlwr(str, N);
 	}
@@ -2654,7 +2654,7 @@ namespace stdex
 	/// \param[in]     locale  C++ locale to use
 	///
 	template<class T, size_t N>
-	inline void strlwr(_Inout_ T (&str)[N], _In_ const std::locale& locale)
+	void strlwr(_Inout_ T (&str)[N], _In_ const std::locale& locale)
 	{
 		strlwr(str, N, locale);
 	}
@@ -2665,7 +2665,7 @@ namespace stdex
 	/// \param[in,out] str String
 	///
 	template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
-	inline void strlwr(_Inout_ std::basic_string<T, TR, AX>& str)
+	void strlwr(_Inout_ std::basic_string<T, TR, AX>& str)
 	{
 		for (auto& c : str)
 			c = tolower(c);
@@ -2678,7 +2678,7 @@ namespace stdex
 	/// \param[in]     locale  C++ locale to use
 	///
 	template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
-	inline void strlwr(_Inout_ std::basic_string<T, TR, AX>& str, _In_ const std::locale& locale)
+	void strlwr(_Inout_ std::basic_string<T, TR, AX>& str, _In_ const std::locale& locale)
 	{
 		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
 		for (auto& c : str)
@@ -2691,7 +2691,7 @@ namespace stdex
 	///// \param[in,out] str  String
 	/////
 	//template<class T>
-	//inline void strupr(_Inout_z_ T* str)
+	//void strupr(_Inout_z_ T* str)
 	//{
 	//	_Assume_(str);
 	//	for (size_t i = 0; str[i]; ++i)
@@ -2705,7 +2705,7 @@ namespace stdex
 	///// \param[in]     locale  C++ locale to use
 	/////
 	//template<class T>
-	//inline void strupr(_Inout_z_ T* str, _In_ const std::locale& locale)
+	//void strupr(_Inout_z_ T* str, _In_ const std::locale& locale)
 	//{
 	//	_Assume_(str);
 	//	const auto& ctype = std::use_facet<std::ctype<T>>(locale);
@@ -2720,7 +2720,7 @@ namespace stdex
 	/// \param[in]     count  Code unit limit
 	///
 	template<class T>
-	inline void strupr(_Inout_updates_z_(count) T* str, _In_ size_t count)
+	void strupr(_Inout_updates_z_(count) T* str, _In_ size_t count)
 	{
 		_Assume_(str || !count);
 		for (size_t i = 0; i < count && str[i]; ++i)
@@ -2735,7 +2735,7 @@ namespace stdex
 	/// \param[in]     locale  C++ locale to use
 	///
 	template<class T>
-	inline void strupr(_Inout_updates_z_(count) T* str, _In_ size_t count, _In_ const std::locale& locale)
+	void strupr(_Inout_updates_z_(count) T* str, _In_ size_t count, _In_ const std::locale& locale)
 	{
 		_Assume_(str || !count);
 		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
@@ -2749,7 +2749,7 @@ namespace stdex
 	/// \param[in,out] str  String
 	///
 	template<class T, size_t N>
-	inline void strupr(_Inout_ T (&str)[N])
+	void strupr(_Inout_ T (&str)[N])
 	{
 		return strupr(str, N);
 	}
@@ -2761,7 +2761,7 @@ namespace stdex
 	/// \param[in]     locale  C++ locale to use
 	///
 	template<class T, size_t N>
-	inline void strupr(_Inout_ T (&str)[N], _In_ const std::locale& locale)
+	void strupr(_Inout_ T (&str)[N], _In_ const std::locale& locale)
 	{
 		return strupr(str, N, locale);
 	}
@@ -2772,7 +2772,7 @@ namespace stdex
 	/// \param[in,out] str  String
 	///
 	template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
-	inline void strupr(_Inout_ std::basic_string<T, TR, AX>& str)
+	void strupr(_Inout_ std::basic_string<T, TR, AX>& str)
 	{
 		for (auto& c : str)
 			c = toupper(c);
@@ -2785,7 +2785,7 @@ namespace stdex
 	/// \param[in]     locale  C++ locale to use
 	///
 	template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
-	inline void strupr(_Inout_ std::basic_string<T, TR, AX>& str, _In_ const std::locale& locale)
+	void strupr(_Inout_ std::basic_string<T, TR, AX>& str, _In_ const std::locale& locale)
 	{
 		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
 		for (auto& c : str)
@@ -2801,7 +2801,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the string after the operation.
 	///
 	template<class T>
-	inline size_t ltrim(
+	size_t ltrim(
 		_Inout_z_count_(count) T* str, _In_ size_t count)
 	{
 		for (size_t i = 0;; ++i) {
@@ -2833,7 +2833,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the string after the operation.
 	///
 	template<class T>
-	inline size_t ltrim(
+	size_t ltrim(
 		_Inout_z_count_(count) T* str, _In_ size_t count,
 		_In_ const std::locale& locale)
 	{
@@ -2863,7 +2863,7 @@ namespace stdex
 	/// \param[in,out] s  String to trim
 	///
 	template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
-	inline void ltrim(_Inout_ std::basic_string<T, TR, AX>& s)
+	void ltrim(_Inout_ std::basic_string<T, TR, AX>& s)
 	{
 		s.erase(
 			s.begin(),
@@ -2880,7 +2880,7 @@ namespace stdex
 	/// \param[in]     locale  C++ locale to use
 	///
 	template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
-	inline void ltrim(_Inout_ std::basic_string<T, TR, AX>& s, _In_ const std::locale& locale)
+	void ltrim(_Inout_ std::basic_string<T, TR, AX>& s, _In_ const std::locale& locale)
 	{
 		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
 		s.erase(
@@ -2900,7 +2900,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the string after the operation.
 	///
 	template<class T>
-	inline size_t rtrim(
+	size_t rtrim(
 		_Inout_z_count_(count) T* str, _In_ size_t count)
 	{
 		for (size_t i = 0, j = 0;;) {
@@ -2925,7 +2925,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the string after the operation.
 	///
 	template<class T>
-	inline size_t rtrim(
+	size_t rtrim(
 		_Inout_z_count_(count) T* str, _In_ size_t count,
 		_In_ const std::locale& locale)
 	{
@@ -2948,7 +2948,7 @@ namespace stdex
 	/// \param[in,out] s  String to trim
 	///
 	template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
-	static inline void rtrim(_Inout_ std::basic_string<T, TR, AX>& s)
+	void rtrim(_Inout_ std::basic_string<T, TR, AX>& s)
 	{
 		s.erase(
 			std::find_if(
@@ -2965,7 +2965,7 @@ namespace stdex
 	/// \param[in]     locale  C++ locale to use
 	///
 	template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
-	static inline void rtrim(_Inout_ std::basic_string<T, TR, AX>& s, _In_ const std::locale& locale)
+	void rtrim(_Inout_ std::basic_string<T, TR, AX>& s, _In_ const std::locale& locale)
 	{
 		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
 		s.erase(
@@ -2985,7 +2985,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the string after the operation.
 	///
 	template<class T>
-	inline size_t trim(
+	size_t trim(
 		_Inout_z_count_(count) T* str, _In_ size_t count)
 	{
 		return ltrim(str, rtrim(str, count));
@@ -3001,7 +3001,7 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the string after the operation.
 	///
 	template<class T>
-	inline size_t trim(
+	size_t trim(
 		_Inout_z_count_(count) T* str, _In_ size_t count,
 		_In_ const std::locale& locale)
 	{
@@ -3014,7 +3014,7 @@ namespace stdex
 	/// \param[in,out] s  String to trim
 	///
 	template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
-	static inline void trim(_Inout_ std::basic_string<T, TR, AX>& s)
+	void trim(_Inout_ std::basic_string<T, TR, AX>& s)
 	{
 		auto nonspace = [&](_In_ T ch) { return !isspace(ch); };
 		s.erase(
@@ -3038,7 +3038,7 @@ namespace stdex
 	/// \param[in]     locale  C++ locale to use
 	///
 	template<class T, class TR = std::char_traits<T>, class AX = std::allocator<T>>
-	static inline void trim(_Inout_ std::basic_string<T, TR, AX>& s, _In_ const std::locale& locale)
+	void trim(_Inout_ std::basic_string<T, TR, AX>& s, _In_ const std::locale& locale)
 	{
 		const auto& ctype = std::use_facet<std::ctype<T>>(locale);
 		auto nonspace = [&](_In_ T ch) { return !ctype.is(ctype.space, ch); };
