@@ -207,15 +207,28 @@ namespace stdex
 	/// \param[in] glyph  Start of a glyph
 	/// \param[in] count  Code unit limit
 	///
-	inline size_t glyphlen(_In_reads_or_z_opt_(count) const wchar_t* glyph, _In_ size_t count)
+	inline size_t glyphlen(_In_reads_or_z_opt_(count) const utf16_t* glyph, _In_ size_t count)
 	{
 		_Assume_(glyph || !count);
 		if (count) {
-#ifdef _WIN32
 			size_t i = count < 2 || !is_surrogate_pair(glyph) ? 1 : 2;
-#else
+			for (; i < count && iscombining(glyph[i]); ++i);
+			return i;
+		}
+		return 0;
+	}
+
+	///
+	/// Return number of code units the glyph represents
+	///
+	/// \param[in] glyph  Start of a glyph
+	/// \param[in] count  Code unit limit
+	///
+	inline size_t glyphlen(_In_reads_or_z_opt_(count) const utf32_t* glyph, _In_ size_t count)
+	{
+		_Assume_(glyph || !count);
+		if (count) {
 			size_t i = 1;
-#endif
 			for (; i < count && iscombining(glyph[i]); ++i);
 			return i;
 		}
@@ -228,17 +241,28 @@ namespace stdex
 	/// \param[in] str    Start of a string
 	/// \param[in] count  Length of a string in code units
 	///
-	inline size_t glyphrlen(_In_reads_or_z_opt_(count) const wchar_t* str, _In_ size_t count)
+	inline size_t glyphrlen(_In_reads_or_z_opt_(count) const utf16_t* str, _In_ size_t count)
 	{
 		_Assume_(count && str && str[count - 1]);
 		for (size_t i = count; i--;) {
-			if (!iscombining(str[i])) {
-#ifdef _WIN32
+			if (!iscombining(str[i]))
 				return count - (!is_low_surrogate(str[i]) || i == 0 || !is_high_surrogate(str[i - 1]) ? i : i - 1);
-#else
-				return count - i;
-#endif
-			}
+		}
+		return count;
+	}
+
+	///
+	/// Return number of code units the last glyph in the string represents
+	///
+	/// \param[in] str    Start of a string
+	/// \param[in] count  Length of a string in code units
+	///
+	inline size_t glyphrlen(_In_reads_or_z_opt_(count) const utf32_t* str, _In_ size_t count)
+	{
+		_Assume_(count && str && str[count - 1]);
+		for (size_t i = count; i--;) {
+			if (!iscombining(str[i]))
+				return count - (i == 0 ? i : i - 1);
 		}
 		return count;
 	}
@@ -924,6 +948,61 @@ namespace stdex
 	int strncmp(
 		_In_ const T1 (&str1)[N1],
 		_In_ const T2 (&str2)[N2])
+	{
+		return strncmp(str1, N1, str2, N2);
+	}
+
+	///
+	/// Binary compare two strings
+	///
+	/// \param[in] str1    String 1
+	/// \param[in] count1  String 1 code unit count limit
+	/// \param[in] str2    String 2
+	/// \param[in] count2  String 2 code unit count limit
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	inline int strncmp(
+		_In_reads_or_z_opt_(count1) const utf32_t* str1, _In_ size_t count1,
+		_In_reads_or_z_opt_(count2) const utf16_t* str2, _In_ size_t count2)
+	{
+		_Assume_(str1 || !count1);
+		_Assume_(str2 || !count2);
+		size_t i, j, j_next; utf32_t a, b;
+		for (i = 0, j = 0; i < count1 && j < count2; ++i, j = j_next) {
+			a = str1[i];
+			if (!a)
+				break;
+			if (j + 1 >= count2 || !is_surrogate_pair(&str2[j])) {
+				b = static_cast<utf32_t>(str2[j]);
+				j_next = j + 1;
+			}
+			else {
+				b = surrogate_pair_to_ucs4(&str2[j]);
+				j_next = j + 2;
+			}
+			if (!b)
+				break;
+			if (a > b) return +1;
+			if (a < b) return -1;
+		}
+		if (i < count1 && str1[i]) return +1;
+		if (j < count2 && str2[j]) return -1;
+		return 0;
+	}
+
+	///
+	/// Binary compare two strings
+	///
+	/// \param[in] str1  String 1
+	/// \param[in] str2  String 2
+	///
+	/// \return Negative if str1<str2; positive if str1>str2; zero if str1==str2
+	///
+	template <size_t N1, size_t N2>
+	int strncmp(
+		_In_ const utf32_t (&str1)[N1],
+		_In_ const utf16_t (&str2)[N2])
 	{
 		return strncmp(str1, N1, str2, N2);
 	}

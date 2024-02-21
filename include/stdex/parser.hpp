@@ -127,7 +127,8 @@ namespace stdex
 				_In_ int flags = match_default) = 0;
 
 			/// \cond internal
-			const wchar_t* next_sgml_cp(_In_ const char* text, _In_ size_t start, _In_ size_t end, _Out_ size_t& chr_end, _Out_ wchar_t(&buf)[3])
+			template <class T = wchar_t>
+			const T* next_sgml_cp(_In_ const char* text, _In_ size_t start, _In_ size_t end, _Out_ size_t& chr_end, _Out_ T(&buf)[5])
 			{
 				if (text[start] == '&') {
 					// Potential entity start
@@ -139,31 +140,9 @@ namespace stdex
 						}
 						if (text[chr_end] == ';') {
 							// Entity end
+							utf32_t buf32[2];
 							size_t n = chr_end - start - 1;
-							if (n >= 2 && text[start + 1] == '#') {
-								// Numerical entity
-								utf32_t unicode;
-								if (text[start + 2] == 'x' || text[start + 2] == 'X')
-									unicode = static_cast<utf32_t>(strtou32(text + start + 3, n - 2, nullptr, 16));
-								else
-									unicode = static_cast<utf32_t>(strtou32(text + start + 2, n - 1, nullptr, 10));
-#ifdef _WIN32
-								if (unicode < 0x10000) {
-									buf[0] = (wchar_t)unicode;
-									buf[1] = 0;
-								}
-								else {
-									ucs4_to_surrogate_pair(buf, unicode);
-									buf[2] = 0;
-								}
-#else
-								buf[0] = (wchar_t)unicode;
-								buf[1] = 0;
-#endif
-								chr_end++;
-								return buf;
-							}
-							const wchar_t* entity_w = sgml2uni(text + start + 1, n);
+							auto entity_w = utf32_to_wstr(sgml2uni(text + start + 1, n, buf32), buf);
 							if (entity_w) {
 								chr_end++;
 								return entity_w;
@@ -361,7 +340,7 @@ namespace stdex
 				m_invert(invert)
 			{
 				_Assume_(chr || !count);
-				wchar_t buf[3];
+				wchar_t buf[5];
 				size_t chr_end;
 				m_chr.assign(count ? next_sgml_cp(chr, 0, count, chr_end, buf) : L"");
 			}
@@ -375,7 +354,7 @@ namespace stdex
 			{
 				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
-					wchar_t buf[3];
+					wchar_t buf[5];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					bool r = ((flags & match_case_insensitive) ?
 						stdex::strnicmp(chr, stdex::strlen(chr), m_chr.data(), m_chr.size(), m_locale) :
@@ -456,7 +435,7 @@ namespace stdex
 			{
 				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
-					wchar_t buf[3];
+					wchar_t buf[5];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* chr_end = chr + stdex::strlen(chr);
 					bool r =
@@ -534,7 +513,7 @@ namespace stdex
 			{
 				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
-					wchar_t buf[3];
+					wchar_t buf[5];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* chr_end = chr + stdex::strlen(chr);
 					bool r = std::use_facet<std::ctype<wchar_t>>(m_locale).scan_not(std::ctype_base::punct, chr, chr_end) == chr_end;
@@ -611,7 +590,7 @@ namespace stdex
 			{
 				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
-					wchar_t buf[3];
+					wchar_t buf[5];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* chr_end = chr + stdex::strlen(chr);
 					bool r =
@@ -807,7 +786,7 @@ namespace stdex
 			{
 				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
-					wchar_t buf[3];
+					wchar_t buf[5];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* set = m_set.data();
 					size_t r = (flags & match_case_insensitive) ?
@@ -906,7 +885,7 @@ namespace stdex
 						this->interval.invalidate();
 						return false;
 					}
-					wchar_t buf[3];
+					wchar_t buf[5];
 					const wchar_t* chr = next_sgml_cp(text, this->interval.end, end, this->interval.end, buf);
 					for (; *chr; ++str, ++chr) {
 						if (!*str ||
@@ -2551,7 +2530,7 @@ namespace stdex
 			{
 				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
-					wchar_t buf[3];
+					wchar_t buf[5];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* chr_end = chr + stdex::strlen(chr);
 					if (((chr[0] == L'-' ||
@@ -2865,7 +2844,7 @@ namespace stdex
 			{
 				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
-					wchar_t buf[3];
+					wchar_t buf[5];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* chr_end = chr + stdex::strlen(chr);
 					if ((('A' <= chr[0] && chr[0] <= 'Z') ||
@@ -3041,7 +3020,7 @@ namespace stdex
 			{
 				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
-					wchar_t buf[3];
+					wchar_t buf[5];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* chr_end = chr + stdex::strlen(chr);
 					if (((chr[0] == L'-' ||
@@ -3143,7 +3122,7 @@ namespace stdex
 			{
 				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
-					wchar_t buf[3];
+					wchar_t buf[5];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* chr_end = chr + stdex::strlen(chr);
 					if (((chr[0] == L'-' ||
@@ -3249,7 +3228,7 @@ namespace stdex
 			{
 				_Assume_(text || start >= end);
 				if (start < end && text[start]) {
-					wchar_t buf[3];
+					wchar_t buf[5];
 					const wchar_t* chr = next_sgml_cp(text, start, end, this->interval.end, buf);
 					const wchar_t* chr_end = chr + stdex::strlen(chr);
 					if (((chr[0] == L'/' ||

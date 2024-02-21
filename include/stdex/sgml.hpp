@@ -23,30 +23,61 @@ namespace stdex
 {
 	/// \cond internal
 	template <class T>
-	const wchar_t* sgml2uni(_In_reads_or_z_(count) const T* entity, _In_ size_t count)
+	const utf32_t* sgml2uni(_In_reads_or_z_(count) const T* entity, _In_ size_t count, utf32_t buf[2])
 	{
 		_Assume_(entity && count);
-		_Assume_(count < 2 || entity[0] != '#'); // No numeric entities
 
-		for (size_t i = 0, j = _countof(sgml_unicode); i < j; ) {
-			size_t m = (i + j) / 2;
-			if (sgml_unicode[m].sgml[0] < entity[0])
-				i = m + 1;
-			else if (sgml_unicode[m].sgml[0] > entity[0])
-				j = m;
-			else {
-				auto r = strncmp<char, T>(sgml_unicode[m].sgml + 1, _countof(sgml_unicode[0].sgml) - 1, entity + 1, count - 1);
-				if (r < 0)
+		if (count < 2 || entity[0] != '#') {
+			for (size_t i = 0, j = _countof(sgml_unicode); i < j; ) {
+				size_t m = (i + j) / 2;
+				if (sgml_unicode[m].sgml[0] < entity[0])
 					i = m + 1;
-				else if (r > 0)
+				else if (sgml_unicode[m].sgml[0] > entity[0])
 					j = m;
 				else {
-					for (; i < m && strncmp<char, T>(sgml_unicode[m - 1].sgml, _countof(sgml_unicode[0].sgml), entity, count) == 0; m--);
-					return sgml_unicode[m].unicode;
+					auto r = strncmp<char, T>(sgml_unicode[m].sgml + 1, _countof(sgml_unicode[0].sgml) - 1, entity + 1, count - 1);
+					if (r < 0)
+						i = m + 1;
+					else if (r > 0)
+						j = m;
+					else {
+						for (; i < m && strncmp<char, T>(sgml_unicode[m - 1].sgml, _countof(sgml_unicode[0].sgml), entity, count) == 0; m--);
+						return sgml_unicode[m].unicode;
+					}
 				}
 			}
+			return nullptr;
 		}
-		return nullptr;
+
+		buf[0] = entity[1] == 'x' || entity[1] == 'X' ?
+			static_cast<utf32_t>(strtou32(&entity[2], count - 2, nullptr, 16)) :
+			static_cast<utf32_t>(strtou32(&entity[1], count - 1, nullptr, 10));
+		buf[1] = 0;
+		return buf;
+	}
+
+	inline const utf16_t* utf32_to_wstr(_In_opt_z_ const utf32_t* str, utf16_t* buf)
+	{
+		if (!str)
+			return nullptr;
+		for (size_t i = 0, j = 0;; ++i) {
+			if (!str[i]) {
+				buf[j] = 0;
+				return buf;
+			}
+			if (str[i] < 0x10000)
+				buf[j++] = static_cast<utf16_t>(str[i]);
+			else {
+				ucs4_to_surrogate_pair(&buf[j], str[i]);
+				j += 2;
+			}
+		}
+	}
+
+	inline const utf32_t* utf32_to_wstr(_In_opt_z_ const utf32_t* str, utf32_t* buf)
+	{
+		_Unreferenced_(buf);
+		return str;
 	}
 
 	template <class T>
@@ -104,35 +135,11 @@ namespace stdex
 
 		for (size_t i = 0; i < count_src && src[i];) {
 			if (src[i] == '&') {
-				auto end = sgmlend(src + i + 1, count_src - i - 1);
+				auto end = sgmlend(&src[i + 1], count_src - i - 1);
 				if (end) {
-					const wchar_t* entity_w;
-					wchar_t chr[3];
+					utf32_t chr[2];
 					size_t n = end - src - i - 1;
-					if (n >= 2 && src[i + 1] == '#') {
-						utf32_t unicode;
-						if (src[i + 2] == 'x' || src[i + 2] == 'X')
-							unicode = strtou32(src + i + 3, n - 2, nullptr, 16);
-						else
-							unicode = strtou32(src + i + 2, n - 1, nullptr, 10);
-#ifdef _WIN32
-						if (unicode < 0x10000) {
-							chr[0] = (wchar_t)unicode;
-							chr[1] = 0;
-						}
-						else {
-							ucs4_to_surrogate_pair(chr, unicode);
-							chr[2] = 0;
-						}
-#else
-						chr[0] = (wchar_t)unicode;
-						chr[1] = 0;
-#endif
-						entity_w = chr;
-					}
-					else
-						entity_w = sgml2uni(src + i + 1, n);
-
+					auto entity_w = sgml2uni(&src[i + 1], n, chr);
 					if (entity_w) {
 						i = end - src + 1;
 						continue;
@@ -157,7 +164,7 @@ namespace stdex
 	}
 
 	///
-	/// Convert SGML string to Unicode (UTF-16 on Windows) and append to string
+	/// Convert SGML string to Unicode and append to string
 	///
 	/// \param[in,out] dst        String to append Unicode to
 	/// \param[in]     src        SGML string
@@ -166,9 +173,9 @@ namespace stdex
 	/// \param[in]     offset     Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
 	/// \param[in,out] map        The vector to append index mapping between source and destination string to.
 	///
-	template <class T_from, class TR_to = std::char_traits<wchar_t>, class AX_to = std::allocator<wchar_t>>
+	template <class T_to = wchar_t, class T_from, class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>>
 	void sgml2strcat(
-		_Inout_ std::basic_string<wchar_t, TR_to, AX_to>& dst,
+		_Inout_ std::basic_string<T_to, TR_to, AX_to>& dst,
 		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
 		_In_ int skip = 0,
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
@@ -194,49 +201,26 @@ namespace stdex
 		dst.reserve(dst.size() + count_src);
 		for (size_t i = 0; i < count_src;) {
 			if (src[i] == '&') {
-				auto end = sgmlend(src + i + 1, count_src - i - 1);
+				auto end = sgmlend(&src[i + 1], count_src - i - 1);
 				if (end) {
-					const wchar_t* entity_w;
-					wchar_t chr[3];
-					_Assume_(src + i + 1 <= end);
+					utf32_t chr32[2];
+					_Assume_(&src[i + 1] <= end);
 					size_t n = static_cast<size_t>(end - src) - i - 1;
-					if (n >= 2 && src[i + 1] == '#') {
-						utf32_t unicode;
-						if (src[i + 2] == 'x' || src[i + 2] == 'X')
-							unicode = static_cast<utf32_t>(strtou32(src + i + 3, n - 2, nullptr, 16));
-						else
-							unicode = static_cast<utf32_t>(strtou32(src + i + 2, n - 1, nullptr, 10));
-#ifdef _WIN32
-						if (unicode < 0x10000) {
-							chr[0] = (wchar_t)unicode;
-							chr[1] = 0;
-						}
-						else {
-							ucs4_to_surrogate_pair(chr, unicode);
-							chr[2] = 0;
-						}
-#else
-						chr[0] = (wchar_t)unicode;
-						chr[1] = 0;
-#endif
-						entity_w = chr;
-					}
-					else
-						entity_w = sgml2uni(src + i + 1, n);
-
+					T_to chr[5];
+					auto entity_w = utf32_to_wstr(sgml2uni(&src[i + 1], n, chr32), chr);
 					if (entity_w &&
-						(skip_quot || (entity_w[0] != L'"')) &&
-						(skip_apos || (entity_w[0] != L'\'')) &&
-						(skip_amp || (entity_w[0] != L'&')) &&
-						(skip_lt_gt || (entity_w[0] != L'<' && entity_w[0] != L'>')) &&
-						(skip_bsol || (entity_w[0] != L'\\')) &&
-						(skip_dollar || (entity_w[0] != L'$')) &&
-						(skip_percnt || (entity_w[0] != L'%')) &&
-						(skip_commat || (entity_w[0] != L'@')) &&
-						(skip_num || (entity_w[0] != L'#')) &&
-						(skip_lpar_rpar || (entity_w[0] != L'(' && entity_w[0] != L')')) &&
-						(skip_lcub_rcub || (entity_w[0] != L'{' && entity_w[0] != L'}')) &&
-						(skip_lsqb_rsqb || (entity_w[0] != L'[' && entity_w[0] != L']')))
+						(skip_quot || (entity_w[0] != '"')) &&
+						(skip_apos || (entity_w[0] != '\'')) &&
+						(skip_amp || (entity_w[0] != '&')) &&
+						(skip_lt_gt || (entity_w[0] != '<' && entity_w[0] != '>')) &&
+						(skip_bsol || (entity_w[0] != '\\')) &&
+						(skip_dollar || (entity_w[0] != '$')) &&
+						(skip_percnt || (entity_w[0] != '%')) &&
+						(skip_commat || (entity_w[0] != '@')) &&
+						(skip_num || (entity_w[0] != '#')) &&
+						(skip_lpar_rpar || (entity_w[0] != '(' && entity_w[0] != ')')) &&
+						(skip_lcub_rcub || (entity_w[0] != '{' && entity_w[0] != '}')) &&
+						(skip_lsqb_rsqb || (entity_w[0] != '[' && entity_w[0] != ']')))
 					{
 						if (map) map->push_back(mapping<size_t>(offset.from + i, offset.to + dst.size()));
 						dst.append(entity_w);
@@ -252,7 +236,7 @@ namespace stdex
 	}
 
 	///
-	/// Convert SGML string to Unicode (UTF-16 on Windows) and append to string
+	/// Convert SGML string to Unicode and append to string
 	///
 	/// \param[in,out] dst        String to append Unicode to
 	/// \param[in]     src        SGML string
@@ -260,9 +244,9 @@ namespace stdex
 	/// \param[in]     offset     Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
 	/// \param[in,out] map        The vector to append index mapping between source and destination string to.
 	///
-	template <class T_from, class TR_to = std::char_traits<wchar_t>, class AX_to = std::allocator<wchar_t>, class TR_from = std::char_traits<T_from>, class AX_from = std::allocator<T_from>>
+	template <class T_to = wchar_t, class T_from, class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>, class TR_from = std::char_traits<T_from>, class AX_from = std::allocator<T_from>>
 	void sgml2strcat(
-		_Inout_ std::basic_string<wchar_t, TR_to, AX_to>& dst,
+		_Inout_ std::basic_string<T_to, TR_to, AX_to>& dst,
 		_In_ const std::basic_string<T_from, TR_from, AX_from>& src,
 		_In_ int skip = 0,
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
@@ -272,7 +256,7 @@ namespace stdex
 	}
 
 	///
-	/// Convert SGML string to Unicode (UTF-16 on Windows) and append to string
+	/// Convert SGML string to Unicode and append to string
 	///
 	/// \param[in,out] dst        String to append Unicode to
 	/// \param[in]     count_dst  Unicode string character count limit. Function throws std::invalid_argument if there is not enough space in Unicode string (including space for zero-terminator).
@@ -284,9 +268,9 @@ namespace stdex
 	///
 	/// \return Final length of SGML string in code points excluding zero-terminator
 	///
-	template <class T_from>
+	template <class T_to = wchar_t, class T_from>
 	size_t sgml2strcat(
-		_Inout_cap_(count_dst) wchar_t* dst, _In_ size_t count_dst,
+		_Inout_cap_(count_dst) T_to* dst, _In_ size_t count_dst,
 		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
 		_In_ int skip = 0,
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
@@ -314,54 +298,31 @@ namespace stdex
 		count_src = strnlen(src, count_src);
 		for (size_t i = 0; i < count_src;) {
 			if (src[i] == '&') {
-				auto end = sgmlend(src + i + 1, count_src - i - 1);
+				auto end = sgmlend(&src[i + 1], count_src - i - 1);
 				if (end) {
-					const wchar_t* entity_w;
-					wchar_t chr[3];
+					utf32_t chr32[2];
+					T_to chr[5];
 					size_t n = end - src - i - 1;
-					if (n >= 2 && src[i + 1] == '#') {
-						utf32_t unicode;
-						if (src[i + 2] == 'x' || src[i + 2] == 'X')
-							unicode = strtou32(src + i + 3, n - 2, nullptr, 16);
-						else
-							unicode = strtou32(src + i + 2, n - 1, nullptr, 10);
-#ifdef _WIN32
-						if (unicode < 0x10000) {
-							chr[0] = (wchar_t)unicode;
-							chr[1] = 0;
-						}
-						else {
-							ucs4_to_surrogate_pair(chr, unicode);
-							chr[2] = 0;
-						}
-#else
-						chr[0] = (wchar_t)unicode;
-						chr[1] = 0;
-#endif
-						entity_w = chr;
-					}
-					else
-						entity_w = sgml2uni(src + i + 1, n);
-
+					auto entity_w = utf32_to_wstr(sgml2uni(&src[i + 1], n, chr32), chr);
 					if (entity_w &&
-						(skip_quot || (entity_w[0] != L'"')) &&
-						(skip_apos || (entity_w[0] != L'\'')) &&
-						(skip_amp || (entity_w[0] != L'&')) &&
-						(skip_lt_gt || (entity_w[0] != L'<' && entity_w[0] != L'>')) &&
-						(skip_bsol || (entity_w[0] != L'\\')) &&
-						(skip_dollar || (entity_w[0] != L'$')) &&
-						(skip_percnt || (entity_w[0] != L'%')) &&
-						(skip_commat || (entity_w[0] != L'@')) &&
-						(skip_num || (entity_w[0] != L'#')) &&
-						(skip_lpar_rpar || (entity_w[0] != L'(' && entity_w[0] != L')')) &&
-						(skip_lcub_rcub || (entity_w[0] != L'{' && entity_w[0] != L'}')) &&
-						(skip_lsqb_rsqb || (entity_w[0] != L'[' && entity_w[0] != L']')))
+						(skip_quot || (entity_w[0] != '"')) &&
+						(skip_apos || (entity_w[0] != '\'')) &&
+						(skip_amp || (entity_w[0] != '&')) &&
+						(skip_lt_gt || (entity_w[0] != '<' && entity_w[0] != '>')) &&
+						(skip_bsol || (entity_w[0] != '\\')) &&
+						(skip_dollar || (entity_w[0] != '$')) &&
+						(skip_percnt || (entity_w[0] != '%')) &&
+						(skip_commat || (entity_w[0] != '@')) &&
+						(skip_num || (entity_w[0] != '#')) &&
+						(skip_lpar_rpar || (entity_w[0] != '(' && entity_w[0] != ')')) &&
+						(skip_lcub_rcub || (entity_w[0] != '{' && entity_w[0] != '}')) &&
+						(skip_lsqb_rsqb || (entity_w[0] != '[' && entity_w[0] != ']')))
 					{
 						if (map) map->push_back(mapping<size_t>(offset.from + i, offset.to + j));
-						size_t m = wcslen(entity_w);
+						size_t m = strlen(entity_w);
 						if (j + m >= count_dst)
 							throw buffer_overrun;
-						memcpy(dst + j, entity_w, m * sizeof(wchar_t)); j += m;
+						memcpy(dst + j, entity_w, m * sizeof(*entity_w)); j += m;
 						i = end - src + 1;
 						if (map) map->push_back(mapping<size_t>(offset.from + i, offset.to + j));
 						continue;
@@ -379,7 +340,7 @@ namespace stdex
 	}
 
 	///
-	/// Convert SGML string to Unicode (UTF-16 on Windows)
+	/// Convert SGML string to Unicode
 	///
 	/// \param[in,out] dst        String to write Unicode to
 	/// \param[in]     src        SGML string
@@ -388,9 +349,9 @@ namespace stdex
 	/// \param[in]     offset     Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
 	/// \param[in,out] map        The vector to write index mapping between source and destination string to.
 	///
-	template <class T_from, class TR_to = std::char_traits<wchar_t>, class AX_to = std::allocator<wchar_t>>
+	template <class T_to = wchar_t, class T_from, class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>>
 	void sgml2strcpy(
-		_Inout_ std::basic_string<wchar_t, TR_to, AX_to>& dst,
+		_Inout_ std::basic_string<T_to, TR_to, AX_to>& dst,
 		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
 		_In_ int skip = 0,
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
@@ -403,7 +364,7 @@ namespace stdex
 	}
 
 	///
-	/// Convert SGML string to Unicode (UTF-16 on Windows)
+	/// Convert SGML string to Unicode
 	///
 	/// \param[in,out] dst        String to write Unicode to
 	/// \param[in]     src        SGML string
@@ -411,9 +372,9 @@ namespace stdex
 	/// \param[in]     offset     Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
 	/// \param[in,out] map        The vector to write index mapping between source and destination string to.
 	///
-	template<class T_from, class TR_to = std::char_traits<wchar_t>, class AX_to = std::allocator<wchar_t>, class TR_from = std::char_traits<T_from>, class AX_from = std::allocator<T_from>>
+	template<class T_to = wchar_t, class T_from, class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>, class TR_from = std::char_traits<T_from>, class AX_from = std::allocator<T_from>>
 	void sgml2strcpy(
-		_Inout_ std::basic_string<wchar_t, TR_to, AX_to>& dst,
+		_Inout_ std::basic_string<T_to, TR_to, AX_to>& dst,
 		_In_ const std::basic_string<T_from, TR_from, AX_from>& src,
 		_In_ int skip = 0,
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
@@ -423,7 +384,7 @@ namespace stdex
 	}
 
 	///
-	/// Convert SGML string to Unicode (UTF-16 on Windows)
+	/// Convert SGML string to Unicode
 	///
 	/// \param[in,out] dst        String to write Unicode to
 	/// \param[in]     count_dst  Unicode string character count limit. Function throws std::invalid_argument if there is not enough space in Unicode string (including space for zero-terminator).
@@ -435,9 +396,9 @@ namespace stdex
 	///
 	/// \return Final length of SGML string in code points excluding zero-terminator
 	///
-	template <class T_from>
+	template <class T_to = wchar_t, class T_from>
 	size_t sgml2strcpy(
-		_Inout_cap_(count_dst) wchar_t* dst, _In_ size_t count_dst,
+		_Inout_cap_(count_dst) T_to* dst, _In_ size_t count_dst,
 		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
 		_In_ int skip = 0,
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
@@ -452,7 +413,7 @@ namespace stdex
 	}
 
 	///
-	/// Convert SGML string to Unicode string (UTF-16 on Windows)
+	/// Convert SGML string to Unicode string
 	///
 	/// \param[in]     src        SGML string
 	/// \param[in]     count_src  SGML string character count limit
@@ -462,14 +423,14 @@ namespace stdex
 	///
 	/// \return Unicode string
 	///
-	template <class T_from>
-	std::wstring sgml2str(
+	template <class T_to = wchar_t, class T_from, class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>>
+	std::basic_string<T_to, TR_to, AX_to> sgml2str(
 		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
 		_In_ int skip = 0,
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
 		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
 	{
-		std::wstring dst;
+		std::basic_string<T_to, TR_to, AX_to> dst;
 		sgml2strcat(dst, src, count_src, skip, offset, map);
 		return dst;
 	}
@@ -484,25 +445,61 @@ namespace stdex
 	///
 	/// \return Unicode string
 	///
-	template <class T_from, class TR_from = std::char_traits<T_from>, class AX_from = std::allocator<T_from>>
-	std::wstring sgml2str(
+	template <class T_to = wchar_t, class T_from, class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>, class TR_from = std::char_traits<T_from>, class AX_from = std::allocator<T_from>>
+	std::basic_string<T_to, TR_to, AX_to> sgml2str(
 		_In_ const std::basic_string<T_from, TR_from, AX_from>& src,
 		_In_ int skip = 0,
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
 		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
 	{
-		return sgml2str(src.data(), src.size(), skip, offset, map);
+		return sgml2str<T_to, T_from, TR_to, AX_to>(src.data(), src.size(), skip, offset, map);
 	}
 
 	/// \cond internal
-	inline const char* chr2sgml(_In_reads_or_z_(count) const wchar_t* entity, _In_ size_t count)
+	inline const char* chr2sgml(_In_reads_or_z_(count) const utf16_t* entity, _In_ size_t count)
 	{
 		_Assume_(entity && count);
 
-		const wchar_t e2 = entity[0];
+		utf32_t e2;
+		size_t offset;
+		if (count < 2 || !is_surrogate_pair(entity)) {
+			e2 = static_cast<utf32_t>(entity[0]);
+			offset = 1;
+		}
+		else {
+			e2 = surrogate_pair_to_ucs4(entity);
+			offset = 2;
+		}
 		for (size_t i = 0, j = _countof(unicode_sgml); i < j; ) {
 			size_t m = (i + j) / 2;
-			wchar_t e1 = sgml_unicode[unicode_sgml[m]].unicode[0];
+			auto e1 = sgml_unicode[unicode_sgml[m]].unicode[0];
+			if (e1 < e2)
+				i = m + 1;
+			else if (e1 > e2)
+				j = m;
+			else {
+				auto r = strncmp(sgml_unicode[unicode_sgml[m]].unicode + 1, _countof(sgml_unicode[0].unicode) - 1, entity + offset, count - offset);
+				if (r < 0)
+					i = m + 1;
+				else if (r > 0)
+					j = m;
+				else {
+					for (; i < m && sgml_unicode[unicode_sgml[m - 1]].unicode[0] == e2 && strncmp(sgml_unicode[unicode_sgml[m - 1]].unicode + 1, _countof(sgml_unicode[0].unicode) - 1, entity + offset, count - offset) == 0; m--);
+					return sgml_unicode[unicode_sgml[m]].sgml;
+				}
+			}
+		}
+		return nullptr;
+	}
+
+	inline const char* chr2sgml(_In_reads_or_z_(count) const utf32_t* entity, _In_ size_t count)
+	{
+		_Assume_(entity && count);
+
+		utf32_t e2 = entity[0];
+		for (size_t i = 0, j = _countof(unicode_sgml); i < j; ) {
+			size_t m = (i + j) / 2;
+			auto e1 = sgml_unicode[unicode_sgml[m]].unicode[0];
 			if (e1 < e2)
 				i = m + 1;
 			else if (e1 > e2)
@@ -521,20 +518,37 @@ namespace stdex
 		}
 		return nullptr;
 	}
+
+	inline utf32_t wstr_to_utf32(_In_reads_(end) const utf16_t* src, _Inout_ size_t& i, _In_ size_t end)
+	{
+		_Assume_(i < end);
+		if (i + 1 >= end || !is_surrogate_pair(src + i))
+			return src[i++];
+
+		utf32_t unicode = surrogate_pair_to_ucs4(src + i);
+		i += 2;
+		return unicode;
+	}
+
+	inline utf32_t wstr_to_utf32(_In_reads_(end) const utf32_t* src, _Inout_ size_t& i, _In_ size_t end)
+	{
+		_Assume_(i < end);
+		return src[i++];
+	}
 	/// \endcond
 
 	///
-	/// Convert Unicode string (UTF-16 on Windows) to SGML and append to string
+	/// Convert Unicode string to SGML and append to string
 	///
 	/// \param[in,out] dst        String to append SGML to
 	/// \param[in]     src        Unicode string
 	/// \param[in]     count_src  Unicode string character count limit
 	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
 	///
-	template <class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>>
-	inline void str2sgmlcat(
+	template <class T_from = wchar_t, class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>>
+	void str2sgmlcat(
 		_Inout_ std::basic_string<char, TR_to, AX_to>& dst,
-		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
+		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
 		_In_ int what = 0)
 	{
 		_Assume_(src || !count_src);
@@ -559,18 +573,18 @@ namespace stdex
 			size_t n = glyphlen(src + i, count_src - i);
 			if (n == 1 &&
 				do_ascii && is7bit(src[i]) &&
-				src[i] != L'&' &&
-				(do_quot || (src[i] != L'"')) &&
-				(do_apos || (src[i] != L'\'')) &&
-				(do_lt_gt || (src[i] != L'<' && src[i] != L'>')) &&
-				(do_bsol || (src[i] != L'\\')) &&
-				(do_dollar || (src[i] != L'$')) &&
-				(do_percnt || (src[i] != L'%')) &&
-				(do_commat || (src[i] != L'@')) &&
-				(do_num || (src[i] != L'#')) &&
-				(do_lpar_rpar || (src[i] != L'(' && src[i] != L')')) &&
-				(do_lcub_rcub || (src[i] != L'{' && src[i] != L'}')) &&
-				(do_lsqb_rsqb || (src[i] != L'[' && src[i] != L']')))
+				src[i] != '&' &&
+				(do_quot || (src[i] != '"')) &&
+				(do_apos || (src[i] != '\'')) &&
+				(do_lt_gt || (src[i] != '<' && src[i] != '>')) &&
+				(do_bsol || (src[i] != '\\')) &&
+				(do_dollar || (src[i] != '$')) &&
+				(do_percnt || (src[i] != '%')) &&
+				(do_commat || (src[i] != '@')) &&
+				(do_num || (src[i] != '#')) &&
+				(do_lpar_rpar || (src[i] != '(' && src[i] != ')')) &&
+				(do_lcub_rcub || (src[i] != '{' && src[i] != '}')) &&
+				(do_lsqb_rsqb || (src[i] != '[' && src[i] != ']')))
 			{
 				// 7-bit ASCII and no desire to encode it as an SGML entity.
 				dst.append(1, static_cast<char>(src[i++]));
@@ -589,7 +603,7 @@ namespace stdex
 						dst.append(1, static_cast<char>(src[i++]));
 					else {
 						char tmp[3 + 8 + 1 + 1];
-						snprintf(tmp, _countof(tmp), "&#x%x;", src[i++]);
+						snprintf(tmp, _countof(tmp), "&#x%x;", static_cast<unsigned int>(src[i++]));
 						dst.append(tmp);
 					}
 				}
@@ -606,19 +620,8 @@ namespace stdex
 						else if (is7bit(src[i]))
 							dst.append(1, static_cast<char>(src[i++]));
 						else {
-							utf32_t unicode;
-#ifdef _WIN32
-							if (i + 1 < end && is_surrogate_pair(src + i)) {
-								unicode = surrogate_pair_to_ucs4(src + i);
-								i += 2;
-							}
-							else
-#endif
-							{
-								unicode = src[i++];
-							}
 							char tmp[3 + 8 + 1 + 1];
-							snprintf(tmp, _countof(tmp), "&#x%x;", static_cast<unsigned int>(unicode));
+							snprintf(tmp, _countof(tmp), "&#x%x;", static_cast<unsigned int>(wstr_to_utf32(src, i, end)));
 							dst.append(tmp);
 						}
 					}
@@ -628,23 +631,23 @@ namespace stdex
 	}
 
 	///
-	/// Convert Unicode string (UTF-16 on Windows) to SGML and append to string
+	/// Convert Unicode string to SGML and append to string
 	///
 	/// \param[in,out] dst        String to append SGML to
 	/// \param[in]     src        Unicode string
 	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
 	///
-	template <class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>>
+	template <class T_from = wchar_t, class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>>
 	void str2sgmlcat(
 		_Inout_ std::basic_string<char, TR_to, AX_to>& dst,
-		_In_ const std::basic_string_view<wchar_t, std::char_traits<wchar_t>> src,
+		_In_ const std::basic_string_view<T_from, std::char_traits<T_from>> src,
 		_In_ int what = 0)
 	{
 		str2sgmlcat(dst, src.data(), src.size(), what);
 	}
 
 	///
-	/// Convert Unicode string (UTF-16 on Windows) to SGML and append to string
+	/// Convert Unicode string to SGML and append to string
 	///
 	/// \param[in,out] dst        String to append SGML to
 	/// \param[in]     count_dst  SGML string character count limit. Function throws std::invalid_argument if there is not enough space in SGML string (including space for zero-terminator).
@@ -654,9 +657,10 @@ namespace stdex
 	///
 	/// \return Final length of SGML string in code points excluding zero-terminator
 	///
-	inline size_t str2sgmlcat(
+	template <class T_from = wchar_t>
+	size_t str2sgmlcat(
 		_Inout_cap_(count_dst) char* dst, _In_ size_t count_dst,
-		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
+		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
 		_In_ int what = 0)
 	{
 		_Assume_(dst || !count_dst);
@@ -683,18 +687,18 @@ namespace stdex
 			size_t n = glyphlen(src + i, count_src - i);
 			if (n == 1 &&
 				do_ascii && is7bit(src[i]) &&
-				src[i] != L'&' &&
-				(do_quot || (src[i] != L'"')) &&
-				(do_apos || (src[i] != L'\'')) &&
-				(do_lt_gt || (src[i] != L'<' && src[i] != L'>')) &&
-				(do_bsol || (src[i] != L'\\')) &&
-				(do_dollar || (src[i] != L'$')) &&
-				(do_percnt || (src[i] != L'%')) &&
-				(do_commat || (src[i] != L'@')) &&
-				(do_num || (src[i] != L'#')) &&
-				(do_lpar_rpar || (src[i] != L'(' && src[i] != L')')) &&
-				(do_lcub_rcub || (src[i] != L'{' && src[i] != L'}')) &&
-				(do_lsqb_rsqb || (src[i] != L'[' && src[i] != L']')))
+				src[i] != '&' &&
+				(do_quot || (src[i] != '"')) &&
+				(do_apos || (src[i] != '\'')) &&
+				(do_lt_gt || (src[i] != '<' && src[i] != '>')) &&
+				(do_bsol || (src[i] != '\\')) &&
+				(do_dollar || (src[i] != '$')) &&
+				(do_percnt || (src[i] != '%')) &&
+				(do_commat || (src[i] != '@')) &&
+				(do_num || (src[i] != '#')) &&
+				(do_lpar_rpar || (src[i] != '(' && src[i] != ')')) &&
+				(do_lcub_rcub || (src[i] != '{' && src[i] != '}')) &&
+				(do_lsqb_rsqb || (src[i] != '[' && src[i] != ']')))
 			{
 				// 7-bit ASCII and no desire to encode it as an SGML entity.
 				if (j + 1 >= count_dst)
@@ -721,7 +725,7 @@ namespace stdex
 					}
 					else {
 						char tmp[3 + 8 + 1 + 1];
-						int m = snprintf(tmp, _countof(tmp), "&#x%x;", src[i++]);
+						int m = snprintf(tmp, _countof(tmp), "&#x%x;", static_cast<unsigned int>(src[i++]));
 						_Assume_(m >= 0);
 						if (static_cast<size_t>(m) >= count_dst)
 							throw buffer_overrun;
@@ -748,19 +752,8 @@ namespace stdex
 							dst[j++] = static_cast<char>(src[i++]);
 						}
 						else {
-							utf32_t unicode;
-#ifdef _WIN32
-							if (i + 1 < end && is_surrogate_pair(src + i)) {
-								unicode = surrogate_pair_to_ucs4(src + i);
-								i += 2;
-							}
-							else
-#endif
-							{
-								unicode = src[i++];
-							}
 							char tmp[3 + 8 + 1 + 1];
-							int m = snprintf(tmp, _countof(tmp), "&#x%x;", static_cast<unsigned int>(unicode));
+							int m = snprintf(tmp, _countof(tmp), "&#x%x;", static_cast<unsigned int>(wstr_to_utf32(src, i, end)));
 							_Assume_(m >= 0);
 							if (static_cast<size_t>(m) >= count_dst)
 								throw buffer_overrun;
@@ -778,17 +771,17 @@ namespace stdex
 	}
 
 	///
-	/// Convert Unicode string (UTF-16 on Windows) to SGML
+	/// Convert Unicode string to SGML
 	///
 	/// \param[in,out] dst        String to write SGML to
 	/// \param[in]     src        Unicode string
 	/// \param[in]     count_src  Unicode string character count limit
 	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
 	///
-	template <class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>>
-	inline void str2sgmlcpy(
+	template <class T_from = wchar_t, class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>>
+	void str2sgmlcpy(
 		_Inout_ std::basic_string<char, TR_to, AX_to>& dst,
-		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
+		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
 		_In_ int what = 0)
 	{
 		dst.clear();
@@ -796,23 +789,23 @@ namespace stdex
 	}
 
 	///
-	/// Convert Unicode string (UTF-16 on Windows) to SGML
+	/// Convert Unicode string to SGML
 	///
 	/// \param[in,out] dst        String to write SGML to
 	/// \param[in]     src        Unicode string
 	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
 	///
-	template <class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>>
+	template <class T_from = wchar_t, class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>>
 	void str2sgmlcpy(
 		_Inout_ std::basic_string<char, TR_to, AX_to>& dst,
-		_In_ const std::basic_string_view<wchar_t, std::char_traits<wchar_t>> src,
+		_In_ const std::basic_string_view<T_from, std::char_traits<T_from>> src,
 		_In_ int what = 0)
 	{
 		str2sgmlcpy(dst, src.data(), src.size(), what);
 	}
 
 	///
-	/// Convert Unicode string (UTF-16 on Windows) to SGML
+	/// Convert Unicode string to SGML
 	///
 	/// \param[in,out] dst        String to write SGML to
 	/// \param[in]     count_dst  SGML string character count limit. Function throws std::invalid_argument if there is not enough space in SGML string (including space for zero-terminator).
@@ -822,9 +815,10 @@ namespace stdex
 	///
 	/// \return Final length of SGML string in code points excluding zero-terminator
 	///
-	inline size_t str2sgmlcpy(
+	template <class T_from = wchar_t>
+	size_t str2sgmlcpy(
 		_Inout_cap_(count_dst) char* dst, _In_ size_t count_dst,
-		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
+		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
 		_In_ int what = 0)
 	{
 		_Assume_(dst || !count_dst);
@@ -834,7 +828,7 @@ namespace stdex
 	}
 
 	///
-	/// Convert Unicode string (UTF-16 on Windows) to SGML string
+	/// Convert Unicode string to SGML string
 	///
 	/// \param[in]  src        Unicode string
 	/// \param[in]  count_src  Unicode string character count limit
@@ -842,8 +836,9 @@ namespace stdex
 	///
 	/// \return SGML string
 	///
-	inline std::string str2sgml(
-		_In_reads_or_z_opt_(count_src) const wchar_t* src, _In_ size_t count_src,
+	template <class T_from = wchar_t>
+	std::string str2sgml(
+		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
 		_In_ int what = 0)
 	{
 		std::string dst;
@@ -852,15 +847,16 @@ namespace stdex
 	}
 
 	///
-	/// Convert Unicode string (UTF-16 on Windows) to SGML string
+	/// Convert Unicode string to SGML string
 	///
 	/// \param[in]  src        Unicode string
 	/// \param[in]  what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
 	///
 	/// \return SGML string
 	///
-	inline std::string str2sgml(
-		_In_ const std::basic_string_view<wchar_t, std::char_traits<wchar_t>> src,
+	template <class T_from = wchar_t>
+	std::string str2sgml(
+		_In_ const std::basic_string_view<T_from, std::char_traits<T_from>> src,
 		_In_ int what = 0)
 	{
 		return str2sgml(src.data(), src.size(), what);
