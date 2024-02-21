@@ -11,8 +11,8 @@ namespace stdex
 {
 	/// \cond internal
 	struct sgml_unicode_pair {
-		char sgml[12];      ///< Entity name (without leading & and trailing ;)
-		utf32_t unicode[3]; ///< UTF-32 string representation
+		char sgml[12];       ///< Entity name (without leading & and trailing ;)
+		char32_t unicode[3]; ///< UTF-32 string representation
 	};
 
 	inline const sgml_unicode_pair sgml_unicode[] = {

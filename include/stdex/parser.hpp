@@ -127,8 +127,8 @@ namespace stdex
 				_In_ int flags = match_default) = 0;
 
 			/// \cond internal
-			template <class T = wchar_t>
-			const T* next_sgml_cp(_In_ const char* text, _In_ size_t start, _In_ size_t end, _Out_ size_t& chr_end, _Out_ T(&buf)[5])
+			template <class T_out = wchar_t>
+			const T_out* next_sgml_cp(_In_ const char* text, _In_ size_t start, _In_ size_t end, _Out_ size_t& chr_end, _Out_ T_out(&buf)[5])
 			{
 				if (text[start] == '&') {
 					// Potential entity start

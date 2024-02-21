@@ -42,7 +42,7 @@ namespace stdex
 						j = m;
 					else {
 						for (; i < m && strncmp<char, T>(sgml_unicode[m - 1].sgml, _countof(sgml_unicode[0].sgml), entity, count) == 0; m--);
-						return sgml_unicode[m].unicode;
+						return reinterpret_cast<const utf32_t*>(sgml_unicode[m].unicode);
 					}
 				}
 			}
