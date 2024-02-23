@@ -532,6 +532,7 @@ namespace stdex
 
 	inline utf32_t wstr_to_utf32(_In_reads_(end) const utf32_t* src, _Inout_ size_t& i, _In_ size_t end)
 	{
+		_Unreferenced_(end);
 		_Assume_(i < end);
 		return src[i++];
 	}
