@@ -521,274 +521,275 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l00532" name="l00532"></a><span class="lineno">  532</span> </div>
 <div class="line"><a id="l00533" name="l00533"></a><span class="lineno">  533</span>    <span class="keyword">inline</span> utf32_t wstr_to_utf32(_In_reads_(end) <span class="keyword">const</span> utf32_t* src, _Inout_ <span class="keywordtype">size_t</span>&amp; i, _In_ <span class="keywordtype">size_t</span> end)</div>
 <div class="line"><a id="l00534" name="l00534"></a><span class="lineno">  534</span>    {</div>
-<div class="line"><a id="l00535" name="l00535"></a><span class="lineno">  535</span>        _Assume_(i &lt; end);</div>
-<div class="line"><a id="l00536" name="l00536"></a><span class="lineno">  536</span>        <span class="keywordflow">return</span> src[i++];</div>
-<div class="line"><a id="l00537" name="l00537"></a><span class="lineno">  537</span>    }</div>
-<div class="line"><a id="l00539" name="l00539"></a><span class="lineno">  539</span> </div>
-<div class="line"><a id="l00548" name="l00548"></a><span class="lineno">  548</span>    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_from = <span class="keywordtype">wchar_t</span>, <span class="keyword">class</span> TR_to = std::<span class="keywordtype">char</span>_traits&lt;<span class="keywordtype">char</span>&gt;, <span class="keyword">class</span> AX_to = std::allocator&lt;<span class="keywordtype">char</span>&gt;&gt;</div>
-<div class="line"><a id="l00549" name="l00549"></a><span class="lineno">  549</span>    <span class="keywordtype">void</span> str2sgmlcat(</div>
-<div class="line"><a id="l00550" name="l00550"></a><span class="lineno">  550</span>        _Inout_ std::basic_string&lt;char, TR_to, AX_to&gt;&amp; dst,</div>
-<div class="line"><a id="l00551" name="l00551"></a><span class="lineno">  551</span>        _In_reads_or_z_opt_(count_src) <span class="keyword">const</span> T_from* src, _In_ <span class="keywordtype">size_t</span> count_src,</div>
-<div class="line"><a id="l00552" name="l00552"></a><span class="lineno">  552</span>        _In_ <span class="keywordtype">int</span> what = 0)</div>
-<div class="line"><a id="l00553" name="l00553"></a><span class="lineno">  553</span>    {</div>
-<div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span>        _Assume_(src || !count_src);</div>
-<div class="line"><a id="l00555" name="l00555"></a><span class="lineno">  555</span> </div>
-<div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span>        <span class="keyword">const</span> <span class="keywordtype">bool</span></div>
-<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span>            do_ascii = (what &amp; sgml_full) == 0,</div>
-<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span>            do_quot = (what &amp; sgml_quot) == 0,</div>
-<div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span>            do_apos = (what &amp; sgml_apos) == 0,</div>
-<div class="line"><a id="l00560" name="l00560"></a><span class="lineno">  560</span>            do_lt_gt = (what &amp; sgml_lt_gt) == 0,</div>
-<div class="line"><a id="l00561" name="l00561"></a><span class="lineno">  561</span>            do_bsol = (what &amp; sgml_bsol) == 0,</div>
-<div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span>            do_dollar = (what &amp; sgml_dollar) == 0,</div>
-<div class="line"><a id="l00563" name="l00563"></a><span class="lineno">  563</span>            do_percnt = (what &amp; sgml_percnt) == 0,</div>
-<div class="line"><a id="l00564" name="l00564"></a><span class="lineno">  564</span>            do_commat = (what &amp; sgml_commat) == 0,</div>
-<div class="line"><a id="l00565" name="l00565"></a><span class="lineno">  565</span>            do_num = (what &amp; sgml_num) == 0,</div>
-<div class="line"><a id="l00566" name="l00566"></a><span class="lineno">  566</span>            do_lpar_rpar = (what &amp; sgml_lpar_rpar) == 0,</div>
-<div class="line"><a id="l00567" name="l00567"></a><span class="lineno">  567</span>            do_lcub_rcub = (what &amp; sgml_lcub_rcub) == 0,</div>
-<div class="line"><a id="l00568" name="l00568"></a><span class="lineno">  568</span>            do_lsqb_rsqb = (what &amp; sgml_lsqb_rsqb) == 0;</div>
-<div class="line"><a id="l00569" name="l00569"></a><span class="lineno">  569</span> </div>
-<div class="line"><a id="l00570" name="l00570"></a><span class="lineno">  570</span>        count_src = strnlen(src, count_src);</div>
-<div class="line"><a id="l00571" name="l00571"></a><span class="lineno">  571</span>        dst.reserve(dst.size() + count_src);</div>
-<div class="line"><a id="l00572" name="l00572"></a><span class="lineno">  572</span>        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; count_src;) {</div>
-<div class="line"><a id="l00573" name="l00573"></a><span class="lineno">  573</span>            <span class="keywordtype">size_t</span> n = glyphlen(src + i, count_src - i);</div>
-<div class="line"><a id="l00574" name="l00574"></a><span class="lineno">  574</span>            <span class="keywordflow">if</span> (n == 1 &amp;&amp;</div>
-<div class="line"><a id="l00575" name="l00575"></a><span class="lineno">  575</span>                do_ascii &amp;&amp; is7bit(src[i]) &amp;&amp;</div>
-<div class="line"><a id="l00576" name="l00576"></a><span class="lineno">  576</span>                src[i] != <span class="charliteral">&#39;&amp;&#39;</span> &amp;&amp;</div>
-<div class="line"><a id="l00577" name="l00577"></a><span class="lineno">  577</span>                (do_quot || (src[i] != <span class="charliteral">&#39;&quot;&#39;</span>)) &amp;&amp;</div>
-<div class="line"><a id="l00578" name="l00578"></a><span class="lineno">  578</span>                (do_apos || (src[i] != <span class="charliteral">&#39;\&#39;&#39;</span>)) &amp;&amp;</div>
-<div class="line"><a id="l00579" name="l00579"></a><span class="lineno">  579</span>                (do_lt_gt || (src[i] != <span class="charliteral">&#39;&lt;&#39;</span> &amp;&amp; src[i] != <span class="charliteral">&#39;&gt;&#39;</span>)) &amp;&amp;</div>
-<div class="line"><a id="l00580" name="l00580"></a><span class="lineno">  580</span>                (do_bsol || (src[i] != <span class="charliteral">&#39;\\&#39;</span>)) &amp;&amp;</div>
-<div class="line"><a id="l00581" name="l00581"></a><span class="lineno">  581</span>                (do_dollar || (src[i] != <span class="charliteral">&#39;$&#39;</span>)) &amp;&amp;</div>
-<div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span>                (do_percnt || (src[i] != <span class="charliteral">&#39;%&#39;</span>)) &amp;&amp;</div>
-<div class="line"><a id="l00583" name="l00583"></a><span class="lineno">  583</span>                (do_commat || (src[i] != <span class="charliteral">&#39;@&#39;</span>)) &amp;&amp;</div>
-<div class="line"><a id="l00584" name="l00584"></a><span class="lineno">  584</span>                (do_num || (src[i] != <span class="charliteral">&#39;#&#39;</span>)) &amp;&amp;</div>
-<div class="line"><a id="l00585" name="l00585"></a><span class="lineno">  585</span>                (do_lpar_rpar || (src[i] != <span class="charliteral">&#39;(&#39;</span> &amp;&amp; src[i] != <span class="charliteral">&#39;)&#39;</span>)) &amp;&amp;</div>
-<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span>                (do_lcub_rcub || (src[i] != <span class="charliteral">&#39;{&#39;</span> &amp;&amp; src[i] != <span class="charliteral">&#39;}&#39;</span>)) &amp;&amp;</div>
-<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span>                (do_lsqb_rsqb || (src[i] != <span class="charliteral">&#39;[&#39;</span> &amp;&amp; src[i] != <span class="charliteral">&#39;]&#39;</span>)))</div>
-<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span>            {</div>
-<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span>                <span class="comment">// 7-bit ASCII and no desire to encode it as an SGML entity.</span></div>
-<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span>                dst.append(1, <span class="keyword">static_cast&lt;</span><span class="keywordtype">char</span><span class="keyword">&gt;</span>(src[i++]));</div>
-<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span>            }</div>
-<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span>            <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span>                <span class="keyword">const</span> <span class="keywordtype">char</span>* entity = chr2sgml(src + i, n);</div>
-<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span>                <span class="keywordflow">if</span> (entity) {</div>
-<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span>                    dst.append(1, <span class="charliteral">&#39;&amp;&#39;</span>);</div>
-<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span>                    dst.append(entity);</div>
-<div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span>                    dst.append(1, <span class="charliteral">&#39;;&#39;</span>);</div>
-<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span>                    i += n;</div>
-<div class="line"><a id="l00599" name="l00599"></a><span class="lineno">  599</span>                }</div>
-<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span>                <span class="keywordflow">else</span> <span class="keywordflow">if</span> (n == 1) {</div>
-<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span>                    <span class="comment">// Trivial character (1 code unit, 1 glyph), no entity available.</span></div>
-<div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span>                    <span class="keywordflow">if</span> (is7bit(src[i]))</div>
-<div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span>                        dst.append(1, <span class="keyword">static_cast&lt;</span><span class="keywordtype">char</span><span class="keyword">&gt;</span>(src[i++]));</div>
-<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span>                    <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span>                        <span class="keywordtype">char</span> tmp[3 + 8 + 1 + 1];</div>
-<div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span>                        snprintf(tmp, _countof(tmp), <span class="stringliteral">&quot;&amp;#x%x;&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">int</span><span class="keyword">&gt;</span>(src[i++]));</div>
-<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span>                        dst.append(tmp);</div>
-<div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span>                    }</div>
-<div class="line"><a id="l00609" name="l00609"></a><span class="lineno">  609</span>                }</div>
-<div class="line"><a id="l00610" name="l00610"></a><span class="lineno">  610</span>                <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00611" name="l00611"></a><span class="lineno">  611</span>                    <span class="comment">// Non-trivial character. Decompose.</span></div>
-<div class="line"><a id="l00612" name="l00612"></a><span class="lineno">  612</span>                    <span class="keyword">const</span> <span class="keywordtype">size_t</span> end = i + n;</div>
-<div class="line"><a id="l00613" name="l00613"></a><span class="lineno">  613</span>                    <span class="keywordflow">while</span> (i &lt; end) {</div>
-<div class="line"><a id="l00614" name="l00614"></a><span class="lineno">  614</span>                        <span class="keywordflow">if</span> ((entity = chr2sgml(src + i, 1)) != <span class="keyword">nullptr</span>) {</div>
-<div class="line"><a id="l00615" name="l00615"></a><span class="lineno">  615</span>                            dst.append(1, <span class="charliteral">&#39;&amp;&#39;</span>);</div>
-<div class="line"><a id="l00616" name="l00616"></a><span class="lineno">  616</span>                            dst.append(entity);</div>
-<div class="line"><a id="l00617" name="l00617"></a><span class="lineno">  617</span>                            dst.append(1, <span class="charliteral">&#39;;&#39;</span>);</div>
-<div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span>                            i++;</div>
-<div class="line"><a id="l00619" name="l00619"></a><span class="lineno">  619</span>                        }</div>
-<div class="line"><a id="l00620" name="l00620"></a><span class="lineno">  620</span>                        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (is7bit(src[i]))</div>
-<div class="line"><a id="l00621" name="l00621"></a><span class="lineno">  621</span>                            dst.append(1, <span class="keyword">static_cast&lt;</span><span class="keywordtype">char</span><span class="keyword">&gt;</span>(src[i++]));</div>
-<div class="line"><a id="l00622" name="l00622"></a><span class="lineno">  622</span>                        <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00623" name="l00623"></a><span class="lineno">  623</span>                            <span class="keywordtype">char</span> tmp[3 + 8 + 1 + 1];</div>
-<div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span>                            snprintf(tmp, _countof(tmp), <span class="stringliteral">&quot;&amp;#x%x;&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">int</span><span class="keyword">&gt;</span>(wstr_to_utf32(src, i, end)));</div>
-<div class="line"><a id="l00625" name="l00625"></a><span class="lineno">  625</span>                            dst.append(tmp);</div>
-<div class="line"><a id="l00626" name="l00626"></a><span class="lineno">  626</span>                        }</div>
-<div class="line"><a id="l00627" name="l00627"></a><span class="lineno">  627</span>                    }</div>
-<div class="line"><a id="l00628" name="l00628"></a><span class="lineno">  628</span>                }</div>
-<div class="line"><a id="l00629" name="l00629"></a><span class="lineno">  629</span>            }</div>
-<div class="line"><a id="l00630" name="l00630"></a><span class="lineno">  630</span>        }</div>
-<div class="line"><a id="l00631" name="l00631"></a><span class="lineno">  631</span>    }</div>
-<div class="line"><a id="l00632" name="l00632"></a><span class="lineno">  632</span> </div>
-<div class="line"><a id="l00640" name="l00640"></a><span class="lineno">  640</span>    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_from = <span class="keywordtype">wchar_t</span>, <span class="keyword">class</span> TR_to = std::<span class="keywordtype">char</span>_traits&lt;<span class="keywordtype">char</span>&gt;, <span class="keyword">class</span> AX_to = std::allocator&lt;<span class="keywordtype">char</span>&gt;&gt;</div>
-<div class="line"><a id="l00641" name="l00641"></a><span class="lineno">  641</span>    <span class="keywordtype">void</span> str2sgmlcat(</div>
-<div class="line"><a id="l00642" name="l00642"></a><span class="lineno">  642</span>        _Inout_ std::basic_string&lt;char, TR_to, AX_to&gt;&amp; dst,</div>
-<div class="line"><a id="l00643" name="l00643"></a><span class="lineno">  643</span>        _In_ <span class="keyword">const</span> std::basic_string_view&lt;T_from, std::char_traits&lt;T_from&gt;&gt; src,</div>
-<div class="line"><a id="l00644" name="l00644"></a><span class="lineno">  644</span>        _In_ <span class="keywordtype">int</span> what = 0)</div>
-<div class="line"><a id="l00645" name="l00645"></a><span class="lineno">  645</span>    {</div>
-<div class="line"><a id="l00646" name="l00646"></a><span class="lineno">  646</span>        str2sgmlcat(dst, src.data(), src.size(), what);</div>
-<div class="line"><a id="l00647" name="l00647"></a><span class="lineno">  647</span>    }</div>
-<div class="line"><a id="l00648" name="l00648"></a><span class="lineno">  648</span> </div>
-<div class="line"><a id="l00660" name="l00660"></a><span class="lineno">  660</span>    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_from = <span class="keywordtype">wchar_t</span>&gt;</div>
-<div class="line"><a id="l00661" name="l00661"></a><span class="lineno">  661</span>    <span class="keywordtype">size_t</span> str2sgmlcat(</div>
-<div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span>        _Inout_cap_(count_dst) <span class="keywordtype">char</span>* dst, _In_ <span class="keywordtype">size_t</span> count_dst,</div>
-<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span>        _In_reads_or_z_opt_(count_src) <span class="keyword">const</span> T_from* src, _In_ <span class="keywordtype">size_t</span> count_src,</div>
-<div class="line"><a id="l00664" name="l00664"></a><span class="lineno">  664</span>        _In_ <span class="keywordtype">int</span> what = 0)</div>
-<div class="line"><a id="l00665" name="l00665"></a><span class="lineno">  665</span>    {</div>
-<div class="line"><a id="l00666" name="l00666"></a><span class="lineno">  666</span>        _Assume_(dst || !count_dst);</div>
-<div class="line"><a id="l00667" name="l00667"></a><span class="lineno">  667</span>        _Assume_(src || !count_src);</div>
-<div class="line"><a id="l00668" name="l00668"></a><span class="lineno">  668</span> </div>
-<div class="line"><a id="l00669" name="l00669"></a><span class="lineno">  669</span>        <span class="keyword">static</span> <span class="keyword">const</span> std::invalid_argument buffer_overrun(<span class="stringliteral">&quot;buffer overrun&quot;</span>);</div>
-<div class="line"><a id="l00670" name="l00670"></a><span class="lineno">  670</span>        <span class="keyword">const</span> <span class="keywordtype">bool</span></div>
-<div class="line"><a id="l00671" name="l00671"></a><span class="lineno">  671</span>            do_ascii = (what &amp; sgml_full) == 0,</div>
-<div class="line"><a id="l00672" name="l00672"></a><span class="lineno">  672</span>            do_quot = (what &amp; sgml_quot) == 0,</div>
-<div class="line"><a id="l00673" name="l00673"></a><span class="lineno">  673</span>            do_apos = (what &amp; sgml_apos) == 0,</div>
-<div class="line"><a id="l00674" name="l00674"></a><span class="lineno">  674</span>            do_lt_gt = (what &amp; sgml_lt_gt) == 0,</div>
-<div class="line"><a id="l00675" name="l00675"></a><span class="lineno">  675</span>            do_bsol = (what &amp; sgml_bsol) == 0,</div>
-<div class="line"><a id="l00676" name="l00676"></a><span class="lineno">  676</span>            do_dollar = (what &amp; sgml_dollar) == 0,</div>
-<div class="line"><a id="l00677" name="l00677"></a><span class="lineno">  677</span>            do_percnt = (what &amp; sgml_percnt) == 0,</div>
-<div class="line"><a id="l00678" name="l00678"></a><span class="lineno">  678</span>            do_commat = (what &amp; sgml_commat) == 0,</div>
-<div class="line"><a id="l00679" name="l00679"></a><span class="lineno">  679</span>            do_num = (what &amp; sgml_num) == 0,</div>
-<div class="line"><a id="l00680" name="l00680"></a><span class="lineno">  680</span>            do_lpar_rpar = (what &amp; sgml_lpar_rpar) == 0,</div>
-<div class="line"><a id="l00681" name="l00681"></a><span class="lineno">  681</span>            do_lcub_rcub = (what &amp; sgml_lcub_rcub) == 0,</div>
-<div class="line"><a id="l00682" name="l00682"></a><span class="lineno">  682</span>            do_lsqb_rsqb = (what &amp; sgml_lsqb_rsqb) == 0;</div>
-<div class="line"><a id="l00683" name="l00683"></a><span class="lineno">  683</span> </div>
-<div class="line"><a id="l00684" name="l00684"></a><span class="lineno">  684</span>        <span class="keywordtype">size_t</span> j = strnlen(dst, count_dst);</div>
-<div class="line"><a id="l00685" name="l00685"></a><span class="lineno">  685</span>        count_src = strnlen(src, count_src);</div>
-<div class="line"><a id="l00686" name="l00686"></a><span class="lineno">  686</span>        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; count_src;) {</div>
-<div class="line"><a id="l00687" name="l00687"></a><span class="lineno">  687</span>            <span class="keywordtype">size_t</span> n = glyphlen(src + i, count_src - i);</div>
-<div class="line"><a id="l00688" name="l00688"></a><span class="lineno">  688</span>            <span class="keywordflow">if</span> (n == 1 &amp;&amp;</div>
-<div class="line"><a id="l00689" name="l00689"></a><span class="lineno">  689</span>                do_ascii &amp;&amp; is7bit(src[i]) &amp;&amp;</div>
-<div class="line"><a id="l00690" name="l00690"></a><span class="lineno">  690</span>                src[i] != <span class="charliteral">&#39;&amp;&#39;</span> &amp;&amp;</div>
-<div class="line"><a id="l00691" name="l00691"></a><span class="lineno">  691</span>                (do_quot || (src[i] != <span class="charliteral">&#39;&quot;&#39;</span>)) &amp;&amp;</div>
-<div class="line"><a id="l00692" name="l00692"></a><span class="lineno">  692</span>                (do_apos || (src[i] != <span class="charliteral">&#39;\&#39;&#39;</span>)) &amp;&amp;</div>
-<div class="line"><a id="l00693" name="l00693"></a><span class="lineno">  693</span>                (do_lt_gt || (src[i] != <span class="charliteral">&#39;&lt;&#39;</span> &amp;&amp; src[i] != <span class="charliteral">&#39;&gt;&#39;</span>)) &amp;&amp;</div>
-<div class="line"><a id="l00694" name="l00694"></a><span class="lineno">  694</span>                (do_bsol || (src[i] != <span class="charliteral">&#39;\\&#39;</span>)) &amp;&amp;</div>
-<div class="line"><a id="l00695" name="l00695"></a><span class="lineno">  695</span>                (do_dollar || (src[i] != <span class="charliteral">&#39;$&#39;</span>)) &amp;&amp;</div>
-<div class="line"><a id="l00696" name="l00696"></a><span class="lineno">  696</span>                (do_percnt || (src[i] != <span class="charliteral">&#39;%&#39;</span>)) &amp;&amp;</div>
-<div class="line"><a id="l00697" name="l00697"></a><span class="lineno">  697</span>                (do_commat || (src[i] != <span class="charliteral">&#39;@&#39;</span>)) &amp;&amp;</div>
-<div class="line"><a id="l00698" name="l00698"></a><span class="lineno">  698</span>                (do_num || (src[i] != <span class="charliteral">&#39;#&#39;</span>)) &amp;&amp;</div>
-<div class="line"><a id="l00699" name="l00699"></a><span class="lineno">  699</span>                (do_lpar_rpar || (src[i] != <span class="charliteral">&#39;(&#39;</span> &amp;&amp; src[i] != <span class="charliteral">&#39;)&#39;</span>)) &amp;&amp;</div>
-<div class="line"><a id="l00700" name="l00700"></a><span class="lineno">  700</span>                (do_lcub_rcub || (src[i] != <span class="charliteral">&#39;{&#39;</span> &amp;&amp; src[i] != <span class="charliteral">&#39;}&#39;</span>)) &amp;&amp;</div>
-<div class="line"><a id="l00701" name="l00701"></a><span class="lineno">  701</span>                (do_lsqb_rsqb || (src[i] != <span class="charliteral">&#39;[&#39;</span> &amp;&amp; src[i] != <span class="charliteral">&#39;]&#39;</span>)))</div>
-<div class="line"><a id="l00702" name="l00702"></a><span class="lineno">  702</span>            {</div>
-<div class="line"><a id="l00703" name="l00703"></a><span class="lineno">  703</span>                <span class="comment">// 7-bit ASCII and no desire to encode it as an SGML entity.</span></div>
-<div class="line"><a id="l00704" name="l00704"></a><span class="lineno">  704</span>                <span class="keywordflow">if</span> (j + 1 &gt;= count_dst)</div>
-<div class="line"><a id="l00705" name="l00705"></a><span class="lineno">  705</span>                    <span class="keywordflow">throw</span> buffer_overrun;</div>
-<div class="line"><a id="l00706" name="l00706"></a><span class="lineno">  706</span>                dst[j++] = <span class="keyword">static_cast&lt;</span><span class="keywordtype">char</span><span class="keyword">&gt;</span>(src[i++]);</div>
-<div class="line"><a id="l00707" name="l00707"></a><span class="lineno">  707</span>            }</div>
-<div class="line"><a id="l00708" name="l00708"></a><span class="lineno">  708</span>            <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00709" name="l00709"></a><span class="lineno">  709</span>                <span class="keyword">const</span> <span class="keywordtype">char</span>* entity = chr2sgml(src + i, n);</div>
-<div class="line"><a id="l00710" name="l00710"></a><span class="lineno">  710</span>                <span class="keywordflow">if</span> (entity) {</div>
-<div class="line"><a id="l00711" name="l00711"></a><span class="lineno">  711</span>                    <span class="keywordtype">size_t</span> m = strlen(entity);</div>
-<div class="line"><a id="l00712" name="l00712"></a><span class="lineno">  712</span>                    <span class="keywordflow">if</span> (j + m + 2 &gt;= count_dst)</div>
-<div class="line"><a id="l00713" name="l00713"></a><span class="lineno">  713</span>                        <span class="keywordflow">throw</span> buffer_overrun;</div>
-<div class="line"><a id="l00714" name="l00714"></a><span class="lineno">  714</span>                    dst[j++] = <span class="charliteral">&#39;&amp;&#39;</span>;</div>
-<div class="line"><a id="l00715" name="l00715"></a><span class="lineno">  715</span>                    memcpy(dst + j, entity, m * <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>)); j += m;</div>
-<div class="line"><a id="l00716" name="l00716"></a><span class="lineno">  716</span>                    dst[j++] = <span class="charliteral">&#39;;&#39;</span>;</div>
-<div class="line"><a id="l00717" name="l00717"></a><span class="lineno">  717</span>                    i += n;</div>
-<div class="line"><a id="l00718" name="l00718"></a><span class="lineno">  718</span>                }</div>
-<div class="line"><a id="l00719" name="l00719"></a><span class="lineno">  719</span>                <span class="keywordflow">else</span> <span class="keywordflow">if</span> (n == 1) {</div>
-<div class="line"><a id="l00720" name="l00720"></a><span class="lineno">  720</span>                    <span class="comment">// Trivial character (1 code unit, 1 glyph), no entity available.</span></div>
-<div class="line"><a id="l00721" name="l00721"></a><span class="lineno">  721</span>                    <span class="keywordflow">if</span> (is7bit(src[i])) {</div>
-<div class="line"><a id="l00722" name="l00722"></a><span class="lineno">  722</span>                        <span class="keywordflow">if</span> (j + 1 &gt;= count_dst)</div>
-<div class="line"><a id="l00723" name="l00723"></a><span class="lineno">  723</span>                            <span class="keywordflow">throw</span> buffer_overrun;</div>
-<div class="line"><a id="l00724" name="l00724"></a><span class="lineno">  724</span>                        dst[j++] = <span class="keyword">static_cast&lt;</span><span class="keywordtype">char</span><span class="keyword">&gt;</span>(src[i++]);</div>
-<div class="line"><a id="l00725" name="l00725"></a><span class="lineno">  725</span>                    }</div>
-<div class="line"><a id="l00726" name="l00726"></a><span class="lineno">  726</span>                    <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00727" name="l00727"></a><span class="lineno">  727</span>                        <span class="keywordtype">char</span> tmp[3 + 8 + 1 + 1];</div>
-<div class="line"><a id="l00728" name="l00728"></a><span class="lineno">  728</span>                        <span class="keywordtype">int</span> m = snprintf(tmp, _countof(tmp), <span class="stringliteral">&quot;&amp;#x%x;&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">int</span><span class="keyword">&gt;</span>(src[i++]));</div>
-<div class="line"><a id="l00729" name="l00729"></a><span class="lineno">  729</span>                        _Assume_(m &gt;= 0);</div>
-<div class="line"><a id="l00730" name="l00730"></a><span class="lineno">  730</span>                        <span class="keywordflow">if</span> (<span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(m) &gt;= count_dst)</div>
-<div class="line"><a id="l00731" name="l00731"></a><span class="lineno">  731</span>                            <span class="keywordflow">throw</span> buffer_overrun;</div>
-<div class="line"><a id="l00732" name="l00732"></a><span class="lineno">  732</span>                        memcpy(dst + j, tmp, <span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(m) * <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>));</div>
-<div class="line"><a id="l00733" name="l00733"></a><span class="lineno">  733</span>                        j += <span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(m);</div>
-<div class="line"><a id="l00734" name="l00734"></a><span class="lineno">  734</span>                    }</div>
-<div class="line"><a id="l00735" name="l00735"></a><span class="lineno">  735</span>                }</div>
-<div class="line"><a id="l00736" name="l00736"></a><span class="lineno">  736</span>                <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00737" name="l00737"></a><span class="lineno">  737</span>                    <span class="comment">// Non-trivial character. Decompose.</span></div>
-<div class="line"><a id="l00738" name="l00738"></a><span class="lineno">  738</span>                    <span class="keyword">const</span> <span class="keywordtype">size_t</span> end = i + n;</div>
-<div class="line"><a id="l00739" name="l00739"></a><span class="lineno">  739</span>                    <span class="keywordflow">while</span> (i &lt; end) {</div>
-<div class="line"><a id="l00740" name="l00740"></a><span class="lineno">  740</span>                        <span class="keywordflow">if</span> ((entity = chr2sgml(src + i, 1)) != <span class="keyword">nullptr</span>) {</div>
-<div class="line"><a id="l00741" name="l00741"></a><span class="lineno">  741</span>                            <span class="keywordtype">size_t</span> m = strlen(entity);</div>
-<div class="line"><a id="l00742" name="l00742"></a><span class="lineno">  742</span>                            <span class="keywordflow">if</span> (j + m + 2 &gt;= count_dst)</div>
-<div class="line"><a id="l00743" name="l00743"></a><span class="lineno">  743</span>                                <span class="keywordflow">throw</span> buffer_overrun;</div>
-<div class="line"><a id="l00744" name="l00744"></a><span class="lineno">  744</span>                            dst[j++] = <span class="charliteral">&#39;&amp;&#39;</span>;</div>
-<div class="line"><a id="l00745" name="l00745"></a><span class="lineno">  745</span>                            memcpy(dst + j, entity, m * <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>)); j += m;</div>
-<div class="line"><a id="l00746" name="l00746"></a><span class="lineno">  746</span>                            dst[j++] = <span class="charliteral">&#39;;&#39;</span>;</div>
-<div class="line"><a id="l00747" name="l00747"></a><span class="lineno">  747</span>                            i++;</div>
-<div class="line"><a id="l00748" name="l00748"></a><span class="lineno">  748</span>                        }</div>
-<div class="line"><a id="l00749" name="l00749"></a><span class="lineno">  749</span>                        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (is7bit(src[i])) {</div>
-<div class="line"><a id="l00750" name="l00750"></a><span class="lineno">  750</span>                            <span class="keywordflow">if</span> (j + 1 &gt;= count_dst)</div>
-<div class="line"><a id="l00751" name="l00751"></a><span class="lineno">  751</span>                                <span class="keywordflow">throw</span> buffer_overrun;</div>
-<div class="line"><a id="l00752" name="l00752"></a><span class="lineno">  752</span>                            dst[j++] = <span class="keyword">static_cast&lt;</span><span class="keywordtype">char</span><span class="keyword">&gt;</span>(src[i++]);</div>
-<div class="line"><a id="l00753" name="l00753"></a><span class="lineno">  753</span>                        }</div>
-<div class="line"><a id="l00754" name="l00754"></a><span class="lineno">  754</span>                        <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00755" name="l00755"></a><span class="lineno">  755</span>                            <span class="keywordtype">char</span> tmp[3 + 8 + 1 + 1];</div>
-<div class="line"><a id="l00756" name="l00756"></a><span class="lineno">  756</span>                            <span class="keywordtype">int</span> m = snprintf(tmp, _countof(tmp), <span class="stringliteral">&quot;&amp;#x%x;&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">int</span><span class="keyword">&gt;</span>(wstr_to_utf32(src, i, end)));</div>
-<div class="line"><a id="l00757" name="l00757"></a><span class="lineno">  757</span>                            _Assume_(m &gt;= 0);</div>
-<div class="line"><a id="l00758" name="l00758"></a><span class="lineno">  758</span>                            <span class="keywordflow">if</span> (<span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(m) &gt;= count_dst)</div>
-<div class="line"><a id="l00759" name="l00759"></a><span class="lineno">  759</span>                                <span class="keywordflow">throw</span> buffer_overrun;</div>
-<div class="line"><a id="l00760" name="l00760"></a><span class="lineno">  760</span>                            memcpy(dst + j, tmp, <span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(m) * <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>));</div>
-<div class="line"><a id="l00761" name="l00761"></a><span class="lineno">  761</span>                            j += <span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(m);</div>
-<div class="line"><a id="l00762" name="l00762"></a><span class="lineno">  762</span>                        }</div>
-<div class="line"><a id="l00763" name="l00763"></a><span class="lineno">  763</span>                    }</div>
-<div class="line"><a id="l00764" name="l00764"></a><span class="lineno">  764</span>                }</div>
-<div class="line"><a id="l00765" name="l00765"></a><span class="lineno">  765</span>            }</div>
-<div class="line"><a id="l00766" name="l00766"></a><span class="lineno">  766</span>        }</div>
-<div class="line"><a id="l00767" name="l00767"></a><span class="lineno">  767</span>        <span class="keywordflow">if</span> (j &gt;= count_dst)</div>
-<div class="line"><a id="l00768" name="l00768"></a><span class="lineno">  768</span>            <span class="keywordflow">throw</span> buffer_overrun;</div>
-<div class="line"><a id="l00769" name="l00769"></a><span class="lineno">  769</span>        dst[j] = 0;</div>
-<div class="line"><a id="l00770" name="l00770"></a><span class="lineno">  770</span>        <span class="keywordflow">return</span> j;</div>
-<div class="line"><a id="l00771" name="l00771"></a><span class="lineno">  771</span>    }</div>
-<div class="line"><a id="l00772" name="l00772"></a><span class="lineno">  772</span> </div>
-<div class="line"><a id="l00781" name="l00781"></a><span class="lineno">  781</span>    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_from = <span class="keywordtype">wchar_t</span>, <span class="keyword">class</span> TR_to = std::<span class="keywordtype">char</span>_traits&lt;<span class="keywordtype">char</span>&gt;, <span class="keyword">class</span> AX_to = std::allocator&lt;<span class="keywordtype">char</span>&gt;&gt;</div>
-<div class="line"><a id="l00782" name="l00782"></a><span class="lineno">  782</span>    <span class="keywordtype">void</span> str2sgmlcpy(</div>
-<div class="line"><a id="l00783" name="l00783"></a><span class="lineno">  783</span>        _Inout_ std::basic_string&lt;char, TR_to, AX_to&gt;&amp; dst,</div>
-<div class="line"><a id="l00784" name="l00784"></a><span class="lineno">  784</span>        _In_reads_or_z_opt_(count_src) <span class="keyword">const</span> T_from* src, _In_ <span class="keywordtype">size_t</span> count_src,</div>
-<div class="line"><a id="l00785" name="l00785"></a><span class="lineno">  785</span>        _In_ <span class="keywordtype">int</span> what = 0)</div>
-<div class="line"><a id="l00786" name="l00786"></a><span class="lineno">  786</span>    {</div>
-<div class="line"><a id="l00787" name="l00787"></a><span class="lineno">  787</span>        dst.clear();</div>
-<div class="line"><a id="l00788" name="l00788"></a><span class="lineno">  788</span>        str2sgmlcat(dst, src, count_src, what);</div>
-<div class="line"><a id="l00789" name="l00789"></a><span class="lineno">  789</span>    }</div>
-<div class="line"><a id="l00790" name="l00790"></a><span class="lineno">  790</span> </div>
-<div class="line"><a id="l00798" name="l00798"></a><span class="lineno">  798</span>    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_from = <span class="keywordtype">wchar_t</span>, <span class="keyword">class</span> TR_to = std::<span class="keywordtype">char</span>_traits&lt;<span class="keywordtype">char</span>&gt;, <span class="keyword">class</span> AX_to = std::allocator&lt;<span class="keywordtype">char</span>&gt;&gt;</div>
-<div class="line"><a id="l00799" name="l00799"></a><span class="lineno">  799</span>    <span class="keywordtype">void</span> str2sgmlcpy(</div>
-<div class="line"><a id="l00800" name="l00800"></a><span class="lineno">  800</span>        _Inout_ std::basic_string&lt;char, TR_to, AX_to&gt;&amp; dst,</div>
-<div class="line"><a id="l00801" name="l00801"></a><span class="lineno">  801</span>        _In_ <span class="keyword">const</span> std::basic_string_view&lt;T_from, std::char_traits&lt;T_from&gt;&gt; src,</div>
-<div class="line"><a id="l00802" name="l00802"></a><span class="lineno">  802</span>        _In_ <span class="keywordtype">int</span> what = 0)</div>
-<div class="line"><a id="l00803" name="l00803"></a><span class="lineno">  803</span>    {</div>
-<div class="line"><a id="l00804" name="l00804"></a><span class="lineno">  804</span>        str2sgmlcpy(dst, src.data(), src.size(), what);</div>
-<div class="line"><a id="l00805" name="l00805"></a><span class="lineno">  805</span>    }</div>
-<div class="line"><a id="l00806" name="l00806"></a><span class="lineno">  806</span> </div>
-<div class="line"><a id="l00818" name="l00818"></a><span class="lineno">  818</span>    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_from = <span class="keywordtype">wchar_t</span>&gt;</div>
-<div class="line"><a id="l00819" name="l00819"></a><span class="lineno">  819</span>    <span class="keywordtype">size_t</span> str2sgmlcpy(</div>
-<div class="line"><a id="l00820" name="l00820"></a><span class="lineno">  820</span>        _Inout_cap_(count_dst) <span class="keywordtype">char</span>* dst, _In_ <span class="keywordtype">size_t</span> count_dst,</div>
-<div class="line"><a id="l00821" name="l00821"></a><span class="lineno">  821</span>        _In_reads_or_z_opt_(count_src) <span class="keyword">const</span> T_from* src, _In_ <span class="keywordtype">size_t</span> count_src,</div>
-<div class="line"><a id="l00822" name="l00822"></a><span class="lineno">  822</span>        _In_ <span class="keywordtype">int</span> what = 0)</div>
-<div class="line"><a id="l00823" name="l00823"></a><span class="lineno">  823</span>    {</div>
-<div class="line"><a id="l00824" name="l00824"></a><span class="lineno">  824</span>        _Assume_(dst || !count_dst);</div>
-<div class="line"><a id="l00825" name="l00825"></a><span class="lineno">  825</span>        <span class="keywordflow">if</span> (count_dst)</div>
-<div class="line"><a id="l00826" name="l00826"></a><span class="lineno">  826</span>            dst[0] = 0;</div>
-<div class="line"><a id="l00827" name="l00827"></a><span class="lineno">  827</span>        <span class="keywordflow">return</span> str2sgmlcat(dst, count_dst, src, count_src, what);</div>
-<div class="line"><a id="l00828" name="l00828"></a><span class="lineno">  828</span>    }</div>
-<div class="line"><a id="l00829" name="l00829"></a><span class="lineno">  829</span> </div>
-<div class="line"><a id="l00839" name="l00839"></a><span class="lineno">  839</span>    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_from = <span class="keywordtype">wchar_t</span>&gt;</div>
-<div class="line"><a id="l00840" name="l00840"></a><span class="lineno">  840</span>    std::string str2sgml(</div>
-<div class="line"><a id="l00841" name="l00841"></a><span class="lineno">  841</span>        _In_reads_or_z_opt_(count_src) <span class="keyword">const</span> T_from* src, _In_ <span class="keywordtype">size_t</span> count_src,</div>
-<div class="line"><a id="l00842" name="l00842"></a><span class="lineno">  842</span>        _In_ <span class="keywordtype">int</span> what = 0)</div>
-<div class="line"><a id="l00843" name="l00843"></a><span class="lineno">  843</span>    {</div>
-<div class="line"><a id="l00844" name="l00844"></a><span class="lineno">  844</span>        std::string dst;</div>
-<div class="line"><a id="l00845" name="l00845"></a><span class="lineno">  845</span>        str2sgmlcat(dst, src, count_src, what);</div>
-<div class="line"><a id="l00846" name="l00846"></a><span class="lineno">  846</span>        <span class="keywordflow">return</span> dst;</div>
-<div class="line"><a id="l00847" name="l00847"></a><span class="lineno">  847</span>    }</div>
-<div class="line"><a id="l00848" name="l00848"></a><span class="lineno">  848</span> </div>
-<div class="line"><a id="l00857" name="l00857"></a><span class="lineno">  857</span>    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_from = <span class="keywordtype">wchar_t</span>&gt;</div>
-<div class="line"><a id="l00858" name="l00858"></a><span class="lineno">  858</span>    std::string str2sgml(</div>
-<div class="line"><a id="l00859" name="l00859"></a><span class="lineno">  859</span>        _In_ <span class="keyword">const</span> std::basic_string_view&lt;T_from, std::char_traits&lt;T_from&gt;&gt; src,</div>
-<div class="line"><a id="l00860" name="l00860"></a><span class="lineno">  860</span>        _In_ <span class="keywordtype">int</span> what = 0)</div>
-<div class="line"><a id="l00861" name="l00861"></a><span class="lineno">  861</span>    {</div>
-<div class="line"><a id="l00862" name="l00862"></a><span class="lineno">  862</span>        <span class="keywordflow">return</span> str2sgml(src.data(), src.size(), what);</div>
-<div class="line"><a id="l00863" name="l00863"></a><span class="lineno">  863</span>    }</div>
-<div class="line"><a id="l00864" name="l00864"></a><span class="lineno">  864</span>}</div>
-<div class="line"><a id="l00865" name="l00865"></a><span class="lineno">  865</span> </div>
-<div class="line"><a id="l00866" name="l00866"></a><span class="lineno">  866</span><span class="preprocessor">#if defined(__GNUC__)</span></div>
-<div class="line"><a id="l00867" name="l00867"></a><span class="lineno">  867</span><span class="preprocessor">#pragma GCC diagnostic pop</span></div>
-<div class="line"><a id="l00868" name="l00868"></a><span class="lineno">  868</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00535" name="l00535"></a><span class="lineno">  535</span>        _Unreferenced_(end);</div>
+<div class="line"><a id="l00536" name="l00536"></a><span class="lineno">  536</span>        _Assume_(i &lt; end);</div>
+<div class="line"><a id="l00537" name="l00537"></a><span class="lineno">  537</span>        <span class="keywordflow">return</span> src[i++];</div>
+<div class="line"><a id="l00538" name="l00538"></a><span class="lineno">  538</span>    }</div>
+<div class="line"><a id="l00540" name="l00540"></a><span class="lineno">  540</span> </div>
+<div class="line"><a id="l00549" name="l00549"></a><span class="lineno">  549</span>    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_from = <span class="keywordtype">wchar_t</span>, <span class="keyword">class</span> TR_to = std::<span class="keywordtype">char</span>_traits&lt;<span class="keywordtype">char</span>&gt;, <span class="keyword">class</span> AX_to = std::allocator&lt;<span class="keywordtype">char</span>&gt;&gt;</div>
+<div class="line"><a id="l00550" name="l00550"></a><span class="lineno">  550</span>    <span class="keywordtype">void</span> str2sgmlcat(</div>
+<div class="line"><a id="l00551" name="l00551"></a><span class="lineno">  551</span>        _Inout_ std::basic_string&lt;char, TR_to, AX_to&gt;&amp; dst,</div>
+<div class="line"><a id="l00552" name="l00552"></a><span class="lineno">  552</span>        _In_reads_or_z_opt_(count_src) <span class="keyword">const</span> T_from* src, _In_ <span class="keywordtype">size_t</span> count_src,</div>
+<div class="line"><a id="l00553" name="l00553"></a><span class="lineno">  553</span>        _In_ <span class="keywordtype">int</span> what = 0)</div>
+<div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span>    {</div>
+<div class="line"><a id="l00555" name="l00555"></a><span class="lineno">  555</span>        _Assume_(src || !count_src);</div>
+<div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span> </div>
+<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span>        <span class="keyword">const</span> <span class="keywordtype">bool</span></div>
+<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span>            do_ascii = (what &amp; sgml_full) == 0,</div>
+<div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span>            do_quot = (what &amp; sgml_quot) == 0,</div>
+<div class="line"><a id="l00560" name="l00560"></a><span class="lineno">  560</span>            do_apos = (what &amp; sgml_apos) == 0,</div>
+<div class="line"><a id="l00561" name="l00561"></a><span class="lineno">  561</span>            do_lt_gt = (what &amp; sgml_lt_gt) == 0,</div>
+<div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span>            do_bsol = (what &amp; sgml_bsol) == 0,</div>
+<div class="line"><a id="l00563" name="l00563"></a><span class="lineno">  563</span>            do_dollar = (what &amp; sgml_dollar) == 0,</div>
+<div class="line"><a id="l00564" name="l00564"></a><span class="lineno">  564</span>            do_percnt = (what &amp; sgml_percnt) == 0,</div>
+<div class="line"><a id="l00565" name="l00565"></a><span class="lineno">  565</span>            do_commat = (what &amp; sgml_commat) == 0,</div>
+<div class="line"><a id="l00566" name="l00566"></a><span class="lineno">  566</span>            do_num = (what &amp; sgml_num) == 0,</div>
+<div class="line"><a id="l00567" name="l00567"></a><span class="lineno">  567</span>            do_lpar_rpar = (what &amp; sgml_lpar_rpar) == 0,</div>
+<div class="line"><a id="l00568" name="l00568"></a><span class="lineno">  568</span>            do_lcub_rcub = (what &amp; sgml_lcub_rcub) == 0,</div>
+<div class="line"><a id="l00569" name="l00569"></a><span class="lineno">  569</span>            do_lsqb_rsqb = (what &amp; sgml_lsqb_rsqb) == 0;</div>
+<div class="line"><a id="l00570" name="l00570"></a><span class="lineno">  570</span> </div>
+<div class="line"><a id="l00571" name="l00571"></a><span class="lineno">  571</span>        count_src = strnlen(src, count_src);</div>
+<div class="line"><a id="l00572" name="l00572"></a><span class="lineno">  572</span>        dst.reserve(dst.size() + count_src);</div>
+<div class="line"><a id="l00573" name="l00573"></a><span class="lineno">  573</span>        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; count_src;) {</div>
+<div class="line"><a id="l00574" name="l00574"></a><span class="lineno">  574</span>            <span class="keywordtype">size_t</span> n = glyphlen(src + i, count_src - i);</div>
+<div class="line"><a id="l00575" name="l00575"></a><span class="lineno">  575</span>            <span class="keywordflow">if</span> (n == 1 &amp;&amp;</div>
+<div class="line"><a id="l00576" name="l00576"></a><span class="lineno">  576</span>                do_ascii &amp;&amp; is7bit(src[i]) &amp;&amp;</div>
+<div class="line"><a id="l00577" name="l00577"></a><span class="lineno">  577</span>                src[i] != <span class="charliteral">&#39;&amp;&#39;</span> &amp;&amp;</div>
+<div class="line"><a id="l00578" name="l00578"></a><span class="lineno">  578</span>                (do_quot || (src[i] != <span class="charliteral">&#39;&quot;&#39;</span>)) &amp;&amp;</div>
+<div class="line"><a id="l00579" name="l00579"></a><span class="lineno">  579</span>                (do_apos || (src[i] != <span class="charliteral">&#39;\&#39;&#39;</span>)) &amp;&amp;</div>
+<div class="line"><a id="l00580" name="l00580"></a><span class="lineno">  580</span>                (do_lt_gt || (src[i] != <span class="charliteral">&#39;&lt;&#39;</span> &amp;&amp; src[i] != <span class="charliteral">&#39;&gt;&#39;</span>)) &amp;&amp;</div>
+<div class="line"><a id="l00581" name="l00581"></a><span class="lineno">  581</span>                (do_bsol || (src[i] != <span class="charliteral">&#39;\\&#39;</span>)) &amp;&amp;</div>
+<div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span>                (do_dollar || (src[i] != <span class="charliteral">&#39;$&#39;</span>)) &amp;&amp;</div>
+<div class="line"><a id="l00583" name="l00583"></a><span class="lineno">  583</span>                (do_percnt || (src[i] != <span class="charliteral">&#39;%&#39;</span>)) &amp;&amp;</div>
+<div class="line"><a id="l00584" name="l00584"></a><span class="lineno">  584</span>                (do_commat || (src[i] != <span class="charliteral">&#39;@&#39;</span>)) &amp;&amp;</div>
+<div class="line"><a id="l00585" name="l00585"></a><span class="lineno">  585</span>                (do_num || (src[i] != <span class="charliteral">&#39;#&#39;</span>)) &amp;&amp;</div>
+<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span>                (do_lpar_rpar || (src[i] != <span class="charliteral">&#39;(&#39;</span> &amp;&amp; src[i] != <span class="charliteral">&#39;)&#39;</span>)) &amp;&amp;</div>
+<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span>                (do_lcub_rcub || (src[i] != <span class="charliteral">&#39;{&#39;</span> &amp;&amp; src[i] != <span class="charliteral">&#39;}&#39;</span>)) &amp;&amp;</div>
+<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span>                (do_lsqb_rsqb || (src[i] != <span class="charliteral">&#39;[&#39;</span> &amp;&amp; src[i] != <span class="charliteral">&#39;]&#39;</span>)))</div>
+<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span>            {</div>
+<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span>                <span class="comment">// 7-bit ASCII and no desire to encode it as an SGML entity.</span></div>
+<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span>                dst.append(1, <span class="keyword">static_cast&lt;</span><span class="keywordtype">char</span><span class="keyword">&gt;</span>(src[i++]));</div>
+<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span>            }</div>
+<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span>            <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span>                <span class="keyword">const</span> <span class="keywordtype">char</span>* entity = chr2sgml(src + i, n);</div>
+<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span>                <span class="keywordflow">if</span> (entity) {</div>
+<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span>                    dst.append(1, <span class="charliteral">&#39;&amp;&#39;</span>);</div>
+<div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span>                    dst.append(entity);</div>
+<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span>                    dst.append(1, <span class="charliteral">&#39;;&#39;</span>);</div>
+<div class="line"><a id="l00599" name="l00599"></a><span class="lineno">  599</span>                    i += n;</div>
+<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span>                }</div>
+<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span>                <span class="keywordflow">else</span> <span class="keywordflow">if</span> (n == 1) {</div>
+<div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span>                    <span class="comment">// Trivial character (1 code unit, 1 glyph), no entity available.</span></div>
+<div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span>                    <span class="keywordflow">if</span> (is7bit(src[i]))</div>
+<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span>                        dst.append(1, <span class="keyword">static_cast&lt;</span><span class="keywordtype">char</span><span class="keyword">&gt;</span>(src[i++]));</div>
+<div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span>                    <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span>                        <span class="keywordtype">char</span> tmp[3 + 8 + 1 + 1];</div>
+<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span>                        snprintf(tmp, _countof(tmp), <span class="stringliteral">&quot;&amp;#x%x;&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">int</span><span class="keyword">&gt;</span>(src[i++]));</div>
+<div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span>                        dst.append(tmp);</div>
+<div class="line"><a id="l00609" name="l00609"></a><span class="lineno">  609</span>                    }</div>
+<div class="line"><a id="l00610" name="l00610"></a><span class="lineno">  610</span>                }</div>
+<div class="line"><a id="l00611" name="l00611"></a><span class="lineno">  611</span>                <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00612" name="l00612"></a><span class="lineno">  612</span>                    <span class="comment">// Non-trivial character. Decompose.</span></div>
+<div class="line"><a id="l00613" name="l00613"></a><span class="lineno">  613</span>                    <span class="keyword">const</span> <span class="keywordtype">size_t</span> end = i + n;</div>
+<div class="line"><a id="l00614" name="l00614"></a><span class="lineno">  614</span>                    <span class="keywordflow">while</span> (i &lt; end) {</div>
+<div class="line"><a id="l00615" name="l00615"></a><span class="lineno">  615</span>                        <span class="keywordflow">if</span> ((entity = chr2sgml(src + i, 1)) != <span class="keyword">nullptr</span>) {</div>
+<div class="line"><a id="l00616" name="l00616"></a><span class="lineno">  616</span>                            dst.append(1, <span class="charliteral">&#39;&amp;&#39;</span>);</div>
+<div class="line"><a id="l00617" name="l00617"></a><span class="lineno">  617</span>                            dst.append(entity);</div>
+<div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span>                            dst.append(1, <span class="charliteral">&#39;;&#39;</span>);</div>
+<div class="line"><a id="l00619" name="l00619"></a><span class="lineno">  619</span>                            i++;</div>
+<div class="line"><a id="l00620" name="l00620"></a><span class="lineno">  620</span>                        }</div>
+<div class="line"><a id="l00621" name="l00621"></a><span class="lineno">  621</span>                        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (is7bit(src[i]))</div>
+<div class="line"><a id="l00622" name="l00622"></a><span class="lineno">  622</span>                            dst.append(1, <span class="keyword">static_cast&lt;</span><span class="keywordtype">char</span><span class="keyword">&gt;</span>(src[i++]));</div>
+<div class="line"><a id="l00623" name="l00623"></a><span class="lineno">  623</span>                        <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span>                            <span class="keywordtype">char</span> tmp[3 + 8 + 1 + 1];</div>
+<div class="line"><a id="l00625" name="l00625"></a><span class="lineno">  625</span>                            snprintf(tmp, _countof(tmp), <span class="stringliteral">&quot;&amp;#x%x;&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">int</span><span class="keyword">&gt;</span>(wstr_to_utf32(src, i, end)));</div>
+<div class="line"><a id="l00626" name="l00626"></a><span class="lineno">  626</span>                            dst.append(tmp);</div>
+<div class="line"><a id="l00627" name="l00627"></a><span class="lineno">  627</span>                        }</div>
+<div class="line"><a id="l00628" name="l00628"></a><span class="lineno">  628</span>                    }</div>
+<div class="line"><a id="l00629" name="l00629"></a><span class="lineno">  629</span>                }</div>
+<div class="line"><a id="l00630" name="l00630"></a><span class="lineno">  630</span>            }</div>
+<div class="line"><a id="l00631" name="l00631"></a><span class="lineno">  631</span>        }</div>
+<div class="line"><a id="l00632" name="l00632"></a><span class="lineno">  632</span>    }</div>
+<div class="line"><a id="l00633" name="l00633"></a><span class="lineno">  633</span> </div>
+<div class="line"><a id="l00641" name="l00641"></a><span class="lineno">  641</span>    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_from = <span class="keywordtype">wchar_t</span>, <span class="keyword">class</span> TR_to = std::<span class="keywordtype">char</span>_traits&lt;<span class="keywordtype">char</span>&gt;, <span class="keyword">class</span> AX_to = std::allocator&lt;<span class="keywordtype">char</span>&gt;&gt;</div>
+<div class="line"><a id="l00642" name="l00642"></a><span class="lineno">  642</span>    <span class="keywordtype">void</span> str2sgmlcat(</div>
+<div class="line"><a id="l00643" name="l00643"></a><span class="lineno">  643</span>        _Inout_ std::basic_string&lt;char, TR_to, AX_to&gt;&amp; dst,</div>
+<div class="line"><a id="l00644" name="l00644"></a><span class="lineno">  644</span>        _In_ <span class="keyword">const</span> std::basic_string_view&lt;T_from, std::char_traits&lt;T_from&gt;&gt; src,</div>
+<div class="line"><a id="l00645" name="l00645"></a><span class="lineno">  645</span>        _In_ <span class="keywordtype">int</span> what = 0)</div>
+<div class="line"><a id="l00646" name="l00646"></a><span class="lineno">  646</span>    {</div>
+<div class="line"><a id="l00647" name="l00647"></a><span class="lineno">  647</span>        str2sgmlcat(dst, src.data(), src.size(), what);</div>
+<div class="line"><a id="l00648" name="l00648"></a><span class="lineno">  648</span>    }</div>
+<div class="line"><a id="l00649" name="l00649"></a><span class="lineno">  649</span> </div>
+<div class="line"><a id="l00661" name="l00661"></a><span class="lineno">  661</span>    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_from = <span class="keywordtype">wchar_t</span>&gt;</div>
+<div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span>    <span class="keywordtype">size_t</span> str2sgmlcat(</div>
+<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span>        _Inout_cap_(count_dst) <span class="keywordtype">char</span>* dst, _In_ <span class="keywordtype">size_t</span> count_dst,</div>
+<div class="line"><a id="l00664" name="l00664"></a><span class="lineno">  664</span>        _In_reads_or_z_opt_(count_src) <span class="keyword">const</span> T_from* src, _In_ <span class="keywordtype">size_t</span> count_src,</div>
+<div class="line"><a id="l00665" name="l00665"></a><span class="lineno">  665</span>        _In_ <span class="keywordtype">int</span> what = 0)</div>
+<div class="line"><a id="l00666" name="l00666"></a><span class="lineno">  666</span>    {</div>
+<div class="line"><a id="l00667" name="l00667"></a><span class="lineno">  667</span>        _Assume_(dst || !count_dst);</div>
+<div class="line"><a id="l00668" name="l00668"></a><span class="lineno">  668</span>        _Assume_(src || !count_src);</div>
+<div class="line"><a id="l00669" name="l00669"></a><span class="lineno">  669</span> </div>
+<div class="line"><a id="l00670" name="l00670"></a><span class="lineno">  670</span>        <span class="keyword">static</span> <span class="keyword">const</span> std::invalid_argument buffer_overrun(<span class="stringliteral">&quot;buffer overrun&quot;</span>);</div>
+<div class="line"><a id="l00671" name="l00671"></a><span class="lineno">  671</span>        <span class="keyword">const</span> <span class="keywordtype">bool</span></div>
+<div class="line"><a id="l00672" name="l00672"></a><span class="lineno">  672</span>            do_ascii = (what &amp; sgml_full) == 0,</div>
+<div class="line"><a id="l00673" name="l00673"></a><span class="lineno">  673</span>            do_quot = (what &amp; sgml_quot) == 0,</div>
+<div class="line"><a id="l00674" name="l00674"></a><span class="lineno">  674</span>            do_apos = (what &amp; sgml_apos) == 0,</div>
+<div class="line"><a id="l00675" name="l00675"></a><span class="lineno">  675</span>            do_lt_gt = (what &amp; sgml_lt_gt) == 0,</div>
+<div class="line"><a id="l00676" name="l00676"></a><span class="lineno">  676</span>            do_bsol = (what &amp; sgml_bsol) == 0,</div>
+<div class="line"><a id="l00677" name="l00677"></a><span class="lineno">  677</span>            do_dollar = (what &amp; sgml_dollar) == 0,</div>
+<div class="line"><a id="l00678" name="l00678"></a><span class="lineno">  678</span>            do_percnt = (what &amp; sgml_percnt) == 0,</div>
+<div class="line"><a id="l00679" name="l00679"></a><span class="lineno">  679</span>            do_commat = (what &amp; sgml_commat) == 0,</div>
+<div class="line"><a id="l00680" name="l00680"></a><span class="lineno">  680</span>            do_num = (what &amp; sgml_num) == 0,</div>
+<div class="line"><a id="l00681" name="l00681"></a><span class="lineno">  681</span>            do_lpar_rpar = (what &amp; sgml_lpar_rpar) == 0,</div>
+<div class="line"><a id="l00682" name="l00682"></a><span class="lineno">  682</span>            do_lcub_rcub = (what &amp; sgml_lcub_rcub) == 0,</div>
+<div class="line"><a id="l00683" name="l00683"></a><span class="lineno">  683</span>            do_lsqb_rsqb = (what &amp; sgml_lsqb_rsqb) == 0;</div>
+<div class="line"><a id="l00684" name="l00684"></a><span class="lineno">  684</span> </div>
+<div class="line"><a id="l00685" name="l00685"></a><span class="lineno">  685</span>        <span class="keywordtype">size_t</span> j = strnlen(dst, count_dst);</div>
+<div class="line"><a id="l00686" name="l00686"></a><span class="lineno">  686</span>        count_src = strnlen(src, count_src);</div>
+<div class="line"><a id="l00687" name="l00687"></a><span class="lineno">  687</span>        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; count_src;) {</div>
+<div class="line"><a id="l00688" name="l00688"></a><span class="lineno">  688</span>            <span class="keywordtype">size_t</span> n = glyphlen(src + i, count_src - i);</div>
+<div class="line"><a id="l00689" name="l00689"></a><span class="lineno">  689</span>            <span class="keywordflow">if</span> (n == 1 &amp;&amp;</div>
+<div class="line"><a id="l00690" name="l00690"></a><span class="lineno">  690</span>                do_ascii &amp;&amp; is7bit(src[i]) &amp;&amp;</div>
+<div class="line"><a id="l00691" name="l00691"></a><span class="lineno">  691</span>                src[i] != <span class="charliteral">&#39;&amp;&#39;</span> &amp;&amp;</div>
+<div class="line"><a id="l00692" name="l00692"></a><span class="lineno">  692</span>                (do_quot || (src[i] != <span class="charliteral">&#39;&quot;&#39;</span>)) &amp;&amp;</div>
+<div class="line"><a id="l00693" name="l00693"></a><span class="lineno">  693</span>                (do_apos || (src[i] != <span class="charliteral">&#39;\&#39;&#39;</span>)) &amp;&amp;</div>
+<div class="line"><a id="l00694" name="l00694"></a><span class="lineno">  694</span>                (do_lt_gt || (src[i] != <span class="charliteral">&#39;&lt;&#39;</span> &amp;&amp; src[i] != <span class="charliteral">&#39;&gt;&#39;</span>)) &amp;&amp;</div>
+<div class="line"><a id="l00695" name="l00695"></a><span class="lineno">  695</span>                (do_bsol || (src[i] != <span class="charliteral">&#39;\\&#39;</span>)) &amp;&amp;</div>
+<div class="line"><a id="l00696" name="l00696"></a><span class="lineno">  696</span>                (do_dollar || (src[i] != <span class="charliteral">&#39;$&#39;</span>)) &amp;&amp;</div>
+<div class="line"><a id="l00697" name="l00697"></a><span class="lineno">  697</span>                (do_percnt || (src[i] != <span class="charliteral">&#39;%&#39;</span>)) &amp;&amp;</div>
+<div class="line"><a id="l00698" name="l00698"></a><span class="lineno">  698</span>                (do_commat || (src[i] != <span class="charliteral">&#39;@&#39;</span>)) &amp;&amp;</div>
+<div class="line"><a id="l00699" name="l00699"></a><span class="lineno">  699</span>                (do_num || (src[i] != <span class="charliteral">&#39;#&#39;</span>)) &amp;&amp;</div>
+<div class="line"><a id="l00700" name="l00700"></a><span class="lineno">  700</span>                (do_lpar_rpar || (src[i] != <span class="charliteral">&#39;(&#39;</span> &amp;&amp; src[i] != <span class="charliteral">&#39;)&#39;</span>)) &amp;&amp;</div>
+<div class="line"><a id="l00701" name="l00701"></a><span class="lineno">  701</span>                (do_lcub_rcub || (src[i] != <span class="charliteral">&#39;{&#39;</span> &amp;&amp; src[i] != <span class="charliteral">&#39;}&#39;</span>)) &amp;&amp;</div>
+<div class="line"><a id="l00702" name="l00702"></a><span class="lineno">  702</span>                (do_lsqb_rsqb || (src[i] != <span class="charliteral">&#39;[&#39;</span> &amp;&amp; src[i] != <span class="charliteral">&#39;]&#39;</span>)))</div>
+<div class="line"><a id="l00703" name="l00703"></a><span class="lineno">  703</span>            {</div>
+<div class="line"><a id="l00704" name="l00704"></a><span class="lineno">  704</span>                <span class="comment">// 7-bit ASCII and no desire to encode it as an SGML entity.</span></div>
+<div class="line"><a id="l00705" name="l00705"></a><span class="lineno">  705</span>                <span class="keywordflow">if</span> (j + 1 &gt;= count_dst)</div>
+<div class="line"><a id="l00706" name="l00706"></a><span class="lineno">  706</span>                    <span class="keywordflow">throw</span> buffer_overrun;</div>
+<div class="line"><a id="l00707" name="l00707"></a><span class="lineno">  707</span>                dst[j++] = <span class="keyword">static_cast&lt;</span><span class="keywordtype">char</span><span class="keyword">&gt;</span>(src[i++]);</div>
+<div class="line"><a id="l00708" name="l00708"></a><span class="lineno">  708</span>            }</div>
+<div class="line"><a id="l00709" name="l00709"></a><span class="lineno">  709</span>            <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00710" name="l00710"></a><span class="lineno">  710</span>                <span class="keyword">const</span> <span class="keywordtype">char</span>* entity = chr2sgml(src + i, n);</div>
+<div class="line"><a id="l00711" name="l00711"></a><span class="lineno">  711</span>                <span class="keywordflow">if</span> (entity) {</div>
+<div class="line"><a id="l00712" name="l00712"></a><span class="lineno">  712</span>                    <span class="keywordtype">size_t</span> m = strlen(entity);</div>
+<div class="line"><a id="l00713" name="l00713"></a><span class="lineno">  713</span>                    <span class="keywordflow">if</span> (j + m + 2 &gt;= count_dst)</div>
+<div class="line"><a id="l00714" name="l00714"></a><span class="lineno">  714</span>                        <span class="keywordflow">throw</span> buffer_overrun;</div>
+<div class="line"><a id="l00715" name="l00715"></a><span class="lineno">  715</span>                    dst[j++] = <span class="charliteral">&#39;&amp;&#39;</span>;</div>
+<div class="line"><a id="l00716" name="l00716"></a><span class="lineno">  716</span>                    memcpy(dst + j, entity, m * <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>)); j += m;</div>
+<div class="line"><a id="l00717" name="l00717"></a><span class="lineno">  717</span>                    dst[j++] = <span class="charliteral">&#39;;&#39;</span>;</div>
+<div class="line"><a id="l00718" name="l00718"></a><span class="lineno">  718</span>                    i += n;</div>
+<div class="line"><a id="l00719" name="l00719"></a><span class="lineno">  719</span>                }</div>
+<div class="line"><a id="l00720" name="l00720"></a><span class="lineno">  720</span>                <span class="keywordflow">else</span> <span class="keywordflow">if</span> (n == 1) {</div>
+<div class="line"><a id="l00721" name="l00721"></a><span class="lineno">  721</span>                    <span class="comment">// Trivial character (1 code unit, 1 glyph), no entity available.</span></div>
+<div class="line"><a id="l00722" name="l00722"></a><span class="lineno">  722</span>                    <span class="keywordflow">if</span> (is7bit(src[i])) {</div>
+<div class="line"><a id="l00723" name="l00723"></a><span class="lineno">  723</span>                        <span class="keywordflow">if</span> (j + 1 &gt;= count_dst)</div>
+<div class="line"><a id="l00724" name="l00724"></a><span class="lineno">  724</span>                            <span class="keywordflow">throw</span> buffer_overrun;</div>
+<div class="line"><a id="l00725" name="l00725"></a><span class="lineno">  725</span>                        dst[j++] = <span class="keyword">static_cast&lt;</span><span class="keywordtype">char</span><span class="keyword">&gt;</span>(src[i++]);</div>
+<div class="line"><a id="l00726" name="l00726"></a><span class="lineno">  726</span>                    }</div>
+<div class="line"><a id="l00727" name="l00727"></a><span class="lineno">  727</span>                    <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00728" name="l00728"></a><span class="lineno">  728</span>                        <span class="keywordtype">char</span> tmp[3 + 8 + 1 + 1];</div>
+<div class="line"><a id="l00729" name="l00729"></a><span class="lineno">  729</span>                        <span class="keywordtype">int</span> m = snprintf(tmp, _countof(tmp), <span class="stringliteral">&quot;&amp;#x%x;&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">int</span><span class="keyword">&gt;</span>(src[i++]));</div>
+<div class="line"><a id="l00730" name="l00730"></a><span class="lineno">  730</span>                        _Assume_(m &gt;= 0);</div>
+<div class="line"><a id="l00731" name="l00731"></a><span class="lineno">  731</span>                        <span class="keywordflow">if</span> (<span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(m) &gt;= count_dst)</div>
+<div class="line"><a id="l00732" name="l00732"></a><span class="lineno">  732</span>                            <span class="keywordflow">throw</span> buffer_overrun;</div>
+<div class="line"><a id="l00733" name="l00733"></a><span class="lineno">  733</span>                        memcpy(dst + j, tmp, <span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(m) * <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>));</div>
+<div class="line"><a id="l00734" name="l00734"></a><span class="lineno">  734</span>                        j += <span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(m);</div>
+<div class="line"><a id="l00735" name="l00735"></a><span class="lineno">  735</span>                    }</div>
+<div class="line"><a id="l00736" name="l00736"></a><span class="lineno">  736</span>                }</div>
+<div class="line"><a id="l00737" name="l00737"></a><span class="lineno">  737</span>                <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00738" name="l00738"></a><span class="lineno">  738</span>                    <span class="comment">// Non-trivial character. Decompose.</span></div>
+<div class="line"><a id="l00739" name="l00739"></a><span class="lineno">  739</span>                    <span class="keyword">const</span> <span class="keywordtype">size_t</span> end = i + n;</div>
+<div class="line"><a id="l00740" name="l00740"></a><span class="lineno">  740</span>                    <span class="keywordflow">while</span> (i &lt; end) {</div>
+<div class="line"><a id="l00741" name="l00741"></a><span class="lineno">  741</span>                        <span class="keywordflow">if</span> ((entity = chr2sgml(src + i, 1)) != <span class="keyword">nullptr</span>) {</div>
+<div class="line"><a id="l00742" name="l00742"></a><span class="lineno">  742</span>                            <span class="keywordtype">size_t</span> m = strlen(entity);</div>
+<div class="line"><a id="l00743" name="l00743"></a><span class="lineno">  743</span>                            <span class="keywordflow">if</span> (j + m + 2 &gt;= count_dst)</div>
+<div class="line"><a id="l00744" name="l00744"></a><span class="lineno">  744</span>                                <span class="keywordflow">throw</span> buffer_overrun;</div>
+<div class="line"><a id="l00745" name="l00745"></a><span class="lineno">  745</span>                            dst[j++] = <span class="charliteral">&#39;&amp;&#39;</span>;</div>
+<div class="line"><a id="l00746" name="l00746"></a><span class="lineno">  746</span>                            memcpy(dst + j, entity, m * <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>)); j += m;</div>
+<div class="line"><a id="l00747" name="l00747"></a><span class="lineno">  747</span>                            dst[j++] = <span class="charliteral">&#39;;&#39;</span>;</div>
+<div class="line"><a id="l00748" name="l00748"></a><span class="lineno">  748</span>                            i++;</div>
+<div class="line"><a id="l00749" name="l00749"></a><span class="lineno">  749</span>                        }</div>
+<div class="line"><a id="l00750" name="l00750"></a><span class="lineno">  750</span>                        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (is7bit(src[i])) {</div>
+<div class="line"><a id="l00751" name="l00751"></a><span class="lineno">  751</span>                            <span class="keywordflow">if</span> (j + 1 &gt;= count_dst)</div>
+<div class="line"><a id="l00752" name="l00752"></a><span class="lineno">  752</span>                                <span class="keywordflow">throw</span> buffer_overrun;</div>
+<div class="line"><a id="l00753" name="l00753"></a><span class="lineno">  753</span>                            dst[j++] = <span class="keyword">static_cast&lt;</span><span class="keywordtype">char</span><span class="keyword">&gt;</span>(src[i++]);</div>
+<div class="line"><a id="l00754" name="l00754"></a><span class="lineno">  754</span>                        }</div>
+<div class="line"><a id="l00755" name="l00755"></a><span class="lineno">  755</span>                        <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00756" name="l00756"></a><span class="lineno">  756</span>                            <span class="keywordtype">char</span> tmp[3 + 8 + 1 + 1];</div>
+<div class="line"><a id="l00757" name="l00757"></a><span class="lineno">  757</span>                            <span class="keywordtype">int</span> m = snprintf(tmp, _countof(tmp), <span class="stringliteral">&quot;&amp;#x%x;&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">int</span><span class="keyword">&gt;</span>(wstr_to_utf32(src, i, end)));</div>
+<div class="line"><a id="l00758" name="l00758"></a><span class="lineno">  758</span>                            _Assume_(m &gt;= 0);</div>
+<div class="line"><a id="l00759" name="l00759"></a><span class="lineno">  759</span>                            <span class="keywordflow">if</span> (<span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(m) &gt;= count_dst)</div>
+<div class="line"><a id="l00760" name="l00760"></a><span class="lineno">  760</span>                                <span class="keywordflow">throw</span> buffer_overrun;</div>
+<div class="line"><a id="l00761" name="l00761"></a><span class="lineno">  761</span>                            memcpy(dst + j, tmp, <span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(m) * <span class="keyword">sizeof</span>(<span class="keywordtype">char</span>));</div>
+<div class="line"><a id="l00762" name="l00762"></a><span class="lineno">  762</span>                            j += <span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(m);</div>
+<div class="line"><a id="l00763" name="l00763"></a><span class="lineno">  763</span>                        }</div>
+<div class="line"><a id="l00764" name="l00764"></a><span class="lineno">  764</span>                    }</div>
+<div class="line"><a id="l00765" name="l00765"></a><span class="lineno">  765</span>                }</div>
+<div class="line"><a id="l00766" name="l00766"></a><span class="lineno">  766</span>            }</div>
+<div class="line"><a id="l00767" name="l00767"></a><span class="lineno">  767</span>        }</div>
+<div class="line"><a id="l00768" name="l00768"></a><span class="lineno">  768</span>        <span class="keywordflow">if</span> (j &gt;= count_dst)</div>
+<div class="line"><a id="l00769" name="l00769"></a><span class="lineno">  769</span>            <span class="keywordflow">throw</span> buffer_overrun;</div>
+<div class="line"><a id="l00770" name="l00770"></a><span class="lineno">  770</span>        dst[j] = 0;</div>
+<div class="line"><a id="l00771" name="l00771"></a><span class="lineno">  771</span>        <span class="keywordflow">return</span> j;</div>
+<div class="line"><a id="l00772" name="l00772"></a><span class="lineno">  772</span>    }</div>
+<div class="line"><a id="l00773" name="l00773"></a><span class="lineno">  773</span> </div>
+<div class="line"><a id="l00782" name="l00782"></a><span class="lineno">  782</span>    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_from = <span class="keywordtype">wchar_t</span>, <span class="keyword">class</span> TR_to = std::<span class="keywordtype">char</span>_traits&lt;<span class="keywordtype">char</span>&gt;, <span class="keyword">class</span> AX_to = std::allocator&lt;<span class="keywordtype">char</span>&gt;&gt;</div>
+<div class="line"><a id="l00783" name="l00783"></a><span class="lineno">  783</span>    <span class="keywordtype">void</span> str2sgmlcpy(</div>
+<div class="line"><a id="l00784" name="l00784"></a><span class="lineno">  784</span>        _Inout_ std::basic_string&lt;char, TR_to, AX_to&gt;&amp; dst,</div>
+<div class="line"><a id="l00785" name="l00785"></a><span class="lineno">  785</span>        _In_reads_or_z_opt_(count_src) <span class="keyword">const</span> T_from* src, _In_ <span class="keywordtype">size_t</span> count_src,</div>
+<div class="line"><a id="l00786" name="l00786"></a><span class="lineno">  786</span>        _In_ <span class="keywordtype">int</span> what = 0)</div>
+<div class="line"><a id="l00787" name="l00787"></a><span class="lineno">  787</span>    {</div>
+<div class="line"><a id="l00788" name="l00788"></a><span class="lineno">  788</span>        dst.clear();</div>
+<div class="line"><a id="l00789" name="l00789"></a><span class="lineno">  789</span>        str2sgmlcat(dst, src, count_src, what);</div>
+<div class="line"><a id="l00790" name="l00790"></a><span class="lineno">  790</span>    }</div>
+<div class="line"><a id="l00791" name="l00791"></a><span class="lineno">  791</span> </div>
+<div class="line"><a id="l00799" name="l00799"></a><span class="lineno">  799</span>    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_from = <span class="keywordtype">wchar_t</span>, <span class="keyword">class</span> TR_to = std::<span class="keywordtype">char</span>_traits&lt;<span class="keywordtype">char</span>&gt;, <span class="keyword">class</span> AX_to = std::allocator&lt;<span class="keywordtype">char</span>&gt;&gt;</div>
+<div class="line"><a id="l00800" name="l00800"></a><span class="lineno">  800</span>    <span class="keywordtype">void</span> str2sgmlcpy(</div>
+<div class="line"><a id="l00801" name="l00801"></a><span class="lineno">  801</span>        _Inout_ std::basic_string&lt;char, TR_to, AX_to&gt;&amp; dst,</div>
+<div class="line"><a id="l00802" name="l00802"></a><span class="lineno">  802</span>        _In_ <span class="keyword">const</span> std::basic_string_view&lt;T_from, std::char_traits&lt;T_from&gt;&gt; src,</div>
+<div class="line"><a id="l00803" name="l00803"></a><span class="lineno">  803</span>        _In_ <span class="keywordtype">int</span> what = 0)</div>
+<div class="line"><a id="l00804" name="l00804"></a><span class="lineno">  804</span>    {</div>
+<div class="line"><a id="l00805" name="l00805"></a><span class="lineno">  805</span>        str2sgmlcpy(dst, src.data(), src.size(), what);</div>
+<div class="line"><a id="l00806" name="l00806"></a><span class="lineno">  806</span>    }</div>
+<div class="line"><a id="l00807" name="l00807"></a><span class="lineno">  807</span> </div>
+<div class="line"><a id="l00819" name="l00819"></a><span class="lineno">  819</span>    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_from = <span class="keywordtype">wchar_t</span>&gt;</div>
+<div class="line"><a id="l00820" name="l00820"></a><span class="lineno">  820</span>    <span class="keywordtype">size_t</span> str2sgmlcpy(</div>
+<div class="line"><a id="l00821" name="l00821"></a><span class="lineno">  821</span>        _Inout_cap_(count_dst) <span class="keywordtype">char</span>* dst, _In_ <span class="keywordtype">size_t</span> count_dst,</div>
+<div class="line"><a id="l00822" name="l00822"></a><span class="lineno">  822</span>        _In_reads_or_z_opt_(count_src) <span class="keyword">const</span> T_from* src, _In_ <span class="keywordtype">size_t</span> count_src,</div>
+<div class="line"><a id="l00823" name="l00823"></a><span class="lineno">  823</span>        _In_ <span class="keywordtype">int</span> what = 0)</div>
+<div class="line"><a id="l00824" name="l00824"></a><span class="lineno">  824</span>    {</div>
+<div class="line"><a id="l00825" name="l00825"></a><span class="lineno">  825</span>        _Assume_(dst || !count_dst);</div>
+<div class="line"><a id="l00826" name="l00826"></a><span class="lineno">  826</span>        <span class="keywordflow">if</span> (count_dst)</div>
+<div class="line"><a id="l00827" name="l00827"></a><span class="lineno">  827</span>            dst[0] = 0;</div>
+<div class="line"><a id="l00828" name="l00828"></a><span class="lineno">  828</span>        <span class="keywordflow">return</span> str2sgmlcat(dst, count_dst, src, count_src, what);</div>
+<div class="line"><a id="l00829" name="l00829"></a><span class="lineno">  829</span>    }</div>
+<div class="line"><a id="l00830" name="l00830"></a><span class="lineno">  830</span> </div>
+<div class="line"><a id="l00840" name="l00840"></a><span class="lineno">  840</span>    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_from = <span class="keywordtype">wchar_t</span>&gt;</div>
+<div class="line"><a id="l00841" name="l00841"></a><span class="lineno">  841</span>    std::string str2sgml(</div>
+<div class="line"><a id="l00842" name="l00842"></a><span class="lineno">  842</span>        _In_reads_or_z_opt_(count_src) <span class="keyword">const</span> T_from* src, _In_ <span class="keywordtype">size_t</span> count_src,</div>
+<div class="line"><a id="l00843" name="l00843"></a><span class="lineno">  843</span>        _In_ <span class="keywordtype">int</span> what = 0)</div>
+<div class="line"><a id="l00844" name="l00844"></a><span class="lineno">  844</span>    {</div>
+<div class="line"><a id="l00845" name="l00845"></a><span class="lineno">  845</span>        std::string dst;</div>
+<div class="line"><a id="l00846" name="l00846"></a><span class="lineno">  846</span>        str2sgmlcat(dst, src, count_src, what);</div>
+<div class="line"><a id="l00847" name="l00847"></a><span class="lineno">  847</span>        <span class="keywordflow">return</span> dst;</div>
+<div class="line"><a id="l00848" name="l00848"></a><span class="lineno">  848</span>    }</div>
+<div class="line"><a id="l00849" name="l00849"></a><span class="lineno">  849</span> </div>
+<div class="line"><a id="l00858" name="l00858"></a><span class="lineno">  858</span>    <span class="keyword">template</span> &lt;<span class="keyword">class</span> T_from = <span class="keywordtype">wchar_t</span>&gt;</div>
+<div class="line"><a id="l00859" name="l00859"></a><span class="lineno">  859</span>    std::string str2sgml(</div>
+<div class="line"><a id="l00860" name="l00860"></a><span class="lineno">  860</span>        _In_ <span class="keyword">const</span> std::basic_string_view&lt;T_from, std::char_traits&lt;T_from&gt;&gt; src,</div>
+<div class="line"><a id="l00861" name="l00861"></a><span class="lineno">  861</span>        _In_ <span class="keywordtype">int</span> what = 0)</div>
+<div class="line"><a id="l00862" name="l00862"></a><span class="lineno">  862</span>    {</div>
+<div class="line"><a id="l00863" name="l00863"></a><span class="lineno">  863</span>        <span class="keywordflow">return</span> str2sgml(src.data(), src.size(), what);</div>
+<div class="line"><a id="l00864" name="l00864"></a><span class="lineno">  864</span>    }</div>
+<div class="line"><a id="l00865" name="l00865"></a><span class="lineno">  865</span>}</div>
+<div class="line"><a id="l00866" name="l00866"></a><span class="lineno">  866</span> </div>
+<div class="line"><a id="l00867" name="l00867"></a><span class="lineno">  867</span><span class="preprocessor">#if defined(__GNUC__)</span></div>
+<div class="line"><a id="l00868" name="l00868"></a><span class="lineno">  868</span><span class="preprocessor">#pragma GCC diagnostic pop</span></div>
+<div class="line"><a id="l00869" name="l00869"></a><span class="lineno">  869</span><span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Feb 21 2024 16:51:53 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+Generated on Fri Feb 23 2024 15:48:21 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
 </small></address>
 </body>
 </html>
