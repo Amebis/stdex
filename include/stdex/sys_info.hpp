@@ -6,6 +6,7 @@
 #pragma once
 
 #include "compat.hpp"
+#include "string.hpp"
 #include "system.hpp"
 #if defined(_WIN32)
 #include "windows.h"
@@ -14,6 +15,7 @@
 #else
 #include <sys/utsname.h>
 #endif
+#include <map>
 #include <memory>
 
 #if defined(__GNUC__)
