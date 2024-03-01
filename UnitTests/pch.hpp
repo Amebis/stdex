@@ -20,6 +20,7 @@
 #include <stdex/pool.hpp>
 #include <stdex/progress.hpp>
 #include <stdex/ring.hpp>
+#include <stdex/scoped_executor.hpp>
 #include <stdex/sgml.hpp>
 #include <stdex/socket.hpp>
 #include <stdex/spinlock.hpp>
