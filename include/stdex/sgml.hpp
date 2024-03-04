@@ -11,7 +11,6 @@
 #include "string.hpp"
 #include <string.h>
 #include <exception>
-#include <string_view>
 #include <string>
 
 #if defined(__GNUC__)
@@ -117,9 +116,9 @@ namespace stdex
 	///
 	/// Checks SGML string for error
 	///
-	/// \param[in]     src        SGML string
-	/// \param[in]     count_src  SGML string character count limit
-	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra checks. Currently, only stdex::sgml_full is used, which enforces 7-bit/ASCII checking.
+	/// \param[in]  src        SGML string
+	/// \param[in]  count_src  SGML string character count limit
+	/// \param[in]  what       Bitwise flag of stdex::sgml_* constants that force extra checks. Currently, only stdex::sgml_full is used, which enforces 7-bit/ASCII checking.
 	///
 	/// \return Index of error; or stdex::npos if no error detected.
 	///
@@ -164,6 +163,22 @@ namespace stdex
 	}
 
 	///
+	/// Checks SGML string for error
+	///
+	/// \param[in]  src   SGML string
+	/// \param[in]  what  Bitwise flag of stdex::sgml_* constants that force extra checks. Currently, only stdex::sgml_full is used, which enforces 7-bit/ASCII checking.
+	///
+	/// \return Index of error; or stdex::npos if no error detected.
+	///
+	template <class T_from, class TR_from = std::char_traits<T_from>, class AX_from = std::allocator<T_from>>
+	size_t sgmlerr(
+		_In_ const std::basic_string<T_from, TR_from, AX_from>& src,
+		_In_ int what = 0)
+	{
+		return sgmlerr(src.data(), src.size(), what);
+	}
+
+	///
 	/// Convert SGML string to Unicode and append to string
 	///
 	/// \param[in,out] dst        String to append Unicode to
@@ -173,7 +188,7 @@ namespace stdex
 	/// \param[in]     offset     Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
 	/// \param[in,out] map        The vector to append index mapping between source and destination string to.
 	///
-	template <class T_to = wchar_t, class T_from, class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>>
+	template <class T_to, class T_from, class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>>
 	void sgml2strcat(
 		_Inout_ std::basic_string<T_to, TR_to, AX_to>& dst,
 		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
@@ -238,13 +253,13 @@ namespace stdex
 	///
 	/// Convert SGML string to Unicode and append to string
 	///
-	/// \param[in,out] dst        String to append Unicode to
-	/// \param[in]     src        SGML string
-	/// \param[in]     skip       Bitwise flag of stdex::sgml_* constants that list SGML entities to skip converting
-	/// \param[in]     offset     Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
-	/// \param[in,out] map        The vector to append index mapping between source and destination string to.
+	/// \param[in,out] dst     String to append Unicode to
+	/// \param[in]     src     SGML string
+	/// \param[in]     skip    Bitwise flag of stdex::sgml_* constants that list SGML entities to skip converting
+	/// \param[in]     offset  Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
+	/// \param[in,out] map     The vector to append index mapping between source and destination string to.
 	///
-	template <class T_to = wchar_t, class T_from, class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>, class TR_from = std::char_traits<T_from>, class AX_from = std::allocator<T_from>>
+	template <class T_to, class T_from, class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>, class TR_from = std::char_traits<T_from>, class AX_from = std::allocator<T_from>>
 	void sgml2strcat(
 		_Inout_ std::basic_string<T_to, TR_to, AX_to>& dst,
 		_In_ const std::basic_string<T_from, TR_from, AX_from>& src,
@@ -268,7 +283,7 @@ namespace stdex
 	///
 	/// \return Final length of SGML string in code points excluding zero-terminator
 	///
-	template <class T_to = wchar_t, class T_from>
+	template <class T_to, class T_from>
 	size_t sgml2strcat(
 		_Inout_cap_(count_dst) T_to* dst, _In_ size_t count_dst,
 		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
@@ -349,7 +364,7 @@ namespace stdex
 	/// \param[in]     offset     Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
 	/// \param[in,out] map        The vector to write index mapping between source and destination string to.
 	///
-	template <class T_to = wchar_t, class T_from, class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>>
+	template <class T_to, class T_from, class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>>
 	void sgml2strcpy(
 		_Inout_ std::basic_string<T_to, TR_to, AX_to>& dst,
 		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
@@ -366,13 +381,13 @@ namespace stdex
 	///
 	/// Convert SGML string to Unicode
 	///
-	/// \param[in,out] dst        String to write Unicode to
-	/// \param[in]     src        SGML string
-	/// \param[in]     skip       Bitwise flag of stdex::sgml_* constants that list SGML entities to skip converting
-	/// \param[in]     offset     Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
-	/// \param[in,out] map        The vector to write index mapping between source and destination string to.
+	/// \param[in,out] dst     String to write Unicode to
+	/// \param[in]     src     SGML string
+	/// \param[in]     skip    Bitwise flag of stdex::sgml_* constants that list SGML entities to skip converting
+	/// \param[in]     offset  Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
+	/// \param[in,out] map     The vector to write index mapping between source and destination string to.
 	///
-	template<class T_to = wchar_t, class T_from, class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>, class TR_from = std::char_traits<T_from>, class AX_from = std::allocator<T_from>>
+	template<class T_to, class T_from, class TR_to = std::char_traits<T_to>, class AX_to = std::allocator<T_to>, class TR_from = std::char_traits<T_from>, class AX_from = std::allocator<T_from>>
 	void sgml2strcpy(
 		_Inout_ std::basic_string<T_to, TR_to, AX_to>& dst,
 		_In_ const std::basic_string<T_from, TR_from, AX_from>& src,
@@ -396,7 +411,7 @@ namespace stdex
 	///
 	/// \return Final length of SGML string in code points excluding zero-terminator
 	///
-	template <class T_to = wchar_t, class T_from>
+	template <class T_to, class T_from>
 	size_t sgml2strcpy(
 		_Inout_cap_(count_dst) T_to* dst, _In_ size_t count_dst,
 		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
@@ -438,10 +453,10 @@ namespace stdex
 	///
 	/// Convert SGML string to Unicode string (UTF-16 on Windows)
 	///
-	/// \param[in]     src        SGML string
-	/// \param[in]     skip       Bitwise flag of stdex::sgml_* constants that list SGML entities to skip converting
-	/// \param[in]     offset     Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
-	/// \param[in,out] map        The vector to append index mapping between source and destination string to.
+	/// \param[in]     src     SGML string
+	/// \param[in]     skip    Bitwise flag of stdex::sgml_* constants that list SGML entities to skip converting
+	/// \param[in]     offset  Logical starting offset of source and destination strings. Unused when map parameter is nullptr.
+	/// \param[in,out] map     The vector to append index mapping between source and destination string to.
 	///
 	/// \return Unicode string
 	///
@@ -546,7 +561,7 @@ namespace stdex
 	/// \param[in]     count_src  Unicode string character count limit
 	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
 	///
-	template <class T_from = wchar_t, class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>>
+	template <class T_from, class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>>
 	void str2sgmlcat(
 		_Inout_ std::basic_string<char, TR_to, AX_to>& dst,
 		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
@@ -634,14 +649,14 @@ namespace stdex
 	///
 	/// Convert Unicode string to SGML and append to string
 	///
-	/// \param[in,out] dst        String to append SGML to
-	/// \param[in]     src        Unicode string
-	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
+	/// \param[in,out] dst   String to append SGML to
+	/// \param[in]     src   Unicode string
+	/// \param[in]     what  Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
 	///
-	template <class T_from = wchar_t, class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>>
+	template <class T_from, class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>, class TR_from = std::char_traits<T_from>, class AX_from = std::allocator<T_from>>
 	void str2sgmlcat(
 		_Inout_ std::basic_string<char, TR_to, AX_to>& dst,
-		_In_ const std::basic_string_view<T_from, std::char_traits<T_from>> src,
+		_In_ const std::basic_string<T_from, TR_from, AX_from>& src,
 		_In_ int what = 0)
 	{
 		str2sgmlcat(dst, src.data(), src.size(), what);
@@ -658,7 +673,7 @@ namespace stdex
 	///
 	/// \return Final length of SGML string in code points excluding zero-terminator
 	///
-	template <class T_from = wchar_t>
+	template <class T_from>
 	size_t str2sgmlcat(
 		_Inout_cap_(count_dst) char* dst, _In_ size_t count_dst,
 		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
@@ -779,7 +794,7 @@ namespace stdex
 	/// \param[in]     count_src  Unicode string character count limit
 	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
 	///
-	template <class T_from = wchar_t, class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>>
+	template <class T_from, class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>>
 	void str2sgmlcpy(
 		_Inout_ std::basic_string<char, TR_to, AX_to>& dst,
 		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
@@ -792,14 +807,14 @@ namespace stdex
 	///
 	/// Convert Unicode string to SGML
 	///
-	/// \param[in,out] dst        String to write SGML to
-	/// \param[in]     src        Unicode string
-	/// \param[in]     what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
+	/// \param[in,out] dst   String to write SGML to
+	/// \param[in]     src   Unicode string
+	/// \param[in]     what  Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
 	///
-	template <class T_from = wchar_t, class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>>
+	template <class T_from, class TR_to = std::char_traits<char>, class AX_to = std::allocator<char>, class TR_from = std::char_traits<T_from>, class AX_from = std::allocator<T_from>>
 	void str2sgmlcpy(
 		_Inout_ std::basic_string<char, TR_to, AX_to>& dst,
-		_In_ const std::basic_string_view<T_from, std::char_traits<T_from>> src,
+		_In_ const std::basic_string<T_from, TR_from, AX_from>& src,
 		_In_ int what = 0)
 	{
 		str2sgmlcpy(dst, src.data(), src.size(), what);
@@ -816,7 +831,7 @@ namespace stdex
 	///
 	/// \return Final length of SGML string in code points excluding zero-terminator
 	///
-	template <class T_from = wchar_t>
+	template <class T_from>
 	size_t str2sgmlcpy(
 		_Inout_cap_(count_dst) char* dst, _In_ size_t count_dst,
 		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
@@ -837,7 +852,7 @@ namespace stdex
 	///
 	/// \return SGML string
 	///
-	template <class T_from = wchar_t>
+	template <class T_from>
 	std::string str2sgml(
 		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
 		_In_ int what = 0)
@@ -850,14 +865,14 @@ namespace stdex
 	///
 	/// Convert Unicode string to SGML string
 	///
-	/// \param[in]  src        Unicode string
-	/// \param[in]  what       Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
+	/// \param[in]  src   Unicode string
+	/// \param[in]  what  Bitwise flag of stdex::sgml_* constants that force extra characters otherwise not converted to SGML
 	///
 	/// \return SGML string
 	///
-	template <class T_from = wchar_t>
+	template <class T_from, class TR_from = std::char_traits<T_from>, class AX_from = std::allocator<T_from>>
 	std::string str2sgml(
-		_In_ const std::basic_string_view<T_from, std::char_traits<T_from>> src,
+		_In_ const std::basic_string<T_from, TR_from, AX_from>& src,
 		_In_ int what = 0)
 	{
 		return str2sgml(src.data(), src.size(), what);
