@@ -103,9 +103,9 @@ namespace stdex
 	const inline locale locale_utf8(create_locale(LC_ALL, ".UTF-8"));
 
 	///
-	/// Reusable default charset locale
+	/// Reusable default locale
 	///
-	const inline locale locale_default(nullptr);
+	inline locale locale_default(nullptr);
 }
 
 #if defined(__GNUC__)
