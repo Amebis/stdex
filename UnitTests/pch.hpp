@@ -16,6 +16,8 @@
 #include <stdex/locale.hpp>
 #include <stdex/mapping.hpp>
 #include <stdex/math.hpp>
+#include <stdex/memory.hpp>
+#include <stdex/minisign.hpp>
 #include <stdex/parser.hpp>
 #include <stdex/pool.hpp>
 #include <stdex/progress.hpp>
