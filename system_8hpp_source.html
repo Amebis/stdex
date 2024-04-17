@@ -158,14 +158,14 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    <span class="keyword">public</span>:</div>
 <div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>        <a class="code hl_class" href="classstdex_1_1sys__object.html">sys_object</a>(_In_opt_ sys_handle h = invalid_handle) : m_h(h) {}</div>
 <div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span> </div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>        <a class="code hl_class" href="classstdex_1_1sys__object.html">sys_object</a>(_In_ <span class="keyword">const</span> <a class="code hl_class" href="classstdex_1_1sys__object.html">sys_object</a>&amp; other) : m_h(other.m_h != invalid_handle ? <a class="code hl_function" href="classstdex_1_1sys__object.html#abf438fb703eeed47147841b07b44d46d">duplicate</a>(other.m_h, <span class="keyword">false</span>) : invalid_handle) {}</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>        <a class="code hl_class" href="classstdex_1_1sys__object.html">sys_object</a>(_In_ <span class="keyword">const</span> <a class="code hl_class" href="classstdex_1_1sys__object.html">sys_object</a>&amp; other) : m_h(other.m_h != invalid_handle ? <a class="code hl_function" href="classstdex_1_1sys__object.html#a84d01821031873afd9f5b0d5b2375060">duplicate</a>(other.m_h) : invalid_handle) {}</div>
 <div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
 <div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>        <a class="code hl_class" href="classstdex_1_1sys__object.html">sys_object</a>&amp; operator =(_In_ <span class="keyword">const</span> <a class="code hl_class" href="classstdex_1_1sys__object.html">sys_object</a>&amp; other)</div>
 <div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        {</div>
 <div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>            <span class="keywordflow">if</span> (<span class="keyword">this</span> != std::addressof(other)) {</div>
 <div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>                <span class="keywordflow">if</span> (m_h != invalid_handle)</div>
 <div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>                    <a class="code hl_function" href="classstdex_1_1sys__object.html#ab8c0119bc4958f78f51ef2f3b7c91f66">close</a>(m_h);</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>                m_h = other.m_h != invalid_handle ? <a class="code hl_function" href="classstdex_1_1sys__object.html#abf438fb703eeed47147841b07b44d46d">duplicate</a>(other.m_h, <span class="keyword">false</span>) : invalid_handle;</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>                m_h = other.m_h != invalid_handle ? <a class="code hl_function" href="classstdex_1_1sys__object.html#a84d01821031873afd9f5b0d5b2375060">duplicate</a>(other.m_h) : invalid_handle;</div>
 <div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>            }</div>
 <div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>            <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
 <div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>        }</div>
@@ -206,36 +206,36 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span> </div>
 <div class="line"><a id="l00156" name="l00156"></a><span class="lineno"><a class="line" href="classstdex_1_1sys__object.html#a68edd83d50aee1dd85645aa0506c8769">  156</a></span>        sys_handle <a class="code hl_function" href="classstdex_1_1sys__object.html#a68edd83d50aee1dd85645aa0506c8769">get</a>() const noexcept { <span class="keywordflow">return</span> m_h; }</div>
 <div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span> </div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>    <span class="keyword">protected</span>:</div>
-<div class="foldopen" id="foldopen00162" data-start="{" data-end="}">
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno"><a class="line" href="classstdex_1_1sys__object.html#acbb82c6c1fce7ee39518f94b1209b0b8">  162</a></span>        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classstdex_1_1sys__object.html#acbb82c6c1fce7ee39518f94b1209b0b8">close</a>(_In_ sys_handle h)</div>
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>        {</div>
+<div class="foldopen" id="foldopen00161" data-start="{" data-end="}">
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno"><a class="line" href="classstdex_1_1sys__object.html#a84d01821031873afd9f5b0d5b2375060">  161</a></span>        <span class="keyword">static</span> sys_handle <a class="code hl_function" href="classstdex_1_1sys__object.html#a84d01821031873afd9f5b0d5b2375060">duplicate</a>(_In_ sys_handle h, _In_ <span class="keywordtype">bool</span> inherit = <span class="keyword">false</span>)</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>        {</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>            sys_handle h_new;</div>
 <div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span><span class="preprocessor">#ifdef _WIN32</span></div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>            <span class="keywordflow">if</span> (CloseHandle(h) || GetLastError() == ERROR_INVALID_HANDLE)</div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>                <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>            <span class="keywordflow">throw</span> std::system_error(GetLastError(), std::system_category(), <span class="stringliteral">&quot;CloseHandle failed&quot;</span>);</div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span><span class="preprocessor">#else</span></div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>            <span class="keywordflow">if</span> (<a class="code hl_function" href="classstdex_1_1sys__object.html#ab8c0119bc4958f78f51ef2f3b7c91f66">::close</a>(h) &gt;= 0 || errno == EBADF)</div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>                <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>            <span class="keywordflow">throw</span> std::system_error(errno, std::system_category(), <span class="stringliteral">&quot;close failed&quot;</span>);</div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>        }</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>            HANDLE process = GetCurrentProcess();</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>            <span class="keywordflow">if</span> (DuplicateHandle(process, h, process, &amp;h_new, 0, inherit, DUPLICATE_SAME_ACCESS))</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>                <span class="keywordflow">return</span> h_new;</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>            <span class="keywordflow">throw</span> std::system_error(GetLastError(), std::system_category(), <span class="stringliteral">&quot;DuplicateHandle failed&quot;</span>);</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>            _Unreferenced_(inherit);</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>            <span class="keywordflow">if</span> ((h_new = dup(h)) &gt;= 0)</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>                <span class="keywordflow">return</span> h_new;</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>            <span class="keywordflow">throw</span> std::system_error(errno, std::system_category(), <span class="stringliteral">&quot;dup failed&quot;</span>);</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>        }</div>
 </div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span> </div>
-<div class="foldopen" id="foldopen00178" data-start="{" data-end="}">
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno"><a class="line" href="classstdex_1_1sys__object.html#abf438fb703eeed47147841b07b44d46d">  178</a></span>        <span class="keyword">static</span> sys_handle <a class="code hl_function" href="classstdex_1_1sys__object.html#abf438fb703eeed47147841b07b44d46d">duplicate</a>(_In_ sys_handle h, _In_ <span class="keywordtype">bool</span> inherit)</div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>        {</div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>            sys_handle h_new;</div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span><span class="preprocessor">#ifdef _WIN32</span></div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>            HANDLE process = GetCurrentProcess();</div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>            <span class="keywordflow">if</span> (DuplicateHandle(process, h, process, &amp;h_new, 0, inherit, DUPLICATE_SAME_ACCESS))</div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>                <span class="keywordflow">return</span> h_new;</div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>            <span class="keywordflow">throw</span> std::system_error(GetLastError(), std::system_category(), <span class="stringliteral">&quot;DuplicateHandle failed&quot;</span>);</div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span><span class="preprocessor">#else</span></div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>            _Unreferenced_(inherit);</div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>            <span class="keywordflow">if</span> ((h_new = dup(h)) &gt;= 0)</div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>                <span class="keywordflow">return</span> h_new;</div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>            <span class="keywordflow">throw</span> std::system_error(errno, std::system_category(), <span class="stringliteral">&quot;dup failed&quot;</span>);</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span> </div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>    <span class="keyword">protected</span>:</div>
+<div class="foldopen" id="foldopen00181" data-start="{" data-end="}">
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno"><a class="line" href="classstdex_1_1sys__object.html#acbb82c6c1fce7ee39518f94b1209b0b8">  181</a></span>        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classstdex_1_1sys__object.html#acbb82c6c1fce7ee39518f94b1209b0b8">close</a>(_In_ sys_handle h)</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>        {</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span><span class="preprocessor">#ifdef _WIN32</span></div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>            <span class="keywordflow">if</span> (CloseHandle(h) || GetLastError() == ERROR_INVALID_HANDLE)</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>                <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>            <span class="keywordflow">throw</span> std::system_error(GetLastError(), std::system_category(), <span class="stringliteral">&quot;CloseHandle failed&quot;</span>);</div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>            <span class="keywordflow">if</span> (<a class="code hl_function" href="classstdex_1_1sys__object.html#ab8c0119bc4958f78f51ef2f3b7c91f66">::close</a>(h) &gt;= 0 || errno == EBADF)</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>                <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>            <span class="keywordflow">throw</span> std::system_error(errno, std::system_category(), <span class="stringliteral">&quot;close failed&quot;</span>);</div>
 <div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>        }</div>
 </div>
@@ -288,13 +288,13 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>}</div>
 <div class="ttc" id="aclassstdex_1_1sys__object_html"><div class="ttname"><a href="classstdex_1_1sys__object.html">stdex::sys_object</a></div><div class="ttdoc">Operating system object (file, pipe, anything with an OS handle etc.)</div><div class="ttdef"><b>Definition</b> system.hpp:99</div></div>
 <div class="ttc" id="aclassstdex_1_1sys__object_html_a68edd83d50aee1dd85645aa0506c8769"><div class="ttname"><a href="classstdex_1_1sys__object.html#a68edd83d50aee1dd85645aa0506c8769">stdex::sys_object::get</a></div><div class="ttdeci">sys_handle get() const noexcept</div><div class="ttdoc">Returns object handle.</div><div class="ttdef"><b>Definition</b> system.hpp:156</div></div>
+<div class="ttc" id="aclassstdex_1_1sys__object_html_a84d01821031873afd9f5b0d5b2375060"><div class="ttname"><a href="classstdex_1_1sys__object.html#a84d01821031873afd9f5b0d5b2375060">stdex::sys_object::duplicate</a></div><div class="ttdeci">static sys_handle duplicate(sys_handle h, bool inherit=false)</div><div class="ttdoc">Duplicates given object.</div><div class="ttdef"><b>Definition</b> system.hpp:161</div></div>
 <div class="ttc" id="aclassstdex_1_1sys__object_html_ab8c0119bc4958f78f51ef2f3b7c91f66"><div class="ttname"><a href="classstdex_1_1sys__object.html#ab8c0119bc4958f78f51ef2f3b7c91f66">stdex::sys_object::close</a></div><div class="ttdeci">virtual void close()</div><div class="ttdoc">Closes object.</div><div class="ttdef"><b>Definition</b> system.hpp:140</div></div>
-<div class="ttc" id="aclassstdex_1_1sys__object_html_abf438fb703eeed47147841b07b44d46d"><div class="ttname"><a href="classstdex_1_1sys__object.html#abf438fb703eeed47147841b07b44d46d">stdex::sys_object::duplicate</a></div><div class="ttdeci">static sys_handle duplicate(sys_handle h, bool inherit)</div><div class="ttdoc">Duplicates given object.</div><div class="ttdef"><b>Definition</b> system.hpp:178</div></div>
-<div class="ttc" id="aclassstdex_1_1sys__object_html_acbb82c6c1fce7ee39518f94b1209b0b8"><div class="ttname"><a href="classstdex_1_1sys__object.html#acbb82c6c1fce7ee39518f94b1209b0b8">stdex::sys_object::close</a></div><div class="ttdeci">static void close(sys_handle h)</div><div class="ttdoc">Closes object.</div><div class="ttdef"><b>Definition</b> system.hpp:162</div></div>
+<div class="ttc" id="aclassstdex_1_1sys__object_html_acbb82c6c1fce7ee39518f94b1209b0b8"><div class="ttname"><a href="classstdex_1_1sys__object.html#acbb82c6c1fce7ee39518f94b1209b0b8">stdex::sys_object::close</a></div><div class="ttdeci">static void close(sys_handle h)</div><div class="ttdoc">Closes object.</div><div class="ttdef"><b>Definition</b> system.hpp:181</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 15 2024 18:56:13 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+Generated on Wed Apr 17 2024 11:59:21 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
 </small></address>
 </body>
 </html>

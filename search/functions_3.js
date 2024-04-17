@@ -7,5 +7,5 @@ var searchData=
   ['detach_4',['detach',['../classstdex_1_1global__progress.html#aa2c5391aa2f1f30e72a700768bc52f84',1,'stdex::global_progress::detach()'],['../classstdex_1_1aggregate__progress.html#acec6e7132735143aaee405948821803f',1,'stdex::aggregate_progress::detach()']]],
   ['do_5fmatch_5',['do_match',['../classstdex_1_1parser_1_1basic__html__declaration__condition__start.html#a53c2c4bc6c7dbd88d79e2848607fb138',1,'stdex::parser::basic_html_declaration_condition_start']]],
   ['do_5fset_6',['do_set',['../classstdex_1_1lazy__progress.html#ad0242cb4f3ece8aacfaab8804e7c646e',1,'stdex::lazy_progress']]],
-  ['duplicate_7',['duplicate',['../classstdex_1_1sys__object.html#abf438fb703eeed47147841b07b44d46d',1,'stdex::sys_object']]]
+  ['duplicate_7',['duplicate',['../classstdex_1_1sys__object.html#a84d01821031873afd9f5b0d5b2375060',1,'stdex::sys_object']]]
 ];
