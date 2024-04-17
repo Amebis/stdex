@@ -100,14 +100,14 @@ namespace stdex
 	public:
 		sys_object(_In_opt_ sys_handle h = invalid_handle) : m_h(h) {}
 
-		sys_object(_In_ const sys_object& other) : m_h(other.m_h != invalid_handle ? duplicate(other.m_h, false) : invalid_handle) {}
+		sys_object(_In_ const sys_object& other) : m_h(other.m_h != invalid_handle ? duplicate(other.m_h) : invalid_handle) {}
 
 		sys_object& operator =(_In_ const sys_object& other)
 		{
 			if (this != std::addressof(other)) {
 				if (m_h != invalid_handle)
 					close(m_h);
-				m_h = other.m_h != invalid_handle ? duplicate(other.m_h, false) : invalid_handle;
+				m_h = other.m_h != invalid_handle ? duplicate(other.m_h) : invalid_handle;
 			}
 			return *this;
 		}
@@ -155,6 +155,25 @@ namespace stdex
 		///
 		sys_handle get() const noexcept { return m_h; }
 
+		///
+		/// Duplicates given object
+		///
+		static sys_handle duplicate(_In_ sys_handle h, _In_ bool inherit = false)
+		{
+			sys_handle h_new;
+#ifdef _WIN32
+			HANDLE process = GetCurrentProcess();
+			if (DuplicateHandle(process, h, process, &h_new, 0, inherit, DUPLICATE_SAME_ACCESS))
+				return h_new;
+			throw std::system_error(GetLastError(), std::system_category(), "DuplicateHandle failed");
+#else
+			_Unreferenced_(inherit);
+			if ((h_new = dup(h)) >= 0)
+				return h_new;
+			throw std::system_error(errno, std::system_category(), "dup failed");
+#endif
+		}
+
 	protected:
 		///
 		/// Closes object
@@ -169,25 +188,6 @@ namespace stdex
 			if (::close(h) >= 0 || errno == EBADF)
 				return;
 			throw std::system_error(errno, std::system_category(), "close failed");
-#endif
-		}
-
-		///
-		/// Duplicates given object
-		///
-		static sys_handle duplicate(_In_ sys_handle h, _In_ bool inherit)
-		{
-			sys_handle h_new;
-#ifdef _WIN32
-			HANDLE process = GetCurrentProcess();
-			if (DuplicateHandle(process, h, process, &h_new, 0, inherit, DUPLICATE_SAME_ACCESS))
-				return h_new;
-			throw std::system_error(GetLastError(), std::system_category(), "DuplicateHandle failed");
-#else
-			_Unreferenced_(inherit);
-			if ((h_new = dup(h)) >= 0)
-				return h_new;
-			throw std::system_error(errno, std::system_category(), "dup failed");
 #endif
 		}
 
