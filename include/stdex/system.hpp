@@ -93,45 +93,46 @@ namespace stdex
 	using sregex = std::basic_regex<stdex::schar_t>;
 
 	///
-	/// Operating system object (file, pipe, anything with an OS handle etc.)
+	/// Operating system object base class
 	///
-	class sys_object
+	template <class T = sys_handle, class TR = sys_object_traits>
+	class basic_sys_object
 	{
 	public:
-		sys_object(_In_opt_ sys_handle h = invalid_handle) : m_h(h) {}
+		basic_sys_object(_In_opt_ T h = TR::invalid_handle) : m_h(h) {}
 
-		sys_object(_In_ const sys_object& other) : m_h(other.m_h != invalid_handle ? duplicate(other.m_h) : invalid_handle) {}
+		basic_sys_object(_In_ const basic_sys_object<T, TR>& other) : m_h(other.m_h != TR::invalid_handle ? TR::duplicate(other.m_h) : TR::invalid_handle) {}
 
-		sys_object& operator =(_In_ const sys_object& other)
+		basic_sys_object& operator =(_In_ const basic_sys_object<T, TR>& other)
 		{
 			if (this != std::addressof(other)) {
-				if (m_h != invalid_handle)
-					close(m_h);
-				m_h = other.m_h != invalid_handle ? duplicate(other.m_h) : invalid_handle;
+				if (m_h != TR::invalid_handle)
+					TR::close(m_h);
+				m_h = other.m_h != TR::invalid_handle ? TR::duplicate(other.m_h) : TR::invalid_handle;
 			}
 			return *this;
 		}
 
-		sys_object(_Inout_ sys_object&& other) noexcept : m_h(other.m_h)
+		basic_sys_object(_Inout_ basic_sys_object<T, TR>&& other) noexcept : m_h(other.m_h)
 		{
-			other.m_h = invalid_handle;
+			other.m_h = TR::invalid_handle;
 		}
 
-		sys_object& operator =(_Inout_ sys_object&& other) noexcept
+		basic_sys_object& operator =(_Inout_ basic_sys_object<T, TR>&& other) noexcept
 		{
 			if (this != std::addressof(other)) {
-				if (m_h != invalid_handle)
-					close(m_h);
+				if (m_h != TR::invalid_handle)
+					TR::close(m_h);
 				m_h = other.m_h;
-				other.m_h = invalid_handle;
+				other.m_h = TR::invalid_handle;
 			}
 			return *this;
 		}
 
-		virtual ~sys_object() noexcept(false)
+		virtual ~basic_sys_object() noexcept(false)
 		{
-			if (m_h != invalid_handle)
-				close(m_h);
+			if (m_h != TR::invalid_handle)
+				TR::close(m_h);
 		}
 
 		///
@@ -139,21 +140,48 @@ namespace stdex
 		///
 		virtual void close()
 		{
-			if (m_h != invalid_handle) {
-				close(m_h);
-				m_h = invalid_handle;
+			if (m_h != TR::invalid_handle) {
+				TR::close(m_h);
+				m_h = TR::invalid_handle;
 			}
 		}
 
 		///
 		/// Returns true if object has a valid handle
 		///
-		operator bool() const noexcept { return m_h != invalid_handle; }
+		operator bool() const noexcept { return m_h != TR::invalid_handle; }
 
 		///
 		/// Returns object handle
 		///
-		sys_handle get() const noexcept { return m_h; }
+		T get() const noexcept { return m_h; }
+
+	protected:
+		T m_h;
+	};
+
+	///
+	/// System object operations
+	///
+	struct sys_object_traits
+	{
+		static inline const sys_handle invalid_handle = stdex::invalid_handle;
+
+		///
+		/// Closes object
+		///
+		static void close(_In_ sys_handle h)
+		{
+#if defined(_WIN32)
+			if (CloseHandle(h) || GetLastError() == ERROR_INVALID_HANDLE)
+				return;
+			throw std::system_error(GetLastError(), std::system_category(), "CloseHandle failed");
+#else
+			if (::close(h) >= 0 || errno == EBADF)
+				return;
+			throw std::system_error(errno, std::system_category(), "close failed");
+#endif
+		}
 
 		///
 		/// Duplicates given object
@@ -161,7 +189,7 @@ namespace stdex
 		static sys_handle duplicate(_In_ sys_handle h, _In_ bool inherit = false)
 		{
 			sys_handle h_new;
-#ifdef _WIN32
+#if defined(_WIN32)
 			HANDLE process = GetCurrentProcess();
 			if (DuplicateHandle(process, h, process, &h_new, 0, inherit, DUPLICATE_SAME_ACCESS))
 				return h_new;
@@ -173,27 +201,12 @@ namespace stdex
 			throw std::system_error(errno, std::system_category(), "dup failed");
 #endif
 		}
-
-	protected:
-		///
-		/// Closes object
-		///
-		static void close(_In_ sys_handle h)
-		{
-#ifdef _WIN32
-			if (CloseHandle(h) || GetLastError() == ERROR_INVALID_HANDLE)
-				return;
-			throw std::system_error(GetLastError(), std::system_category(), "CloseHandle failed");
-#else
-			if (::close(h) >= 0 || errno == EBADF)
-				return;
-			throw std::system_error(errno, std::system_category(), "close failed");
-#endif
-		}
-
-	protected:
-		sys_handle m_h;
 	};
+
+	///
+	/// Operating system object (file, pipe, anything with an OS handle etc.)
+	///
+	using sys_object = basic_sys_object<sys_handle, sys_object_traits>;
 
 #ifdef _WIN32
 	template <class T>
