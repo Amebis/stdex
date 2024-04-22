@@ -2361,7 +2361,7 @@ namespace stdex
 		class socket : public basic
 		{
 		public:
-			socket(_In_opt_ socket_t h = invalid_socket, _In_ state_t state = state_t::ok) :
+			socket(_In_opt_ socket_t h = stdex::invalid_socket, _In_ state_t state = state_t::ok) :
 				basic(state),
 				m_h(h)
 			{}
@@ -2373,16 +2373,16 @@ namespace stdex
 		public:
 			socket(_Inout_ socket&& other) noexcept : m_h(other.m_h)
 			{
-				other.m_h = invalid_socket;
+				other.m_h = stdex::invalid_socket;
 			}
 
 			socket& operator =(_Inout_ socket&& other) noexcept
 			{
 				if (this != std::addressof(other)) {
-					if (m_h != invalid_socket)
+					if (m_h != stdex::invalid_socket)
 						closesocket(m_h);
 					m_h = other.m_h;
-					other.m_h = invalid_socket;
+					other.m_h = stdex::invalid_socket;
 				}
 				return *this;
 			}
@@ -2397,20 +2397,20 @@ namespace stdex
 			socket(_In_ int af, _In_ int type, _In_ int protocol)
 			{
 				m_h = ::socket(af, type, protocol);
-				if (m_h == invalid_socket) _Unlikely_
+				if (m_h == stdex::invalid_socket) _Unlikely_
 					m_state = state_t::fail;
 			}
 
 			virtual ~socket()
 			{
-				if (m_h != invalid_socket)
+				if (m_h != stdex::invalid_socket)
 					closesocket(m_h);
 			}
 
 			///
 			/// Returns true if socket handle is valid
 			///
-			operator bool() const noexcept { return m_h != invalid_socket; }
+			operator bool() const noexcept { return m_h != stdex::invalid_socket; }
 
 			///
 			/// Returns socket handle
@@ -2475,9 +2475,9 @@ namespace stdex
 
 			virtual void close()
 			{
-				if (m_h != invalid_socket) {
+				if (m_h != stdex::invalid_socket) {
 					closesocket(m_h);
-					m_h = invalid_socket;
+					m_h = stdex::invalid_socket;
 				}
 				m_state = state_t::ok;
 			}
