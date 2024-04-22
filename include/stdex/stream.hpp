@@ -93,7 +93,7 @@ namespace stdex
 			/// \param[out] data    Buffer to store read data
 			/// \param[in]  length  Byte limit of data to read
 			///
-			/// \return Number of bytes succesfully read.
+			/// \return Number of bytes successfully read.
 			/// On EOF, 0 is returned and stream state is set to state_t::eof.
 			/// On error, 0 is returned and stream state is set to state_t::fail.
 			/// On null reads (length == 0), 0 is returned and stream state is set to state_t::ok.
@@ -113,7 +113,7 @@ namespace stdex
 			/// \param[in] data    Buffer to write data from
 			/// \param[in] length  Number of bytes to write
 			///
-			/// \return Number of bytes succesfully written.
+			/// \return Number of bytes successfully written.
 			/// On error, stream state is set to state_t::fail.
 			///
 			virtual _Success_(return != 0) size_t write(
@@ -175,7 +175,7 @@ namespace stdex
 			state_t state() const { return m_state; };
 
 			///
-			/// Returns true if the stream state is clean i.e. previous operation was succesful
+			/// Returns true if the stream state is clean i.e. previous operation was successful
 			///
 			bool ok() const { return m_state == state_t::ok; };
 
@@ -980,7 +980,7 @@ namespace stdex
 #endif
 
 			///
-			/// Attempts to detect textfile charset based on UTF-32, UTF-16 or UTF-8 BOM.
+			/// Attempts to detect text-file charset based on UTF-32, UTF-16 or UTF-8 BOM.
 			///
 			/// \param[in] default_charset  Fallback charset to return when no BOM detected.
 			///
@@ -1831,7 +1831,7 @@ namespace stdex
 				if (m_source) {
 					flush_cache();
 					if (!ok()) _Unlikely_
-						throw std::system_error(sys_error(), std::system_category(), "failed to flush cache"); // Data loss occured
+						throw std::system_error(sys_error(), std::system_category(), "failed to flush cache"); // Data loss occurred
 					m_source->seekbeg(m_offset);
 #if SET_FILE_OP_TIMES
 					m_source->set_atime(m_atime);
@@ -1859,7 +1859,7 @@ namespace stdex
 				if (m_source) {
 					flush_cache();
 					if (!ok()) _Unlikely_
-						throw std::system_error(sys_error(), std::system_category(), "failed to flush cache"); // Data loss occured
+						throw std::system_error(sys_error(), std::system_category(), "failed to flush cache"); // Data loss occurred
 					m_source->seekbeg(m_offset);
 #if SET_FILE_OP_TIMES
 					m_source->set_atime(m_atime);
@@ -1991,7 +1991,7 @@ namespace stdex
 			{
 				invalidate_cache();
 				if (!ok()) _Unlikely_
-					throw std::system_error(sys_error(), std::system_category(), "failed to flush cache"); // Data loss occured
+					throw std::system_error(sys_error(), std::system_category(), "failed to flush cache"); // Data loss occurred
 				m_source->close();
 				m_state = m_source->state();
 			}
@@ -2239,7 +2239,7 @@ namespace stdex
 					__except (EXCEPTION_EXECUTE_HANDLER) { succeeded = FALSE; SetLastError(ERROR_UNHANDLED_EXCEPTION); num_read = 0; }
 					if (!succeeded && GetLastError() == ERROR_NO_SYSTEM_RESOURCES && block_size > default_block_size) _Unlikely_ {
 						// Error "Insufficient system resources exist to complete the requested service." occurs
-						// ocasionally, when attempting to read too much data at once (e.g. over \\TSClient).
+						// occasionally, when attempting to read too much data at once (e.g. over \\TSClient).
 						block_size = default_block_size;
 						continue;
 					}
@@ -2538,7 +2538,7 @@ namespace stdex
 					ULONG num_written = 0;
 					__try { hr = m_source->Write(data, static_cast<ULONG>(std::min<size_t>(to_write, ULONG_MAX)), &num_written); }
 					__except (EXCEPTION_EXECUTE_HANDLER) { hr = E_FAIL; }
-					// In abscence of documentation whether num_written gets set when FAILED(hr) (i.e. partially succesful writes),
+					// In absence of documentation whether num_written gets set when FAILED(hr) (i.e. partially successful writes),
 					// assume write failed completely.
 					if (FAILED(hr)) _Unlikely_ {
 						m_state = state_t::fail;
@@ -3100,7 +3100,7 @@ namespace stdex
 			///
 			/// Checks if file/folder/symlink is read-only
 			///
-			/// For inexisting or inaccessible paths, writeability is assumed.
+			/// For inexistent or inaccessible paths, writability is assumed.
 			///
 			/// \param[in] filename  Filename
 			///
@@ -3118,7 +3118,7 @@ namespace stdex
 			///
 			/// Checks if file/folder/symlink is read-only
 			///
-			/// For inexisting or inaccessible paths, writeability is assumed.
+			/// For inexistent or inaccessible paths, writability is assumed.
 			///
 			/// \param[in] filename  Filename
 			///
@@ -3437,7 +3437,7 @@ namespace stdex
 			/// Reallocates memory
 			///
 			/// \param[in] required  Demanded memory size
-			/// \param[in] tight     Don't overallocate on grow, release excessive on decrease.
+			/// \param[in] tight     Don't over-allocate on grow, release excessive on decrease.
 			///
 			void reserve(_In_ size_t required, _In_ bool tight = false) noexcept
 			{
