@@ -318,6 +318,7 @@ namespace stdex
 					break;
 
 				size_t x = static_cast<size_t>(data[i]);
+				_Assume_(m_num < _countof(m_buf));
 				if ((m_buf[m_num] = x < _countof(base64_dec_lookup) ? base64_dec_lookup[x] : 255) != 255)
 					m_num++;
 			}
