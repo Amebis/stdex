@@ -237,7 +237,7 @@ $(function() { codefold.init(0); });
 <div class="line"><a id="l00171" name="l00171"></a><span class="lineno"><a class="line" href="structstdex_1_1chrono_1_1aosn__timestamp.html">  171</a></span>        <span class="keyword">struct </span><a class="code hl_struct" href="structstdex_1_1chrono_1_1aosn__timestamp.html">aosn_timestamp</a></div>
 <div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>        {</div>
 <div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>            <span class="keyword">using </span>rep                       = int64_t;</div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>            <span class="keyword">using </span>period                    = std::ratio&lt;1, 1&#39;000&#39;000&gt;; <span class="comment">// 1 microsecond</span></div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>            <span class="keyword">using </span>period                    = std::milli;</div>
 <div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>            <span class="keyword">using </span>duration                  = std::chrono::duration&lt;rep, period&gt;;</div>
 <div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>            <span class="keyword">using </span>time_point                = std::chrono::time_point&lt;aosn_timestamp&gt;;</div>
 <div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>            <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> is_steady = <span class="keyword">false</span>;</div>
@@ -469,7 +469,7 @@ $(function() { codefold.init(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 17 2024 11:59:20 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+Generated on Tue Apr 23 2024 09:13:12 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
 </small></address>
 </body>
 </html>

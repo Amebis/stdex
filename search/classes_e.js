@@ -19,9 +19,10 @@ var searchData=
   ['sha_5ft_16',['sha_t',['../unionstdex_1_1sha__t.html',1,'stdex']]],
   ['silence_17',['silence',['../structstdex_1_1wav_1_1silence.html',1,'stdex::wav']]],
   ['socket_18',['socket',['../classstdex_1_1stream_1_1socket.html',1,'stdex::stream']]],
-  ['spinlock_19',['spinlock',['../classstdex_1_1spinlock.html',1,'stdex']]],
-  ['starting_5ftoken_20',['starting_token',['../classstdex_1_1html_1_1starting__token.html',1,'stdex::html']]],
-  ['stream_5fhasher_21',['stream_hasher',['../classstdex_1_1stream__hasher.html',1,'stdex']]],
-  ['sys_5finfo_5ft_22',['sys_info_t',['../structstdex_1_1sys__info__t.html',1,'stdex']]],
-  ['sys_5fobject_23',['sys_object',['../classstdex_1_1sys__object.html',1,'stdex']]]
+  ['socket_5ftraits_19',['socket_traits',['../structstdex_1_1socket__traits.html',1,'stdex']]],
+  ['spinlock_20',['spinlock',['../classstdex_1_1spinlock.html',1,'stdex']]],
+  ['starting_5ftoken_21',['starting_token',['../classstdex_1_1html_1_1starting__token.html',1,'stdex::html']]],
+  ['stream_5fhasher_22',['stream_hasher',['../classstdex_1_1stream__hasher.html',1,'stdex']]],
+  ['sys_5finfo_5ft_23',['sys_info_t',['../structstdex_1_1sys__info__t.html',1,'stdex']]],
+  ['sys_5fobject_5ftraits_24',['sys_object_traits',['../structstdex_1_1sys__object__traits.html',1,'stdex']]]
 ];

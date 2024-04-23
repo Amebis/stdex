@@ -17,6 +17,6 @@ var searchData=
   ['do_5fset_14',['do_set',['../classstdex_1_1lazy__progress.html#ad0242cb4f3ece8aacfaab8804e7c646e',1,'stdex::lazy_progress']]],
   ['document_15',['document',['../classstdex_1_1html_1_1document.html',1,'stdex::html']]],
   ['document_3c_20t_2c_20tr_2c_20ax_20_3e_16',['document&lt; T, TR, AX &gt;',['../classstdex_1_1html_1_1document.html',1,'stdex::html']]],
-  ['duplicate_17',['duplicate',['../classstdex_1_1sys__object.html#a84d01821031873afd9f5b0d5b2375060',1,'stdex::sys_object']]],
+  ['duplicate_17',['duplicate',['../structstdex_1_1sys__object__traits.html#a2e05348a7de93233045ea3163d21950e',1,'stdex::sys_object_traits']]],
   ['duration_18',['duration',['../structstdex_1_1wav_1_1ltxt.html#ae25647c17685b89e304659a691fbfda8',1,'stdex::wav::ltxt::duration'],['../structstdex_1_1wav_1_1cue__ex.html#a00e87c9cf3c64be30c0811c5c40bfa58',1,'stdex::wav::cue_ex::duration']]]
 ];

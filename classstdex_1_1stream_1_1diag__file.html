@@ -169,7 +169,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a814a080cb6da2041013749cc125bfd2b inherit pub_methods_classstdex_1_1stream_1_1basic__file"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets file modification time.  <br /></td></tr>
 <tr class="separator:a814a080cb6da2041013749cc125bfd2b inherit pub_methods_classstdex_1_1stream_1_1basic__file"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a3bc2c76e78363a2232eff12dd5e370 inherit pub_methods_classstdex_1_1stream_1_1basic__file" id="r_a6a3bc2c76e78363a2232eff12dd5e370"><td class="memItemLeft" align="right" valign="top">charset_id&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstdex_1_1stream_1_1basic__file.html#a6a3bc2c76e78363a2232eff12dd5e370">read_charset</a> (charset_id default_charset=charset_id::system)</td></tr>
-<tr class="memdesc:a6a3bc2c76e78363a2232eff12dd5e370 inherit pub_methods_classstdex_1_1stream_1_1basic__file"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempts to detect textfile charset based on UTF-32, UTF-16 or UTF-8 BOM.  <br /></td></tr>
+<tr class="memdesc:a6a3bc2c76e78363a2232eff12dd5e370 inherit pub_methods_classstdex_1_1stream_1_1basic__file"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempts to detect text-file charset based on UTF-32, UTF-16 or UTF-8 BOM.  <br /></td></tr>
 <tr class="separator:a6a3bc2c76e78363a2232eff12dd5e370 inherit pub_methods_classstdex_1_1stream_1_1basic__file"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classstdex_1_1stream_1_1basic"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classstdex_1_1stream_1_1basic')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classstdex_1_1stream_1_1basic.html">stdex::stream::basic</a></td></tr>
 <tr class="memitem:a6083e72060acfc9edf707c833a3f7063 inherit pub_methods_classstdex_1_1stream_1_1basic" id="r_a6083e72060acfc9edf707c833a3f7063"><td class="memItemLeft" align="right" valign="top">
@@ -181,7 +181,7 @@ state_t&#160;</td><td class="memItemRight" valign="bottom"><b>state</b> () const
 <tr class="separator:a2aa36b007017c2052a0118c1df4910d0 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0295e4efe18eef2a8962680274957ac1 inherit pub_methods_classstdex_1_1stream_1_1basic" id="r_a0295e4efe18eef2a8962680274957ac1"><td class="memItemLeft" align="right" valign="top">
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>ok</b> () const</td></tr>
-<tr class="memdesc:a0295e4efe18eef2a8962680274957ac1 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if the stream state is clean i.e. previous operation was succesful. <br /></td></tr>
+<tr class="memdesc:a0295e4efe18eef2a8962680274957ac1 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if the stream state is clean i.e. previous operation was successful. <br /></td></tr>
 <tr class="separator:a0295e4efe18eef2a8962680274957ac1 inherit pub_methods_classstdex_1_1stream_1_1basic"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a600e123c10d6f0604d58ae0e9be95f0b inherit pub_methods_classstdex_1_1stream_1_1basic" id="r_a600e123c10d6f0604d58ae0e9be95f0b"><td class="memItemLeft" align="right" valign="top">
 uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>read_byte</b> ()</td></tr>
@@ -509,7 +509,7 @@ state_t&#160;</td><td class="memItemRight" valign="bottom"><b>m_state</b></td></
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Number of bytes succesfully read. On EOF, 0 is returned and stream state is set to state_t::eof. On error, 0 is returned and stream state is set to state_t::fail. On null reads (length == 0), 0 is returned and stream state is set to state_t::ok. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of bytes successfully read. On EOF, 0 is returned and stream state is set to state_t::eof. On error, 0 is returned and stream state is set to state_t::fail. On null reads (length == 0), 0 is returned and stream state is set to state_t::ok. </dd></dl>
 
 <p>Reimplemented from <a class="el" href="classstdex_1_1stream_1_1basic.html#aa5d4693fd583cd7ef0ffa9b846136a5a">stdex::stream::basic</a>.</p>
 
@@ -705,7 +705,7 @@ state_t&#160;</td><td class="memItemRight" valign="bottom"><b>m_state</b></td></
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Number of bytes succesfully written. On error, stream state is set to state_t::fail. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of bytes successfully written. On error, stream state is set to state_t::fail. </dd></dl>
 
 <p>Reimplemented from <a class="el" href="classstdex_1_1stream_1_1basic.html#ad8af0444273509eb36ad81046ac92081">stdex::stream::basic</a>.</p>
 
@@ -717,7 +717,7 @@ state_t&#160;</td><td class="memItemRight" valign="bottom"><b>m_state</b></td></
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 17 2024 11:59:22 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+Generated on Tue Apr 23 2024 09:13:14 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
 </small></address>
 </body>
 </html>
