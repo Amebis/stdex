@@ -98,7 +98,7 @@ namespace stdex
 		/// \param[out]    key_id     8 random bytes, matching the public key used to sign content
 		/// \param[out]    signature  ed25519(<file data>) when using legacy algorithm; ed25519(Blake2b-512(<file data>)) when using hashed algorithm.
 		///
-		inline void parse_minisig(_Inout_ stdex::stream::basic& minisig, _Out_ uint8_t& algorithm, _Out_writes_all_(8) uint8_t key_id[8], _Out_writes_all_(32) uint8_t signature[64])
+		inline void parse_minisig(_Inout_ stdex::stream::basic& minisig, _Out_ uint8_t& algorithm, _Out_writes_all_(8) uint8_t key_id[8], _Out_writes_all_(64) uint8_t signature[64])
 		{
 			std::vector<uint8_t> data;
 			minisign::untrusted_comment untrusted_comment;
