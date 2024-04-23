@@ -171,7 +171,7 @@ namespace stdex {
 		struct aosn_timestamp
 		{
 			using rep                       = int64_t;
-			using period                    = std::ratio<1, 1'000'000>; // 1 microsecond
+			using period                    = std::milli;
 			using duration                  = std::chrono::duration<rep, period>;
 			using time_point                = std::chrono::time_point<aosn_timestamp>;
 			static constexpr bool is_steady = false;
