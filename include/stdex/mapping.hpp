@@ -68,6 +68,16 @@ namespace stdex
 		{
 			return mapping(from + other.from, to + other.to);
 		}
+
+		///
+		/// Reverses source and destination indexes
+		///
+		void invert()
+		{
+			T tmp = from;
+			from = to;
+			to = tmp;
+		}
 	};
 
 	template <class T, class AX = std::allocator<mapping<T>>>
