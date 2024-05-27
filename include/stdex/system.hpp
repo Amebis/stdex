@@ -93,6 +93,49 @@ namespace stdex
 	using sregex = std::basic_regex<stdex::schar_t>;
 
 	///
+	/// System object operations
+	///
+	struct sys_object_traits
+	{
+		static inline const sys_handle invalid_handle = stdex::invalid_handle;
+
+		///
+		/// Closes object
+		///
+		static void close(_In_ sys_handle h)
+		{
+#if defined(_WIN32)
+			if (CloseHandle(h) || GetLastError() == ERROR_INVALID_HANDLE)
+				return;
+			throw std::system_error(GetLastError(), std::system_category(), "CloseHandle failed");
+#else
+			if (::close(h) >= 0 || errno == EBADF)
+				return;
+			throw std::system_error(errno, std::system_category(), "close failed");
+#endif
+		}
+
+		///
+		/// Duplicates given object
+		///
+		static sys_handle duplicate(_In_ sys_handle h, _In_ bool inherit = false)
+		{
+			sys_handle h_new;
+#if defined(_WIN32)
+			HANDLE process = GetCurrentProcess();
+			if (DuplicateHandle(process, h, process, &h_new, 0, inherit, DUPLICATE_SAME_ACCESS))
+				return h_new;
+			throw std::system_error(GetLastError(), std::system_category(), "DuplicateHandle failed");
+#else
+			_Unreferenced_(inherit);
+			if ((h_new = dup(h)) >= 0)
+				return h_new;
+			throw std::system_error(errno, std::system_category(), "dup failed");
+#endif
+		}
+	};
+
+	///
 	/// Operating system object base class
 	///
 	template <class T = sys_handle, class TR = sys_object_traits>
@@ -158,49 +201,6 @@ namespace stdex
 
 	protected:
 		T m_h;
-	};
-
-	///
-	/// System object operations
-	///
-	struct sys_object_traits
-	{
-		static inline const sys_handle invalid_handle = stdex::invalid_handle;
-
-		///
-		/// Closes object
-		///
-		static void close(_In_ sys_handle h)
-		{
-#if defined(_WIN32)
-			if (CloseHandle(h) || GetLastError() == ERROR_INVALID_HANDLE)
-				return;
-			throw std::system_error(GetLastError(), std::system_category(), "CloseHandle failed");
-#else
-			if (::close(h) >= 0 || errno == EBADF)
-				return;
-			throw std::system_error(errno, std::system_category(), "close failed");
-#endif
-		}
-
-		///
-		/// Duplicates given object
-		///
-		static sys_handle duplicate(_In_ sys_handle h, _In_ bool inherit = false)
-		{
-			sys_handle h_new;
-#if defined(_WIN32)
-			HANDLE process = GetCurrentProcess();
-			if (DuplicateHandle(process, h, process, &h_new, 0, inherit, DUPLICATE_SAME_ACCESS))
-				return h_new;
-			throw std::system_error(GetLastError(), std::system_category(), "DuplicateHandle failed");
-#else
-			_Unreferenced_(inherit);
-			if ((h_new = dup(h)) >= 0)
-				return h_new;
-			throw std::system_error(errno, std::system_category(), "dup failed");
-#endif
-		}
 	};
 
 	///
