@@ -926,8 +926,11 @@ namespace stdex
 	{
 		_Assume_(str1 || !count1);
 		_Assume_(str2 || !count2);
-		size_t i; T1 a; T2 b;
-		for (i = 0; i < count1 && i < count2 && ((a = str1[i]) | (b = str2[i])); ++i) {
+		size_t i;
+		for (i = 0; i < count1 && i < count2; ++i) {
+			auto a = str1[i];
+			auto b = str2[i];
+			if (!a && !b) return 0;
 			if (a > b) return +1;
 			if (a < b) return -1;
 		}
@@ -1122,14 +1125,14 @@ namespace stdex
 	{
 		_Assume_(str1);
 		_Assume_(str2);
-		size_t i; T1 a; T2 b;
-		for (i = 0; (a = tolower(str1[i])) | (b = tolower(str2[i])); ++i) {
+		size_t i;
+		for (i = 0; ; ++i) {
+			auto a = tolower(str1[i]);
+			auto b = tolower(str2[i]);
+			if (!a && !b) return 0;
 			if (a > b) return +1;
 			if (a < b) return -1;
 		}
-		if (str1[i]) return +1;
-		if (str2[i]) return -1;
-		return 0;
 	}
 
 	///
@@ -1146,10 +1149,13 @@ namespace stdex
 	{
 		_Assume_(str1);
 		_Assume_(str2);
-		size_t i; T1 a; T2 b;
+		size_t i;
 		const auto& ctype1 = std::use_facet<std::ctype<T1>>(locale);
 		const auto& ctype2 = std::use_facet<std::ctype<T2>>(locale);
-		for (i = 0; (a = ctype1.tolower(str1[i])) | (b = ctype2.tolower(str2[i])); ++i) {
+		for (i = 0;; ++i) {
+			auto a = ctype1.tolower(str1[i]);
+			auto b = ctype2.tolower(str2[i]);
+			if (!a && !b) return 0;
 			if (a > b) return +1;
 			if (a < b) return -1;
 		}
@@ -1172,8 +1178,11 @@ namespace stdex
 	{
 		_Assume_(str1 || !count);
 		_Assume_(str2 || !count);
-		size_t i; T1 a; T2 b;
-		for (i = 0; i < count && ((a = tolower(str1[i])) | (b = tolower(str2[i]))); ++i) {
+		size_t i;
+		for (i = 0; i < count; ++i) {
+			auto a = tolower(str1[i]);
+			auto b = tolower(str2[i]);
+			if (!a && !b) return 0;
 			if (a > b) return +1;
 			if (a < b) return -1;
 		}
@@ -1197,10 +1206,13 @@ namespace stdex
 	{
 		_Assume_(str1 || !count);
 		_Assume_(str2 || !count);
-		size_t i; T1 a; T2 b;
+		size_t i;
 		const auto& ctype1 = std::use_facet<std::ctype<T1>>(locale);
 		const auto& ctype2 = std::use_facet<std::ctype<T2>>(locale);
-		for (i = 0; i < count && ((a = ctype1.tolower(str1[i])) | (b = ctype2.tolower(str2[i]))); ++i) {
+		for (i = 0; i < count; ++i) {
+			auto a = ctype1.tolower(str1[i]);
+			auto b = ctype2.tolower(str2[i]);
+			if (!a && !b) return 0;
 			if (a > b) return +1;
 			if (a < b) return -1;
 		}
@@ -1226,8 +1238,11 @@ namespace stdex
 	{
 		_Assume_(str1 || !count1);
 		_Assume_(str2 || !count2);
-		size_t i; T1 a; T2 b;
-		for (i = 0; i < count1 && i < count2 && ((a = tolower(str1[i])) | (b = tolower(str2[i]))); ++i) {
+		size_t i;
+		for (i = 0; i < count1 && i < count2; ++i) {
+			auto a = tolower(str1[i]);
+			auto b = tolower(str2[i]);
+			if (!a && !b) return 0;
 			if (a > b) return +1;
 			if (a < b) return -1;
 		}
@@ -1255,10 +1270,13 @@ namespace stdex
 	{
 		_Assume_(str1 || !count1);
 		_Assume_(str2 || !count2);
-		size_t i; T1 a; T2 b;
+		size_t i;
 		const auto& ctype1 = std::use_facet<std::ctype<T1>>(locale);
 		const auto& ctype2 = std::use_facet<std::ctype<T2>>(locale);
-		for (i = 0; i < count1 && i < count2 && ((a = ctype1.tolower(str1[i])) | (b = ctype2.tolower(str2[i]))); ++i) {
+		for (i = 0; i < count1 && i < count2; ++i) {
+			auto a = ctype1.tolower(str1[i]);
+			auto b = ctype2.tolower(str2[i]);
+			if (!a && !b) return 0;
 			if (a > b) return +1;
 			if (a < b) return -1;
 		}
