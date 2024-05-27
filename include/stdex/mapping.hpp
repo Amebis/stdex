@@ -132,19 +132,21 @@ namespace stdex
 			return to;
 
 		size_t l, r;
-		const auto& el = mapping[m];
-		if (to < el.to) {
-			l = 0;
-			r = m;
+		{
+			const auto& el = mapping[m];
+			if (to < el.to) {
+				l = 0;
+				r = m;
+			}
+			else if (el.to < to) {
+				if (mapping.size() - 1 <= m || to < mapping[m + 1].to)
+					return el.from + (to - el.to);
+				l = m + 1;
+				r = mapping.size();
+			}
+			else
+				return el.from;
 		}
-		else if (el.to < to) {
-			if (mapping.size() - 1 <= m || to < mapping[m + 1].to)
-				return el.from + (to - el.to);
-			l = m + 1;
-			r = mapping.size();
-		}
-		else
-			return el.from;
 
 		for (;;) {
 			if (l < r) {
@@ -214,19 +216,21 @@ namespace stdex
 			return from;
 
 		size_t l, r;
-		const auto& el = mapping[m];
-		if (from < el.from) {
-			l = 0;
-			r = m;
+		{
+			const auto& el = mapping[m];
+			if (from < el.from) {
+				l = 0;
+				r = m;
+			}
+			else if (el.from < from) {
+				if (mapping.size() - 1 <= m || from < mapping[m + 1].from)
+					return el.to + (from - el.from);
+				l = m + 1;
+				r = mapping.size();
+			}
+			else
+				return el.to;
 		}
-		else if (el.from < from) {
-			if (mapping.size() - 1 <= m || from < mapping[m + 1].from)
-				return el.to + (from - el.from);
-			l = m + 1;
-			r = mapping.size();
-		}
-		else
-			return el.to;
 
 		for (;;) {
 			if (l < r) {
