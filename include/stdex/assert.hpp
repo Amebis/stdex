@@ -25,7 +25,6 @@
 #error Implement!
 #endif
 #define stdex_verify(e) stdex_assert(e)
-#endif
 
 namespace stdex
 {
@@ -65,3 +64,4 @@ namespace stdex
 #endif
 	/// \endcond
 }
+#endif
