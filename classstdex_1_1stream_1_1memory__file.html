@@ -605,11 +605,11 @@ template&lt;class KEY , class PR  = std::less&lt;KEY&gt;, class AX  = std::alloc
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:a8ccb02a23999882255d5c16c83f91571" id="r_a8ccb02a23999882255d5c16c83f91571"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:a8ccb02a23999882255d5c16c83f91571"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a8ccb02a23999882255d5c16c83f91571">set</a> (fpos_t offset, const T <a class="el" href="#aff374fc64c7453dc0cef22f19bc400ce">data</a>)</td></tr>
-<tr class="memdesc:a8ccb02a23999882255d5c16c83f91571"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes data to specified file location This does not move file pointer nor update file size. It checks for reserved space <em>Assume</em>-only (in Debug builds). Use with caution!  <br /></td></tr>
+<tr class="memdesc:a8ccb02a23999882255d5c16c83f91571"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes data to specified file location This does not move file pointer nor update file size. It checks for reserved space stdex_assert-only (in Debug builds). Use with caution!  <br /></td></tr>
 <tr class="separator:a8ccb02a23999882255d5c16c83f91571"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41124fc38a3439c4407ea1c9ef4962b1" id="r_a41124fc38a3439c4407ea1c9ef4962b1"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:a41124fc38a3439c4407ea1c9ef4962b1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a41124fc38a3439c4407ea1c9ef4962b1">get</a> (fpos_t offset, T &amp;<a class="el" href="#aff374fc64c7453dc0cef22f19bc400ce">data</a>)</td></tr>
-<tr class="memdesc:a41124fc38a3439c4407ea1c9ef4962b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads data from specified file location This does not move file pointer. It checks for data size <em>Assume</em>-only (in Debug builds). Use with caution!  <br /></td></tr>
+<tr class="memdesc:a41124fc38a3439c4407ea1c9ef4962b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads data from specified file location This does not move file pointer. It checks for data size stdex_assert-only (in Debug builds). Use with caution!  <br /></td></tr>
 <tr class="separator:a41124fc38a3439c4407ea1c9ef4962b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
@@ -989,7 +989,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Reads data from specified file location This does not move file pointer. It checks for data size <em>Assume</em>-only (in Debug builds). Use with caution! </p>
+<p>Reads data from specified file location This does not move file pointer. It checks for data size stdex_assert-only (in Debug builds). Use with caution! </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">offset</td><td>Offset in file where to write data </td></tr>
@@ -1440,7 +1440,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Writes data to specified file location This does not move file pointer nor update file size. It checks for reserved space <em>Assume</em>-only (in Debug builds). Use with caution! </p>
+<p>Writes data to specified file location This does not move file pointer nor update file size. It checks for reserved space stdex_assert-only (in Debug builds). Use with caution! </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">offset</td><td>Offset in file where to write data </td></tr>
@@ -1732,7 +1732,7 @@ template&lt;class T &gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon May 27 2024 13:06:12 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.11.0
+Generated on Tue May 28 2024 08:26:18 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.11.0
 </small></address>
 </div><!-- doc-content -->
 </body>
