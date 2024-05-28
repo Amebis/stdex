@@ -9,6 +9,7 @@
 #ifdef _WIN32
 #include "windows.h"
 #include <sal.h>
+#include <tchar.h>
 #endif
 #include <type_traits>
 
