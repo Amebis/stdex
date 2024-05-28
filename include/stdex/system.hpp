@@ -62,7 +62,6 @@ namespace stdex
 	using schar_t = TCHAR;
 #else
 	using schar_t = char;
-#define _T(x) x
 #endif
 
 	///

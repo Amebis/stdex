@@ -159,6 +159,9 @@
 #define __L(x) L ## x
 #define _L(x)  __L(x)
 #endif
+#ifndef _T
+#define _T(x) x
+#endif
 
 #ifndef _Likely_
 #if _HAS_CXX20
