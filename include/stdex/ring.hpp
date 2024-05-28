@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "assert.hpp"
 #include "compat.hpp"
 #include <condition_variable>
 #include <mutex>
@@ -62,7 +63,7 @@ namespace stdex
 				const std::lock_guard<std::mutex> lg(m_mutex);
 #ifndef NDEBUG
 				size_t tail = wrap(m_head + m_size);
-				_Assume_(size <= (m_head <= tail ? N_cap - tail : m_head - tail));
+				stdex_assert(size <= (m_head <= tail ? N_cap - tail : m_head - tail));
 #endif
 				m_size += size;
 			}
@@ -97,7 +98,7 @@ namespace stdex
 				const std::lock_guard<std::mutex> lg(m_mutex);
 #ifndef NDEBUG
 				size_t tail = wrap(m_head + m_size);
-				_Assume_(size <= (m_head < tail ? m_size : N_cap - m_head));
+				stdex_assert(size <= (m_head < tail ? m_size : N_cap - m_head));
 #endif
 				m_head = wrap(m_head + size);
 				m_size -= size;

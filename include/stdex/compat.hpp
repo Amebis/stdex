@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include <assert.h>
 #include <stddef.h>
 #ifdef _WIN32
 #include "windows.h"
@@ -156,6 +155,11 @@
 #define _Null_terminated_
 #endif
 
+#ifndef _L
+#define __L(x) L ## x
+#define _L(x)  __L(x)
+#endif
+
 #ifndef _Likely_
 #if _HAS_CXX20
 #define _Likely_ [[likely]]
@@ -174,8 +178,10 @@
 
 #ifdef _MSC_VER
 #define _Deprecated_(message) __declspec(deprecated(message))
+#define _NoReturn_ __declspec(noreturn)
 #else
 #define _Deprecated_(message) [[deprecated(message)]]
+#define _NoReturn_ [[noreturn]]
 #endif
 
 #ifdef _WIN32
@@ -195,13 +201,6 @@ size_t _countof(const T (&arr)[N])
 
 #ifndef _Analysis_assume_
 #define _Analysis_assume_(p)
-#endif
-#ifdef NDEBUG
-#define _Assume_(p) _Analysis_assume_(p)
-#define _Verify_(p) ((void)(p))
-#else
-#define _Assume_(p) assert(p)
-#define _Verify_(p) assert(p)
 #endif
 
 #ifdef __APPLE__

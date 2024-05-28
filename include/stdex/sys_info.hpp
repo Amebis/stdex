@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "assert.hpp"
 #include "compat.hpp"
 #include "string.hpp"
 #include "system.hpp"
@@ -129,7 +130,7 @@ namespace stdex
 #ifdef _WIN32
 			HMODULE kernel32_handle;
 			kernel32_handle = LoadLibrary(_T("kernel32.dll"));
-			_Assume_(kernel32_handle);
+			stdex_assert(kernel32_handle);
 			BOOL(WINAPI * IsWow64Process2)(HANDLE hProcess, USHORT * pProcessMachine, USHORT * pNativeMachine);
 			*reinterpret_cast<FARPROC*>(&IsWow64Process2) = GetProcAddress(kernel32_handle, "IsWow64Process2");
 			HANDLE process = GetCurrentProcess();

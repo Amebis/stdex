@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "assert.hpp"
 #include "compat.hpp"
 #include "mapping.hpp"
 #include "sgml_unicode.hpp"
@@ -24,7 +25,7 @@ namespace stdex
 	template <class T>
 	const utf32_t* sgml2uni(_In_reads_or_z_(count) const T* entity, _In_ size_t count, utf32_t buf[2])
 	{
-		_Assume_(entity && count);
+		stdex_assert(entity && count);
 
 		if (count < 2 || entity[0] != '#') {
 			for (size_t i = 0, j = _countof(sgml_unicode); i < j; ) {
@@ -83,7 +84,7 @@ namespace stdex
 	const T* sgmlend(
 		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count)
 	{
-		_Assume_(str || !count);
+		stdex_assert(str || !count);
 		for (size_t i = 0; i < count; i++) {
 			if (str[i] == ';')
 				return str + i;
@@ -127,7 +128,7 @@ namespace stdex
 		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
 		_In_ int what = 0)
 	{
-		_Assume_(src || !count_src);
+		stdex_assert(src || !count_src);
 
 		const bool
 			do_ascii = (what & sgml_full) == 0;
@@ -196,7 +197,7 @@ namespace stdex
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
 		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
 	{
-		_Assume_(src || !count_src);
+		stdex_assert(src || !count_src);
 
 		const bool
 			skip_quot = (skip & sgml_quot) == 0,
@@ -219,7 +220,7 @@ namespace stdex
 				auto end = sgmlend(&src[i + 1], count_src - i - 1);
 				if (end) {
 					utf32_t chr32[2];
-					_Assume_(&src[i + 1] <= end);
+					stdex_assert(&src[i + 1] <= end);
 					size_t n = static_cast<size_t>(end - src) - i - 1;
 					T_to chr[5];
 					auto entity_w = utf32_to_wstr(sgml2uni(&src[i + 1], n, chr32), chr);
@@ -239,7 +240,7 @@ namespace stdex
 					{
 						if (map) map->push_back(mapping<size_t>(offset.from + i, offset.to + dst.size()));
 						dst.append(entity_w);
-						_Assume_(src <= end);
+						stdex_assert(src <= end);
 						i = static_cast<size_t>(end - src) + 1;
 						if (map) map->push_back(mapping<size_t>(offset.from + i, offset.to + dst.size()));
 						continue;
@@ -291,8 +292,8 @@ namespace stdex
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
 		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
 	{
-		_Assume_(dst || !count_dst);
-		_Assume_(src || !count_src);
+		stdex_assert(dst || !count_dst);
+		stdex_assert(src || !count_src);
 
 		static const std::invalid_argument buffer_overrun("buffer overrun");
 		const bool
@@ -419,7 +420,7 @@ namespace stdex
 		_In_ const mapping<size_t>& offset = mapping<size_t>(0, 0),
 		_Inout_opt_ mapping_vector<size_t>* map = nullptr)
 	{
-		_Assume_(dst || !count_dst);
+		stdex_assert(dst || !count_dst);
 		if (count_dst)
 			dst[0] = 0;
 		if (map)
@@ -473,7 +474,7 @@ namespace stdex
 	/// \cond internal
 	inline const char* chr2sgml(_In_reads_or_z_(count) const utf16_t* entity, _In_ size_t count)
 	{
-		_Assume_(entity && count);
+		stdex_assert(entity && count);
 
 		utf32_t e2;
 		size_t offset;
@@ -509,7 +510,7 @@ namespace stdex
 
 	inline const char* chr2sgml(_In_reads_or_z_(count) const utf32_t* entity, _In_ size_t count)
 	{
-		_Assume_(entity && count);
+		stdex_assert(entity && count);
 
 		utf32_t e2 = entity[0];
 		for (size_t i = 0, j = _countof(unicode_sgml); i < j; ) {
@@ -536,7 +537,7 @@ namespace stdex
 
 	inline utf32_t wstr_to_utf32(_In_reads_(end) const utf16_t* src, _Inout_ size_t& i, _In_ size_t end)
 	{
-		_Assume_(i < end);
+		stdex_assert(i < end);
 		if (i + 1 >= end || !is_surrogate_pair(src + i))
 			return src[i++];
 
@@ -548,7 +549,7 @@ namespace stdex
 	inline utf32_t wstr_to_utf32(_In_reads_(end) const utf32_t* src, _Inout_ size_t& i, _In_ size_t end)
 	{
 		_Unreferenced_(end);
-		_Assume_(i < end);
+		stdex_assert(i < end);
 		return src[i++];
 	}
 	/// \endcond
@@ -567,7 +568,7 @@ namespace stdex
 		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
 		_In_ int what = 0)
 	{
-		_Assume_(src || !count_src);
+		stdex_assert(src || !count_src);
 
 		const bool
 			do_ascii = (what & sgml_full) == 0,
@@ -679,8 +680,8 @@ namespace stdex
 		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
 		_In_ int what = 0)
 	{
-		_Assume_(dst || !count_dst);
-		_Assume_(src || !count_src);
+		stdex_assert(dst || !count_dst);
+		stdex_assert(src || !count_src);
 
 		static const std::invalid_argument buffer_overrun("buffer overrun");
 		const bool
@@ -742,7 +743,7 @@ namespace stdex
 					else {
 						char tmp[3 + 8 + 1 + 1];
 						int m = snprintf(tmp, _countof(tmp), "&#x%x;", static_cast<unsigned int>(src[i++]));
-						_Assume_(m >= 0);
+						stdex_assert(m >= 0);
 						if (static_cast<size_t>(m) >= count_dst)
 							throw buffer_overrun;
 						memcpy(dst + j, tmp, static_cast<size_t>(m) * sizeof(char));
@@ -770,7 +771,7 @@ namespace stdex
 						else {
 							char tmp[3 + 8 + 1 + 1];
 							int m = snprintf(tmp, _countof(tmp), "&#x%x;", static_cast<unsigned int>(wstr_to_utf32(src, i, end)));
-							_Assume_(m >= 0);
+							stdex_assert(m >= 0);
 							if (static_cast<size_t>(m) >= count_dst)
 								throw buffer_overrun;
 							memcpy(dst + j, tmp, static_cast<size_t>(m) * sizeof(char));
@@ -837,7 +838,7 @@ namespace stdex
 		_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src,
 		_In_ int what = 0)
 	{
-		_Assume_(dst || !count_dst);
+		stdex_assert(dst || !count_dst);
 		if (count_dst)
 			dst[0] = 0;
 		return str2sgmlcat(dst, count_dst, src, count_src, what);

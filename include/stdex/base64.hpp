@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "assert.hpp"
 #include "compat.hpp"
 #include "stream.hpp"
 #include <cstdint>
@@ -74,7 +75,7 @@ namespace stdex
 		template<class T, class TR, class AX>
 		void encode(_Inout_ std::basic_string<T, TR, AX> &out, _In_bytecount_(size) const void *data, _In_ size_t size, _In_opt_ bool is_last = true)
 		{
-			_Assume_(data || !size);
+			stdex_assert(data || !size);
 
 			// Preallocate output
 			out.reserve(out.size() + enc_size(size));
@@ -194,7 +195,7 @@ namespace stdex
 		virtual _Success_(return != 0) size_t write(
 			_In_reads_bytes_opt_(length) const void* data, _In_ size_t length)
 		{
-			_Assume_(data || !length);
+			stdex_assert(data || !length);
 			for (size_t i = 0;; i++) {
 				if (m_num >= 3) {
 					if (++m_num_blocks > m_max_blocks) {
@@ -318,7 +319,7 @@ namespace stdex
 					break;
 
 				size_t x = static_cast<size_t>(data[i]);
-				_Assume_(m_num < _countof(m_buf));
+				stdex_assert(m_num < _countof(m_buf));
 				if ((m_buf[m_num] = x < _countof(base64_dec_lookup) ? base64_dec_lookup[x] : 255) != 255)
 					m_num++;
 			}
@@ -388,7 +389,7 @@ namespace stdex
 		virtual _Success_(return != 0 || length == 0) size_t read(
 			_Out_writes_bytes_to_opt_(length, return) void* data, _In_ size_t length)
 		{
-			_Assume_(data || !length);
+			stdex_assert(data || !length);
 			for (size_t to_read = length;;) {
 				if (m_temp_len >= to_read) {
 					memcpy(data, m_temp + m_temp_off, to_read);

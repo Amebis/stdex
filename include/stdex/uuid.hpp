@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "assert.hpp"
 #include "compat.hpp"
 #include <stdint.h>
 #include <stdio.h>
@@ -26,7 +27,7 @@ namespace stdex
 	///
 	inline void uuidtostr(_Out_writes_z_(39) char str[39], _In_ const uuid_t& id)
 	{
-		_Assume_(str);
+		stdex_assert(str);
 #ifdef _WIN32
 		_snprintf_s_l(str, 39, _TRUNCATE, "{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}", NULL,
 			id.Data1,
@@ -52,7 +53,7 @@ namespace stdex
 	///
 	inline void uuidtostr(_Out_writes_z_(39) wchar_t str[39], _In_ const uuid_t& id)
 	{
-		_Assume_(str);
+		stdex_assert(str);
 #ifdef _WIN32
 		_snwprintf_s_l(str, 39, _TRUNCATE, L"{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}", NULL,
 			id.Data1,

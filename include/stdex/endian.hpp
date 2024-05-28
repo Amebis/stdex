@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "assert.hpp"
 #include "compat.hpp"
 #include "system.hpp"
 #include <stdint.h>
@@ -113,10 +114,10 @@ namespace stdex
 		return *reinterpret_cast<double*>(&r);
 	}
 
-	inline void byteswap(_Inout_ uint8_t* value) { _Assume_(value); *value = byteswap(*value); }
-	inline void byteswap(_Inout_ uint16_t* value) { _Assume_(value); *value = byteswap(*value); }
-	inline void byteswap(_Inout_ uint32_t* value) { _Assume_(value); *value = byteswap(*value); }
-	inline void byteswap(_Inout_ uint64_t* value) { _Assume_(value); *value = byteswap(*value); }
+	inline void byteswap(_Inout_ uint8_t* value) { stdex_assert(value); *value = byteswap(*value); }
+	inline void byteswap(_Inout_ uint16_t* value) { stdex_assert(value); *value = byteswap(*value); }
+	inline void byteswap(_Inout_ uint32_t* value) { stdex_assert(value); *value = byteswap(*value); }
+	inline void byteswap(_Inout_ uint64_t* value) { stdex_assert(value); *value = byteswap(*value); }
 
 	inline void byteswap(_Inout_ char* value) { byteswap(reinterpret_cast<uint8_t*>(value)); }
 	inline void byteswap(_Inout_ int8_t* value) { byteswap(reinterpret_cast<uint8_t*>(value)); }

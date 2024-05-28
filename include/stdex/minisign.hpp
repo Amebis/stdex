@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "assert.hpp"
 #include "base64.hpp"
 #include "compat.hpp"
 #include "parser.hpp"
@@ -30,7 +31,7 @@ namespace stdex
 				_In_ int flags = stdex::parser::match_default)
 			{
 				_Unreferenced_(flags);
-				_Assume_(text || start + 17 >= end);
+				stdex_assert(text || start + 17 >= end);
 				if (start + 17 < end &&
 					text[start + 0] == 'u' &&
 					text[start + 1] == 'n' &&
@@ -72,7 +73,7 @@ namespace stdex
 				_In_ int flags = stdex::parser::match_default)
 			{
 				_Unreferenced_(flags);
-				_Assume_(text || start + 1 >= end);
+				stdex_assert(text || start + 1 >= end);
 				if (start + 1 < end &&
 					text[start + 0] == '\r' &&
 					text[start + 1] == '\n')
@@ -80,7 +81,7 @@ namespace stdex
 					this->interval.end = (this->interval.start = start) + 2;
 					return true;
 				}
-				_Assume_(text || start >= end);
+				stdex_assert(text || start >= end);
 				if (start < end && text[start] == '\n') {
 					this->interval.end = (this->interval.start = start) + 1;
 					return true;

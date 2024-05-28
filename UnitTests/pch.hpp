@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <stdex/assert.hpp>
 #include <stdex/base64.hpp>
 #include <stdex/compat.hpp>
 #include <stdex/exception.hpp>

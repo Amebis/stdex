@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "assert.hpp"
 #include "compat.hpp"
 #include "stream.hpp"
 #if _MSC_VER
@@ -79,7 +80,7 @@ namespace stdex
 		virtual _Success_(return != 0) size_t write(
 			_In_reads_bytes_opt_(length) const void* data, _In_ size_t length)
 		{
-			_Assume_(data || !length);
+			stdex_assert(data || !length);
 			size_t num_written = 0;
 			while (length) {
 				uInt num_inflated = static_cast<uInt>(std::min<size_t>(length, UINT_MAX));
@@ -136,7 +137,7 @@ namespace stdex
 		virtual _Success_(return != 0 || length == 0) size_t read(
 			_Out_writes_bytes_to_opt_(length, return) void* data, _In_ size_t length)
 		{
-			_Assume_(data || !length);
+			stdex_assert(data || !length);
 			size_t num_read = 0;
 			while (length) {
 				uInt num_deflated = static_cast<uInt>(std::min<size_t>(length, UINT_MAX));

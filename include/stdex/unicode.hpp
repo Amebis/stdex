@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "assert.hpp"
 #include "compat.hpp"
 #include "endian.hpp"
 #include "math.hpp"
@@ -176,7 +177,7 @@ namespace stdex
 			_Inout_ std::basic_string<T_to, TR_to, AX_to>& dst,
 			_In_reads_or_z_opt_(count_src) const T_from* src, _In_ size_t count_src)
 		{
-			_Assume_(src || !count_src);
+			stdex_assert(src || !count_src);
 			count_src = strnlen<T_from>(src, count_src);
 			if (!count_src) _Unlikely_
 				return;
@@ -185,7 +186,7 @@ namespace stdex
 			constexpr DWORD dwFlagsWCMB = 0;
 			constexpr LPCCH lpDefaultChar = NULL;
 
-			_Assume_(src);
+			stdex_assert(src);
 			if (m_from_wincp == m_to_wincp) _Unlikely_{
 				dst.append(reinterpret_cast<const T_to*>(src), count_src);
 				return;
@@ -193,7 +194,7 @@ namespace stdex
 
 #pragma warning(suppress: 4127)
 			if constexpr (sizeof(T_from) == sizeof(char) && sizeof(T_to) == sizeof(wchar_t)) {
-				_Assume_(count_src < INT_MAX || count_src == SIZE_MAX);
+				stdex_assert(count_src < INT_MAX || count_src == SIZE_MAX);
 
 				// Try to convert to stack buffer first.
 				DWORD dwFlagsMBWC = static_cast<UINT>(m_from_wincp) < CP_UTF7 ? MB_PRECOMPOSED : 0;
@@ -220,7 +221,7 @@ namespace stdex
 
 #pragma warning(suppress: 4127)
 			if constexpr (sizeof(T_from) == sizeof(wchar_t) && sizeof(T_to) == sizeof(char)) {
-				_Assume_(count_src < INT_MAX || count_src == SIZE_MAX);
+				stdex_assert(count_src < INT_MAX || count_src == SIZE_MAX);
 
 				// Try to convert to stack buffer first.
 				CHAR szStackBuffer[1024 / sizeof(CHAR)];
@@ -246,7 +247,7 @@ namespace stdex
 
 #pragma warning(suppress: 4127)
 			if constexpr (sizeof(T_from) == sizeof(char) && sizeof(T_to) == sizeof(char)) {
-				_Assume_(count_src < INT_MAX || count_src == SIZE_MAX);
+				stdex_assert(count_src < INT_MAX || count_src == SIZE_MAX);
 
 				// Try to convert to stack buffer first.
 				DWORD dwFlagsMBWC = static_cast<UINT>(m_from_wincp) < CP_UTF7 ? MB_PRECOMPOSED : 0, dwResult;
@@ -256,7 +257,7 @@ namespace stdex
 				if (cch) {
 					// Append from stack.
 					size_t count_inter = count_src != SIZE_MAX ? wcsnlen(szStackBufferMBWC, cch) : static_cast<size_t>(cch) - 1;
-					_Assume_(count_inter < INT_MAX);
+					stdex_assert(count_inter < INT_MAX);
 
 					// Try to convert to stack buffer first.
 					CHAR szStackBufferWCMB[512 / sizeof(CHAR)];
@@ -843,7 +844,7 @@ namespace stdex
 		count_src = strnlen(src, count_src);
 		size_t count_dst = dst.size();
 		dst.resize(count_dst + count_src);
-		_Assume_(count_src + 1 < INT_MAX);
+		stdex_assert(count_src + 1 < INT_MAX);
 #pragma warning(suppress: 6387) // Testing indicates src may be NULL when count_src is also 0. Is SAL of the lpSrcString parameter wrong?
 		int r = NormalizeString(NormalizationC, src, static_cast<int>(count_src), dst.data() + count_dst, static_cast<int>(count_src + 1));
 		if (r >= 0)

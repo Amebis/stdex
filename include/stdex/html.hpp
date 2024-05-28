@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "assert.hpp"
 #include "compat.hpp"
 #include "exception.hpp"
 #include "interval.hpp"
@@ -44,7 +45,7 @@ namespace stdex
 			_Inout_ std::basic_string<char, TR, AX>& dst,
 			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars)
 		{
-			_Assume_(src || !num_chars);
+			stdex_assert(src || !num_chars);
 			for (size_t i = 0; i < num_chars && src[i]; ++i) {
 				switch (src[i]) {
 				case '&': dst += "&amp;"; break;
@@ -71,7 +72,7 @@ namespace stdex
 			_Inout_ std::basic_string<wchar_t, TR, AX>& dst,
 			_In_reads_or_z_opt_(num_chars) const wchar_t* src, _In_ size_t num_chars)
 		{
-			_Assume_(src || !num_chars);
+			stdex_assert(src || !num_chars);
 			for (size_t i = 0; i < num_chars && src[i]; ++i) {
 				switch (src[i]) {
 				case L'&': dst += L"&amp;"; break;
@@ -162,7 +163,7 @@ namespace stdex
 			_Inout_ std::basic_string<char, TR, AX>& dst,
 			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars)
 		{
-			_Assume_(src || !num_chars);
+			stdex_assert(src || !num_chars);
 			for (size_t i = 0; i < num_chars && src[i]; ++i) {
 				switch (src[i]) {
 				case '&': dst += "&amp;"; break;
@@ -186,7 +187,7 @@ namespace stdex
 			_Inout_ std::basic_string<wchar_t, TR, AX>& dst,
 			_In_reads_or_z_opt_(num_chars) const wchar_t* src, _In_ size_t num_chars)
 		{
-			_Assume_(src || !num_chars);
+			stdex_assert(src || !num_chars);
 			for (size_t i = 0; i < num_chars && src[i]; ++i) {
 				switch (src[i]) {
 				case L'&': dst += L"&amp;"; break;
@@ -238,7 +239,7 @@ namespace stdex
 			_Inout_ std::basic_string<char, TR, AX>& dst,
 			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars)
 		{
-			_Assume_(src || !num_chars);
+			stdex_assert(src || !num_chars);
 			for (size_t i = 0; i < num_chars && src[i];) {
 				switch (src[i]) {
 				case '+':
@@ -308,7 +309,7 @@ namespace stdex
 			_Inout_ std::basic_string<char, TR, AX>& dst,
 			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars)
 		{
-			_Assume_(src || !num_chars);
+			stdex_assert(src || !num_chars);
 			for (size_t i = 0; i < num_chars && src[i]; ++i) {
 				switch (src[i]) {
 				case ' ': dst += "+"; break;
@@ -387,7 +388,7 @@ namespace stdex
 			_Inout_ std::basic_string<T, TR, AX>& dst,
 			_In_reads_or_z_opt_(num_chars) const T* src, _In_ size_t num_chars)
 		{
-			_Assume_(src || !num_chars);
+			stdex_assert(src || !num_chars);
 			for (size_t i = 0; i < num_chars && src[i];) {
 				if (src[i] != '\\')
 					dst += src[i++];
@@ -485,7 +486,7 @@ namespace stdex
 			_Inout_ std::basic_string<char, TR, AX>& dst,
 			_In_reads_or_z_opt_(num_chars) const char* src, _In_ size_t num_chars)
 		{
-			_Assume_(src || !num_chars);
+			stdex_assert(src || !num_chars);
 			for (size_t i = 0; i < num_chars && src[i]; ++i) {
 				switch (src[i]) {
 				case '\\': dst += "\\\\"; break;
@@ -511,7 +512,7 @@ namespace stdex
 			_Inout_ std::basic_string<wchar_t, TR, AX>& dst,
 			_In_reads_or_z_opt_(num_chars) const wchar_t* src, _In_ size_t num_chars)
 		{
-			_Assume_(src || !num_chars);
+			stdex_assert(src || !num_chars);
 			for (size_t i = 0; i < num_chars && src[i]; ++i) {
 				switch (src[i]) {
 				case L'\\': dst += L"\\\\"; break;
@@ -1232,7 +1233,7 @@ namespace stdex
 			template <class T>
 			static bool is_uri(_In_ element_t code, _In_reads_or_z_opt_(num_chars) const T* attr_name, _In_ size_t num_chars)
 			{
-				_Assume_(attr_name || !num_chars);
+				stdex_assert(attr_name || !num_chars);
 				switch (code) {
 				case element_t::a:          return !stdex::strnicmp(attr_name, num_chars, "href", SIZE_MAX);
 				case element_t::applet:     return !stdex::strnicmp(attr_name, num_chars, "code", SIZE_MAX) ||
@@ -1287,7 +1288,7 @@ namespace stdex
 			template <class T>
 			static bool is_localizable(element_t code, const T* attr_name, size_t num_chars)
 			{
-				_Assume_(attr_name || !num_chars);
+				stdex_assert(attr_name || !num_chars);
 				if (!stdex::strnicmp(attr_name, num_chars, "title", SIZE_MAX))
 					return true;
 				switch (code) {
@@ -1456,10 +1457,10 @@ namespace stdex
 #ifndef NDEBUG
 				// The mapping table MUST be sorted and all names in lowercase.
 				for (size_t i = 1; i < _countof(mapping); i++)
-					_Assume_(stdex::strcmp(mapping[i - 1].name, mapping[i].name) <= 0);
+					stdex_assert(stdex::strcmp(mapping[i - 1].name, mapping[i].name) <= 0);
 				for (size_t i = 0; i < _countof(mapping); i++) {
 					for (size_t j = 0; mapping[i].name[j]; j++)
-						_Assume_(stdex::islower(mapping[i].name[j]) | stdex::isdigit(mapping[i].name[j]));
+						stdex_assert(stdex::islower(mapping[i].name[j]) | stdex::isdigit(mapping[i].name[j]));
 				}
 #endif
 				for (size_t i = 0, j = _countof(mapping); i < j; ) {
@@ -1654,7 +1655,7 @@ namespace stdex
 			///
 			void append(_In_reads_or_z_opt_(num_chars) const T* source, _In_ size_t num_chars)
 			{
-				_Assume_(source || !num_chars);
+				stdex_assert(source || !num_chars);
 				m_source.append(source, stdex::strnlen(source, num_chars));
 				source = m_source.data();
 				num_chars = m_source.size();
@@ -1710,7 +1711,7 @@ namespace stdex
 
 					if (m_is_special_element) {
 						auto parent = active_element();
-						_Assume_(parent);
+						stdex_assert(parent);
 						if (m_tag.match(source, i, num_chars) &&
 							m_tag.type == stdex::parser::html_sequence_t::element_end &&
 							element::element_code(source + m_tag.name.start, m_tag.name.size()) == parent->code)
@@ -1744,7 +1745,7 @@ namespace stdex
 							// Does this tag end any of the started elements?
 							for (size_t j = m_element_stack.size(); j--; ) {
 								auto starting_tag = m_element_stack[j];
-								_Assume_(starting_tag && starting_tag->type == stdex::parser::html_sequence_t::element_start);
+								stdex_assert(starting_tag && starting_tag->type == stdex::parser::html_sequence_t::element_start);
 								if (element_traits::may_contain(starting_tag->code, e->code)) {
 									e->parent = starting_tag;
 									break;
@@ -1805,7 +1806,7 @@ namespace stdex
 
 							for (size_t j = m_element_stack.size(); j--; ) {
 								auto starting_tag = m_element_stack[j];
-								_Assume_(starting_tag && starting_tag->type == stdex::parser::html_sequence_t::element_start);
+								stdex_assert(starting_tag && starting_tag->type == stdex::parser::html_sequence_t::element_start);
 								if (starting_tag->code == e->code ||
 									(starting_tag->code == element_t::unknown && e->code == element_t::unknown && !stdex::strnicmp(source + starting_tag->name.start, starting_tag->name.size(), source + e->name.start, e->name.size())))
 								{
@@ -1904,7 +1905,7 @@ namespace stdex
 			///
 			std::basic_string<T, TR, AX> replace_entities(_In_reads_or_z_opt_(num_chars) const T* input, _In_ size_t num_chars) const
 			{
-				_Assume_(input || !num_chars);
+				stdex_assert(input || !num_chars);
 				const size_t num_entities = m_entities.size();
 				const T* source = m_source.data();
 				std::basic_string<T, TR, AX> output;
@@ -2188,7 +2189,7 @@ namespace stdex
 			///
 			text_token<T, TR, AX>* parse()
 			{
-				_Assume_(m_tokens.empty());
+				stdex_assert(m_tokens.empty());
 
 				if (m_progress) {
 					m_progress->set_range(0, m_document.source().size());
@@ -2208,8 +2209,8 @@ namespace stdex
 			///
 			static void link(_Inout_ std::basic_string<T, TR, AX>& source, _In_ const text_token<T, TR, AX>* t)
 			{
-				_Assume_(t);
-				_Assume_(
+				stdex_assert(t);
+				stdex_assert(
 					t->type == token_t::complete ||
 					t->type == token_t::starting ||
 					t->type == token_t::ending ||
@@ -2218,7 +2219,7 @@ namespace stdex
 				if (t->text_type & has_tokens) {
 					const T* root = t->text.data();
 					for (size_t i = 0, num_chars = t->text.size(); i < num_chars && root[i];) {
-						_Assume_(root[i] != token_tag_end);
+						stdex_assert(root[i] != token_tag_end);
 						const token* t2 = token::parse_tag(root, i);
 						if (t2) {
 							switch (t2->type) {
@@ -2301,7 +2302,7 @@ namespace stdex
 						// End tokens not relevant anymore in reverse order of starting.
 						for (auto i = active_tokens.cend(); i != active_tokens.cbegin(); ) {
 							auto t1 = dynamic_cast<starting_token<T, TR, AX>*>(*(--i));
-							_Assume_(t1 && t1->type == token_t::starting);
+							stdex_assert(t1 && t1->type == token_t::starting);
 
 							std::unique_ptr<text_token<T, TR, AX>> t2(new text_token<T, TR, AX>(token_t::ending));
 							t2->text.reserve(t1->name.size() + 3);
@@ -2340,7 +2341,7 @@ namespace stdex
 			{
 				for (auto i = inserted_tokens.begin(); i != inserted_tokens.end(); ) {
 					auto& t = *i;
-					_Assume_(t.token);
+					stdex_assert(t.token);
 					if (t.word_index == word_index && t.after_word == after_word) {
 						if (t.token->type != token_t::ending)
 							start_tokens(source, active_tokens, t.active_tokens, end_tokens(source, active_tokens, t.active_tokens));
@@ -2455,7 +2456,7 @@ namespace stdex
 					}
 
 					// No token_tag_start and token_tag_end chars, please.
-					_Assume_(
+					stdex_assert(
 						stdex::strnchr(m_source + s->interval.start, s->interval.size(), static_cast<T>(token_tag_start)) == stdex::npos &&
 						stdex::strnchr(m_source + s->interval.start, s->interval.size(), static_cast<T>(token_tag_end)) == stdex::npos);
 
@@ -2471,7 +2472,7 @@ namespace stdex
 					}
 					else if (s->type == stdex::parser::html_sequence_t::element || s->type == stdex::parser::html_sequence_t::element_start) {
 						const element* s_el = static_cast<const element*>(s.get());
-						_Assume_(s_el);
+						stdex_assert(s_el);
 						const element_start* s_el_start = s->type == stdex::parser::html_sequence_t::element_start ? static_cast<const element_start*>(s.get()) : nullptr;
 						if (s_el->code == element_t::frameset && !m_parse_frames)
 							throw std::invalid_argument("<frameset> detected");
@@ -2535,7 +2536,7 @@ namespace stdex
 							{
 								// Non-localizable
 								auto s_end = s_el_start->end;
-								_Assume_(s_end);
+								stdex_assert(s_end);
 
 								if (s->interval.end < s_end->interval.start) {
 									if (s_el_start->code != element_t::style) {
@@ -2552,7 +2553,7 @@ namespace stdex
 									else {
 										// Partially parse CSS. It may contain URLs we need to make absolute.
 										auto t = parse_css(s->interval.end, s_end->interval.start);
-										_Assume_(t);
+										stdex_assert(t);
 										rel.from = s->interval.start;
 										token->mapping.push_back(rel);
 										rel.to += t->append_tag(token->text);
