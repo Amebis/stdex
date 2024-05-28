@@ -6,6 +6,9 @@
 #pragma once
 
 #include "compat.hpp"
+#ifdef _WIN32
+#include "windows.h"
+#endif
 #include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -26,33 +29,34 @@
 
 namespace stdex
 {
-	///
-	/// Terminates process in an abnormal way
-	///
-	/// Intention of this function is to alert any exception interception agent (Windows Error Reporting, Amebis Hroščar, etc.)
-	/// to create an error report and deliver it to developers.
-	///
-	/// \param[in] exception_code  An application-defined exception code
-	///
-	_NoReturn_
-	inline void abort(uint32_t exception_code)
-	{
-#ifdef _WIN32
-		RaiseException(exception_code, EXCEPTION_NONCONTINUABLE, 0, NULL);
-#else
-		_Unreferenced_(exception_code);
-		::abort();
-#endif
-	}
-
 	/// \cond internal
 #if defined(_WIN32)
-	inline void do_assert(const wchar_t *file, unsigned line, const wchar_t *expression)
+	inline void do_assert(const wchar_t* file, unsigned line, const wchar_t* expression)
 	{
-		_wassert(expression, file, line);
+		// Non-interactive processes (NT services, ISAPI and ActiveX DLLs running in IIS etc.)
+		// MUST NOT raise asserts. It'd block the process, and process host (SCM, IIS) would
+		// continue to see the process as alive but non-responding, preventing recovery.
+		// RaiseException instead to have the process terminated and possibly trigger Windows
+		// Error Reporting or AHroščar.
+		// For interactive processes, it is more convenient to alert the user looking at the
+		// desktop right now. Maybe it is the developer and debugging the very process is
+		// possible?
+		HWINSTA hWinSta = GetProcessWindowStation();
+		if (hWinSta) {
+			WCHAR sName[MAX_PATH];
+			if (GetUserObjectInformationW(hWinSta, UOI_NAME, sName, sizeof(sName), NULL)) {
+				sName[_countof(sName) - 1] = 0;
+				// Only "WinSta0" is interactive (Source: KB171890)
+				if (_wcsicmp(sName, L"WinSta0") == 0) {
+					_wassert(expression, file, line);
+					return;
+				}
+			}
+		}
+		RaiseException(STATUS_ASSERTION_FAILURE, EXCEPTION_NONCONTINUABLE, 0, NULL);
 	}
 #elif defined(__APPLE__)
-	inline void do_assert(const char *function, const char *file, int line, const char *expression)
+	inline void do_assert(const char* function, const char* file, int line, const char* expression)
 	{
 		__assert_rtn(function, file, line, expression);
 	}
