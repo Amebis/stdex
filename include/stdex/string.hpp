@@ -1160,9 +1160,6 @@ namespace stdex
 			if (a > b) return +1;
 			if (a < b) return -1;
 		}
-		if (str1[i]) return +1;
-		if (str2[i]) return -1;
-		return 0;
 	}
 
 	///
