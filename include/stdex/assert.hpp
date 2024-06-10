@@ -14,7 +14,7 @@
 #include <stdlib.h>
 
 #ifdef NDEBUG
-#define stdex_assert(e) _Analysis_assume_(e)
+#define stdex_assert(e) { _Analysis_assume_(e); ((void)0); }
 #define stdex_verify(e) ((void)(e))
 #else
 #if defined(_WIN32)
