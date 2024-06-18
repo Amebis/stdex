@@ -7,6 +7,7 @@
 
 #include "assert.hpp"
 #include "compat.hpp"
+#include "string.hpp"
 #include <stdint.h>
 #include <stdio.h>
 #if defined(_WIN32)
@@ -69,5 +70,101 @@ namespace stdex
 			static_cast<unsigned int>(id[8]), static_cast<unsigned int>(id[9]),
 			static_cast<unsigned int>(id[10]), static_cast<unsigned int>(id[11]), static_cast<unsigned int>(id[12]), static_cast<unsigned int>(id[13]), static_cast<unsigned int>(id[14]), static_cast<unsigned int>(id[15]));
 #endif
+	}
+
+	///
+	/// Parses string for GUID in a form of {xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}
+	///
+	/// \param[in]  str    String
+	/// \param[in]  count  Code unit count limit
+	/// \param[out] id     GUID to read
+	///
+	/// \returns true if parse was successful; false otherwise.
+	///
+	template <class T> inline _Success_(return != 0) bool strtouuid(
+		_In_reads_or_z_opt_(count) const T* str,
+		_In_ size_t count,
+		_Out_ uuid_t& id)
+	{
+		size_t i = 0, j;
+		uint64_t n;
+
+		for (; i < count && str[i] && stdex::isspace(str[i]); ++i);
+		if (i >= count || str[i] != '{') return false;
+		++i;
+		for (; i < count && str[i] && stdex::isspace(str[i]); ++i);
+		n = stdex::strtou64(&str[i], count - i, &j, 16);
+		if (n > UINT32_MAX) return false;
+#ifdef _WIN32
+		id.Data1 = static_cast<unsigned long>(n);
+#else
+		* reinterpret_cast<const uint32_t*>(&id[0]) = static_cast<uint32_t>(n);
+#endif
+		i += j;
+		for (; i < count && str[i] && stdex::isspace(str[i]); ++i);
+		if (i >= count || str[i] != '-') return false;
+		++i;
+		for (; i < count && str[i] && stdex::isspace(str[i]); ++i);
+		n = stdex::strtou64(&str[i], count - i, &j, 16);
+		if (n > UINT16_MAX) return false;
+#ifdef _WIN32
+		id.Data2 = static_cast<unsigned short>(n);
+#else
+		* reinterpret_cast<const uint16_t*>(&id[4]) = static_cast<uint16_t>(n);
+#endif
+		i += j;
+		for (; i < count && str[i] && stdex::isspace(str[i]); ++i);
+		if (i >= count || str[i] != '-') return false;
+		++i;
+		for (; i < count && str[i] && stdex::isspace(str[i]); ++i);
+		n = stdex::strtou64(&str[i], count - i, &j, 16);
+		if (n > UINT16_MAX) return false;
+#ifdef _WIN32
+		id.Data3 = static_cast<unsigned short>(n);
+#else
+		* reinterpret_cast<const uint16_t*>(&id[6]) = static_cast<uint16_t>(n);
+#endif
+		i += j;
+		for (; i < count && str[i] && stdex::isspace(str[i]); ++i);
+		if (i >= count || str[i] != '-') return false;
+		++i;
+		for (; i < count && str[i] && stdex::isspace(str[i]); ++i);
+		n = stdex::strtou64(&str[i], count - i, &j, 16);
+		if (n > UINT16_MAX) return false;
+#ifdef _WIN32
+		id.Data4[0] = static_cast<unsigned char>((n >> 8) & 0xff);
+		id.Data4[1] = static_cast<unsigned char>((n) & 0xff);
+#else
+		id[8] = static_cast<unsigned char>((n >> 8) & 0xff);
+		id[9] = static_cast<unsigned char>((n) & 0xff);
+#endif
+		i += j;
+		for (; i < count && str[i] && stdex::isspace(str[i]); ++i);
+		if (i >= count && str[i] != '-') return false;
+		++i;
+		for (; i < count && str[i] && stdex::isspace(str[i]); ++i);
+		n = stdex::strtou64(&str[i], count - i, &j, 16);
+		if (n > 0xffffffffffff) return false;
+#ifdef _WIN32
+		id.Data4[2] = static_cast<unsigned char>((n >> 40) & 0xff);
+		id.Data4[3] = static_cast<unsigned char>((n >> 32) & 0xff);
+		id.Data4[4] = static_cast<unsigned char>((n >> 24) & 0xff);
+		id.Data4[5] = static_cast<unsigned char>((n >> 16) & 0xff);
+		id.Data4[6] = static_cast<unsigned char>((n >> 8) & 0xff);
+		id.Data4[7] = static_cast<unsigned char>((n) & 0xff);
+#else
+		id[10] = static_cast<unsigned char>((n >> 40) & 0xff);
+		id[11] = static_cast<unsigned char>((n >> 32) & 0xff);
+		id[12] = static_cast<unsigned char>((n >> 24) & 0xff);
+		id[13] = static_cast<unsigned char>((n >> 16) & 0xff);
+		id[14] = static_cast<unsigned char>((n >> 8) & 0xff);
+		id[15] = static_cast<unsigned char>((n) & 0xff);
+#endif
+		i += j;
+		for (; i < count && str[i] && stdex::isspace(str[i]); ++i);
+		if (i >= count || str[i] != '}') return false;
+		++i;
+		for (; i < count && str[i] && stdex::isspace(str[i]); ++i);
+		return i >= count || !str[i];
 	}
 }
