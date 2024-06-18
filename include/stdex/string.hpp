@@ -2127,6 +2127,80 @@ namespace stdex
 	}
 
 	///
+	/// Parse string for a signed 8-bit integer
+	///
+	/// \param[in]  str    String
+	/// \param[in]  count  String code unit count limit
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T>
+	int8_t strto8(
+		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strtoint<T, int8_t>(str, count, end, radix);
+	}
+
+	///
+	/// Parse string for a signed 8-bit integer
+	///
+	/// \param[in]  str    String
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T, size_t N>
+	int8_t strto8(
+		_In_ const T (&str)[N],
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strto8<T>(str, N, end, radix);
+	}
+	
+	///
+	/// Parse string for a signed 16-bit integer
+	///
+	/// \param[in]  str    String
+	/// \param[in]  count  String code unit count limit
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T>
+	int16_t strto16(
+		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strtoint<T, int16_t>(str, count, end, radix);
+	}
+
+	///
+	/// Parse string for a signed 16-bit integer
+	///
+	/// \param[in]  str    String
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T, size_t N>
+	int16_t strto16(
+		_In_ const T (&str)[N],
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strto16<T>(str, N, end, radix);
+	}
+
+	///
 	/// Parse string for a signed 32-bit integer
 	///
 	/// \param[in]  str    String
@@ -2241,6 +2315,80 @@ namespace stdex
 		_In_ int radix)
 	{
 		return strtoi<T>(str, N, end, radix);
+	}
+
+	///
+	/// Parse string for an unsigned 8-bit integer
+	///
+	/// \param[in]  str    String
+	/// \param[in]  count  String code unit count limit
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T>
+	uint8_t strtou8(
+		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strtouint<T, uint8_t>(str, count, end, radix);
+	}
+
+	///
+	/// Parse string for an unsigned 8-bit integer
+	///
+	/// \param[in]  str    String
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T, size_t N>
+	uint8_t strtou8(
+		_In_ const T (&str)[N],
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strtou8(str, N, end, radix);
+	}
+
+	///
+	/// Parse string for an unsigned 16-bit integer
+	///
+	/// \param[in]  str    String
+	/// \param[in]  count  String code unit count limit
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T>
+	uint16_t strtou16(
+		_In_reads_or_z_opt_(count) const T* str, _In_ size_t count,
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strtouint<T, uint16_t>(str, count, end, radix);
+	}
+
+	///
+	/// Parse string for an unsigned 16-bit integer
+	///
+	/// \param[in]  str    String
+	/// \param[out] end    On return, count of code units processed
+	/// \param[in]  radix  Number radix (0 - autodetect; 2..36)
+	///
+	/// \return Binary integer value
+	///
+	template <class T, size_t N>
+	uint16_t strtou16(
+		_In_ const T (&str)[N],
+		_Out_opt_ size_t* end,
+		_In_ int radix)
+	{
+		return strtou16(str, N, end, radix);
 	}
 
 	///
