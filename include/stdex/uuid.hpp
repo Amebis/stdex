@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2016-2024 Amebis
 */
@@ -37,7 +37,7 @@ namespace stdex
 			static_cast<unsigned int>(id.Data4[0]), static_cast<unsigned int>(id.Data4[1]),
 			static_cast<unsigned int>(id.Data4[2]), static_cast<unsigned int>(id.Data4[3]), static_cast<unsigned int>(id.Data4[4]), static_cast<unsigned int>(id.Data4[5]), static_cast<unsigned int>(id.Data4[6]), static_cast<unsigned int>(id.Data4[7]));
 #else
-		snprintf(str, 39, "{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}", NULL,
+		snprintf(str, 39, "{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}",
 			*reinterpret_cast<const uint32_t*>(&id[0]),
 			static_cast<unsigned int>(*reinterpret_cast<const uint16_t*>(&id[4])),
 			static_cast<unsigned int>(*reinterpret_cast<const uint16_t*>(&id[6])),
@@ -98,7 +98,7 @@ namespace stdex
 #ifdef _WIN32
 		id.Data1 = static_cast<unsigned long>(n);
 #else
-		* reinterpret_cast<const uint32_t*>(&id[0]) = static_cast<uint32_t>(n);
+		* reinterpret_cast<uint32_t*>(&id[0]) = static_cast<uint32_t>(n);
 #endif
 		i += j;
 		for (; i < count && str[i] && stdex::isspace(str[i]); ++i);
@@ -110,7 +110,7 @@ namespace stdex
 #ifdef _WIN32
 		id.Data2 = static_cast<unsigned short>(n);
 #else
-		* reinterpret_cast<const uint16_t*>(&id[4]) = static_cast<uint16_t>(n);
+		* reinterpret_cast<uint16_t*>(&id[4]) = static_cast<uint16_t>(n);
 #endif
 		i += j;
 		for (; i < count && str[i] && stdex::isspace(str[i]); ++i);
@@ -122,7 +122,7 @@ namespace stdex
 #ifdef _WIN32
 		id.Data3 = static_cast<unsigned short>(n);
 #else
-		* reinterpret_cast<const uint16_t*>(&id[6]) = static_cast<uint16_t>(n);
+		* reinterpret_cast<uint16_t*>(&id[6]) = static_cast<uint16_t>(n);
 #endif
 		i += j;
 		for (; i < count && str[i] && stdex::isspace(str[i]); ++i);
