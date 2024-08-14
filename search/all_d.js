@@ -11,7 +11,7 @@ var searchData=
   ['part3_8',['part3',['../classstdex_1_1parser_1_1basic__si__reference.html#a214f6289c4587edc648115f0737b129a',1,'stdex::parser::basic_si_reference']]],
   ['pcm_9',['pcm',['../structstdex_1_1wav_1_1format.html#a9e48aadca63b92583abda67513aa4553aec5c8103218f27aa6ecfd3f11e1a6b45',1,'stdex::wav::format']]],
   ['pcm_5ffloat_10',['pcm_float',['../structstdex_1_1wav_1_1format.html#a9e48aadca63b92583abda67513aa4553ac00e16f1478ac9f85214649555b3313b',1,'stdex::wav::format']]],
-  ['pointer_11',['pointer',['../classstdex_1_1vector__queue.html#abf6db5997ee272e03e8db1696a162148',1,'stdex::vector_queue']]],
+  ['pointer_11',['pointer',['../classstdex_1_1vector__queue.html#ac35224189a97224f8e7a0802d5373e43',1,'stdex::vector_queue']]],
   ['pool_12',['pool',['../classstdex_1_1pool.html',1,'stdex']]],
   ['pop_13',['pop',['../classstdex_1_1pool.html#a9731f8edc72b43f5a4c4622ce6a51aeb',1,'stdex::pool::pop()'],['../classstdex_1_1ring.html#a404fe1f77852c304206369546695b566',1,'stdex::ring::pop()']]],
   ['pop_5fback_14',['pop_back',['../classstdex_1_1vector__queue.html#abd0fdb316392da76bac13bdd9d176eb6',1,'stdex::vector_queue']]],

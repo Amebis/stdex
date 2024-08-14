@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['value_5ftype_0',['value_type',['../classstdex_1_1vector__queue.html#aa1f9e69fd453bc2a2e72cf937a50995e',1,'stdex::vector_queue']]]
+  ['value_5ftype_0',['value_type',['../classstdex_1_1vector__queue.html#a12c7899b5adc1c6add89303a041e6bc9',1,'stdex::vector_queue']]]
 ];
