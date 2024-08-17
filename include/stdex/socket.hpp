@@ -11,9 +11,12 @@
 #include "windows.h"
 #include <WinSock2.h>
 #else
+#include <netdb.h>
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <unistd.h>
 #endif
+#include <memory>
 
 namespace stdex
 {
@@ -57,4 +60,73 @@ namespace stdex
 	/// Socket
 	///
 	using socket = basic_sys_object<socket_t, socket_traits>;
+
+#ifdef _WIN32
+	///
+	/// Deleter for unique_ptr using FreeAddrInfoA
+	///
+	struct FreeAddrInfoA_delete
+	{
+		///
+		/// Delete a pointer
+		///
+		void operator()(_In_ ADDRINFOA* ptr) const
+		{
+			FreeAddrInfoA(ptr);
+		}
+	};
+
+	///
+	/// addrinfo struct
+	///
+	using addrinfo = std::unique_ptr<ADDRINFOA, FreeAddrInfoA_delete>;
+
+	///
+	/// Deleter for unique_ptr using FreeAddrInfoW
+	///
+	struct FreeAddrInfoW_delete
+	{
+		///
+		/// Delete a pointer
+		///
+		void operator()(_In_ ADDRINFOW* ptr) const
+		{
+			FreeAddrInfoW(ptr);
+		}
+	};
+
+	///
+	/// addrinfo struct
+	///
+	using addrinfo = std::unique_ptr<ADDRINFOW, FreeAddrInfoW_delete>;
+
+	///
+	/// Multi-byte / Wide-character ADDRINFO wrapper class (according to _UNICODE)
+	///
+#ifdef UNICODE
+	using saddrinfo = waddrinfo;
+#else
+	using saddrinfo = addrinfo;
+#endif
+#else
+	///
+	/// Deleter for unique_ptr using freeaddrinfo
+	///
+	struct freeaddrinfo_delete
+	{
+		///
+		/// Delete a pointer
+		///
+		void operator()(_In_ struct addrinfo* ptr) const
+		{
+			freeaddrinfo(ptr);
+		}
+	};
+
+	///
+	/// addrinfo struct
+	///
+	using addrinfo = std::unique_ptr<struct addrinfo, freeaddrinfo_delete>;
+	using saddrinfo = addrinfo;
+#endif
 }
