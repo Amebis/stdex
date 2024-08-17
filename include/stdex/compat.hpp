@@ -109,6 +109,9 @@
 #ifndef _Out_writes_opt_
 #define _Out_writes_opt_(p)
 #endif
+#ifndef _Out_writes_all_opt_
+#define _Out_writes_all_opt_(p)
+#endif
 #ifndef _Out_writes_opt_z_
 #define _Out_writes_opt_z_(p)
 #endif
