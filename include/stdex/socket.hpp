@@ -10,6 +10,7 @@
 #if defined(_WIN32)
 #include "windows.h"
 #include <WinSock2.h>
+#include <WS2tcpip.h>
 #else
 #include <netdb.h>
 #include <sys/socket.h>
@@ -61,26 +62,26 @@ namespace stdex
 	///
 	using socket = basic_sys_object<socket_t, socket_traits>;
 
-#ifdef _WIN32
 	///
-	/// Deleter for unique_ptr using FreeAddrInfoA
+	/// Deleter for unique_ptr using freeaddrinfo
 	///
-	struct FreeAddrInfoA_delete
+	struct freeaddrinfo_delete
 	{
 		///
 		/// Delete a pointer
 		///
-		void operator()(_In_ ADDRINFOA* ptr) const
+		void operator()(_In_ struct ::addrinfo* ptr) const
 		{
-			FreeAddrInfoA(ptr);
+			freeaddrinfo(ptr);
 		}
 	};
 
 	///
 	/// addrinfo struct
 	///
-	using addrinfo = std::unique_ptr<ADDRINFOA, FreeAddrInfoA_delete>;
+	using addrinfo = std::unique_ptr<struct addrinfo, freeaddrinfo_delete>;
 
+#ifdef _WIN32
 	///
 	/// Deleter for unique_ptr using FreeAddrInfoW
 	///
@@ -98,7 +99,7 @@ namespace stdex
 	///
 	/// addrinfo struct
 	///
-	using addrinfo = std::unique_ptr<ADDRINFOW, FreeAddrInfoW_delete>;
+	using waddrinfo = std::unique_ptr<ADDRINFOW, FreeAddrInfoW_delete>;
 
 	///
 	/// Multi-byte / Wide-character ADDRINFO wrapper class (according to _UNICODE)
@@ -109,24 +110,6 @@ namespace stdex
 	using saddrinfo = addrinfo;
 #endif
 #else
-	///
-	/// Deleter for unique_ptr using freeaddrinfo
-	///
-	struct freeaddrinfo_delete
-	{
-		///
-		/// Delete a pointer
-		///
-		void operator()(_In_ struct addrinfo* ptr) const
-		{
-			freeaddrinfo(ptr);
-		}
-	};
-
-	///
-	/// addrinfo struct
-	///
-	using addrinfo = std::unique_ptr<struct addrinfo, freeaddrinfo_delete>;
 	using saddrinfo = addrinfo;
 #endif
 }
