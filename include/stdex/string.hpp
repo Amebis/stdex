@@ -148,6 +148,17 @@ namespace stdex
 	}
 
 	///
+	/// Test if the given code unit is ASCII-punctuation
+	///
+	/// \param[in] chr  Code unit
+	///
+	template <class T>
+	bool ispunct(_In_ T chr)
+	{
+		return ('!' <= chr && chr <= '/') || (':' <= chr && chr <= '@') || ('[' <= chr && chr <= '`') || ('{' <= chr && chr <= '~');
+	}
+
+	///
 	/// Test if the given code unit is ASCII-lower-case-character
 	///
 	/// \param[in] chr  Code unit
