@@ -31,7 +31,6 @@ namespace stdex
 
 	constexpr langid langid_unknown = 127;
 
-#ifdef _WIN32
 	///
 	/// Parses language name and returns matching language code
 	///
@@ -39,35 +38,11 @@ namespace stdex
 	///
 	/// \returns Language code or `langid_unknown` if match not found
 	///
-	langid langid_from_rfc1766(_In_z_ const char *rfc1766)
-	{
-		return LANGIDFROMLCID(LocaleNameToLCID(str2wstr(rfc1766, langid::utf8).c_str(), 0));
-	}
-
-	///
-	/// Parses language name and returns matching language code
-	///
-	/// \param[in] rfc1766  Language name in RFC1766 syntax
-	///
-	/// \returns Language code or `langid_unknown` if match not found
-	///
-	langid langid_from_rfc1766(_In_z_ const wchar_t *rfc1766)
-	{
-		return LANGIDFROMLCID(LocaleNameToLCID(rfc1766, 0));
-	}
-#else
-	///
-	/// Parses language name and returns matching language code
-	///
-	/// \param[in] rfc1766  Language name in RFC1766 syntax
-	///
-	/// \returns Language code or `langid_unknown` if match not found
-	///
-	inline langid langid_from_rfc1766(_In_z_ const char *rfc1766)
+	inline langid langid_from_rfc1766(_In_z_ const char* rfc1766)
 	{
 		struct stricmp_less
 		{
-			bool operator()(_In_z_ const char *str1, _In_z_ const char *str2) const
+			bool operator()(_In_z_ const char* str1, _In_z_ const char* str2) const
 			{
 				stdex_assert(str1);
 				stdex_assert(str2);
@@ -85,92 +60,92 @@ namespace stdex
 		};
 		struct language_mapping
 		{
-			langid id;                                                 ///< Language ID
-			std::map<const char *, langid, stricmp_less> sublanguages; ///< Sublanguages
+			langid id;                                                ///< Language ID
+			std::map<const char*, langid, stricmp_less> sublanguages; ///< Sublanguages
 		};
-		static const std::map<const char *, language_mapping, stricmp_less> languages = {
+		static const std::map<const char*, language_mapping, stricmp_less> languages = {
 			{"af", {1078, {}}}, // Afrikaans
-			{"ar", {0x01,	// Arabic
+			{"ar", {0x01,       // Arabic
 					{
-						{"ae", 14337}, // Arabic(U.A.E.)
-						{"bh", 15361}, // Arabic(Bahrain)
-						{"dz", 5121},  // Arabic(Algeria)
-						{"eg", 3073},  // Arabic(Egypt)
-						{"iq", 2049},  // Arabic(Iraq)
-						{"jo", 11265}, // Arabic(Jordan)
-						{"kw", 13313}, // Arabic(Kuwait)
-						{"lb", 12289}, // Arabic(Lebanon)
-						{"ly", 4097},  // Arabic(Libya)
-						{"ma", 6145},  // Arabic(Morocco)
-						{"om", 8193},  // Arabic(Oman)
-						{"qa", 16385}, // Arabic(Qatar)
-						{"sa", 1025},  // Arabic(Saudi Arabia)
-						{"sy", 10241}, // Arabic(Syria)
-						{"tn", 7169},  // Arabic(Tunisia)
-						{"ye", 9217},  // Arabic(Yemen)
+						{"ae", static_cast<langid>(14337)}, // Arabic(U.A.E.)
+						{"bh", static_cast<langid>(15361)}, // Arabic(Bahrain)
+						{"dz", static_cast<langid>(5121)},  // Arabic(Algeria)
+						{"eg", static_cast<langid>(3073)},  // Arabic(Egypt)
+						{"iq", static_cast<langid>(2049)},  // Arabic(Iraq)
+						{"jo", static_cast<langid>(11265)}, // Arabic(Jordan)
+						{"kw", static_cast<langid>(13313)}, // Arabic(Kuwait)
+						{"lb", static_cast<langid>(12289)}, // Arabic(Lebanon)
+						{"ly", static_cast<langid>(4097)},  // Arabic(Libya)
+						{"ma", static_cast<langid>(6145)},  // Arabic(Morocco)
+						{"om", static_cast<langid>(8193)},  // Arabic(Oman)
+						{"qa", static_cast<langid>(16385)}, // Arabic(Qatar)
+						{"sa", static_cast<langid>(1025)},  // Arabic(Saudi Arabia)
+						{"sy", static_cast<langid>(10241)}, // Arabic(Syria)
+						{"tn", static_cast<langid>(7169)},  // Arabic(Tunisia)
+						{"ye", static_cast<langid>(9217)},  // Arabic(Yemen)
 					}}},
 			{"be", {1059, {}}}, // Belarusian
 			{"bg", {1026, {}}}, // Bulgarian
 			{"ca", {1027, {}}}, // Catalan
 			{"cs", {1029, {}}}, // Czech
 			{"da", {1030, {}}}, // Danish
-			{"de", {0x07,	// German
+			{"de", {0x07,       // German
 					{
-						{"at", 3079}, // German(Austrian)
-						{"ch", 2055}, // German(Swiss)
-						{"de", 1031}, // German(Germany)
-						{"li", 5127}, // German(Liechtenstein)
-						{"lu", 4103}, // German(Luxembourg)
+						{"at", static_cast<langid>(3079)}, // German(Austrian)
+						{"ch", static_cast<langid>(2055)}, // German(Swiss)
+						{"de", static_cast<langid>(1031)}, // German(Germany)
+						{"li", static_cast<langid>(5127)}, // German(Liechtenstein)
+						{"lu", static_cast<langid>(4103)}, // German(Luxembourg)
 					}}},
 			{"el", {1032, {}}}, // Greek
-			{"en", {0x09,	// English
+			{"en", {0x09,       // English
 					{
-						{"au", 3081},  // English(Australian)
-						{"bz", 10249}, // English(Belize)
-						{"ca", 4105},  // English(Canadian)
-						{"ca", 9225},  // English(Caribbean)
-						{"gb", 2057},  // English(British)
-						{"ie", 6153},  // English(Ireland)
-						{"jm", 8201},  // English(Jamaica)
-						{"nz", 5129},  // English(New Zealand)
-						{"tt", 11273}, // English(Trinidad)
-						{"us", 1033},  // English(United States)
-						{"za", 7177},  // English(South Africa)
+						{"au", static_cast<langid>(3081)},  // English(Australian)
+						{"bz", static_cast<langid>(10249)}, // English(Belize)
+						{"ca", static_cast<langid>(4105)},  // English(Canadian)
+						{"ca", static_cast<langid>(9225)},  // English(Caribbean)
+						{"gb", static_cast<langid>(2057)},  // English(British)
+						{"ie", static_cast<langid>(6153)},  // English(Ireland)
+						{"jm", static_cast<langid>(8201)},  // English(Jamaica)
+						{"nz", static_cast<langid>(5129)},  // English(New Zealand)
+						{"tt", static_cast<langid>(11273)}, // English(Trinidad)
+						{"us", static_cast<langid>(1033)},  // English(United States)
+						{"za", static_cast<langid>(7177)},  // English(South Africa)
 					}}},
-			{"es", {0x0a, // Spanish
+			{"es", {0x0a,       // Spanish
 					{
-						{"ar", 11274}, // Spanish(Argentina)
-						{"bo", 16394}, // Spanish(Bolivia)
-						{"c", 13322},  // Spanish(Chile)
-						{"co", 9226},  // Spanish(Colombia)
-						{"cr", 5130},  // Spanish(Costa Rica)
-						{"do", 7178},  // Spanish(Dominican Republic)
-						{"ec", 12298}, // Spanish(Ecuador)
-						{"es", 1034},  // Spanish(Spain)
-						{"gt", 4106},  // Spanish(Guatemala)
-						{"hn", 18442}, // Spanish(Honduras)
-						{"mx", 2058},  // Spanish(Mexican)
-						{"ni", 19466}, // Spanish(Nicaragua)
-						{"pa", 6154},  // Spanish(Panama)
-						{"pe", 10250}, // Spanish(Peru)
-						{"pr", 20490}, // Spanish(Puerto Rico)
-						{"py", 15370}, // Spanish(Paraguay)
-						{"sv", 17418}, // Spanish(El Salvador)
-						{"uy", 14346}, // Spanish(Uruguay)
-						{"ve", 8202},  // Spanish(Venezuela)
+						{"ar", static_cast<langid>(11274)}, // Spanish(Argentina)
+						{"bo", static_cast<langid>(16394)}, // Spanish(Bolivia)
+						{"cl", static_cast<langid>(13322)}, // Spanish(Chile)
+						{"co", static_cast<langid>(9226)},  // Spanish(Colombia)
+						{"cr", static_cast<langid>(5130)},  // Spanish(Costa Rica)
+						{"do", static_cast<langid>(7178)},  // Spanish(Dominican Republic)
+						{"ec", static_cast<langid>(12298)}, // Spanish(Ecuador)
+						{"es", static_cast<langid>(1034)},  // Spanish(Spain)
+						{"gt", static_cast<langid>(4106)},  // Spanish(Guatemala)
+						{"hn", static_cast<langid>(18442)}, // Spanish(Honduras)
+						{"mx", static_cast<langid>(2058)},  // Spanish(Mexican)
+						{"ni", static_cast<langid>(19466)}, // Spanish(Nicaragua)
+						{"pa", static_cast<langid>(6154)},  // Spanish(Panama)
+						{"pe", static_cast<langid>(10250)}, // Spanish(Peru)
+						{"pr", static_cast<langid>(20490)}, // Spanish(Puerto Rico)
+						{"py", static_cast<langid>(15370)}, // Spanish(Paraguay)
+						{"sv", static_cast<langid>(17418)}, // Spanish(El Salvador)
+						{"uy", static_cast<langid>(14346)}, // Spanish(Uruguay)
+						{"ve", static_cast<langid>(8202)},  // Spanish(Venezuela)
 					}}},
 			{"et", {1061, {}}}, // Estonian
 			{"eu", {1069, {}}}, // Basque
 			{"fa", {1065, {}}}, // Farsi
 			{"fi", {1035, {}}}, // Finnish
 			{"fo", {1080, {}}}, // Faeroese
-			{"fr", {0x0c,	// French
+			{"fr", {0x0c,       // French
 					{
-						{"be", 2060}, // French(Belgian)
-						{"ca", 3084}, // French(Canadian)
-						{"ch", 4108}, // French(Swiss)
-						{"fr", 1036}, // French(Luxembourg)
-						{"lu", 5132}, // French(Luxembourg)
+						{"be", static_cast<langid>(2060)}, // French(Belgian)
+						{"ca", static_cast<langid>(3084)}, // French(Canadian)
+						{"ch", static_cast<langid>(4108)}, // French(Swiss)
+						{"fr", static_cast<langid>(1036)}, // French(Luxembourg)
+						{"lu", static_cast<langid>(5132)}, // French(Luxembourg)
 					}}},
 			{"gd", {1084, {}}}, // Gaelic(Scots)
 			{"he", {1037, {}}}, // Hebrew
@@ -179,63 +154,63 @@ namespace stdex
 			{"hu", {1038, {}}}, // Hungarian
 			{"in", {1057, {}}}, // Indonesian
 			{"is", {1039, {}}}, // Icelandic
-			{"it", {0x10,	// Italian
+			{"it", {0x10,       // Italian
 					{
-						{"ch", 2064}, // Italian(Swiss)
-						{"it", 1040}, // Italian(Italy)
+						{"ch", static_cast<langid>(2064)}, // Italian(Swiss)
+						{"it", static_cast<langid>(1040)}, // Italian(Italy)
 					}}},
 			{"ja", {1041, {}}}, // Japanese
 			{"ji", {1085, {}}}, // Yiddish
-			{"ko", {0x12,	// Korean
+			{"ko", {0x12,       // Korean
 					{
-						{"johab", 2066}, // Korean(Johab)
-						{"kr", 1042},	 // Korean(Korea)
+						{"johab", static_cast<langid>(2066)}, // Korean(Johab)
+						{"kr", static_cast<langid>(1042)},	 // Korean(Korea)
 					}}},
 			{"lt", {1063, {}}}, // Lithuanian
 			{"lv", {1062, {}}}, // Latvian
 			{"mk", {1071, {}}}, // Macedonian (FYROM)
 			{"ms", {1086, {}}}, // Malaysian
 			{"mt", {1082, {}}}, // Maltese
-			{"nl", {0x13,	// Dutch
+			{"nl", {0x13,       // Dutch
 					{
-						{"be", 2067}, // Dutch(Belgian)
-						{"nl", 1043}, // Dutch(Netherland)
+						{"be", static_cast<langid>(2067)}, // Dutch(Belgian)
+						{"nl", static_cast<langid>(1043)}, // Dutch(Netherland)
 					}}},
-			{"no", {0x14, // Norwegian
+			{"no", {0x14,       // Norwegian
 					{
-						{"bokmaal", 1044}, // Norwegian(Bokmaal)
-						{"nynorsk", 2068}, // Norwegian(Nynorsk)
+						{"bokmaal", static_cast<langid>(1044)}, // Norwegian(Bokmaal)
+						{"nynorsk", static_cast<langid>(2068)}, // Norwegian(Nynorsk)
 					}}},
 			{"pl", {1045, {}}}, // Polish
-			{"pt", {0x16,	// Portuguese
+			{"pt", {0x16,       // Portuguese
 					{
-						{"br", 1046}, // Portuguese(Brazil)
-						{"pt", 2070}, // Portuguese(Portugal)
+						{"br", static_cast<langid>(1046)}, // Portuguese(Brazil)
+						{"pt", static_cast<langid>(2070)}, // Portuguese(Portugal)
 					}}},
 			{"rm", {1047, {}}}, // Rhaeto-Romanic
-			{"ro", {0x18,	// Romanian
+			{"ro", {0x18,       // Romanian
 					{
-						{"mo", 2072}, // Romanian(Moldavia)
-						{"ro", 1048}, // Romanian(Romania)
+						{"mo", static_cast<langid>(2072)}, // Romanian(Moldavia)
+						{"ro", static_cast<langid>(1048)}, // Romanian(Romania)
 					}}},
-			{"ru", {0x19, // Russian
+			{"ru", {0x19,       // Russian
 					{
-						{"mo", 2073}, // Russian(Moldavia)
-						{"ru", 1049}, // Russian(Russia)
+						{"mo", static_cast<langid>(2073)}, // Russian(Moldavia)
+						{"ru", static_cast<langid>(1049)}, // Russian(Russia)
 					}}},
 			{"sb", {1070, {}}}, // Sorbian
 			{"sk", {1051, {}}}, // Slovak
 			{"sl", {1060, {}}}, // Slovenian
 			{"sq", {1052, {}}}, // Albanian
-			{"sr", {0x1a,	// Serbian
+			{"sr", {0x1a,       // Serbian
 					{
-						{"cyrillic", 3098}, // Serbian(Cyrillic)
-						{"latin", 2074},	// Serbian(Latin)
+						{"cyrillic", static_cast<langid>(3098)}, // Serbian(Cyrillic)
+						{"latin", static_cast<langid>(2074)},	// Serbian(Latin)
 					}}},
-			{"sv", {0x1d, // Swedish
+			{"sv", {0x1d,       // Swedish
 					{
-						{"fi", 2077}, // Swedish(Finland)
-						{"se", 1053}, // Swedish(Sweden)
+						{"fi", static_cast<langid>(2077)}, // Swedish(Finland)
+						{"se", static_cast<langid>(1053)}, // Swedish(Sweden)
 					}}},
 			{"sx", {1072, {}}}, // Sutu
 			{"sz", {1083, {}}}, // Sami(Lappish)
@@ -248,12 +223,12 @@ namespace stdex
 			{"ve", {1075, {}}}, // Venda
 			{"vi", {1066, {}}}, // Vietnamese
 			{"xh", {1076, {}}}, // Xhosa
-			{"zh", {0x04,	// Chinese
+			{"zh", {0x04,       // Chinese
 					{
-						{"cn", 2052}, // Chinese(PRC)
-						{"hk", 3076}, // Chinese(Hong Kong)
-						{"sg", 4100}, // Chinese(Singapore)
-						{"tw", 1028}, // Chinese(Taiwan)
+						{"cn", static_cast<langid>(2052)}, // Chinese(PRC)
+						{"hk", static_cast<langid>(3076)}, // Chinese(Hong Kong)
+						{"sg", static_cast<langid>(4100)}, // Chinese(Singapore)
+						{"tw", static_cast<langid>(1028)}, // Chinese(Taiwan)
 					}}},
 			{"zu", {1077, {}}}, // Zulu
 		};
@@ -270,7 +245,6 @@ namespace stdex
 		}
 		return langid_unknown;
 	}
-#endif
 }
 
 #if defined(__GNUC__)
