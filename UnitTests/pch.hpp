@@ -14,6 +14,7 @@
 #include <stdex/html.hpp>
 #include <stdex/idrec.hpp>
 #include <stdex/interval.hpp>
+#include <stdex/langid.hpp>
 #include <stdex/locale.hpp>
 #include <stdex/mapping.hpp>
 #include <stdex/math.hpp>
@@ -52,6 +53,12 @@ namespace UnitTests
 		TEST_METHOD(crc32);
 		TEST_METHOD(md5);
 		TEST_METHOD(sha1);
+	};
+
+	TEST_CLASS(langid)
+	{
+	public:
+		TEST_METHOD(from_rfc1766);
 	};
 
 	TEST_CLASS(math)

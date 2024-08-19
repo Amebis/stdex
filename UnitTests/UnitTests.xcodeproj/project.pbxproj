@@ -28,6 +28,7 @@
 		F421D48B2B75177E004ECBB0 /* unicode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4C07F572AB08E690044EDC0 /* unicode.cpp */; };
 		F421D48C2B751780004ECBB0 /* watchdog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4CCA3B62B73B912007B857B /* watchdog.cpp */; };
 		F421D48D2B751783004ECBB0 /* zlib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F421D46B2B750BFD004ECBB0 /* zlib.cpp */; };
+		F4481A1A2C73427600CED93B /* langid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4481A192C73427600CED93B /* langid.cpp */; };
 		F4C07F522AB059580044EDC0 /* pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4C07F512AB059580044EDC0 /* pch.cpp */; };
 		F4C07F552AB05B5B0044EDC0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4C07F542AB05B5B0044EDC0 /* main.cpp */; };
 /* End PBXBuildFile section */
@@ -79,6 +80,7 @@
 		F421D47A2B750EAE004ECBB0 /* inftrees.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = inftrees.c; sourceTree = "<group>"; };
 		F421D47B2B750EAE004ECBB0 /* uncompr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = uncompr.c; sourceTree = "<group>"; };
 		F437AA902AC1BB64001E2230 /* hash.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = hash.cpp; sourceTree = "<group>"; };
+		F4481A192C73427600CED93B /* langid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = langid.cpp; sourceTree = "<group>"; };
 		F4B7FBDC2AAF49BC00C6BE9F /* UnitTests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = UnitTests; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4C07F4E2AB059300044EDC0 /* math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = math.cpp; sourceTree = "<group>"; };
 		F4C07F502AB059580044EDC0 /* pch.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pch.hpp; sourceTree = "<group>"; };
@@ -157,6 +159,7 @@
 			children = (
 				F4C07F532AB05A240044EDC0 /* compat.hpp */,
 				F437AA902AC1BB64001E2230 /* hash.cpp */,
+				F4481A192C73427600CED93B /* langid.cpp */,
 				F4C07F542AB05B5B0044EDC0 /* main.cpp */,
 				F4C07F4E2AB059300044EDC0 /* math.cpp */,
 				F4C07F562AB08E690044EDC0 /* parser.cpp */,
@@ -252,6 +255,7 @@
 				F421D4802B750EAE004ECBB0 /* trees.c in Sources */,
 				F421D48D2B751783004ECBB0 /* zlib.cpp in Sources */,
 				F421D47D2B750EAE004ECBB0 /* deflate.c in Sources */,
+				F4481A1A2C73427600CED93B /* langid.cpp in Sources */,
 				F421D4702B750E0F004ECBB0 /* adler32.c in Sources */,
 				F421D4822B750EAE004ECBB0 /* uncompr.c in Sources */,
 				F421D4742B750E21004ECBB0 /* crc32.c in Sources */,
