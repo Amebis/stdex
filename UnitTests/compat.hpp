@@ -5,9 +5,9 @@
 
 #pragma once
 
-#if defined(_WIN32)
+#ifdef _WIN32
 #include <CppUnitTest.h>
-#elif defined(__APPLE__)
+#else
 #include <stdexcept>
 
 #define TEST_CLASS(name) class name

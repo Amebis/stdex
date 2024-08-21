@@ -14,7 +14,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <time.h>
-#if defined(__APPLE__)
+#ifdef __APPLE__
 #include <xlocale.h>
 #endif
 #include <algorithm>
