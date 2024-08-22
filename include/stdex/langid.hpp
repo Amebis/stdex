@@ -96,7 +96,7 @@ namespace stdex
 				}
 			}
 		};
-		static const std::map<const char*, langid, stricmp_less> languages = {
+		static const std::map<const char*, int, stricmp_less> languages = {
 			{"af-ZA", 0x436},          // Afrikaans (South Africa)
 			{"af", 0x36},              // Afrikaans
 			{"am-ET", 0x45e},          // Amharic (Ethiopia)
@@ -534,7 +534,7 @@ namespace stdex
 			{"zu", 0x35},              // isiZulu
 		};
 		if (auto el = languages.find(rfc1766); el != languages.end())
-			return el->second;
+			return static_cast<langid>(el->second);
 		return langid_unknown;
 	}
 
@@ -548,7 +548,7 @@ namespace stdex
 	///
 	inline _Ret_maybenull_z_ const char* rfc1766_from_langid(_In_ langid lang, _In_opt_z_ const char* fallback = nullptr)
 	{
-		static const std::map<langid, const char*> languages = {
+		static const std::map<int, const char*> languages = {
 			{0x1, "ar"},               // Arabic
 			{0x401, "ar-SA"},          // Arabic (Saudi Arabia)
 			{0x801, "ar-IQ"},          // Arabic (Iraq)
