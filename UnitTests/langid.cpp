@@ -25,10 +25,10 @@ namespace UnitTests
 		Assert::AreEqual<stdex::langid>(2057, stdex::langid_from_rfc1766("EN-GB"));
 		Assert::AreEqual<stdex::langid>(2057, stdex::langid_from_rfc1766("EN_GB"));
 
-		Assert::AreEqual<stdex::langid>(1060, stdex::langid_from_rfc1766("sl"));
+		Assert::AreEqual<stdex::langid>(36, stdex::langid_from_rfc1766("sl"));
 		Assert::AreEqual<stdex::langid>(1060, stdex::langid_from_rfc1766("sl-SI"));
 		Assert::AreEqual<stdex::langid>(1060, stdex::langid_from_rfc1766("sl_SI"));
-		Assert::AreEqual<stdex::langid>(1060, stdex::langid_from_rfc1766("SL"));
+		Assert::AreEqual<stdex::langid>(36, stdex::langid_from_rfc1766("SL"));
 		Assert::AreEqual<stdex::langid>(1060, stdex::langid_from_rfc1766("SL-SI"));
 		Assert::AreEqual<stdex::langid>(1060, stdex::langid_from_rfc1766("SL_SI"));
 	}
