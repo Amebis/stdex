@@ -169,7 +169,7 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>                }</div>
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>            }</div>
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>        };</div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>        <span class="keyword">static</span> <span class="keyword">const</span> std::map&lt;const char*, langid, stricmp_less&gt; languages = {</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>        <span class="keyword">static</span> <span class="keyword">const</span> std::map&lt;const char*, int, stricmp_less&gt; languages = {</div>
 <div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>            {<span class="stringliteral">&quot;af-ZA&quot;</span>, 0x436},          <span class="comment">// Afrikaans (South Africa)</span></div>
 <div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>            {<span class="stringliteral">&quot;af&quot;</span>, 0x36},              <span class="comment">// Afrikaans</span></div>
 <div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>            {<span class="stringliteral">&quot;am-ET&quot;</span>, 0x45e},          <span class="comment">// Amharic (Ethiopia)</span></div>
@@ -607,13 +607,13 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00534" name="l00534"></a><span class="lineno">  534</span>            {<span class="stringliteral">&quot;zu&quot;</span>, 0x35},              <span class="comment">// isiZulu</span></div>
 <div class="line"><a id="l00535" name="l00535"></a><span class="lineno">  535</span>        };</div>
 <div class="line"><a id="l00536" name="l00536"></a><span class="lineno">  536</span>        <span class="keywordflow">if</span> (<span class="keyword">auto</span> el = languages.find(rfc1766); el != languages.end())</div>
-<div class="line"><a id="l00537" name="l00537"></a><span class="lineno">  537</span>            <span class="keywordflow">return</span> el-&gt;second;</div>
+<div class="line"><a id="l00537" name="l00537"></a><span class="lineno">  537</span>            <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span>langid<span class="keyword">&gt;</span>(el-&gt;second);</div>
 <div class="line"><a id="l00538" name="l00538"></a><span class="lineno">  538</span>        <span class="keywordflow">return</span> langid_unknown;</div>
 <div class="line"><a id="l00539" name="l00539"></a><span class="lineno">  539</span>    }</div>
 <div class="line"><a id="l00540" name="l00540"></a><span class="lineno">  540</span> </div>
 <div class="line"><a id="l00549" name="l00549"></a><span class="lineno">  549</span>    <span class="keyword">inline</span> _Ret_maybenull_z_ <span class="keyword">const</span> <span class="keywordtype">char</span>* rfc1766_from_langid(_In_ langid lang, _In_opt_z_ <span class="keyword">const</span> <span class="keywordtype">char</span>* fallback = <span class="keyword">nullptr</span>)</div>
 <div class="line"><a id="l00550" name="l00550"></a><span class="lineno">  550</span>    {</div>
-<div class="line"><a id="l00551" name="l00551"></a><span class="lineno">  551</span>        <span class="keyword">static</span> <span class="keyword">const</span> std::map&lt;langid, const char*&gt; languages = {</div>
+<div class="line"><a id="l00551" name="l00551"></a><span class="lineno">  551</span>        <span class="keyword">static</span> <span class="keyword">const</span> std::map&lt;int, const char*&gt; languages = {</div>
 <div class="line"><a id="l00552" name="l00552"></a><span class="lineno">  552</span>            {0x1, <span class="stringliteral">&quot;ar&quot;</span>},               <span class="comment">// Arabic</span></div>
 <div class="line"><a id="l00553" name="l00553"></a><span class="lineno">  553</span>            {0x401, <span class="stringliteral">&quot;ar-SA&quot;</span>},          <span class="comment">// Arabic (Saudi Arabia)</span></div>
 <div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span>            {0x801, <span class="stringliteral">&quot;ar-IQ&quot;</span>},          <span class="comment">// Arabic (Iraq)</span></div>
@@ -1062,7 +1062,7 @@ $(function(){ initResizable(false); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Aug 22 2024 15:06:36 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.12.0
+Generated on Thu Aug 22 2024 15:59:44 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.12.0
 </small></address>
 </div><!-- doc-content -->
 </body>
