@@ -5,7 +5,7 @@ var searchData=
   ['m_5fcallback_2',['m_callback',['../classstdex_1_1watchdog.html#af1d34b845b80a49997e82f50bb13f839',1,'stdex::watchdog']]],
   ['m_5fcharset_3',['m_charset',['../classstdex_1_1html_1_1document.html#a7c4e69123b0ae5c24d306ba3e2d8ce00',1,'stdex::html::document']]],
   ['m_5fcount_4',['m_count',['../classstdex_1_1vector__queue.html#a6070ca156773c17c6b75bacc5251c04c',1,'stdex::vector_queue']]],
-  ['m_5fdata_5',['m_data',['../classstdex_1_1stream_1_1memory__file.html#a4a2082f1017478d1ce940d8dcd6e234b',1,'stdex::stream::memory_file::m_data'],['../classstdex_1_1vector__queue.html#a289d86508a91fbe61e0425e318d735cf',1,'stdex::vector_queue::m_data']]],
+  ['m_5fdata_5',['m_data',['../classstdex_1_1sanitizing__blob.html#a59bdfe15e421dd7e1f435671a01f3812',1,'stdex::sanitizing_blob::m_data'],['../classstdex_1_1stream_1_1memory__file.html#a4a2082f1017478d1ce940d8dcd6e234b',1,'stdex::stream::memory_file::m_data'],['../classstdex_1_1vector__queue.html#a289d86508a91fbe61e0425e318d735cf',1,'stdex::vector_queue::m_data']]],
   ['m_5fdocument_6',['m_document',['../classstdex_1_1html_1_1parser.html#a1d2fae3246461b74a53dcb05d73ffb90',1,'stdex::html::parser']]],
   ['m_5fel_7',['m_el',['../classstdex_1_1parser_1_1basic__iterations.html#a8a06638fea659f03fddc9d41dfc4efac',1,'stdex::parser::basic_iterations']]],
   ['m_5felement_5fstack_8',['m_element_stack',['../classstdex_1_1html_1_1document.html#aa6af078df6d8322da283445c12275ad9',1,'stdex::html::document']]],
