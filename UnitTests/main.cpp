@@ -26,6 +26,7 @@ int main(int, const char *[])
 		UnitTests::stream::file_stat();
 		UnitTests::stream::open_close();
 		UnitTests::stream::replicator();
+		UnitTests::string::strncpy();
 		UnitTests::string::sprintf();
 		UnitTests::unicode::charset_encoder();
 		UnitTests::unicode::normalize();

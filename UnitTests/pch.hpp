@@ -107,6 +107,7 @@ namespace UnitTests
 	TEST_CLASS(string)
 	{
 	public:
+		TEST_METHOD(strncpy);
 		TEST_METHOD(sprintf);
 	};
 

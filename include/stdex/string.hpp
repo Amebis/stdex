@@ -1,4 +1,4 @@
-/*
+﻿/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2016-2024 Amebis
 */
@@ -1637,6 +1637,26 @@ namespace stdex
 	}
 
 	///
+	/// Recode UTF-16 zero-terminated string to UTF-32
+	///
+	/// \param[in] dst  Destination string
+	/// \param[in] src  Source string
+	///
+	/// \return Number of code units excluding zero terminator in the dst string after the operation.
+	///
+	inline size_t strcpy(
+		_Out_ _Post_maybez_ utf32_t* dst,
+		_In_z_ const utf16_t* src)
+	{
+		stdex_assert(dst);
+		stdex_assert(src);
+		for (size_t j = 0, i = 0; ; ++j, ++i) {
+			if ((dst[j] = (is_surrogate_pair(&src[i]) ? surrogate_pair_to_ucs4(&src[i++]) : static_cast<utf32_t>(src[i]))) == 0)
+				return j;
+		}
+	}
+
+	///
 	/// Copy zero-terminated string
 	///
 	/// \param[in] dst    Destination string
@@ -1687,6 +1707,35 @@ namespace stdex
 			}
 			if ((dst[i] = static_cast<T1>(src[i])) == 0)
 				return i;
+		}
+	}
+
+	///
+	/// Recode UTF-16 zero-terminated string to UTF-32
+	///
+	/// \param[in] dst        Destination string
+	/// \param[in] count_dst  Destination string code unit count limit
+	/// \param[in] src        Source string
+	/// \param[in] count_src  Source string code unit count limit
+	///
+	/// \return Number of code units excluding zero terminator in the dst string after the operation.
+	///
+	inline size_t strncpy(
+		_Out_writes_(count_dst) _Post_maybez_ utf32_t* dst, _In_ size_t count_dst,
+		_In_reads_or_z_opt_(count_src) const utf16_t* src, _In_ size_t count_src)
+	{
+		stdex_assert(dst || !count_dst);
+		stdex_assert(src || !count_src);
+		for (size_t j = 0, i = 0; ; ++j, ++i)
+		{
+			if (j >= count_dst)
+				return j;
+			if (i >= count_src) {
+				dst[j] = 0;
+				return j;
+			}
+			if ((dst[j] = (i + 1 < count_src && is_surrogate_pair(&src[i]) ? surrogate_pair_to_ucs4(&src[i++]) : static_cast<utf32_t>(src[i]))) == 0)
+				return j;
 		}
 	}
 

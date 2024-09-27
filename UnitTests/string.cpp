@@ -12,6 +12,13 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTests
 {
+	void string::strncpy()
+	{
+		stdex::utf32_t tmp[0x100];
+		stdex::strncpy(tmp, u"This is a 🐔Test🐮.");
+		Assert::AreEqual(reinterpret_cast<const stdex::utf32_t*>(U"This is a 🐔Test🐮."), tmp);
+	}
+
 	void string::sprintf()
 	{
 		stdex::locale locale(stdex::create_locale(LC_ALL, "en_US.UTF-8"));

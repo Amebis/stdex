@@ -54,6 +54,17 @@ namespace Assert
 			throw std::runtime_error("not equal");
 	}
 
+	inline void AreEqual(const char32_t* a, const char32_t* b)
+	{
+#ifdef _WIN32
+		if (stdex::strcmp(a, b) != 0)
+			throw std::runtime_error("not equal");
+#else
+		if (wcscmp(reinterpret_cast<const wchar_t*>(a), reinterpret_cast<const wchar_t*>(b)) != 0)
+			throw std::runtime_error("not equal");
+#endif
+	}
+
 	template <class T>
 	void AreNotEqual(const T& a, const T& b)
 	{
