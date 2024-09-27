@@ -8,6 +8,11 @@
 #include "compat.hpp"
 #include <memory>
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+#endif
+
 namespace stdex
 {
 	///
@@ -135,3 +140,7 @@ namespace stdex
 		unsigned char m_data[N]; ///< BLOB data
 	};
 }
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
