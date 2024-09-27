@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2016-2024 Amebis
 */
@@ -42,7 +42,7 @@ namespace stdex
 	///
 	inline bool is_high_surrogate(_In_ utf16_t chr)
 	{
-		return 0xd800 < chr && chr < 0xdc00;
+		return 0xd800 <= chr && chr < 0xdc00;
 	}
 
 	///
@@ -52,7 +52,7 @@ namespace stdex
 	///
 	inline bool is_low_surrogate(_In_ utf16_t chr)
 	{
-		return 0xdc00 < chr && chr < 0xe000;
+		return 0xdc00 <= chr && chr < 0xe000;
 	}
 
 	///
