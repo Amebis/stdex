@@ -43,6 +43,9 @@
 #ifndef _In_reads_
 #define _In_reads_(p)
 #endif
+#ifndef _In_reads_bytes_
+#define _In_reads_bytes_(p)
+#endif
 #ifndef _In_reads_z_
 #define _In_reads_z_(p)
 #endif
