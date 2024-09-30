@@ -118,6 +118,11 @@ namespace stdex
 		///
 		bool elevated;
 
+		///
+		/// Currently signed in user
+		///
+		sstring username;
+
 		sys_info_t() :
 			os_platform(platform_id::unknown),
 #ifdef _WIN32
@@ -224,6 +229,27 @@ namespace stdex
 #else
 			// TODO: Set admin.
 			elevated = geteuid() == 0;
+#endif
+
+#ifdef _WIN32
+			{
+				TCHAR szStackBuffer[0x100];
+				ULONG ulSize = _countof(szStackBuffer);
+				if (GetUserNameEx(NameFormat, szStackBuffer, &ulSize))
+					username.assign(szStackBuffer, ulSize);
+				if (GetLastError() == ERROR_MORE_DATA) {
+					// Allocate buffer on heap and retry.
+					username.resize(ulSize - 1);
+					if (!GetUserNameEx(NameFormat, &username[0], &ulSize))
+						username.clear();
+				}
+			}
+#else
+			{
+				struct passwd *pw = getpwuid(geteuid());
+				if (pw && pw->pw_name)
+					username = pw->pw_name;
+			}
 #endif
 		}
 
