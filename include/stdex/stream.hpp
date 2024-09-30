@@ -479,8 +479,9 @@ namespace stdex
 					return *this;
 				data.reserve(num_chars);
 				for (;;) {
-					T buf[0x400];
-					uint32_t num_read = static_cast<uint32_t>(read_array(buf, sizeof(T), std::min<uint32_t>(num_chars, _countof(buf))));
+					constexpr uint32_t buf_chars = 0x400;
+					T buf[buf_chars];
+					uint32_t num_read = static_cast<uint32_t>(read_array(buf, sizeof(T), std::min<uint32_t>(num_chars, buf_chars)));
 					data.append(buf, num_read);
 					num_chars -= num_read;
 					if (!num_chars || !ok())
