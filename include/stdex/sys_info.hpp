@@ -11,6 +11,7 @@
 #include "system.hpp"
 #if defined(_WIN32)
 #include "windows.h"
+#include <security.h>
 #include <stdlib.h>
 #include <tchar.h>
 #else
@@ -232,18 +233,20 @@ namespace stdex
 #endif
 
 #ifdef _WIN32
+#if defined(SECURITY_WIN32) || defined(SECURITY_KERNEL)
 			{
 				TCHAR szStackBuffer[0x100];
 				ULONG ulSize = _countof(szStackBuffer);
-				if (GetUserNameEx(NameFormat, szStackBuffer, &ulSize))
+				if (GetUserNameEx(NameSamCompatible, szStackBuffer, &ulSize))
 					username.assign(szStackBuffer, ulSize);
 				if (GetLastError() == ERROR_MORE_DATA) {
 					// Allocate buffer on heap and retry.
 					username.resize(ulSize - 1);
-					if (!GetUserNameEx(NameFormat, &username[0], &ulSize))
+					if (!GetUserNameEx(NameSamCompatible, &username[0], &ulSize))
 						username.clear();
 				}
 			}
+#endif
 #else
 			{
 				struct passwd *pw = getpwuid(geteuid());
