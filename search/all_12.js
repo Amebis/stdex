@@ -5,5 +5,6 @@ var searchData=
   ['untrusted_5fcomment_2',['untrusted_comment',['../classstdex_1_1minisign_1_1untrusted__comment.html',1,'stdex::minisign']]],
   ['url_3',['url',['../classstdex_1_1html_1_1url__token.html#a3384b51fe830801842eca0d3a4830c90',1,'stdex::html::url_token']]],
   ['url_5ftoken_4',['url_token',['../classstdex_1_1html_1_1url__token.html',1,'stdex::html']]],
-  ['user_5fcancelled_5',['user_cancelled',['../classstdex_1_1user__cancelled.html',1,'stdex::user_cancelled'],['../classstdex_1_1user__cancelled.html#af2e1ebab1038ba4356e19c04f167d23d',1,'stdex::user_cancelled::user_cancelled()']]]
+  ['user_5fcancelled_5',['user_cancelled',['../classstdex_1_1user__cancelled.html',1,'stdex::user_cancelled'],['../classstdex_1_1user__cancelled.html#af2e1ebab1038ba4356e19c04f167d23d',1,'stdex::user_cancelled::user_cancelled()']]],
+  ['username_6',['username',['../structstdex_1_1sys__info__t.html#ada8b16d0d36fc1d1249b9860481fd3d7',1,'stdex::sys_info_t']]]
 ];
