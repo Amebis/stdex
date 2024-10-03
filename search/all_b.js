@@ -13,5 +13,5 @@ var searchData=
   ['num_5fchannels_10',['num_channels',['../structstdex_1_1wav_1_1format.html#ac2e701c78ac7fa1861220552ac0f9477',1,'stdex::wav::format']]],
   ['num_5fsamples_11',['num_samples',['../structstdex_1_1wav_1_1silence.html#a99560d13634be1a83c3d92937a26c2f3',1,'stdex::wav::silence']]],
   ['num_5fwritten_12',['num_written',['../classstdex_1_1stream_1_1replicator_1_1worker.html#acd6595e01accdb9d3c8d97f8f19b8cf1',1,'stdex::stream::replicator::worker']]],
-  ['number_13',['number',['../classstdex_1_1parser_1_1basic__signed__numeral.html#ae43853317fc7ca8b6df2eda5d466a2aa',1,'stdex::parser::basic_signed_numeral']]]
+  ['number_13',['number',['../classstdex_1_1parser_1_1basic__signed__numeral.html#ae43853317fc7ca8b6df2eda5d466a2aa',1,'stdex::parser::basic_signed_numeral::number'],['../classstdex_1_1curl__runtime__error.html#a7152abee9deb5b39cf89318b14653e48',1,'stdex::curl_runtime_error::number()']]]
 ];
