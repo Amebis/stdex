@@ -312,7 +312,7 @@ namespace stdex
 			stdex_assert(src || !num_chars);
 			for (size_t i = 0; i < num_chars && src[i]; ++i) {
 				switch (src[i]) {
-				case ' ': dst += "+"; break;
+				case ' ': dst += "%20"; break;
 				case '<': dst += "%3C"; break;
 				case '>': dst += "%3E"; break;
 				case '#': dst += "%23"; break;
@@ -327,6 +327,7 @@ namespace stdex
 				case ']': dst += "%5D"; break;
 				case '`': dst += "%60"; break;
 				case ';': dst += "%3B"; break;
+				case '+': dst += "%2B"; break;
 				case '/': dst += "%2F"; break;
 				case '?': dst += "%3F"; break;
 				case ':': dst += "%3A"; break;
