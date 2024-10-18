@@ -547,12 +547,8 @@ namespace stdex
 			///
 			size_t write_sa(_In_ LPSAFEARRAY sa)
 			{
-				long ubound, lbound;
-				if (FAILED(SafeArrayGetUBound(sa, 1, &ubound)) ||
-					FAILED(SafeArrayGetLBound(sa, 1, &lbound)))
-					throw std::invalid_argument("SafeArrayGet[UL]Bound failed");
-				safearray_accessor<void> a(sa);
-				return write(a.data(), static_cast<size_t>(ubound) - lbound + 1);
+				safearray_accessor_with_size<uint8_t> a(sa);
+				return write(a.data(), a.size());
 			}
 #endif
 

@@ -231,6 +231,32 @@ namespace stdex
 		T* m_data;
 	};
 
+	template <class T>
+	class safearray_accessor_with_size : public safearray_accessor<T>
+	{
+	public:
+		safearray_accessor_with_size(_In_ LPSAFEARRAY sa) : safearray_accessor<T>(sa)
+		{
+			m_size = SafeArrayGetElemsize(sa);
+			for (UINT d = 1, dim = SafeArrayGetDim(sa); d <= dim; ++d) {
+				long ubound, lbound;
+				if (FAILED(SafeArrayGetUBound(sa, d, &ubound)) ||
+					FAILED(SafeArrayGetLBound(sa, d, &lbound)))
+					throw std::invalid_argument("SafeArrayGet[UL]Bound failed");
+				m_size *= static_cast<size_t>(ubound) - lbound + 1;
+			}
+			m_size /= sizeof(T);
+		}
+
+		///
+		/// Return size in number of elements
+		///
+		size_t size() const { return m_size; }
+
+	protected:
+		size_t m_size;
+	};
+
 	///
 	/// Deleter for unique_ptr using SafeArrayDestroy
 	///
