@@ -99,6 +99,49 @@ namespace stdex {
 			}
 #endif
 
+#ifdef _WIN32
+			///
+			/// Converts time point to SYSTEMTIME
+			///
+			static void to_system(_In_ time_point tp, _Out_ SYSTEMTIME& t)
+			{
+				uint8_t day, month;
+				int32_t year;
+				to_dmy(tp, &day, &month, &year);
+				t.wDay = day;
+				t.wMonth = month;
+				if (year > WORD_MAX) _Unlikely_
+					throw std::range_error("year too big");
+				t.wYear = static_cast<WORD>(year);
+				t.wDayOfWeek = static_cast<int>(day_of_week(tp) + 1) % 7;
+				t.wHour = 0;
+				t.wMinute = 0;
+				t.wSecond = 0;
+				t.wMilliseconds = 0;
+			}
+
+			///
+			/// Returns time point from FILETIME
+			///
+			static void to_system(_In_ time_point tp, _Out_ FILETIME& t) noexcept
+			{
+				uint64_t x = (tp.time_since_epoch().count() - 2305814) * 864000000000; // Adjust epoch and convert 1-day interval to 100 ns
+				t.dwHighDateTime = static_cast<DWORD>(x >> 32);
+				t.dwLowDateTime = static_cast<DWORD>(x & 0xffffffff);
+			}
+
+			///
+			/// Returns time point from DATE
+			///
+			static void to_system(_In_ time_point tp, _Out_ DATE& t)
+			{
+				SYSTEMTIME st;
+				to_system(tp, st);
+				if (!SystemTimeToVariantTime(&st, &t))
+					throw std::invalid_argument("failed to convert date to VARIANT_DATE");
+			}
+#endif
+
 			///
 			/// Returns time point from calendar day, month and year
 			///
@@ -276,6 +319,52 @@ namespace stdex {
 				date.tm_yday = 0;
 				date.tm_isdst = 0;
 			}
+
+#ifdef _WIN32
+			///
+			/// Converts time point to SYSTEMTIME
+			///
+			static void to_system(_In_ time_point tp, _Out_ SYSTEMTIME& t)
+			{
+				uint8_t day, month, hour, minute, second;
+				uint16_t millisecond;
+				int32_t year;
+				to_dmy(tp,
+					&day, &month, &year,
+					&hour, &minute, &second, &millisecond);
+				t.wDay = day;
+				t.wMonth = month;
+				if (year > WORD_MAX) _Unlikely_
+					throw std::range_error("year too big");
+				t.wYear = static_cast<WORD>(year);
+				t.wDayOfWeek = (static_cast<int>(aosn_date::day_of_week(to_date(tp))) + 1) % 7;
+				t.wHour = hour;
+				t.wMinute = minute;
+				t.wSecond = second;
+				t.wMilliseconds = millisecond;
+			}
+
+			///
+			/// Returns time point from FILETIME
+			///
+			static void to_system(_In_ time_point tp, _Out_ FILETIME& t) noexcept
+			{
+				uint64_t x = (tp.time_since_epoch().count() - 199222329600000) * 10000; // Adjust epoch and convert 1 ms interval to 100 ns
+				t.dwHighDateTime = static_cast<DWORD>(x >> 32);
+				t.dwLowDateTime = static_cast<DWORD>(x & 0xffffffff);
+			}
+
+			///
+			/// Returns time point from DATE
+			///
+			static void to_system(_In_ time_point tp, _Out_ DATE& t)
+			{
+				SYSTEMTIME st;
+				to_system(tp, st);
+				if (!SystemTimeToVariantTime(&st, &t))
+					throw std::invalid_argument("failed to convert date to VARIANT_DATE");
+			}
+#endif
 
 			///
 			/// Returns aosn_date::time_point from time point
