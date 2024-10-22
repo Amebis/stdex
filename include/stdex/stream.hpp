@@ -3557,7 +3557,7 @@ namespace stdex
 #endif
 				size_t available = m_size - m_offset;
 				if (length <= available) {
-					memcpy(data, m_data + m_offset, length);
+					memcpy(data, &m_data[m_offset], length);
 					m_offset += length;
 					m_state = state_t::ok;
 					return length;
@@ -3566,7 +3566,7 @@ namespace stdex
 					m_state = state_t::eof;
 					return 0;
 				}
-				memcpy(data, m_data + m_offset, available);
+				memcpy(data, &m_data[m_offset], available);
 				m_offset += available;
 				m_state = state_t::ok;
 				return available;
@@ -3598,7 +3598,7 @@ namespace stdex
 				}
 				size_t end_offset = m_offset + sizeof(T);
 				if (end_offset <= m_size) {
-					data = LE2HE(*reinterpret_cast<T*>(m_data + m_offset));
+					data = LE2HE(*reinterpret_cast<T*>(&m_data[m_offset]));
 					m_offset = end_offset;
 #if !CHECK_STREAM_STATE
 					m_state = state_t::ok;
@@ -3638,10 +3638,10 @@ namespace stdex
 				}
 				size_t end_offset = m_offset + sizeof(uint32_t);
 				if (end_offset <= m_size) {
-					uint32_t num_chars = LE2HE(*reinterpret_cast<uint32_t*>(m_data + m_offset));
+					uint32_t num_chars = LE2HE(*reinterpret_cast<uint32_t*>(&m_data[m_offset]));
 					m_offset = end_offset;
 					end_offset = stdex::add(m_offset, stdex::mul(num_chars, sizeof(T)));
-					T* start = reinterpret_cast<T*>(m_data + m_offset);
+					T* start = reinterpret_cast<T*>(&m_data[m_offset]);
 					if (end_offset <= m_size) {
 						data.assign(start, start + num_chars);
 						m_offset = end_offset;
@@ -3651,7 +3651,7 @@ namespace stdex
 						return *this;
 					}
 					if (end_offset <= m_size)
-						data.assign(start, reinterpret_cast<T*>(m_data + m_size));
+						data.assign(start, reinterpret_cast<T*>(&m_data[m_size]));
 				}
 				m_offset = m_size;
 				m_state = state_t::eof;
@@ -3671,7 +3671,7 @@ namespace stdex
 					if (!ok()) _Unlikely_
 						return 0;
 				}
-				memcpy(m_data + m_offset, data, length);
+				memcpy(&m_data[m_offset], data, length);
 				m_offset = end_offset;
 				if (m_offset > m_size)
 					m_size = m_offset;
@@ -3693,7 +3693,7 @@ namespace stdex
 					if (!ok()) _Unlikely_
 						return;
 				}
-				memset(m_data + m_offset, byte, amount);
+				memset(&m_data[m_offset], byte, amount);
 				m_offset = end_offset;
 				if (m_offset > m_size)
 					m_size = m_offset;
@@ -3728,7 +3728,7 @@ namespace stdex
 					if (!ok()) _Unlikely_
 						return *this;
 				}
-				(*reinterpret_cast<T*>(m_data + m_offset)) = HE2LE(data);
+				(*reinterpret_cast<T*>(&m_data[m_offset])) = HE2LE(data);
 				m_offset = end_offset;
 				if (m_offset > m_size)
 					m_size = m_offset;
@@ -3771,7 +3771,7 @@ namespace stdex
 					if (!ok()) _Unlikely_
 						return *this;
 				}
-				auto p = m_data + m_offset;
+				auto p = &m_data[m_offset];
 				*reinterpret_cast<uint32_t*>(p) = HE2LE((uint32_t)num_chars);
 				memcpy(p + sizeof(uint32_t), data, size_chars);
 				m_offset = end_offset;
@@ -3816,7 +3816,7 @@ namespace stdex
 					if (!ok()) _Unlikely_
 						return *this;
 				}
-				auto p = m_data + m_offset;
+				auto p = &m_data[m_offset];
 				*reinterpret_cast<uint32_t*>(p) = HE2LE((uint32_t)num_chars);
 				memcpy(p + sizeof(uint32_t), data.data(), size_chars);
 				m_offset = end_offset;
@@ -3847,7 +3847,7 @@ namespace stdex
 					if (!ok()) _Unlikely_
 						return 0;
 					while (to_write) {
-						num_read = stream.read(m_data + dst_offset, to_write);
+						num_read = stream.read(&m_data[dst_offset], to_write);
 						/*dst_size =*/ dst_offset += num_read;
 						num_copied += num_read;
 						to_write -= num_read;
@@ -3866,7 +3866,7 @@ namespace stdex
 						reserve(dst_size);
 						if (!ok()) _Unlikely_
 							break;
-						num_read = stream.read(m_data + dst_offset, block_size);
+						num_read = stream.read(&m_data[dst_offset], block_size);
 						dst_size = dst_offset += num_read;
 						num_copied += num_read;
 						to_write -= num_read;
@@ -3979,7 +3979,7 @@ namespace stdex
 				m_atime = m_mtime = time_point::now();
 #endif
 				stdex_assert(offset + sizeof(T) < m_size);
-				(*reinterpret_cast<T*>(m_data + offset)) = HE2LE(data);
+				(*reinterpret_cast<T*>(&m_data[offset])) = HE2LE(data);
 			}
 
 		public:
@@ -4010,7 +4010,7 @@ namespace stdex
 			void get(_In_ fpos_t offset, _Out_ T & data)
 			{
 				stdex_assert(offset + sizeof(T) < m_size);
-				data = LE2HE(*(T*)(m_data + offset));
+				data = LE2HE(*(T*)(&m_data[offset]));
 #if SET_FILE_OP_TIMES
 				m_atime = time_point::now();
 #endif
