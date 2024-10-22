@@ -1,4 +1,4 @@
-﻿/*
+/*
 	SPDX-License-Identifier: MIT
 	Copyright © 2023-2024 Amebis
 */
@@ -340,7 +340,7 @@ namespace stdex
 			size_t readln_and_attach(_Inout_ std::basic_string<T, TR, AX>& str)
 			{
 				bool initial = true;
-				T chr, previous = (T)0;
+				T chr = static_cast<T>(0), previous = static_cast<T>(0);
 				do {
 					read_array(&chr, sizeof(T), 1);
 					if (!initial && !(previous == static_cast<T>('\r') && chr == static_cast<T>('\n')))
