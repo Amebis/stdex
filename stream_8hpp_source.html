@@ -366,7 +366,7 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00340" name="l00340"></a><span class="lineno"><a class="line" href="classstdex_1_1stream_1_1basic.html#a1238f88760b72e74275543f1b98bf86a">  340</a></span>            <span class="keywordtype">size_t</span> <a class="code hl_function" href="classstdex_1_1stream_1_1basic.html#a1238f88760b72e74275543f1b98bf86a">readln_and_attach</a>(_Inout_ std::basic_string&lt;T, TR, AX&gt;&amp; str)</div>
 <div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>            {</div>
 <div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>                <span class="keywordtype">bool</span> initial = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>                T chr, previous = (T)0;</div>
+<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>                T chr = <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(0), previous = <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(0);</div>
 <div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>                <span class="keywordflow">do</span> {</div>
 <div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>                    <a class="code hl_function" href="classstdex_1_1stream_1_1basic.html#a7723ae23bc35c2ffb74380eab5b0a9ba">read_array</a>(&amp;chr, <span class="keyword">sizeof</span>(T), 1);</div>
 <div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span>                    <span class="keywordflow">if</span> (!initial &amp;&amp; !(previous == <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(<span class="charliteral">&#39;\r&#39;</span>) &amp;&amp; chr == <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(<span class="charliteral">&#39;\n&#39;</span>)))</div>
@@ -3418,7 +3418,7 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l03557" name="l03557"></a><span class="lineno"> 3557</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l03558" name="l03558"></a><span class="lineno"> 3558</span>                <span class="keywordtype">size_t</span> available = m_size - m_offset;</div>
 <div class="line"><a id="l03559" name="l03559"></a><span class="lineno"> 3559</span>                <span class="keywordflow">if</span> (length &lt;= available) {</div>
-<div class="line"><a id="l03560" name="l03560"></a><span class="lineno"> 3560</span>                    memcpy(data, m_data + m_offset, length);</div>
+<div class="line"><a id="l03560" name="l03560"></a><span class="lineno"> 3560</span>                    memcpy(data, &amp;m_data[m_offset], length);</div>
 <div class="line"><a id="l03561" name="l03561"></a><span class="lineno"> 3561</span>                    m_offset += length;</div>
 <div class="line"><a id="l03562" name="l03562"></a><span class="lineno"> 3562</span>                    m_state = state_t::ok;</div>
 <div class="line"><a id="l03563" name="l03563"></a><span class="lineno"> 3563</span>                    <span class="keywordflow">return</span> length;</div>
@@ -3427,7 +3427,7 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l03566" name="l03566"></a><span class="lineno"> 3566</span>                    m_state = state_t::eof;</div>
 <div class="line"><a id="l03567" name="l03567"></a><span class="lineno"> 3567</span>                    <span class="keywordflow">return</span> 0;</div>
 <div class="line"><a id="l03568" name="l03568"></a><span class="lineno"> 3568</span>                }</div>
-<div class="line"><a id="l03569" name="l03569"></a><span class="lineno"> 3569</span>                memcpy(data, m_data + m_offset, available);</div>
+<div class="line"><a id="l03569" name="l03569"></a><span class="lineno"> 3569</span>                memcpy(data, &amp;m_data[m_offset], available);</div>
 <div class="line"><a id="l03570" name="l03570"></a><span class="lineno"> 3570</span>                m_offset += available;</div>
 <div class="line"><a id="l03571" name="l03571"></a><span class="lineno"> 3571</span>                m_state = state_t::ok;</div>
 <div class="line"><a id="l03572" name="l03572"></a><span class="lineno"> 3572</span>                <span class="keywordflow">return</span> available;</div>
@@ -3447,7 +3447,7 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l03598" name="l03598"></a><span class="lineno"> 3598</span>                }</div>
 <div class="line"><a id="l03599" name="l03599"></a><span class="lineno"> 3599</span>                <span class="keywordtype">size_t</span> end_offset = m_offset + <span class="keyword">sizeof</span>(T);</div>
 <div class="line"><a id="l03600" name="l03600"></a><span class="lineno"> 3600</span>                <span class="keywordflow">if</span> (end_offset &lt;= m_size) {</div>
-<div class="line"><a id="l03601" name="l03601"></a><span class="lineno"> 3601</span>                    data = LE2HE(*<span class="keyword">reinterpret_cast&lt;</span>T*<span class="keyword">&gt;</span>(m_data + m_offset));</div>
+<div class="line"><a id="l03601" name="l03601"></a><span class="lineno"> 3601</span>                    data = LE2HE(*<span class="keyword">reinterpret_cast&lt;</span>T*<span class="keyword">&gt;</span>(&amp;m_data[m_offset]));</div>
 <div class="line"><a id="l03602" name="l03602"></a><span class="lineno"> 3602</span>                    m_offset = end_offset;</div>
 <div class="line"><a id="l03603" name="l03603"></a><span class="lineno"> 3603</span><span class="preprocessor">#if !CHECK_STREAM_STATE</span></div>
 <div class="line"><a id="l03604" name="l03604"></a><span class="lineno"> 3604</span>                    m_state = state_t::ok;</div>
@@ -3475,10 +3475,10 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l03638" name="l03638"></a><span class="lineno"> 3638</span>                }</div>
 <div class="line"><a id="l03639" name="l03639"></a><span class="lineno"> 3639</span>                <span class="keywordtype">size_t</span> end_offset = m_offset + <span class="keyword">sizeof</span>(uint32_t);</div>
 <div class="line"><a id="l03640" name="l03640"></a><span class="lineno"> 3640</span>                <span class="keywordflow">if</span> (end_offset &lt;= m_size) {</div>
-<div class="line"><a id="l03641" name="l03641"></a><span class="lineno"> 3641</span>                    uint32_t num_chars = LE2HE(*<span class="keyword">reinterpret_cast&lt;</span>uint32_t*<span class="keyword">&gt;</span>(m_data + m_offset));</div>
+<div class="line"><a id="l03641" name="l03641"></a><span class="lineno"> 3641</span>                    uint32_t num_chars = LE2HE(*<span class="keyword">reinterpret_cast&lt;</span>uint32_t*<span class="keyword">&gt;</span>(&amp;m_data[m_offset]));</div>
 <div class="line"><a id="l03642" name="l03642"></a><span class="lineno"> 3642</span>                    m_offset = end_offset;</div>
 <div class="line"><a id="l03643" name="l03643"></a><span class="lineno"> 3643</span>                    end_offset = stdex::add(m_offset, stdex::mul(num_chars, <span class="keyword">sizeof</span>(T)));</div>
-<div class="line"><a id="l03644" name="l03644"></a><span class="lineno"> 3644</span>                    T* start = <span class="keyword">reinterpret_cast&lt;</span>T*<span class="keyword">&gt;</span>(m_data + m_offset);</div>
+<div class="line"><a id="l03644" name="l03644"></a><span class="lineno"> 3644</span>                    T* start = <span class="keyword">reinterpret_cast&lt;</span>T*<span class="keyword">&gt;</span>(&amp;m_data[m_offset]);</div>
 <div class="line"><a id="l03645" name="l03645"></a><span class="lineno"> 3645</span>                    <span class="keywordflow">if</span> (end_offset &lt;= m_size) {</div>
 <div class="line"><a id="l03646" name="l03646"></a><span class="lineno"> 3646</span>                        data.assign(start, start + num_chars);</div>
 <div class="line"><a id="l03647" name="l03647"></a><span class="lineno"> 3647</span>                        m_offset = end_offset;</div>
@@ -3488,7 +3488,7 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l03651" name="l03651"></a><span class="lineno"> 3651</span>                        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
 <div class="line"><a id="l03652" name="l03652"></a><span class="lineno"> 3652</span>                    }</div>
 <div class="line"><a id="l03653" name="l03653"></a><span class="lineno"> 3653</span>                    <span class="keywordflow">if</span> (end_offset &lt;= m_size)</div>
-<div class="line"><a id="l03654" name="l03654"></a><span class="lineno"> 3654</span>                        data.assign(start, <span class="keyword">reinterpret_cast&lt;</span>T*<span class="keyword">&gt;</span>(m_data + m_size));</div>
+<div class="line"><a id="l03654" name="l03654"></a><span class="lineno"> 3654</span>                        data.assign(start, <span class="keyword">reinterpret_cast&lt;</span>T*<span class="keyword">&gt;</span>(&amp;m_data[m_size]));</div>
 <div class="line"><a id="l03655" name="l03655"></a><span class="lineno"> 3655</span>                }</div>
 <div class="line"><a id="l03656" name="l03656"></a><span class="lineno"> 3656</span>                m_offset = m_size;</div>
 <div class="line"><a id="l03657" name="l03657"></a><span class="lineno"> 3657</span>                m_state = state_t::eof;</div>
@@ -3510,7 +3510,7 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l03671" name="l03671"></a><span class="lineno"> 3671</span>                    <span class="keywordflow">if</span> (!ok()) _Unlikely_</div>
 <div class="line"><a id="l03672" name="l03672"></a><span class="lineno"> 3672</span>                        <span class="keywordflow">return</span> 0;</div>
 <div class="line"><a id="l03673" name="l03673"></a><span class="lineno"> 3673</span>                }</div>
-<div class="line"><a id="l03674" name="l03674"></a><span class="lineno"> 3674</span>                memcpy(m_data + m_offset, data, length);</div>
+<div class="line"><a id="l03674" name="l03674"></a><span class="lineno"> 3674</span>                memcpy(&amp;m_data[m_offset], data, length);</div>
 <div class="line"><a id="l03675" name="l03675"></a><span class="lineno"> 3675</span>                m_offset = end_offset;</div>
 <div class="line"><a id="l03676" name="l03676"></a><span class="lineno"> 3676</span>                <span class="keywordflow">if</span> (m_offset &gt; m_size)</div>
 <div class="line"><a id="l03677" name="l03677"></a><span class="lineno"> 3677</span>                    m_size = m_offset;</div>
@@ -3531,7 +3531,7 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l03693" name="l03693"></a><span class="lineno"> 3693</span>                    <span class="keywordflow">if</span> (!ok()) _Unlikely_</div>
 <div class="line"><a id="l03694" name="l03694"></a><span class="lineno"> 3694</span>                        <span class="keywordflow">return</span>;</div>
 <div class="line"><a id="l03695" name="l03695"></a><span class="lineno"> 3695</span>                }</div>
-<div class="line"><a id="l03696" name="l03696"></a><span class="lineno"> 3696</span>                memset(m_data + m_offset, <span class="keywordtype">byte</span>, amount);</div>
+<div class="line"><a id="l03696" name="l03696"></a><span class="lineno"> 3696</span>                memset(&amp;m_data[m_offset], <span class="keywordtype">byte</span>, amount);</div>
 <div class="line"><a id="l03697" name="l03697"></a><span class="lineno"> 3697</span>                m_offset = end_offset;</div>
 <div class="line"><a id="l03698" name="l03698"></a><span class="lineno"> 3698</span>                <span class="keywordflow">if</span> (m_offset &gt; m_size)</div>
 <div class="line"><a id="l03699" name="l03699"></a><span class="lineno"> 3699</span>                    m_size = m_offset;</div>
@@ -3554,7 +3554,7 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l03728" name="l03728"></a><span class="lineno"> 3728</span>                    <span class="keywordflow">if</span> (!ok()) _Unlikely_</div>
 <div class="line"><a id="l03729" name="l03729"></a><span class="lineno"> 3729</span>                        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
 <div class="line"><a id="l03730" name="l03730"></a><span class="lineno"> 3730</span>                }</div>
-<div class="line"><a id="l03731" name="l03731"></a><span class="lineno"> 3731</span>                (*<span class="keyword">reinterpret_cast&lt;</span>T*<span class="keyword">&gt;</span>(m_data + m_offset)) = HE2LE(data);</div>
+<div class="line"><a id="l03731" name="l03731"></a><span class="lineno"> 3731</span>                (*<span class="keyword">reinterpret_cast&lt;</span>T*<span class="keyword">&gt;</span>(&amp;m_data[m_offset])) = HE2LE(data);</div>
 <div class="line"><a id="l03732" name="l03732"></a><span class="lineno"> 3732</span>                m_offset = end_offset;</div>
 <div class="line"><a id="l03733" name="l03733"></a><span class="lineno"> 3733</span>                <span class="keywordflow">if</span> (m_offset &gt; m_size)</div>
 <div class="line"><a id="l03734" name="l03734"></a><span class="lineno"> 3734</span>                    m_size = m_offset;</div>
@@ -3585,7 +3585,7 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l03771" name="l03771"></a><span class="lineno"> 3771</span>                    <span class="keywordflow">if</span> (!ok()) _Unlikely_</div>
 <div class="line"><a id="l03772" name="l03772"></a><span class="lineno"> 3772</span>                        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
 <div class="line"><a id="l03773" name="l03773"></a><span class="lineno"> 3773</span>                }</div>
-<div class="line"><a id="l03774" name="l03774"></a><span class="lineno"> 3774</span>                <span class="keyword">auto</span> p = m_data + m_offset;</div>
+<div class="line"><a id="l03774" name="l03774"></a><span class="lineno"> 3774</span>                <span class="keyword">auto</span> p = &amp;m_data[m_offset];</div>
 <div class="line"><a id="l03775" name="l03775"></a><span class="lineno"> 3775</span>                *<span class="keyword">reinterpret_cast&lt;</span>uint32_t*<span class="keyword">&gt;</span>(p) = HE2LE((uint32_t)num_chars);</div>
 <div class="line"><a id="l03776" name="l03776"></a><span class="lineno"> 3776</span>                memcpy(p + <span class="keyword">sizeof</span>(uint32_t), data, size_chars);</div>
 <div class="line"><a id="l03777" name="l03777"></a><span class="lineno"> 3777</span>                m_offset = end_offset;</div>
@@ -3618,7 +3618,7 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l03816" name="l03816"></a><span class="lineno"> 3816</span>                    <span class="keywordflow">if</span> (!ok()) _Unlikely_</div>
 <div class="line"><a id="l03817" name="l03817"></a><span class="lineno"> 3817</span>                        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
 <div class="line"><a id="l03818" name="l03818"></a><span class="lineno"> 3818</span>                }</div>
-<div class="line"><a id="l03819" name="l03819"></a><span class="lineno"> 3819</span>                <span class="keyword">auto</span> p = m_data + m_offset;</div>
+<div class="line"><a id="l03819" name="l03819"></a><span class="lineno"> 3819</span>                <span class="keyword">auto</span> p = &amp;m_data[m_offset];</div>
 <div class="line"><a id="l03820" name="l03820"></a><span class="lineno"> 3820</span>                *<span class="keyword">reinterpret_cast&lt;</span>uint32_t*<span class="keyword">&gt;</span>(p) = HE2LE((uint32_t)num_chars);</div>
 <div class="line"><a id="l03821" name="l03821"></a><span class="lineno"> 3821</span>                memcpy(p + <span class="keyword">sizeof</span>(uint32_t), data.data(), size_chars);</div>
 <div class="line"><a id="l03822" name="l03822"></a><span class="lineno"> 3822</span>                m_offset = end_offset;</div>
@@ -3646,7 +3646,7 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l03847" name="l03847"></a><span class="lineno"> 3847</span>                    <span class="keywordflow">if</span> (!ok()) _Unlikely_</div>
 <div class="line"><a id="l03848" name="l03848"></a><span class="lineno"> 3848</span>                        <span class="keywordflow">return</span> 0;</div>
 <div class="line"><a id="l03849" name="l03849"></a><span class="lineno"> 3849</span>                    <span class="keywordflow">while</span> (to_write) {</div>
-<div class="line"><a id="l03850" name="l03850"></a><span class="lineno"> 3850</span>                        num_read = stream.read(m_data + dst_offset, to_write);</div>
+<div class="line"><a id="l03850" name="l03850"></a><span class="lineno"> 3850</span>                        num_read = stream.read(&amp;m_data[dst_offset], to_write);</div>
 <div class="line"><a id="l03851" name="l03851"></a><span class="lineno"> 3851</span>                        <span class="comment">/*dst_size =*/</span> dst_offset += num_read;</div>
 <div class="line"><a id="l03852" name="l03852"></a><span class="lineno"> 3852</span>                        num_copied += num_read;</div>
 <div class="line"><a id="l03853" name="l03853"></a><span class="lineno"> 3853</span>                        to_write -= num_read;</div>
@@ -3665,7 +3665,7 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l03866" name="l03866"></a><span class="lineno"> 3866</span>                        reserve(dst_size);</div>
 <div class="line"><a id="l03867" name="l03867"></a><span class="lineno"> 3867</span>                        <span class="keywordflow">if</span> (!ok()) _Unlikely_</div>
 <div class="line"><a id="l03868" name="l03868"></a><span class="lineno"> 3868</span>                            <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l03869" name="l03869"></a><span class="lineno"> 3869</span>                        num_read = stream.read(m_data + dst_offset, block_size);</div>
+<div class="line"><a id="l03869" name="l03869"></a><span class="lineno"> 3869</span>                        num_read = stream.read(&amp;m_data[dst_offset], block_size);</div>
 <div class="line"><a id="l03870" name="l03870"></a><span class="lineno"> 3870</span>                        dst_size = dst_offset += num_read;</div>
 <div class="line"><a id="l03871" name="l03871"></a><span class="lineno"> 3871</span>                        num_copied += num_read;</div>
 <div class="line"><a id="l03872" name="l03872"></a><span class="lineno"> 3872</span>                        to_write -= num_read;</div>
@@ -3783,7 +3783,7 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l03979" name="l03979"></a><span class="lineno"> 3979</span>                m_atime = m_mtime = time_point::now();</div>
 <div class="line"><a id="l03980" name="l03980"></a><span class="lineno"> 3980</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l03981" name="l03981"></a><span class="lineno"> 3981</span>                stdex_assert(offset + <span class="keyword">sizeof</span>(T) &lt; m_size);</div>
-<div class="line"><a id="l03982" name="l03982"></a><span class="lineno"> 3982</span>                (*<span class="keyword">reinterpret_cast&lt;</span>T*<span class="keyword">&gt;</span>(m_data + offset)) = HE2LE(data);</div>
+<div class="line"><a id="l03982" name="l03982"></a><span class="lineno"> 3982</span>                (*<span class="keyword">reinterpret_cast&lt;</span>T*<span class="keyword">&gt;</span>(&amp;m_data[offset])) = HE2LE(data);</div>
 <div class="line"><a id="l03983" name="l03983"></a><span class="lineno"> 3983</span>            }</div>
 </div>
 <div class="line"><a id="l03984" name="l03984"></a><span class="lineno"> 3984</span> </div>
@@ -3809,7 +3809,7 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l04010" name="l04010"></a><span class="lineno"><a class="line" href="classstdex_1_1stream_1_1memory__file.html#a41124fc38a3439c4407ea1c9ef4962b1"> 4010</a></span>            <span class="keywordtype">void</span> <a class="code hl_function" href="classstdex_1_1stream_1_1memory__file.html#a41124fc38a3439c4407ea1c9ef4962b1">get</a>(_In_ fpos_t offset, _Out_ T &amp; data)</div>
 <div class="line"><a id="l04011" name="l04011"></a><span class="lineno"> 4011</span>            {</div>
 <div class="line"><a id="l04012" name="l04012"></a><span class="lineno"> 4012</span>                stdex_assert(offset + <span class="keyword">sizeof</span>(T) &lt; m_size);</div>
-<div class="line"><a id="l04013" name="l04013"></a><span class="lineno"> 4013</span>                data = LE2HE(*(T*)(m_data + offset));</div>
+<div class="line"><a id="l04013" name="l04013"></a><span class="lineno"> 4013</span>                data = LE2HE(*(T*)(&amp;m_data[offset]));</div>
 <div class="line"><a id="l04014" name="l04014"></a><span class="lineno"> 4014</span><span class="preprocessor">#if SET_FILE_OP_TIMES</span></div>
 <div class="line"><a id="l04015" name="l04015"></a><span class="lineno"> 4015</span>                m_atime = time_point::now();</div>
 <div class="line"><a id="l04016" name="l04016"></a><span class="lineno"> 4016</span><span class="preprocessor">#endif</span></div>
@@ -4367,7 +4367,7 @@ $(function(){ initResizable(false); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Oct 21 2024 12:18:10 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.12.0
+Generated on Tue Oct 22 2024 15:31:21 for stdex by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.12.0
 </small></address>
 </div><!-- doc-content -->
 </body>
