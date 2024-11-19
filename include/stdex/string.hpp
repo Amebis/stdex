@@ -1645,12 +1645,15 @@ namespace stdex
 	/// \return Number of code units excluding zero terminator in the dst string after the operation.
 	///
 	inline size_t strcpy(
-		_Out_ _Post_maybez_ utf32_t* dst,
+		_Out_writes_z_(_String_length_(src) + 1) utf32_t* dst,
 		_In_z_ const utf16_t* src)
 	{
 		stdex_assert(dst);
 		stdex_assert(src);
 		for (size_t j = 0, i = 0; ; ++j, ++i) {
+			// strcpy has no knowledge, how big the dst buffer is, but we know, we won't be writing more than strlen(src) + 1 characters into it.
+			// Code Analysis somehow doesn't work this out from the code and the dst SAL above, and reports a false-positive warning.
+#pragma warning(suppress: 6386)
 			if ((dst[j] = (is_surrogate_pair(&src[i]) ? surrogate_pair_to_ucs4(&src[i++]) : static_cast<utf32_t>(src[i]))) == 0)
 				return j;
 		}
